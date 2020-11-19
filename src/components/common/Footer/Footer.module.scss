@@ -1,0 +1,18 @@
+.Footer {
+  --footer-height: 44px;
+  --link-spacing: 55px;
+
+  display: flex;
+  align-items: center;
+  padding: 0 80px;
+  height: var(--footer-height);
+  background-color: var(--primary-color);
+
+  .link {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    color: #fff;
+    margin-right: var(--link-spacing);
+  }
+}
