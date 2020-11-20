@@ -1,10 +1,32 @@
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
 
 body {
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.funnel-page {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 40px 80px;
+}
+
+h1 {
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-medium);
+  color: var(--primary-color);
+  margin: 0;
 }

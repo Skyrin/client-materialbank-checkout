@@ -1,15 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import 'styles/global.scss';
-import 'styles/variables.scss';
-import reportWebVitals from './reportWebVitals';
-import Root from 'components/Root/Root';
+import React from "react";
+import ReactDOM from "react-dom";
+import "styles/global.scss";
+import "styles/variables.scss";
+import reportWebVitals from "./reportWebVitals";
+import Root from "components/Root/Root";
 
 ReactDOM.render(
   <React.StrictMode>
     <Root />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
