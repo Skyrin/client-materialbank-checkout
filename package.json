@@ -8,12 +8,17 @@
     "@testing-library/user-event": "^12.1.10",
     "@types/classnames": "^2.2.11",
     "@types/jest": "^26.0.15",
+    "@types/lodash-es": "^4.17.3",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.6",
     "classnames": "^2.2.6",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.5.1",
+    "lodash-es": "^4.17.15",
     "node-sass": "4.14.1",
+    "prettier": "^2.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -25,7 +30,18 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}'"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+        "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+        "pre-commit": "lint-staged"
+    }
   },
   "eslintConfig": {
     "extends": [

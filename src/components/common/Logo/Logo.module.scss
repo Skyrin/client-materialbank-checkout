@@ -1,0 +1,14 @@
+.Logo {
+  --circle-size: 60px;
+
+  display: flex;
+  align-items: center;
+
+  .circle {
+    width: var(--circle-size);
+    height: var(--circle-size);
+    background-color: var(--primary-color);
+    border-radius: 100%;
+    margin-right: var(--horizontal-spacing-normal);
+  }
+}

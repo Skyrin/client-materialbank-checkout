@@ -1,3 +1,6 @@
 .PaymentInformation {
-  background-color: #fff;
+  .logo,
+  .breadcrumbs {
+    margin-bottom: var(--vertical-spacing-normal);
+  }
 }
