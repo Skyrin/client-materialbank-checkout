@@ -1,3 +1,5 @@
+@import "styles/mixins.scss";
+
 html,
 body,
 #root {
@@ -29,4 +31,64 @@ h1 {
   font-weight: var(--font-weight-medium);
   color: var(--primary-color);
   margin: 0;
+}
+
+.button {
+  height: var(--button-medium-height);
+  border-radius: var(--button-medium-radius);
+  background-color: var(--button-background-color);
+  border: 1px solid var(--button-border-color);
+  color: var(--button-color);
+  font-size: var(--button-medium-font-size);
+  font-weight: var(--button-font-weight);
+  padding: 10px 80px;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.05s linear, border-color 0.05s linear;
+
+  &.large {
+    height: var(--button-large-height);
+    border-radius: var(--button-large-radius);
+    font-size: var(--button-large-font-size);
+    padding: 16px 45px;
+  }
+
+  &:hover {
+    background-color: lightness(
+      --primary-color,
+      var(--button-hover-background-color-lightness)
+    );
+  }
+
+  &:active {
+    background-color: lightness(
+      --primary-color,
+      var(--button-active-background-color-lightness)
+    );
+  }
+
+  &:disabled {
+    pointer-events: none;
+    background-color: var(--button-disabled-background-color);
+    color: var(--button-disabled-color);
+  }
+}
+
+.link-button {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--primary-color);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  transition: color 0.05s linear;
+
+  &:hover {
+    color: lightness(--primary-color, var(--text-button-hover-color-lightness));
+  }
+
+  i {
+    font-size: 17px; // For FontAwesome icons, the font-size is sort-of equivalent to their height
+    margin-right: 12px;
+  }
 }

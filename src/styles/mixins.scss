@@ -1,0 +1,11 @@
+// Changes the lightness of a HSL color. >1 increases lightness (1.1 = 10% lighter), <1 decreases (0.9 = 10% darker)
+@function lightness($color-variable, $multiplier) {
+  $color-variable-h: var(#{$color-variable + "-h"});
+  $color-variable-s: var(#{$color-variable + "-s"});
+  $color-variable-l: var(#{$color-variable + "-l"});
+  @return hsl(
+    $color-variable-h,
+    $color-variable-s,
+    calc(#{$color-variable-l} * #{$multiplier})
+  );
+}

@@ -3,6 +3,10 @@
   --primary-color: #363648;
   --primary-color-rgb: 54, 54, 72; // Those are needed if we need to use rgba(var(--primary-color-rgb), 0.2)
 
+  --primary-color-h: 240; // HSL is needed where we want to use lightness variations (i.e. button hovers)
+  --primary-color-s: 14%;
+  --primary-color-l: 25%;
+
   // Font sizes
   --font-size-xs: 10px;
   --font-size-sm: 12px;
@@ -19,4 +23,24 @@
   // Spacing
   --vertical-spacing-normal: 20px;
   --horizontal-spacing-normal: 20px;
+
+  // Buttons
+  --button-background-color: var(--primary-color);
+  --button-disabled-background-color: #fff;
+  --button-hover-background-color-lightness: 1.2;
+  --button-active-background-color-lightness: 1.4;
+  --text-button-hover-color-lightness: 1.6;
+
+  --button-color: #fff;
+  --button-disabled-color: var(--primary-color);
+  --button-border-color: var(--primary-color);
+  --button-font-weight: var(--font-weight-medium);
+
+  --button-medium-height: 40px;
+  --button-medium-radius: 24px;
+  --button-medium-font-size: var(--font-size-md);
+
+  --button-large-height: 60px;
+  --button-large-radius: 30px;
+  --button-large-font-size: var(--font-size-xl);
 }
