@@ -12,6 +12,7 @@ import PersonalInformation from "components/PersonalInformation/PersonalInformat
 import PaymentInformation from "components/PaymentInformation/PaymentInformation";
 import OrderSummary from "components/OrderSummary/OrderSummary";
 import AppContextManager from "context/AppContextManager";
+import cn from "classnames";
 
 function App() {
   return (
@@ -33,6 +34,9 @@ function App() {
         </div>
         <Footer />
       </div>
+      {/* Hidden icons that should make the browser pre-load the webfonts for fas(FontAwesome Solid) and far(FontAwesome Regular) */}
+      <i className={cn("fas fa-star", styles.hiddenIcon)} />
+      <i className={cn("far fa-star", styles.hiddenIcon)} />
     </AppContextManager>
   );
 }
