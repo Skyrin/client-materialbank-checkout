@@ -9,12 +9,25 @@ import { BREADCRUMBS_STEPS } from "constants/general";
 import { PERSONAL_INFORMATION_URL } from "constants/urls";
 import { request } from "GraphqlClient";
 import Checkbox from "components/common/Checkbox/Checkbox";
+import Input from "components/common/Input/Input";
+import {
+  cardNumberInputFormatter,
+  cardNumberInputParser,
+  digitsOnlyInputParser,
+  expirationDateInputFormatter,
+  expirationDateInputParser,
+} from "components/common/Input/utils";
 
 type Props = RouteComponentProps;
 
 type State = {
   products: any[];
   debugCheckbox: boolean;
+  debugTextInput: string;
+  debugCardNumberInput: string;
+  debugTextInputParsed: string;
+  debugGraphqlResponse: string;
+  debugNumberOnlyInput: string;
 };
 
 export class Cart extends React.Component<Props, State> {
@@ -24,6 +37,11 @@ export class Cart extends React.Component<Props, State> {
   state = {
     products: [],
     debugCheckbox: false,
+    debugTextInput: "",
+    debugCardNumberInput: "",
+    debugTextInputParsed: "",
+    debugGraphqlResponse: "{}",
+    debugNumberOnlyInput: "",
   };
 
   updateCart = () => {
@@ -66,6 +84,7 @@ export class Cart extends React.Component<Props, State> {
     `;
     try {
       const resp = await request(query);
+      this.setState({ debugGraphqlResponse: JSON.stringify(resp) });
       console.log(resp);
     } catch (e) {
       console.error(e);
@@ -74,6 +93,7 @@ export class Cart extends React.Component<Props, State> {
 
   renderDebug() {
     const cartData = this.context.cart;
+    console.log(this.state);
     return (
       <React.Fragment>
         [CONTEXT DEBUG AREA]
@@ -82,18 +102,55 @@ export class Cart extends React.Component<Props, State> {
         <br />
         Context cart data:
         <br />
-        <pre>{JSON.stringify(cartData)}</pre>
+        <code>{JSON.stringify(cartData)}</code>
         <button onClick={this.updateCart} style={{ marginBottom: 20 }}>
           Randomize cart id
         </button>
+        <code>{this.state.debugGraphqlResponse}</code>
         <button onClick={this.dummyGraphqlQuery} style={{ marginBottom: 20 }}>
-          Trigger GraphQL query (will get CORS error for now)
+          Trigger GraphQL products query
         </button>
         [INPUTS]
-        <Checkbox
-          value={this.state.debugCheckbox}
-          onChange={(val: boolean) => this.setState({ debugCheckbox: val })}
-        />
+        <div className={styles.debugInputContainer}>
+          <Checkbox
+            value={this.state.debugCheckbox}
+            onChange={(val: boolean) => this.setState({ debugCheckbox: val })}
+          />
+          <Input
+            value={this.state.debugTextInput}
+            onChange={(val: string) => this.setState({ debugTextInput: val })}
+            placeholder="Normal text input"
+          />
+          <Input
+            value={this.state.debugCardNumberInput}
+            onChange={(val: string) =>
+              this.setState({ debugCardNumberInput: val })
+            }
+            formatter={cardNumberInputFormatter}
+            parser={cardNumberInputParser}
+            placeholder="Card Number"
+            inputMode="numeric"
+          />
+          <Input
+            value={this.state.debugTextInputParsed}
+            onChange={(val: string) =>
+              this.setState({ debugTextInputParsed: val })
+            }
+            formatter={expirationDateInputFormatter}
+            parser={expirationDateInputParser}
+            placeholder="Expiration (MM/YR)"
+            inputMode="numeric"
+          />
+          <Input
+            value={this.state.debugNumberOnlyInput}
+            onChange={(val: string) =>
+              this.setState({ debugNumberOnlyInput: val })
+            }
+            parser={digitsOnlyInputParser}
+            placeholder="Should only accept digits"
+            inputMode="numeric"
+          />
+        </div>
       </React.Fragment>
     );
   }

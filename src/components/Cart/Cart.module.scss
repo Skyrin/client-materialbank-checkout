@@ -9,4 +9,17 @@
     justify-content: space-between;
     align-items: center;
   }
+
+  code {
+    max-width: 100%;
+    overflow: scroll;
+  }
+
+  .debugInputContainer {
+    display: grid;
+    grid-template-columns: 1;
+    grid-template-rows: auto;
+    row-gap: 10px;
+    padding: 20px 0;
+  }
 }
