@@ -33,6 +33,20 @@ h1 {
   margin: 0;
 }
 
+h2 {
+  font-size: var(--font-size-xxl);
+  font-weight: var(--font-weight-medium);
+  color: var(--primary-color);
+  margin: 0;
+}
+
+h3 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--primary-color);
+  margin: 0;
+}
+
 .button {
   height: var(--button-medium-height);
   border-radius: var(--button-medium-radius);
