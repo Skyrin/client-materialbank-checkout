@@ -6,4 +6,47 @@
   .title {
     margin-bottom: var(--vertical-spacing-normal);
   }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    padding: var(--vertical-spacing-normal) 0;
+    border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
+  }
+
+  .promoCodeContainer {
+    @extend .section;
+    .subtitle {
+      margin-bottom: var(--vertical-spacing-normal);
+    }
+  }
+
+  .pricesContainer {
+    @extend .section;
+    .priceLine {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--vertical-spacing-normal);
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
+      span {
+        font-size: var(--font-size-md);
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  .totalContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--vertical-spacing-normal);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-color);
+  }
 }
