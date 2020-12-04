@@ -20,6 +20,8 @@ type Props = {
     | "decimal"
     | "search"
     | undefined;
+  actionButton?: React.ReactNode;
+  onActionButtonClick?: () => void;
   className?: string;
 };
 
@@ -30,16 +32,28 @@ export default function Input(props: Props) {
   };
 
   return (
-    <input
-      className={cn(styles.input, props.className)}
-      type={props.type || "text"}
-      placeholder={props.placeholder}
-      value={value}
-      onChange={(evt) => {
-        props.onChange(parseValue(evt.target.value));
-      }}
-      pattern={props.pattern}
-      inputMode={props.inputMode}
-    />
+    <div className={cn(styles.Input, props.className)}>
+      <input
+        className={cn(styles.input)}
+        type={props.type || "text"}
+        placeholder={props.placeholder}
+        value={value}
+        onChange={(evt) => {
+          props.onChange(parseValue(evt.target.value));
+        }}
+        pattern={props.pattern}
+        inputMode={props.inputMode}
+      />
+      {props.actionButton && (
+        <div
+          className={styles.actionButton}
+          onClick={() => {
+            props.onActionButtonClick && props.onActionButtonClick();
+          }}
+        >
+          {props.actionButton}
+        </div>
+      )}
+    </div>
   );
 }

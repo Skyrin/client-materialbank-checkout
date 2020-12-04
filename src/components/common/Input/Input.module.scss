@@ -1,22 +1,61 @@
-.input {
+.Input {
   --input-height: 40px;
   --input-border-radius: 24px;
+  position: relative;
 
-  height: var(--input-height);
-  padding: 10px 16px;
-  border-radius: var(--input-border-radius);
-  outline: none;
-  border: 1px solid rgba(var(--primary-color-rgb), 0.1);
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
-  font-size: var(--font-size-md);
-  transition: border-color 0.1s linear, box-shadow 0.1s linear;
+  .input {
+    width: 100%;
+    height: var(--input-height);
+    padding: 10px 16px;
+    border-radius: var(--input-border-radius);
+    outline: none;
+    border: 1px solid rgba(var(--primary-color-rgb), 0.1);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+    font-size: var(--font-size-md);
+    transition: border-color 0.1s linear, box-shadow 0.1s linear;
 
-  &:hover {
-    border-color: rgba(var(--primary-color-rgb), 0.4);
+    &:hover {
+      border-color: rgba(var(--primary-color-rgb), 0.4);
+    }
+
+    &:focus {
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+      border-color: rgba(var(--primary-color-rgb), 0.6);
+    }
   }
 
-  &:focus {
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
-    border-color: rgba(var(--primary-color-rgb), 0.6);
+  .actionButton {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(var(--input-height) - 8px);
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: var(--input-border-radius);
+    background-color: rgba(var(--primary-color-rgb), 0.3);
+    font-size: var(--font-size-md);
+    color: #fff;
+    padding: 0 16px;
+    cursor: pointer;
+    transition: background-color 0.1s linear, box-shadow 0.1s linear;
+
+    &::before {
+      display: block;
+      position: absolute;
+      left: -4px;
+      width: calc(100% + 8px);
+      height: calc(100% + 8px);
+      content: "";
+    }
+
+    &:hover {
+      background-color: rgba(var(--primary-color-rgb), 0.6);
+    }
+
+    &:active {
+      box-shadow: inset 2px 2px 8px rgba(0, 0, 0, 0.2);
+    }
   }
 }
