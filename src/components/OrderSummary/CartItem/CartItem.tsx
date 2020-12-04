@@ -3,12 +3,13 @@ import * as React from "react";
 import styles from "./CartItem.module.scss";
 
 type Props = {
+  key?: string;
   cartItem: CartItemT;
 };
 
 export default function CartItem(props: Props) {
   return (
-    <div className={styles.CartItem}>
+    <div className={styles.CartItem} key={props.key}>
       <div className={styles.itemInfo}>
         <img
           className={styles.image}

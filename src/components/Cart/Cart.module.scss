@@ -22,4 +22,18 @@
     row-gap: 10px;
     padding: 20px 0;
   }
+
+  .debugInlineContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  .debugRadioButton {
+    margin-right: 10px;
+  }
+
+  .debugCheckbox {
+    margin-right: 10px;
+  }
 }
