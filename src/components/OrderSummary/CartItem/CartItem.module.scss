@@ -1,0 +1,44 @@
+.CartItem {
+  --image-size: 60px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: var(--vertical-spacing-normal) 0;
+  border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
+
+  .itemInfo {
+    display: flex;
+
+    .image {
+      width: var(--image-size);
+      height: var(--image-size);
+      margin-right: 16px;
+    }
+
+    .infoContainer {
+      display: flex;
+      flex-direction: column;
+
+      .lightText {
+        font-size: var(--font-size-sm);
+        // font-weight: var(--font-weight-medium);
+        color: rgba(var(--primary-color-rgb), 0.6);
+        line-height: 1.33;
+      }
+
+      .boldText {
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-medium);
+        color: var(--primary-color);
+        line-height: 1.43;
+      }
+    }
+  }
+
+  .price {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: rgba(var(--primary-color-rgb), 0.6);
+  }
+}

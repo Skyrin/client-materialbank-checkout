@@ -17,17 +17,20 @@ import {
   expirationDateInputFormatter,
   expirationDateInputParser,
 } from "components/common/Input/utils";
+import RadioButton from "components/common/RadioButton/RadioButton";
 
 type Props = RouteComponentProps;
 
 type State = {
   products: any[];
   debugCheckbox: boolean;
+  debugCheckbox2: boolean;
   debugTextInput: string;
   debugCardNumberInput: string;
   debugTextInputParsed: string;
   debugGraphqlResponse: string;
   debugNumberOnlyInput: string;
+  debugRadioButtons: string;
 };
 
 export class Cart extends React.Component<Props, State> {
@@ -37,11 +40,13 @@ export class Cart extends React.Component<Props, State> {
   state = {
     products: [],
     debugCheckbox: false,
+    debugCheckbox2: false,
     debugTextInput: "",
     debugCardNumberInput: "",
     debugTextInputParsed: "",
     debugGraphqlResponse: "{}",
     debugNumberOnlyInput: "",
+    debugRadioButtons: "",
   };
 
   updateCart = () => {
@@ -112,10 +117,48 @@ export class Cart extends React.Component<Props, State> {
         </button>
         [INPUTS]
         <div className={styles.debugInputContainer}>
-          <Checkbox
-            value={this.state.debugCheckbox}
-            onChange={(val: boolean) => this.setState({ debugCheckbox: val })}
-          />
+          <div className={styles.debugInlineContainer}>
+            <Checkbox
+              className={styles.debugCheckbox}
+              value={this.state.debugCheckbox}
+              onChange={(val: boolean) => this.setState({ debugCheckbox: val })}
+            />
+            <span>Checkbox 1</span>
+          </div>
+          <div className={styles.debugInlineContainer}>
+            <Checkbox
+              className={styles.debugCheckbox}
+              value={this.state.debugCheckbox2}
+              onChange={(val: boolean) =>
+                this.setState({ debugCheckbox2: val })
+              }
+            />
+            <span>Checkbox 2</span>
+          </div>
+          <div>
+            <div className={styles.debugInlineContainer}>
+              <RadioButton
+                className={styles.debugRadioButton}
+                value={this.state.debugRadioButtons}
+                option="OPTION_A"
+                onChange={(val: string) => {
+                  this.setState({ debugRadioButtons: val });
+                }}
+              />
+              <span>OPTION_A</span>
+            </div>
+            <div className={styles.debugInlineContainer}>
+              <RadioButton
+                className={styles.debugRadioButton}
+                value={this.state.debugRadioButtons}
+                option="OPTION_B"
+                onChange={(val: string) => {
+                  this.setState({ debugRadioButtons: val });
+                }}
+              />
+              <span>OPTION_B</span>
+            </div>
+          </div>
           <Input
             value={this.state.debugTextInput}
             onChange={(val: string) => this.setState({ debugTextInput: val })}
