@@ -7,6 +7,9 @@
   --primary-color-s: 14%;
   --primary-color-l: 25%;
 
+  // Font colors
+  --font-primary-color-light: rgba(var(--primary-color-rgb), 0.6);
+
   // Font sizes
   --font-size-xs: 10px;
   --font-size-sm: 12px;
@@ -24,7 +27,9 @@
 
   // Spacing
   --vertical-spacing-normal: 20px;
+  --vertical-spacing-half: calc(var(--vertical-spacing-normal) / 2);
   --horizontal-spacing-normal: 20px;
+  --horizontal-spacing-half: calc(var(--horizontal-spacing-normal) / 2);
 
   // Buttons
   --button-background-color: var(--primary-color);

@@ -5,6 +5,7 @@ import styles from "./Input.module.scss";
 type Props = {
   value: string;
   onChange: (newValue: string) => void;
+  onBlur?: () => void;
   placeholder?: string;
   type?: string;
   formatter?: (value: string) => string;
@@ -23,6 +24,8 @@ type Props = {
   actionButton?: React.ReactNode;
   onActionButtonClick?: () => void;
   className?: string;
+  style?: Object;
+  error?: React.ReactElement | null;
 };
 
 export default function Input(props: Props) {
@@ -32,17 +35,25 @@ export default function Input(props: Props) {
   };
 
   return (
-    <div className={cn(styles.Input, props.className)}>
+    <div
+      className={cn(styles.Input, props.className, {
+        [styles.hasError]: props.error,
+      })}
+    >
       <input
-        className={cn(styles.input)}
+        className={styles.input}
         type={props.type || "text"}
         placeholder={props.placeholder}
         value={value}
         onChange={(evt) => {
           props.onChange(parseValue(evt.target.value));
         }}
+        onBlur={() => {
+          props.onBlur && props.onBlur();
+        }}
         pattern={props.pattern}
         inputMode={props.inputMode}
+        style={props.style}
       />
       {props.actionButton && (
         <div
@@ -54,6 +65,7 @@ export default function Input(props: Props) {
           {props.actionButton}
         </div>
       )}
+      {props.error && <div className={styles.error}>{props.error}</div>}
     </div>
   );
 }
