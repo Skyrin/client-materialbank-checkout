@@ -7,6 +7,10 @@
   --primary-color-s: 14%;
   --primary-color-l: 25%;
 
+  --text-color-xlight: rgba(var(--primary-color-rgb), 0.4);
+  --text-color-light: rgba(var(--primary-color-rgb), 0.7);
+  --text-color-normal: var(--primary-color-rgb);
+
   // Font sizes
   --font-size-xs: 10px;
   --font-size-sm: 12px;
@@ -45,4 +49,8 @@
   --button-large-height: 60px;
   --button-large-radius: 30px;
   --button-large-font-size: var(--font-size-xl);
+
+  --card-border-radius-sm: 10px;
+  --card-border-radius-nm: 16px;
+  --card-border-radius-bg: 20px;
 }

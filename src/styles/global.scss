@@ -6,7 +6,10 @@ body,
   height: 100%;
 }
 
-body {
+body,
+input,
+textarea,
+button {
   margin: 0;
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -93,6 +96,13 @@ h4 {
     background-color: var(--button-disabled-background-color);
     color: var(--button-disabled-color);
   }
+}
+
+button {
+  border: unset;
+  background-color: unset;
+  cursor: pointer;
+  outline: none;
 }
 
 .link-button {

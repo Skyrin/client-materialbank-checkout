@@ -2,6 +2,10 @@
   "name": "client-materialbank-checkout",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "^10.22",
+    "npm": "^6.14"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -22,7 +26,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.0",
+    "react-scripts": "^4.0.0",
     "typescript": "^4.0.3",
     "web-vitals": "^0.2.4"
   },
