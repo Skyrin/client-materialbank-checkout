@@ -16,6 +16,10 @@ button {
   -moz-osx-font-smoothing: grayscale;
 }
 
+a {
+  color: var(--primary-color);
+}
+
 *,
 *::before,
 *::after {

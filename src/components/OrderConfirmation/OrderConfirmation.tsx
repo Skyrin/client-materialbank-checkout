@@ -11,6 +11,8 @@ export class OrderConfirmation extends React.Component {
   order = {
     number: 2625117283,
   };
+
+  // TODO: Create a class/type for this info once we have API docs
   recommendations = [
     {
       id: 1,
@@ -51,6 +53,7 @@ export class OrderConfirmation extends React.Component {
     },
   ];
 
+  // TODO: Create a class/type for this info once we have API docs
   customerInfo = {
     customerEmail: "johndoe@gmail.com",
     paymentInfo: {
@@ -77,18 +80,22 @@ export class OrderConfirmation extends React.Component {
     },
   };
 
-  constructor(props: any) {
-    super(props);
-  }
-
   recommendationClick(productId: number): void {
     console.log(productId);
   }
 
   render() {
+    const customerEmail = this.customerInfo.customerEmail;
+    const paymentInfo = this.customerInfo.paymentInfo;
+    const shippingAddress = this.customerInfo.shippingAddress;
+    const billingAddress = this.customerInfo.billingAddress;
+
     return (
       <div className={cn("funnel-page")}>
         <Logo />
+
+        {/* CONFIRMATION TEXTS */}
+
         <div className={styles["confirmation-text"]}>
           <div
             className={cn(
@@ -133,6 +140,8 @@ export class OrderConfirmation extends React.Component {
           </div>
         </div>
 
+        {/* RECOMMENDATIONS */}
+
         <h2 className={styles["section-title"]}>
           Based on your order, we think you'll love these:
         </h2>
@@ -141,9 +150,74 @@ export class OrderConfirmation extends React.Component {
           recommendations={this.recommendations}
           recommendationClick={this.recommendationClick}
         />
+
+        {/* CUSTOMER INFORMATION */}
+
         <h2 className={styles["section-title"]}>Customer Information</h2>
-        <div className={styles["customer-information"]}>
-          <div className={styles["customer-information"]}></div>
+        <div className={styles["customer-info-grid"]}>
+          <div className={styles["info-cell"]}>
+            <div className={styles["cell-title"]}>Contact Information</div>
+            <div className={styles["text-row"]}>{customerEmail}</div>
+          </div>
+          <div className={styles["info-cell"]}>
+            <div className={styles["cell-title"]}>Payment Method</div>
+            <div className={styles["text-row"]}>
+              <div className={styles["card-img"]} />
+              <span>
+                ending in {paymentInfo.cardNumber}&nbsp; -{" "}
+                {paymentInfo.currency}
+                {paymentInfo.amount}
+              </span>
+            </div>
+          </div>
+          <div className={styles["info-cell"]}>
+            <div className={styles["cell-title"]}>Shipping Address</div>
+            <div className={styles["text-row"]}>
+              <span>{shippingAddress.name}</span>
+            </div>
+            <div className={styles["text-row"]}>
+              <span>{shippingAddress.companyName}</span>
+            </div>
+            <div className={styles["text-row"]}>
+              <span>{shippingAddress.address}</span>
+            </div>
+            <div className={styles["text-row"]}>
+              <span>
+                {shippingAddress.city},&nbsp;{shippingAddress.state}&nbsp;
+                {shippingAddress.postalCode}
+              </span>
+            </div>
+          </div>
+          <div className={styles["info-cell"]}>
+            <div className={styles["cell-title"]}>Billing Address</div>
+            <div className={styles["text-row"]}>
+              <span>{billingAddress.name}</span>
+            </div>
+            <div className={styles["text-row"]}>
+              <span>{billingAddress.companyName}</span>
+            </div>
+            <div className={styles["text-row"]}>
+              <span>{billingAddress.address}</span>
+            </div>
+            <div className={styles["text-row"]}>
+              <span>
+                {billingAddress.city},&nbsp;{billingAddress.state}&nbsp;
+                {billingAddress.postalCode}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles["bottom-actions"]}>
+          <div className={styles["contact-us"]}>
+            <i className={cn(styles["chat-icon"], "fas fa-comments-alt")} />
+            Need Help?
+            <a href="">Contact Us</a>
+          </div>
+
+          <div className={cn(styles["back-to-shopping"], "button")}>
+            Back to Shopping
+          </div>
         </div>
       </div>
     );
