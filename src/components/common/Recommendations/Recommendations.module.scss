@@ -1,14 +1,6 @@
-.title {
-  font-size: var(--font-size-xxl);
-  font-weight: var(--font-weight-medium);
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
-}
-
 .recommendations-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(calc(max(200px, 30%)), 1fr));
   grid-column-gap: 20px;
   grid-row-gap: 20px;
 }

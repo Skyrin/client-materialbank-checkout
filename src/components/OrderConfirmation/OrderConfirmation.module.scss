@@ -1,3 +1,33 @@
 .logo {
   margin-bottom: var(--vertical-spacing-normal);
 }
+
+.confirmation-text {
+  margin-top: 60px;
+}
+
+.confirmation-text-row + .confirmation-text-row {
+  margin-bottom: 10px;
+}
+
+.pill {
+  padding: 10px 20px;
+  text-align: center;
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    margin-right: 10px;
+  }
+}
+
+.section-title {
+  font-weight: var(--font-weight-medium);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  margin-top: 70px;
+  border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
+}
