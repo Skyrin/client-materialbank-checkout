@@ -9,9 +9,9 @@ import { CART_URL, PAYMENT_URL } from "constants/urls";
 import paypalLogo from "assets/images/paypal_logo.svg";
 import applePayLogo from "assets/images/apple_pay_logo.svg";
 import Input from "components/common/Input/Input";
-import moment from "moment";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
+import { DateTime } from "luxon";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -162,7 +162,7 @@ export class PersonalInformation extends React.Component<Props, State> {
 
   renderShippingMethodSection = () => {
     // TODO: Clarify if this is always going to be "tomorrow" or if we need a dynamic value here
-    const estimatedDeliveryDate = moment().add(1, "days");
+    const estimatedDeliveryDate = DateTime.local().plus({ days: 1 });
 
     return (
       <div className={cn(styles.section, styles.shippingMethodSection)}>
@@ -171,8 +171,8 @@ export class PersonalInformation extends React.Component<Props, State> {
           <div className={styles.methodInfo}>
             <span className={styles.methodName}>FedEx Priority Overnight</span>
             <span className={styles.methodEstimatedDelivery}>
-              {`Delivery tomorrow, ${estimatedDeliveryDate.format(
-                "MMMM D, YYYY"
+              {`Delivery tomorrow, ${estimatedDeliveryDate.toFormat(
+                "MMMM dd, yyyy"
               )}.`}
             </span>
           </div>
