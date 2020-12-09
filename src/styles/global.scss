@@ -113,3 +113,22 @@ h4 {
     margin-right: 12px;
   }
 }
+
+.row {
+  display: flex;
+  flex-flow: row;
+
+  &.center-vertically {
+    align-items: center;
+  }
+}
+
+.big-text {
+  font-size: var(--font-size-lg);
+  color: var(--primary-color);
+  font-weight: var(--font-weight-normal);
+}
+
+.margin-top {
+  margin-top: var(--vertical-spacing-normal);
+}
