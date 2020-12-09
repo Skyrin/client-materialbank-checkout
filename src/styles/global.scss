@@ -57,6 +57,46 @@ h4 {
   margin: 0;
 }
 
+.font-size-md {
+  font-size: var(--font-size-md);
+}
+
+.font-size-sm {
+  font-size: var(--font-size-sm);
+}
+
+.font-size-xs {
+  font-size: var(--font-size-xs);
+}
+
+.text-color-xlight {
+  color: var(--text-color-xlight);
+}
+
+.text-color-light {
+  color: var(--text-color-light);
+}
+
+.text-color-normal {
+  color: var(--text-color-normal);
+}
+
+.font-weight-light {
+  font-weight: var(--font-weight-light);
+}
+
+.font-weight-normal {
+  font-weight: var(--font-weight-normal);
+}
+
+.font-weight-medium {
+  font-weight: var(--font-weight-medium);
+}
+
+.font-weight-bold {
+  font-weight: var(--font-weight-bold);
+}
+
 .button {
   height: var(--button-medium-height);
   border-radius: var(--button-medium-radius);

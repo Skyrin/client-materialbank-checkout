@@ -1,6 +1,8 @@
 import React from "react";
 import { Recommendations } from "../common/Recommendations/Recommendations";
-import Logo from "../PersonalInformation/PersonalInformation";
+import Logo from "../common/Logo/Logo";
+import cn from "classnames";
+import styles from "../PersonalInformation/PersonalInformation.module.scss";
 
 export class OrderConfirmation extends React.Component {
   recommendations = [
@@ -42,6 +44,12 @@ export class OrderConfirmation extends React.Component {
       type: 1,
     },
   ];
+  user = {
+    firstName: "John",
+  };
+  order = {
+    number: 2625117283,
+  };
 
   constructor(props: any) {
     super(props);
@@ -53,8 +61,17 @@ export class OrderConfirmation extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className={cn("funnel-page")}>
         <Logo />
+        <div className={styles["confirmation-text"]}>
+          <div className={styles["order-number"]}>
+            Order {this.order.number}
+          </div>
+          <div className={styles["thank-you"]}>
+            Thank you {this.user.firstName}
+          </div>
+        </div>
+
         <Recommendations
           title="Based on your order, we think you'll love these:"
           recommendations={this.recommendations}
