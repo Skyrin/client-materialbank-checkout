@@ -7,6 +7,12 @@
   --primary-color-s: 14%;
   --primary-color-l: 25%;
 
+  --color-purple: #6156fa;
+  --color-purple-rgb: 97, 86, 250;
+  --color-purple-light: rgba(var(--color-purple-rgb), 0.6);
+
+  --color-separator: rgba(var(--primary-color-rgb), 0.1);
+
   // Font colors
   --font-primary-color-light: rgba(var(--primary-color-rgb), 0.6);
 

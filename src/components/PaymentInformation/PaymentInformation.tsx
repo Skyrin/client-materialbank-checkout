@@ -7,6 +7,7 @@ import styles from "./PaymentInformation.module.scss";
 import cn from "classnames";
 import { PERSONAL_INFORMATION_URL } from "constants/urls";
 import EncryptionNotice from "./EncryptionNotice/EncryptionNotice";
+import Input from "../common/Input/Input";
 
 type Props = RouteComponentProps;
 
@@ -19,12 +20,38 @@ export class PaymentInformation extends React.Component<Props, State> {
     paymentInfo: {},
   };
 
+  renderContactInfoSection = () => {
+    return (
+      <div className={styles.infoSection}>
+        <h3 className={styles.title}>Contact</h3>
+        <div className={styles.changeButton}>Change</div>
+        <div className={styles.value}>johndoe@gmail.com</div>
+      </div>
+    );
+  };
+
+  renderShipToInfoSection = () => {
+    return (
+      <div className={styles.infoSection}>
+        <h3 className={styles.title}>Ship To</h3>
+        <div className={styles.changeButton}>Change</div>
+        <div className={styles.value}>
+          236 West 30th Street 11th Floor, New York, NY 10001
+        </div>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div className={cn("funnel-page", styles.PaymentInformation)}>
         <Logo className={styles.logo} />
         <Breadcrumbs steps={BREADCRUMBS_STEPS} className={styles.breadcrumbs} />
         <EncryptionNotice />
+
+        {this.renderContactInfoSection()}
+        {this.renderShipToInfoSection()}
+
         <div className={styles.navigationContainer}>
           <Link to={PERSONAL_INFORMATION_URL} className="link-button">
             <i className="far fa-long-arrow-left" />

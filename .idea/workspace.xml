@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6caef71b-24dd-43f2-a587-959a2fa47280" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/PaymentInformation/EncryptionNotice/EncryptionNotice.module.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/PaymentInformation/EncryptionNotice/EncryptionNotice.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PaymentInformation/EncryptionNotice/EncryptionNotice.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PaymentInformation/EncryptionNotice/EncryptionNotice.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PersonalInformation/PersonalInformation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PersonalInformation/PersonalInformation.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PersonalInformation/PersonalInformation.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PersonalInformation/PersonalInformation.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/Checkbox/Checkbox.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/Checkbox/Checkbox.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/styles/variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/styles/variables.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +48,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1607502705897</updated>
-      <workItem from="1607502707267" duration="4737000" />
+      <workItem from="1607502707267" duration="9511000" />
     </task>
     <servers />
   </component>
@@ -69,14 +72,14 @@
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state width="1899" height="282" key="GridCell.Tab.0.right/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607505313379" />
-    <state x="469" y="190" key="SettingsEditor" timestamp="1607510457298">
+    <state x="469" y="190" key="SettingsEditor" timestamp="1607513835217">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
-    <state x="469" y="190" key="SettingsEditor/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607510457298" />
-    <state x="667" y="306" width="586" height="490" key="find.popup" timestamp="1607510076021">
+    <state x="469" y="190" key="SettingsEditor/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607513835217" />
+    <state x="1039" y="212" width="881" height="490" key="find.popup" timestamp="1607514247320">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
-    <state x="667" y="306" width="586" height="490" key="find.popup/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607510076021" />
+    <state x="1039" y="212" width="881" height="490" key="find.popup/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607514247320" />
     <state x="625" y="258" width="670" height="676" key="search.everywhere.popup" timestamp="1607504774874">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
