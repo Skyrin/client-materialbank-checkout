@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6caef71b-24dd-43f2-a587-959a2fa47280" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/components/PaymentInformation/EncryptionNotice/EncryptionNotice.module.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/PaymentInformation/EncryptionNotice/EncryptionNotice.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PersonalInformation/PersonalInformation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PersonalInformation/PersonalInformation.tsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1lPdYH8wx6HRLns3P7Nj06Ryi3i" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="yarn" />
+    <property name="settings.editor.selected.configurable" value="watcher.settings" />
+    <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6caef71b-24dd-43f2-a587-959a2fa47280" name="Default Changelist" comment="" />
+      <created>1607502705897</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1607502705897</updated>
+      <workItem from="1607502707267" duration="4737000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1899" height="282" key="GridCell.Tab.0.bottom" timestamp="1607505313380">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1899" height="282" key="GridCell.Tab.0.bottom/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607505313380" />
+    <state width="1899" height="282" key="GridCell.Tab.0.center" timestamp="1607505313379">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1899" height="282" key="GridCell.Tab.0.center/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607505313379" />
+    <state width="1899" height="282" key="GridCell.Tab.0.left" timestamp="1607505313378">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1899" height="282" key="GridCell.Tab.0.left/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607505313378" />
+    <state width="1899" height="282" key="GridCell.Tab.0.right" timestamp="1607505313379">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1899" height="282" key="GridCell.Tab.0.right/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607505313379" />
+    <state x="469" y="190" key="SettingsEditor" timestamp="1607510457298">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state x="469" y="190" key="SettingsEditor/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607510457298" />
+    <state x="667" y="306" width="586" height="490" key="find.popup" timestamp="1607510076021">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state x="667" y="306" width="586" height="490" key="find.popup/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607510076021" />
+    <state x="625" y="258" width="670" height="676" key="search.everywhere.popup" timestamp="1607504774874">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state x="625" y="258" width="670" height="676" key="search.everywhere.popup/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607504774874" />
+  </component>
+</project>

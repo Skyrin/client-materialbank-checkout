@@ -12,6 +12,7 @@ import Input from "components/common/Input/Input";
 import moment from "moment";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
+import EncryptionNotice from "../PaymentInformation/EncryptionNotice/EncryptionNotice";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -306,12 +307,7 @@ export class PersonalInformation extends React.Component<Props, State> {
       <div className={cn("funnel-page", styles.PersonalInformation)}>
         <Logo className={styles.logo} />
         <Breadcrumbs steps={BREADCRUMBS_STEPS} className={styles.breadcrumbs} />
-
-        <div className={styles.encryptionNotice}>
-          <i className={cn("fas fa-lock-alt", styles.lockIcon)} />
-          This is a secure 128-bit SSL Encrypted payment. You’re safe.
-        </div>
-
+        <EncryptionNotice />
         {this.renderExpressCheckoutSection()}
         {this.renderContactInfoSection()}
         {this.renderShippingMethodSection()}

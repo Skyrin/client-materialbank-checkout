@@ -6,6 +6,7 @@ import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PaymentInformation.module.scss";
 import cn from "classnames";
 import { PERSONAL_INFORMATION_URL } from "constants/urls";
+import EncryptionNotice from "./EncryptionNotice/EncryptionNotice";
 
 type Props = RouteComponentProps;
 
@@ -23,12 +24,13 @@ export class PaymentInformation extends React.Component<Props, State> {
       <div className={cn("funnel-page", styles.PaymentInformation)}>
         <Logo className={styles.logo} />
         <Breadcrumbs steps={BREADCRUMBS_STEPS} className={styles.breadcrumbs} />
-        Payment Information
+        <EncryptionNotice />
         <div className={styles.navigationContainer}>
           <Link to={PERSONAL_INFORMATION_URL} className="link-button">
             <i className="far fa-long-arrow-left" />
             Return to information
           </Link>
+
           <button className="button large" disabled>
             Checkout
           </button>
