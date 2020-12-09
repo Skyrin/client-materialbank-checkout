@@ -12,6 +12,7 @@ import Input from "components/common/Input/Input";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
 import { DateTime } from "luxon";
+import { digitsOnlyInputParser } from "components/common/Input/utils";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -211,6 +212,26 @@ export class PersonalInformation extends React.Component<Props, State> {
     }
   };
 
+  validateShippingAddressField = (fieldName: string) => {
+    try {
+      shippingAddressSchema.validateSyncAt(
+        fieldName,
+        this.state.shippingAddress,
+        {
+          abortEarly: false,
+        }
+      );
+    } catch (e) {
+      const errors = extractErrors(e);
+      this.setState({
+        shippingAddressErrors: {
+          ...this.state.shippingAddressErrors,
+          ...errors,
+        },
+      });
+    }
+  };
+
   renderShippingAddressSection = () => {
     return (
       <div className={cn(styles.section, styles.shippingAddressSection)}>
@@ -223,7 +244,9 @@ export class PersonalInformation extends React.Component<Props, State> {
             onChange={(val: string) => {
               this.updateAddressField("firstName", val);
             }}
-            onBlur={this.validateShippingAddress}
+            onBlur={() => {
+              this.validateShippingAddressField("firstName");
+            }}
             error={this.state.shippingAddressErrors.firstName}
           />
           <Input
@@ -233,7 +256,9 @@ export class PersonalInformation extends React.Component<Props, State> {
             onChange={(val: string) => {
               this.updateAddressField("lastName", val);
             }}
-            onBlur={this.validateShippingAddress}
+            onBlur={() => {
+              this.validateShippingAddressField("lastName");
+            }}
             error={this.state.shippingAddressErrors.lastName}
           />
         </div>
@@ -244,7 +269,9 @@ export class PersonalInformation extends React.Component<Props, State> {
           onChange={(val: string) => {
             this.updateAddressField("company", val);
           }}
-          onBlur={this.validateShippingAddress}
+          onBlur={() => {
+            this.validateShippingAddressField("company");
+          }}
           error={this.state.shippingAddressErrors.company}
         />
         <div
@@ -258,7 +285,9 @@ export class PersonalInformation extends React.Component<Props, State> {
             onChange={(val: string) => {
               this.updateAddressField("address", val);
             }}
-            onBlur={this.validateShippingAddress}
+            onBlur={() => {
+              this.validateShippingAddressField("address");
+            }}
             error={this.state.shippingAddressErrors.address}
           />
           <Input
@@ -268,7 +297,9 @@ export class PersonalInformation extends React.Component<Props, State> {
             onChange={(val: string) => {
               this.updateAddressField("aptNumber", val);
             }}
-            onBlur={this.validateShippingAddress}
+            onBlur={() => {
+              this.validateShippingAddressField("aptNumber");
+            }}
             error={this.state.shippingAddressErrors.aptNumber}
           />
         </div>
@@ -280,8 +311,12 @@ export class PersonalInformation extends React.Component<Props, State> {
             onChange={(val: string) => {
               this.updateAddressField("zipCode", val);
             }}
-            onBlur={this.validateShippingAddress}
+            onBlur={() => {
+              this.validateShippingAddressField("zipCode");
+            }}
             error={this.state.shippingAddressErrors.zipCode}
+            parser={digitsOnlyInputParser}
+            inputMode="numeric"
           />
           <span className={styles.zipCodeDescription}>
             Enter Zip Code for City & State
@@ -294,7 +329,9 @@ export class PersonalInformation extends React.Component<Props, State> {
           onChange={(val: string) => {
             this.updateAddressField("phone", val);
           }}
-          onBlur={this.validateShippingAddress}
+          onBlur={() => {
+            this.validateShippingAddressField("phone");
+          }}
           error={this.state.shippingAddressErrors.phone}
         />
       </div>
