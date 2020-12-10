@@ -25,7 +25,7 @@ type Props = {
   onActionButtonClick?: () => void;
   className?: string;
   style?: Object;
-  error?: React.ReactElement | null;
+  error?: React.ReactElement | string | null;
 };
 
 export default function Input(props: Props) {
