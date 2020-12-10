@@ -1,5 +1,4 @@
 @import "styles/mixins.scss";
-@import "styles/global.scss";
 
 .PaymentInformation {
   .logo,
@@ -61,43 +60,12 @@
     height: 30px;
     width: auto;
   }
+}
 
-  .creditCardArea {
-    display: grid;
-    height: 0;
-    overflow: hidden;
-    opacity: 0;
-    margin-top: 0;
-    grid-template-columns: 2fr 1fr 1fr;
-    grid-template-rows: auto;
-    column-gap: var(--horizontal-spacing-normal);
-    row-gap: var(--vertical-spacing-normal);
-    grid-template-areas:
-      "card-number expiration cvv"
-      "card-name card-name card-name";
-    transition: height 0.25s $ease-in-out, margin-top 0.25s $ease-in-out,
-      opacity 0.25s $ease-in-out;
-
-    &.visible {
-      height: 100px;
-      opacity: 1;
-      margin-top: var(--vertical-spacing-normal);
-    }
-
-    .cardNumberArea {
-      grid-area: card-number;
-    }
-
-    .expirationArea {
-      grid-area: expiration;
-    }
-
-    .cvvArea {
-      grid-area: cvv;
-    }
-
-    .cardNameArea {
-      grid-area: card-name;
-    }
+.creditCardArea {
+  &.visible {
+    height: 100px;
+    opacity: 1;
+    margin-top: var(--vertical-spacing-normal);
   }
 }

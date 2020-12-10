@@ -1,0 +1,41 @@
+@import "styles/global.scss";
+
+.creditCardArea {
+  display: grid;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  margin-top: 0;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: auto;
+  column-gap: var(--horizontal-spacing-normal);
+  row-gap: var(--horizontal-spacing-normal);
+  grid-template-areas:
+    "card-number expiration cvv"
+    "card-name card-name card-name";
+  transition: max-height 0.35s $ease-in-out, margin-top 0.35s $ease-in-out,
+    opacity 0.35s $ease-in-out;
+
+  &.visible {
+    max-height: 300px;
+    opacity: 1;
+    margin-top: var(--vertical-spacing-normal);
+  }
+
+  .cardNumberArea {
+    grid-area: card-number;
+    max-height: 500px;
+  }
+
+  .expirationArea {
+    grid-area: expiration;
+  }
+
+  .cvvArea {
+    grid-area: cvv;
+  }
+
+  .cardNameArea {
+    grid-area: card-name;
+  }
+}

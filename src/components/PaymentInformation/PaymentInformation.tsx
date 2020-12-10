@@ -18,25 +18,28 @@ import {
   expirationDateInputFormatter,
   expirationDateInputParser,
 } from "../common/Input/utils";
+import CreditCardForm, {
+  CreditCardFormValuesT,
+  DEFAULT_CREDIT_CARD_FORM_VALUES,
+} from "../common/Forms/CreditCardForm/CreditCardForm";
+import AddressForm, {
+  AddressFormValuesT,
+} from "../common/Forms/AddressForm/AddressForm";
 
 type Props = RouteComponentProps;
 
 type State = {
   paymentInfo: any;
-  cardNumberInput: string;
-  cardExpirationInput: string;
-  cardCvvInput: string;
-  cardNameInput: string;
+  creditCardInfo: CreditCardFormValuesT;
 };
 
 export class PaymentInformation extends React.Component<Props, State> {
   state = {
     paymentInfo: "credit-card",
-    cardNumberInput: "",
-    cardExpirationInput: "",
-    cardCvvInput: "",
-    cardNameInput: "",
+    creditCardInfo: DEFAULT_CREDIT_CARD_FORM_VALUES,
   };
+
+  creditCardForm?: CreditCardForm;
 
   renderContactInfoSection = () => {
     return (
@@ -77,48 +80,18 @@ export class PaymentInformation extends React.Component<Props, State> {
             <div className="big-text">Credit Card</div>
           </div>
 
-          <div
-            className={cn(styles.creditCardArea, {
-              [styles.visible]: this.state.paymentInfo === "credit-card",
-            })}
-          >
-            <Input
-              className={styles.cardNumberArea}
-              value={this.state.cardNumberInput}
-              onChange={(val: string) =>
-                this.setState({ cardNumberInput: val })
-              }
-              formatter={cardNumberInputFormatter}
-              parser={cardNumberInputParser}
-              placeholder="Card Number"
-              inputMode="numeric"
-            />
-            <Input
-              className={styles.expirationArea}
-              value={this.state.cardExpirationInput}
-              onChange={(val: string) =>
-                this.setState({ cardExpirationInput: val })
-              }
-              formatter={expirationDateInputFormatter}
-              parser={expirationDateInputParser}
-              placeholder="Expiration (MM/YR)"
-              inputMode="numeric"
-            />
-            <Input
-              className={styles.cvvArea}
-              value={this.state.cardCvvInput}
-              onChange={(val: string) => this.setState({ cardCvvInput: val })}
-              parser={digitsOnlyInputParser}
-              placeholder="CVV"
-              inputMode="numeric"
-            />
-            <Input
-              className={styles.cardNameArea}
-              value={this.state.cardNameInput}
-              onChange={(val: string) => this.setState({ cardNameInput: val })}
-              placeholder="Normal text input"
-            />
-          </div>
+          <CreditCardForm
+            visible={this.state.paymentInfo === "credit-card"}
+            onChange={(newValues: CreditCardFormValuesT) => {
+              this.setState({
+                creditCardInfo: newValues,
+              });
+              this.creditCardForm?.validateForm();
+            }}
+            componentRef={(ref) => {
+              this.creditCardForm = ref;
+            }}
+          />
         </div>
 
         <div className={styles.paddingContainer}>
