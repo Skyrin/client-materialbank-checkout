@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Recommendations.module.scss";
 import cn from "classnames";
-import { RecommendationCard } from "../RecommendationCard/RecommendationCard";
+import { RecommendationCard } from "components/common/RecommendationCard/RecommendationCard";
 
 type Props = {
   recommendations: { id: number; [key: string]: any }[];

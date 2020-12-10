@@ -1,8 +1,8 @@
 import React from "react";
-import { Recommendations } from "../common/Recommendations/Recommendations";
-import Logo from "../common/Logo/Logo";
 import cn from "classnames";
-import styles from "../OrderConfirmation/OrderConfirmation.module.scss";
+import styles from "./OrderConfirmation.module.scss";
+import Logo from "components/common/Logo/Logo";
+import { Recommendations } from "components/common/Recommendations/Recommendations";
 
 export class OrderConfirmation extends React.Component {
   user = {

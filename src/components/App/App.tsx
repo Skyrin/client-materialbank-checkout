@@ -14,7 +14,7 @@ import PaymentInformation from "components/PaymentInformation/PaymentInformation
 import OrderSummary from "components/OrderSummary/OrderSummary";
 import AppContextManager from "context/AppContextManager";
 import cn from "classnames";
-import { OrderConfirmation } from "../OrderConfirmation/OrderConfirmation";
+import { OrderConfirmation } from "components/OrderConfirmation/OrderConfirmation";
 
 function App() {
   return (

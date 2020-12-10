@@ -7,6 +7,7 @@
   --primary-color-s: 14%;
   --primary-color-l: 25%;
 
+  // Font colors
   --text-color-xlight: rgba(var(--primary-color-rgb), 0.4);
   --text-color-light: rgba(var(--primary-color-rgb), 0.7);
   --text-color-normal: var(--primary-color-rgb);
@@ -28,7 +29,9 @@
 
   // Spacing
   --vertical-spacing-normal: 20px;
+  --vertical-spacing-half: calc(var(--vertical-spacing-normal) / 2);
   --horizontal-spacing-normal: 20px;
+  --horizontal-spacing-half: calc(var(--horizontal-spacing-normal) / 2);
 
   // Buttons
   --button-background-color: var(--primary-color);

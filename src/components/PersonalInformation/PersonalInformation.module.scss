@@ -1,7 +1,164 @@
 .PersonalInformation {
+  --button-height: 40px;
+
   .logo,
   .breadcrumbs {
     margin-bottom: var(--vertical-spacing-normal);
+  }
+
+  .encryptionNotice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(#6156fa, 0.6);
+    color: #fff;
+    height: var(--button-height);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-normal);
+
+    .lockIcon {
+      font-size: 16px;
+      margin-right: var(--horizontal-spacing-normal);
+    }
+  }
+
+  .expressCheckoutSubtitle {
+    text-align: center;
+    margin-bottom: 15px; // This seems to be a random 15px compared to most other spacings...
+  }
+
+  .section {
+    padding: var(--vertical-spacing-normal) 0;
+    border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
+
+    .sectionTitleLine {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: var(--vertical-spacing-normal);
+    }
+  }
+
+  .expressCheckoutOptions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .expressCheckoutOption {
+      width: calc(50% - (var(--horizontal-spacing-normal) / 2));
+      height: var(--button-height);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.1s linear;
+
+      &.paypal {
+        background-color: #f6c657;
+
+        &:hover {
+          background-color: lighten(#f6c657, 5%);
+        }
+      }
+
+      &.applePay {
+        background-color: #0b0b09;
+        color: #fff;
+
+        &:hover {
+          background-color: lighten(#0b0b09, 10%);
+        }
+      }
+
+      .expressCheckoutLogo {
+        height: 18px;
+      }
+    }
+  }
+
+  .expressCheckoutFootnote {
+    text-align: center;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-normal);
+    color: var(--text-color-light);
+    margin-bottom: var(--vertical-spacing-half);
+    line-height: 1.5;
+  }
+
+  .loginHint {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-color-light);
+    margin-right: var(--horizontal-spacing-half);
+  }
+
+  .loginLink {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--primary-color);
+  }
+
+  .shippingMethodSection {
+    .sectionTitle {
+      margin-bottom: var(--vertical-spacing-half);
+    }
+
+    .method {
+      display: flex;
+      justify-content: space-between;
+
+      .methodInfo {
+        display: flex;
+        flex-direction: column;
+
+        .methodName {
+          font-size: var(--font-size-lg);
+          font-weight: var(--font-weight-medium);
+          color: var(--primary-color);
+        }
+
+        .methodEstimatedDelivery {
+          font-size: var(--font-size-md);
+          font-weight: var(--font-weight-normal);
+          color: var(--text-color-light);
+        }
+      }
+
+      .methodPrice {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-medium);
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  .shippingAddressSection {
+    border-bottom: 0;
+    margin-bottom: var(--vertical-spacing-normal);
+
+    .sectionTitle {
+      margin-bottom: var(--vertical-spacing-half);
+    }
+
+    .input {
+      margin-bottom: var(--vertical-spacing-half);
+    }
+
+    .inputLine {
+      display: grid;
+      grid-template-rows: auto;
+      grid-template-columns: auto auto;
+      column-gap: var(--horizontal-spacing-normal);
+      align-items: center;
+    }
+
+    .zipCodeDescription {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-normal);
+      color: var(--primary-color);
+      margin-bottom: var(--vertical-spacing-half);
+    }
   }
 
   .navigationContainer {
