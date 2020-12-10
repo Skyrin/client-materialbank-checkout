@@ -12,23 +12,13 @@ import Input from "components/common/Input/Input";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
 import { DateTime } from "luxon";
-import { digitsOnlyInputParser } from "components/common/Input/utils";
+import AddressForm, {
+  AddressFormValuesT,
+  DEFAULT_ADDRESS_FORM_VALUES,
+} from "components/common/Forms/AddressForm/AddressForm";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
-});
-
-const shippingAddressSchema = yup.object().shape({
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  company: yup.string(),
-  address: yup.string().required(),
-  aptNumber: yup.string(),
-  zipCode: yup
-    .string()
-    .matches(/[0-9]+/, "Digits Only")
-    .required(),
-  phone: yup.string(),
 });
 
 type Props = RouteComponentProps;
@@ -40,24 +30,7 @@ type State = {
   contactInfoErrors: {
     email: string | null;
   };
-  shippingAddress: {
-    firstName: string;
-    lastName: string;
-    company: string;
-    address: string;
-    aptNumber: string;
-    zipCode: string;
-    phone: string;
-  };
-  shippingAddressErrors: {
-    firstName: string | null;
-    lastName: string | null;
-    company: string | null;
-    address: string | null;
-    aptNumber: string | null;
-    zipCode: string | null;
-    phone: string | null;
-  };
+  shippingAddress: AddressFormValuesT;
 };
 
 export class PersonalInformation extends React.Component<Props, State> {
@@ -68,25 +41,10 @@ export class PersonalInformation extends React.Component<Props, State> {
     contactInfoErrors: {
       email: null,
     },
-    shippingAddress: {
-      firstName: "",
-      lastName: "",
-      company: "",
-      address: "",
-      aptNumber: "",
-      zipCode: "",
-      phone: "",
-    },
-    shippingAddressErrors: {
-      firstName: null,
-      lastName: null,
-      company: null,
-      address: null,
-      aptNumber: null,
-      zipCode: null,
-      phone: null,
-    },
+    shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
   };
+
+  shippingAddressForm?: AddressForm;
 
   renderExpressCheckoutSection = () => {
     return (
@@ -183,156 +141,19 @@ export class PersonalInformation extends React.Component<Props, State> {
     );
   };
 
-  updateAddressField = (fieldName: string, value: string) => {
-    this.setState({
-      shippingAddress: {
-        ...this.state.shippingAddress,
-        [fieldName]: value,
-      },
-      shippingAddressErrors: {
-        ...this.state.shippingAddressErrors,
-        [fieldName]: null,
-      },
-    });
-  };
-
-  validateShippingAddress = () => {
-    try {
-      shippingAddressSchema.validateSync(this.state.shippingAddress, {
-        abortEarly: false,
-      });
-    } catch (e) {
-      const errors = extractErrors(e);
-      this.setState({
-        shippingAddressErrors: {
-          ...this.state.shippingAddressErrors,
-          ...errors,
-        },
-      });
-    }
-  };
-
-  validateShippingAddressField = (fieldName: string) => {
-    try {
-      shippingAddressSchema.validateSyncAt(
-        fieldName,
-        this.state.shippingAddress,
-        {
-          abortEarly: false,
-        }
-      );
-    } catch (e) {
-      const errors = extractErrors(e);
-      this.setState({
-        shippingAddressErrors: {
-          ...this.state.shippingAddressErrors,
-          ...errors,
-        },
-      });
-    }
-  };
-
   renderShippingAddressSection = () => {
     return (
       <div className={cn(styles.section, styles.shippingAddressSection)}>
         <h3 className={styles.sectionTitle}>Shipping Address</h3>
-        <div className={styles.inputLine}>
-          <Input
-            className={styles.input}
-            placeholder="First Name*"
-            value={this.state.shippingAddress.firstName}
-            onChange={(val: string) => {
-              this.updateAddressField("firstName", val);
-            }}
-            onBlur={() => {
-              this.validateShippingAddressField("firstName");
-            }}
-            error={this.state.shippingAddressErrors.firstName}
-          />
-          <Input
-            className={styles.input}
-            placeholder="Last Name*"
-            value={this.state.shippingAddress.lastName}
-            onChange={(val: string) => {
-              this.updateAddressField("lastName", val);
-            }}
-            onBlur={() => {
-              this.validateShippingAddressField("lastName");
-            }}
-            error={this.state.shippingAddressErrors.lastName}
-          />
-        </div>
-        <Input
-          className={styles.input}
-          placeholder="Company"
-          value={this.state.shippingAddress.company}
-          onChange={(val: string) => {
-            this.updateAddressField("company", val);
+        <AddressForm
+          onChange={(newValues: AddressFormValuesT) => {
+            this.setState({
+              shippingAddress: newValues,
+            });
           }}
-          onBlur={() => {
-            this.validateShippingAddressField("company");
+          componentRef={(ref) => {
+            this.shippingAddressForm = ref;
           }}
-          error={this.state.shippingAddressErrors.company}
-        />
-        <div
-          className={styles.inputLine}
-          style={{ gridTemplateColumns: "65% 35%" }}
-        >
-          <Input
-            className={styles.input}
-            placeholder="Address*"
-            value={this.state.shippingAddress.address}
-            onChange={(val: string) => {
-              this.updateAddressField("address", val);
-            }}
-            onBlur={() => {
-              this.validateShippingAddressField("address");
-            }}
-            error={this.state.shippingAddressErrors.address}
-          />
-          <Input
-            className={styles.input}
-            placeholder="Apt # / Suite"
-            value={this.state.shippingAddress.aptNumber}
-            onChange={(val: string) => {
-              this.updateAddressField("aptNumber", val);
-            }}
-            onBlur={() => {
-              this.validateShippingAddressField("aptNumber");
-            }}
-            error={this.state.shippingAddressErrors.aptNumber}
-          />
-        </div>
-        <div className={styles.inputLine}>
-          <Input
-            className={styles.input}
-            placeholder="Zip Code*"
-            value={this.state.shippingAddress.zipCode}
-            onChange={(val: string) => {
-              this.updateAddressField("zipCode", val);
-            }}
-            onBlur={() => {
-              this.validateShippingAddressField("zipCode");
-            }}
-            error={this.state.shippingAddressErrors.zipCode}
-            parser={digitsOnlyInputParser}
-            inputMode="numeric"
-          />
-          <span className={styles.zipCodeDescription}>
-            Enter Zip Code for City & State
-          </span>
-        </div>
-        <Input
-          className={styles.input}
-          placeholder="Phone Number (optional)"
-          value={this.state.shippingAddress.phone}
-          onChange={(val: string) => {
-            this.updateAddressField("phone", val);
-          }}
-          onBlur={() => {
-            this.validateShippingAddressField("phone");
-          }}
-          error={this.state.shippingAddressErrors.phone}
         />
       </div>
     );
@@ -366,7 +187,7 @@ export class PersonalInformation extends React.Component<Props, State> {
             }}
             disabled={
               !contactInfoSchema.isValidSync(this.state.contactInfo) ||
-              !shippingAddressSchema.isValidSync(this.state.shippingAddress)
+              (this.shippingAddressForm && !this.shippingAddressForm.isValid())
             }
           >
             Continue to Payment
