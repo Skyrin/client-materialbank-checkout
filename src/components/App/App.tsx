@@ -4,6 +4,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import Footer from "components/common/Footer/Footer";
 import {
   CART_URL,
+  ORDER_CONFIRMATION_URL,
   PAYMENT_URL,
   PERSONAL_INFORMATION_URL,
 } from "constants/urls";
@@ -13,6 +14,7 @@ import PaymentInformation from "components/PaymentInformation/PaymentInformation
 import OrderSummary from "components/OrderSummary/OrderSummary";
 import AppContextManager from "context/AppContextManager";
 import cn from "classnames";
+import { OrderConfirmation } from "components/OrderConfirmation/OrderConfirmation";
 
 function App() {
   return (
@@ -28,6 +30,10 @@ function App() {
                 component={PersonalInformation}
               />
               <Route path={PAYMENT_URL} component={PaymentInformation} />
+              <Route
+                path={ORDER_CONFIRMATION_URL}
+                component={OrderConfirmation}
+              />
             </Switch>
           </div>
           <OrderSummary />

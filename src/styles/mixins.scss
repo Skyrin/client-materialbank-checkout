@@ -9,3 +9,47 @@
     calc(#{$color-variable-l} * #{$multiplier})
   );
 }
+
+// BOX SHADOWS
+
+$shadow-size-xs: (
+  "x": 0,
+  "y": 1px,
+  "blur": 3px,
+  "spread": 0,
+);
+$shadow-size-sm: (
+  "x": 0,
+  "y": 2px,
+  "blur": 5px,
+  "spread": 0,
+);
+$shadow-size-nm: (
+  "x": 0,
+  "y": 5px,
+  "blur": 10px,
+  "spread": 0,
+);
+$shadow-size-lg: (
+  "x": 0,
+  "y": 10px,
+  "blur": 20px,
+  "spread": 0,
+);
+$shadow-size-xl: (
+  "x": 0,
+  "y": 15px,
+  "blur": 30px,
+  "spread": 0,
+);
+
+$shadow-color-light: rgba(black, 0.1);
+$shadow-color-normal: rgba(black, 0.15);
+$shadow-color-dark: rgba(black, 0.2);
+$shadow-color-xdark: rgba(black, 0.3);
+$shadow-color-xxdark: rgba(black, 0.5);
+
+@function shadow($size, $color) {
+  @return map-get($size, "x") map-get($size, "y") map-get($size, "blur")
+    map-get($size, "spread") $color;
+}
