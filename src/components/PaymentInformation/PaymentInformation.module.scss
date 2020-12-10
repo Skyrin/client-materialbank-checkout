@@ -1,4 +1,4 @@
-@import "styles/mixins.scss";
+@import "src/styles/mixins.scss";
 
 .PaymentInformation {
   .logo,
@@ -60,12 +60,8 @@
     height: 30px;
     width: auto;
   }
-}
 
-.creditCardArea {
-  &.visible {
-    height: 100px;
-    opacity: 1;
-    margin-top: var(--vertical-spacing-normal);
+  a {
+    color: var(--primary-color);
   }
 }

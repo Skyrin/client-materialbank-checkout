@@ -56,6 +56,7 @@ type Props = {
   componentRef?: (ref: AddressForm) => void;
   listClassName?: string;
   inputClassName?: string;
+  visible?: boolean;
 };
 
 type State = {
@@ -64,6 +65,9 @@ type State = {
 };
 
 export default class AddressForm extends React.Component<Props, State> {
+  static defaultProps = {
+    visible: true,
+  };
   constructor(props: Props) {
     super(props);
 
@@ -148,7 +152,11 @@ export default class AddressForm extends React.Component<Props, State> {
 
   render() {
     return (
-      <div className={cn(styles.addressForm, this.props.listClassName)}>
+      <div
+        className={cn(styles.addressForm, this.props.listClassName, {
+          [styles.visible]: this.props.visible === true,
+        })}
+      >
         <div className={styles.inputLine}>
           <Input
             className={cn(styles.input, this.props.inputClassName)}

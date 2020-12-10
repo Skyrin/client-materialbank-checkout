@@ -129,8 +129,29 @@ h4 {
   font-weight: var(--font-weight-normal);
 }
 
+.normal-text {
+  font-size: var(--font-size-md);
+  color: var(--primary-color);
+  font-weight: var(--font-weight-normal);
+}
+
+.small-text {
+  font-size: var(--font-size-sm);
+  color: var(--primary-color);
+  font-weight: var(--font-weight-normal);
+}
+
 .margin-top {
   margin-top: var(--vertical-spacing-normal);
+}
+
+.margin-top-big {
+  margin-top: var(--spacing-big);
+}
+
+.horizontal-divider {
+  border-top: 1px solid var(--color-separator);
+  width: 100%;
 }
 
 $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);

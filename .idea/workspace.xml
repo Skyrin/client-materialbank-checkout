@@ -2,12 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6caef71b-24dd-43f2-a587-959a2fa47280" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/common/Forms/CreditCardForm/CreditCardForm.module.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/common/Forms/CreditCardForm/CreditCardForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/common/Input/Input.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/Input/Input.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PersonalInformation/PersonalInformation.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PersonalInformation/PersonalInformation.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/Forms/AddressForm/AddressForm.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/Forms/AddressForm/AddressForm.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/Forms/AddressForm/AddressForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/Forms/AddressForm/AddressForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/Forms/CreditCardForm/CreditCardForm.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/Forms/CreditCardForm/CreditCardForm.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/styles/global.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/styles/global.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/styles/variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/styles/variables.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +37,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="yarn" />
-    <property name="settings.editor.selected.configurable" value="watcher.settings" />
+    <property name="settings.editor.selected.configurable" value="web-ide.project.structure" />
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
   </component>
   <component name="RecentsManager">
@@ -52,7 +55,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1607502705897</updated>
-      <workItem from="1607502707267" duration="26030000" />
+      <workItem from="1607502707267" duration="33690000" />
     </task>
     <servers />
   </component>
@@ -84,17 +87,17 @@
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state x="601" y="320" key="MultipleFileMergeDialog/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607595429073" />
-    <state x="469" y="190" key="SettingsEditor" timestamp="1607513835217">
+    <state x="401" y="233" key="SettingsEditor" timestamp="1607602296368">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
-    <state x="469" y="190" key="SettingsEditor/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607513835217" />
-    <state x="1039" y="212" width="881" height="490" key="find.popup" timestamp="1607601303559">
+    <state x="401" y="233" key="SettingsEditor/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607602296368" />
+    <state x="1039" y="212" width="881" height="490" key="find.popup" timestamp="1607607335128">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
-    <state x="1039" y="212" width="881" height="490" key="find.popup/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607601303559" />
-    <state x="625" y="258" width="670" height="676" key="search.everywhere.popup" timestamp="1607600754055">
+    <state x="1039" y="212" width="881" height="490" key="find.popup/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607607335128" />
+    <state x="625" y="258" width="670" height="676" key="search.everywhere.popup" timestamp="1607605506264">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
-    <state x="625" y="258" width="670" height="676" key="search.everywhere.popup/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607600754055" />
+    <state x="625" y="258" width="670" height="676" key="search.everywhere.popup/-1440.23.1440.877/0.23.1920.1057@0.23.1920.1057" timestamp="1607605506264" />
   </component>
 </project>

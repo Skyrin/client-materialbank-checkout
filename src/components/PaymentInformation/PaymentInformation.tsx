@@ -10,36 +10,43 @@ import EncryptionNotice from "./EncryptionNotice/EncryptionNotice";
 import RadioButton from "../common/RadioButton/RadioButton";
 import applePayLogo from "../../assets/images/apple_pay_logo_black.svg";
 import payPalLogo from "../../assets/images/paypal_logo.svg";
-import Input from "../common/Input/Input";
-import {
-  cardNumberInputFormatter,
-  cardNumberInputParser,
-  digitsOnlyInputParser,
-  expirationDateInputFormatter,
-  expirationDateInputParser,
-} from "../common/Input/utils";
+
 import CreditCardForm, {
   CreditCardFormValuesT,
   DEFAULT_CREDIT_CARD_FORM_VALUES,
 } from "../common/Forms/CreditCardForm/CreditCardForm";
 import AddressForm, {
   AddressFormValuesT,
+  DEFAULT_ADDRESS_FORM_VALUES,
 } from "../common/Forms/AddressForm/AddressForm";
+import Checkbox from "../common/Checkbox/Checkbox";
+
+export enum AddressOption {
+  ShippingAddress = "shipping-address",
+  BillingAddress = "billing-address",
+}
 
 type Props = RouteComponentProps;
 
 type State = {
+  addressOption: AddressOption;
   paymentInfo: any;
   creditCardInfo: CreditCardFormValuesT;
+  billingAddress: AddressFormValuesT;
+  rememberMeCheck: boolean;
 };
 
 export class PaymentInformation extends React.Component<Props, State> {
   state = {
+    addressOption: AddressOption.ShippingAddress,
     paymentInfo: "credit-card",
     creditCardInfo: DEFAULT_CREDIT_CARD_FORM_VALUES,
+    billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
+    rememberMeCheck: true,
   };
 
   creditCardForm?: CreditCardForm;
+  billingAddressForm?: AddressForm;
 
   renderContactInfoSection = () => {
     return (
@@ -132,6 +139,56 @@ export class PaymentInformation extends React.Component<Props, State> {
     );
   };
 
+  renderAddressSection = () => {
+    return (
+      <div>
+        <h3 className="margin-top">Billing Address</h3>
+        <div className="margin-top normal-text">
+          Select the address that matches your card or payment method
+        </div>
+
+        <div className="row center-vertically margin-top">
+          <RadioButton
+            className={styles.radioButton}
+            value={this.state.addressOption}
+            option={AddressOption.ShippingAddress}
+            onChange={(val: string) => {
+              this.setState({
+                addressOption: val as AddressOption,
+              });
+            }}
+          />
+          <div className="big-text">Same as shipping address</div>
+        </div>
+        <div className="row center-vertically margin-top">
+          <RadioButton
+            className={styles.radioButton}
+            value={this.state.addressOption}
+            option={AddressOption.BillingAddress}
+            onChange={(val: string) => {
+              this.setState({
+                addressOption: val as AddressOption,
+              });
+            }}
+          />
+          <div className="big-text">Use a different billing address</div>
+        </div>
+
+        <AddressForm
+          visible={this.state.addressOption === AddressOption.BillingAddress}
+          onChange={(newValues: AddressFormValuesT) => {
+            this.setState({
+              billingAddress: newValues,
+            });
+          }}
+          componentRef={(ref) => {
+            this.billingAddressForm = ref;
+          }}
+        />
+      </div>
+    );
+  };
+
   render() {
     return (
       <div className={cn("funnel-page", styles.PaymentInformation)}>
@@ -142,8 +199,37 @@ export class PaymentInformation extends React.Component<Props, State> {
         {this.renderContactInfoSection()}
         {this.renderShipToInfoSection()}
         {this.renderPaymentInfoSection()}
+        {this.renderAddressSection()}
 
-        <div className={styles.navigationContainer}>
+        <div className="horizontal-divider margin-top" />
+
+        <h3 className="margin-top">Remember me</h3>
+        <div className="row center-vertically margin-top">
+          <Checkbox
+            className={styles.radioButton}
+            value={this.state.rememberMeCheck}
+            onChange={(val: boolean) => {
+              this.setState({
+                rememberMeCheck: val,
+              });
+            }}
+          />
+          <div className="big-text">
+            Save my information for a faster checkout
+          </div>
+        </div>
+
+        <div className="small-text margin-top-big">
+          By placing this order, you agree to our&nbsp;
+          <a href="/">
+            <span>Terms of Service</span>{" "}
+          </a>
+          &nbsp;and understand our&nbsp;
+          <a href="/">
+            <span>Privacy Policy</span>{" "}
+          </a>
+        </div>
+        <div className={cn("margin-top-big", styles.navigationContainer)}>
           <Link to={PERSONAL_INFORMATION_URL} className="link-button">
             <i className="far fa-long-arrow-left" />
             Return to information
