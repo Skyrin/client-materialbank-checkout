@@ -10,16 +10,32 @@ import EncryptionNotice from "./EncryptionNotice/EncryptionNotice";
 import RadioButton from "../common/RadioButton/RadioButton";
 import applePayLogo from "../../assets/images/apple_pay_logo_black.svg";
 import payPalLogo from "../../assets/images/paypal_logo.svg";
+import Input from "../common/Input/Input";
+import {
+  cardNumberInputFormatter,
+  cardNumberInputParser,
+  digitsOnlyInputParser,
+  expirationDateInputFormatter,
+  expirationDateInputParser,
+} from "../common/Input/utils";
 
 type Props = RouteComponentProps;
 
 type State = {
   paymentInfo: any;
+  cardNumberInput: string;
+  cardExpirationInput: string;
+  cardCvvInput: string;
+  cardNameInput: string;
 };
 
 export class PaymentInformation extends React.Component<Props, State> {
   state = {
     paymentInfo: "",
+    cardNumberInput: "",
+    cardExpirationInput: "",
+    cardCvvInput: "",
+    cardNameInput: "",
   };
 
   renderContactInfoSection = () => {
@@ -59,6 +75,49 @@ export class PaymentInformation extends React.Component<Props, State> {
               }}
             />
             <div className="big-text">Credit Card</div>
+          </div>
+
+          <div
+            className={cn(styles.creditCardArea, {
+              [styles.visible]: this.state.paymentInfo === "credit-card",
+            })}
+          >
+            <Input
+              className={styles.cardNumberArea}
+              value={this.state.cardNumberInput}
+              onChange={(val: string) =>
+                this.setState({ cardNumberInput: val })
+              }
+              formatter={cardNumberInputFormatter}
+              parser={cardNumberInputParser}
+              placeholder="Card Number"
+              inputMode="numeric"
+            />
+            <Input
+              className={styles.expirationArea}
+              value={this.state.cardExpirationInput}
+              onChange={(val: string) =>
+                this.setState({ cardExpirationInput: val })
+              }
+              formatter={expirationDateInputFormatter}
+              parser={expirationDateInputParser}
+              placeholder="Expiration (MM/YR)"
+              inputMode="numeric"
+            />
+            <Input
+              className={styles.cvvArea}
+              value={this.state.cardCvvInput}
+              onChange={(val: string) => this.setState({ cardCvvInput: val })}
+              parser={digitsOnlyInputParser}
+              placeholder="CVV"
+              inputMode="numeric"
+            />
+            <Input
+              className={styles.cardNameArea}
+              value={this.state.cardNameInput}
+              onChange={(val: string) => this.setState({ cardNameInput: val })}
+              placeholder="Normal text input"
+            />
           </div>
         </div>
 
