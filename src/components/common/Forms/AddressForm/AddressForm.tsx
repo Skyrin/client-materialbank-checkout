@@ -4,6 +4,7 @@ import * as React from "react";
 import { extractErrors } from "utils/forms";
 import * as yup from "yup";
 import styles from "./AddressForm.module.scss";
+import cn from "classnames";
 
 export type AddressFormValuesT = {
   firstName: string;
@@ -53,6 +54,8 @@ type Props = {
   validationSchema?: any;
   onChange: (newValues: AddressFormValuesT) => void;
   componentRef?: (ref: AddressForm) => void;
+  listClassName?: string;
+  inputClassName?: string;
 };
 
 type State = {
@@ -145,10 +148,10 @@ export default class AddressForm extends React.Component<Props, State> {
 
   render() {
     return (
-      <div className={styles.addressForm}>
+      <div className={cn(styles.addressForm, this.props.listClassName)}>
         <div className={styles.inputLine}>
           <Input
-            className={styles.input}
+            className={cn(styles.input, this.props.inputClassName)}
             placeholder="First Name*"
             value={this.state.values.firstName}
             onChange={(val: string) => {
@@ -160,7 +163,7 @@ export default class AddressForm extends React.Component<Props, State> {
             error={this.state.errors.firstName}
           />
           <Input
-            className={styles.input}
+            className={cn(styles.input, this.props.inputClassName)}
             placeholder="Last Name*"
             value={this.state.values.lastName}
             onChange={(val: string) => {
@@ -173,7 +176,7 @@ export default class AddressForm extends React.Component<Props, State> {
           />
         </div>
         <Input
-          className={styles.input}
+          className={cn(styles.input, this.props.inputClassName)}
           placeholder="Company"
           value={this.state.values.company}
           onChange={(val: string) => {
@@ -192,7 +195,7 @@ export default class AddressForm extends React.Component<Props, State> {
           }}
         >
           <Input
-            className={styles.input}
+            className={cn(styles.input, this.props.inputClassName)}
             placeholder="Address*"
             value={this.state.values.address}
             onChange={(val: string) => {
@@ -204,7 +207,7 @@ export default class AddressForm extends React.Component<Props, State> {
             error={this.state.errors.address}
           />
           <Input
-            className={styles.input}
+            className={cn(styles.input, this.props.inputClassName)}
             placeholder="Apt # / Suite"
             value={this.state.values.aptNumber}
             onChange={(val: string) => {
@@ -218,7 +221,7 @@ export default class AddressForm extends React.Component<Props, State> {
         </div>
         <div className={styles.inputLine}>
           <Input
-            className={styles.input}
+            className={cn(styles.input, this.props.inputClassName)}
             placeholder="Zip Code*"
             value={this.state.values.zipCode}
             onChange={(val: string) => {
@@ -236,7 +239,7 @@ export default class AddressForm extends React.Component<Props, State> {
           </span>
         </div>
         <Input
-          className={styles.input}
+          className={cn(styles.input, this.props.inputClassName)}
           placeholder="Phone Number (optional)"
           value={this.state.values.phone}
           onChange={(val: string) => {
