@@ -31,7 +31,7 @@ type State = {
 
 export class PaymentInformation extends React.Component<Props, State> {
   state = {
-    paymentInfo: "",
+    paymentInfo: "credit-card",
     cardNumberInput: "",
     cardExpirationInput: "",
     cardCvvInput: "",

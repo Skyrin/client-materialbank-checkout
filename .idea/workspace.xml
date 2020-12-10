@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6caef71b-24dd-43f2-a587-959a2fa47280" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PaymentInformation/PaymentInformation.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/styles/global.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/styles/global.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +47,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1607502705897</updated>
-      <workItem from="1607502707267" duration="19596000" />
+      <workItem from="1607502707267" duration="19736000" />
     </task>
     <servers />
   </component>
