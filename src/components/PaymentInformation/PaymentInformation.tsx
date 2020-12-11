@@ -6,31 +6,38 @@ import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PaymentInformation.module.scss";
 import cn from "classnames";
 import { PERSONAL_INFORMATION_URL } from "constants/urls";
-import EncryptionNotice from "./EncryptionNotice/EncryptionNotice";
-import RadioButton from "../common/RadioButton/RadioButton";
-import applePayLogo from "../../assets/images/apple_pay_logo_black.svg";
-import payPalLogo from "../../assets/images/paypal_logo.svg";
+import applePayLogo from "assets/images/apple_pay_logo_black.svg";
+import payPalLogo from "assets/images/paypal_logo.svg";
 
 import CreditCardForm, {
   CreditCardFormValuesT,
   DEFAULT_CREDIT_CARD_FORM_VALUES,
-} from "../common/Forms/CreditCardForm/CreditCardForm";
+} from "components/common/Forms/CreditCardForm/CreditCardForm";
+
+import Checkbox from "components/common/Checkbox/Checkbox";
+import RadioButton from "components/common/RadioButton/RadioButton";
 import AddressForm, {
   AddressFormValuesT,
   DEFAULT_ADDRESS_FORM_VALUES,
-} from "../common/Forms/AddressForm/AddressForm";
-import Checkbox from "../common/Checkbox/Checkbox";
+} from "components/common/Forms/AddressForm/AddressForm";
+import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
   BillingAddress = "billing-address",
 }
 
+export enum PaymentOption {
+  CreditCard = "credit-card",
+  PayPal = "pay-pal",
+  ApplePay = "apple-pay",
+}
+
 type Props = RouteComponentProps;
 
 type State = {
   addressOption: AddressOption;
-  paymentInfo: any;
+  paymentOption: PaymentOption;
   creditCardInfo: CreditCardFormValuesT;
   billingAddress: AddressFormValuesT;
   rememberMeCheck: boolean;
@@ -39,7 +46,7 @@ type State = {
 export class PaymentInformation extends React.Component<Props, State> {
   state = {
     addressOption: AddressOption.ShippingAddress,
-    paymentInfo: "credit-card",
+    paymentOption: PaymentOption.CreditCard,
     creditCardInfo: DEFAULT_CREDIT_CARD_FORM_VALUES,
     billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
     rememberMeCheck: true,
@@ -78,17 +85,17 @@ export class PaymentInformation extends React.Component<Props, State> {
           <div className="row center-vertically">
             <RadioButton
               className={styles.radioButton}
-              value={this.state.paymentInfo}
-              option="credit-card"
+              value={this.state.paymentOption}
+              option={PaymentOption.CreditCard}
               onChange={(val: string) => {
-                this.setState({ paymentInfo: val });
+                this.setState({ paymentOption: val as PaymentOption });
               }}
             />
             <div className="big-text">Credit Card</div>
           </div>
 
           <CreditCardForm
-            visible={this.state.paymentInfo === "credit-card"}
+            visible={this.state.paymentOption === PaymentOption.CreditCard}
             onChange={(newValues: CreditCardFormValuesT) => {
               this.setState({
                 creditCardInfo: newValues,
@@ -105,10 +112,10 @@ export class PaymentInformation extends React.Component<Props, State> {
           <div className="row center-vertically">
             <RadioButton
               className={styles.radioButton}
-              value={this.state.paymentInfo}
-              option="pay-pal"
+              value={this.state.paymentOption}
+              option={PaymentOption.PayPal}
               onChange={(val: string) => {
-                this.setState({ paymentInfo: val });
+                this.setState({ paymentOption: val as PaymentOption });
               }}
             />
             <img
@@ -122,10 +129,10 @@ export class PaymentInformation extends React.Component<Props, State> {
           <div className="row center-vertically">
             <RadioButton
               className={styles.radioButton}
-              value={this.state.paymentInfo}
-              option="apple-pay"
+              value={this.state.paymentOption}
+              option={PaymentOption.ApplePay}
               onChange={(val: string) => {
-                this.setState({ paymentInfo: val });
+                this.setState({ paymentOption: val as PaymentOption });
               }}
             />
             <img

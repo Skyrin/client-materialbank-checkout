@@ -199,7 +199,7 @@ export default class CreditCardForm extends React.Component<Props, State> {
             this.validateField("creditCardName");
           }}
           error={this.state.errors.creditCardName}
-          placeholder="Normal text input"
+          placeholder="Name On Card"
         />
       </div>
     );
