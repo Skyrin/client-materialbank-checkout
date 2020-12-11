@@ -7,6 +7,12 @@
   --primary-color-s: 14%;
   --primary-color-l: 25%;
 
+  --color-purple: #6156fa;
+  --color-purple-rgb: 97, 86, 250;
+  --color-purple-light: rgba(var(--color-purple-rgb), 0.6);
+
+  --color-separator: rgba(var(--primary-color-rgb), 0.1);
+
   // Font colors
   --text-color-xlight: rgba(var(--primary-color-rgb), 0.4);
   --text-color-light: rgba(var(--primary-color-rgb), 0.7);
@@ -32,6 +38,8 @@
   --vertical-spacing-half: calc(var(--vertical-spacing-normal) / 2);
   --horizontal-spacing-normal: 20px;
   --horizontal-spacing-half: calc(var(--horizontal-spacing-normal) / 2);
+
+  --spacing-big: 30px;
 
   // Buttons
   --button-background-color: var(--primary-color);
