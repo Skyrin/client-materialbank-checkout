@@ -1,0 +1,115 @@
+.logo {
+  margin-bottom: var(--vertical-spacing-normal);
+}
+
+.confirmation-text {
+  margin-top: 60px;
+}
+
+.confirmation-text-row + .confirmation-text-row {
+  margin-bottom: 10px;
+}
+
+.pill {
+  padding: 10px 20px;
+  text-align: center;
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    margin-right: 10px;
+  }
+}
+
+.section-title {
+  font-weight: var(--font-weight-medium);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  margin-top: 70px;
+  border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
+}
+
+.customer-info-grid {
+  display: grid;
+  //grid-auto-rows: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(calc(max(250px, 40%)), 1fr));
+  grid-column-gap: 20px;
+  grid-row-gap: 50px;
+  color: var(--primary-color);
+  margin-top: 10px;
+
+  .info-cell {
+  }
+
+  .cell-title {
+    margin-bottom: 15px;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .flex {
+  }
+
+  .card-img {
+    width: 58px;
+    height: 37px;
+    background-image: url("../../../assets/images/visa-card.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    margin-right: 15px;
+  }
+
+  .text-row + .text-row {
+    margin-top: 5px;
+  }
+
+  .text-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    span {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.bottom-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 90px;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+
+  .contact-us {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-right: 20px;
+
+    .chat-icon {
+      font-size: 36px;
+      color: var(--text-color-light);
+      margin-right: 10px;
+    }
+
+    a {
+      margin-left: 5px;
+    }
+  }
+
+  .back-to-shopping {
+    margin-bottom: 20px;
+  }
+}

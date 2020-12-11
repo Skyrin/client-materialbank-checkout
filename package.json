@@ -2,6 +2,10 @@
   "name": "client-materialbank-checkout",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "^10.22",
+    "npm": "^6.14"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -9,6 +13,7 @@
     "@types/classnames": "^2.2.11",
     "@types/jest": "^26.0.15",
     "@types/lodash-es": "^4.17.3",
+    "@types/luxon": "^1.25.0",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
@@ -17,13 +22,13 @@
     "husky": "^4.3.0",
     "lint-staged": "^10.5.1",
     "lodash-es": "^4.17.15",
-    "moment": "^2.29.1",
+    "luxon": "^1.25.0",
     "node-sass": "4.14.1",
     "prettier": "^2.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.0",
+    "react-scripts": "^4.0.0",
     "typescript": "^4.0.3",
     "web-vitals": "^0.2.4",
     "yup": "^0.32.5"

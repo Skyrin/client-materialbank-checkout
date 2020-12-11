@@ -6,11 +6,18 @@ body,
   height: 100%;
 }
 
-body {
+body,
+input,
+textarea,
+button {
   margin: 0;
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--primary-color);
 }
 
 *,
@@ -54,6 +61,62 @@ h4 {
   margin: 0;
 }
 
+.font-size-title {
+  font-size: var(--font-size-title);
+}
+
+.font-size-xxl {
+  font-size: var(--font-size-xxl);
+}
+
+.font-size-xl {
+  font-size: var(--font-size-xl);
+}
+
+.font-size-lg {
+  font-size: var(--font-size-lg);
+}
+
+.font-size-md {
+  font-size: var(--font-size-md);
+}
+
+.font-size-sm {
+  font-size: var(--font-size-sm);
+}
+
+.font-size-xs {
+  font-size: var(--font-size-xs);
+}
+
+.text-color-xlight {
+  color: var(--text-color-xlight);
+}
+
+.text-color-light {
+  color: var(--text-color-light);
+}
+
+.text-color-normal {
+  color: var(--text-color-normal);
+}
+
+.font-weight-light {
+  font-weight: var(--font-weight-light);
+}
+
+.font-weight-normal {
+  font-weight: var(--font-weight-normal);
+}
+
+.font-weight-medium {
+  font-weight: var(--font-weight-medium);
+}
+
+.font-weight-bold {
+  font-weight: var(--font-weight-bold);
+}
+
 .button {
   height: var(--button-medium-height);
   border-radius: var(--button-medium-radius);
@@ -95,6 +158,13 @@ h4 {
   }
 }
 
+button {
+  border: unset;
+  background-color: unset;
+  cursor: pointer;
+  outline: none;
+}
+
 .link-button {
   display: flex;
   align-items: center;
@@ -113,3 +183,45 @@ h4 {
     margin-right: 12px;
   }
 }
+
+.row {
+  display: flex;
+  flex-flow: row;
+
+  &.center-vertically {
+    align-items: center;
+  }
+}
+
+.big-text {
+  font-size: var(--font-size-lg);
+  color: var(--primary-color);
+  font-weight: var(--font-weight-normal);
+}
+
+.normal-text {
+  font-size: var(--font-size-md);
+  color: var(--primary-color);
+  font-weight: var(--font-weight-normal);
+}
+
+.small-text {
+  font-size: var(--font-size-sm);
+  color: var(--primary-color);
+  font-weight: var(--font-weight-normal);
+}
+
+.margin-top {
+  margin-top: var(--vertical-spacing-normal);
+}
+
+.margin-top-big {
+  margin-top: var(--spacing-big);
+}
+
+.horizontal-divider {
+  border-top: 1px solid var(--color-separator);
+  width: 100%;
+}
+
+$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);

@@ -5,6 +5,7 @@ export const USER_MANAGEMENT_URL = "/user";
 export const CART_URL = `${CHECKOUT_FUNNEL_URL}/cart`;
 export const PERSONAL_INFORMATION_URL = `${CHECKOUT_FUNNEL_URL}/information`;
 export const PAYMENT_URL = `${CHECKOUT_FUNNEL_URL}/payment`;
+export const ORDER_CONFIRMATION_URL = `${CHECKOUT_FUNNEL_URL}/confirmation`;
 
 // User management URLs
 export const USER_ORDER_HISTORY_URL = `${USER_MANAGEMENT_URL}/order-history`;

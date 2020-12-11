@@ -1,0 +1,6 @@
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(max(200px, 30%)), 1fr));
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+}
