@@ -16,7 +16,7 @@ import AddressForm, {
   AddressFormValuesT,
   DEFAULT_ADDRESS_FORM_VALUES,
 } from "components/common/Forms/AddressForm/AddressForm";
-import EncryptionNotice from "../common/EncryptionNotice/EncryptionNotice";
+import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),

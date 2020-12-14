@@ -4,7 +4,7 @@ import styles from "./OrderConfirmation.module.scss";
 import Logo from "components/common/Logo/Logo";
 import { Recommendations } from "components/common/Recommendations/Recommendations";
 
-export class OrderConfirmation extends React.Component {
+export default class OrderConfirmation extends React.Component {
   user = {
     firstName: "John",
   };
