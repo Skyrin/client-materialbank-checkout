@@ -13,10 +13,12 @@ import UserBilling from "./UserBilling/UserBilling";
 import styles from "./UserManagement.module.scss";
 import UserOrderHistory from "./UserOrderHistory/UserOrderHistory";
 import UserShipping from "./UserShipping/UserShipping";
+import UserHeader from "components/UserManagement/UserHeader/UserHeader";
 
 export default function UserManagement() {
   return (
     <React.Fragment>
+      <UserHeader title="Order History" />
       <div className={styles.pageContent}>
         <div className={styles.pageWrapper}>
           <Switch>

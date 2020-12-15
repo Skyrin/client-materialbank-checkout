@@ -5,6 +5,6 @@ type Props = RouteComponentProps;
 
 export default class UserOrderHistory extends React.Component<Props, any> {
   render() {
-    return "User Order History Page";
+    return <div>History</div>;
   }
 }

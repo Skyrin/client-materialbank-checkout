@@ -1,0 +1,76 @@
+@import "styles/global.scss";
+@import "styles/variables.scss";
+
+body,
+input,
+textarea,
+button {
+  font-family: "IBM Plex Sans", sans-serif;
+}
+
+.alignEnd {
+  margin-left: auto;
+}
+
+.title {
+  line-height: 28pt;
+  font-size: var(--font-size-title-big);
+  font-weight: var(--font-weight-medium);
+  color: $primary-color-user;
+}
+
+.headerButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: $primary-color-60-user;
+  height: 20px;
+  cursor: pointer;
+  transition: color 0.1s $ease-in-out;
+
+  &:not(:last-of-type) {
+    margin-right: $margin-medium-5;
+  }
+
+  &.selected {
+    color: $primary-color-user;
+  }
+
+  &:hover {
+    color: $primary-color-80-user;
+
+    &.selected {
+      color: $primary-color-user;
+    }
+  }
+}
+
+.searchBar {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  border-radius: 20px;
+  height: 40px;
+  width: 300px;
+  align-self: center;
+  margin-left: var(--horizontal-spacing-normal);
+  background-color: $primary-color-10-user;
+  padding: var(--horizontal-spacing-normal);
+  box-shadow: inset 0 -1px 0 0 $primary-color-10-user;
+
+  .searchIcon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .searchInput {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-weight: var(--font-weight-normal);
+    background-color: transparent;
+    margin-left: var(--horizontal-spacing-half);
+  }
+}
