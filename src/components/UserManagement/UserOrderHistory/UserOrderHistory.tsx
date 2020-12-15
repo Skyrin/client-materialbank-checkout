@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import UserHeader, {
-  PageOption,
+  UserPages,
 } from "components/UserManagement/UserHeader/UserHeader";
 import { SearchBar } from "components/common/SearchBar/SearchBar";
 
@@ -11,7 +11,7 @@ export default class UserOrderHistory extends React.Component<Props, any> {
   render() {
     return (
       <UserHeader
-        title={PageOption.OrderHistory}
+        title={UserPages.OrderHistory.name}
         extraContent={
           <SearchBar
             placeholder={"Search of order history"}

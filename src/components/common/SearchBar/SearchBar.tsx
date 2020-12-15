@@ -14,7 +14,7 @@ export function SearchBar(props: Props) {
       <input
         type="text"
         className={styles.searchInput}
-        placeholder="Search for order history"
+        placeholder={props.placeholder}
         onChange={(event) => {
           props.onSearchChange(event.target.value);
         }}

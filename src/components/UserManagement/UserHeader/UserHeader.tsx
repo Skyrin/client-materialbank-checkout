@@ -3,13 +3,31 @@ import cn from "classnames";
 import * as React from "react";
 import searchIcon from "assets/images/search_icon.svg";
 import { NavLink } from "react-router-dom";
+import {
+  USER_ACCOUNT_URL,
+  USER_BILLING_URL,
+  USER_ORDER_HISTORY_URL,
+  USER_SHIPPING_URL,
+} from "constants/urls";
 
-export enum PageOption {
-  OrderHistory = "order-history",
-  Account = "account",
-  Billing = "billing",
-  Shipping = "shipping",
-}
+export const UserPages: { [key: string]: any } = {
+  OrderHistory: {
+    name: "Order History",
+    url: USER_ORDER_HISTORY_URL,
+  },
+  Account: {
+    name: "Account",
+    url: USER_ACCOUNT_URL,
+  },
+  Billing: {
+    name: "Billing",
+    url: USER_BILLING_URL,
+  },
+  Shipping: {
+    name: "Shipping",
+    url: USER_SHIPPING_URL,
+  },
+};
 
 type Props = {
   title: string;
@@ -17,39 +35,28 @@ type Props = {
 };
 
 class UserHeader extends React.Component<Props, any> {
-  pages = [
-    { name: "Order History", id: PageOption.OrderHistory },
-    { name: "Account", id: PageOption.Account },
-    { name: "Billing", id: PageOption.Billing },
-    { name: "Shipping", id: PageOption.Shipping },
-  ];
-
   renderButtons = () => {
-    return this.pages.map((button, index) => {
+    return Object.values(UserPages).map((page: any, index) => {
       return (
         <NavLink
-          to={button.id}
+          to={page.url}
           className={cn(styles.headerButton, {
             [styles.alignEnd]: index === 0,
           })}
           activeClassName={styles.selected}
-          key={button.id}
+          key={page.url}
         >
-          {button.name}
+          {page.name}
         </NavLink>
       );
     });
   };
 
   render() {
-    let page = this.pages.find((page) => {
-      return page.id === this.props.title;
-    });
-    page = !page ? this.pages[0] : page;
-
+    console.log(this.renderButtons());
     return (
       <div className="row bottom-vertically">
-        <div className={styles.title}>{page.name}</div>
+        <div className={styles.title}>{this.props.title}</div>
         {this.props.extraContent}
         {this.renderButtons()}
       </div>
