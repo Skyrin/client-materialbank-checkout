@@ -14,6 +14,7 @@
       width: var(--image-size);
       height: var(--image-size);
       margin-right: 16px;
+      object-fit: contain;
     }
 
     .infoContainer {

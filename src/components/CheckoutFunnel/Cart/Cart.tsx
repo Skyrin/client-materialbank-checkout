@@ -7,7 +7,7 @@ import Logo from "components/common/Logo/Logo";
 import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import { BREADCRUMBS_STEPS } from "constants/general";
 import { PERSONAL_INFORMATION_URL } from "constants/urls";
-import { request } from "GraphqlClient";
+import { graphqlRequest } from "GraphqlClient";
 import Checkbox from "components/common/Checkbox/Checkbox";
 import Input from "components/common/Input/Input";
 import {
@@ -49,53 +49,6 @@ export class Cart extends React.Component<Props, State> {
     debugRadioButtons: "",
   };
 
-  updateCart = () => {
-    // This is just used to test the updating of the context
-    const id = Math.random()
-      .toString(36)
-      .replace(/[^a-z]+/g, "")
-      .substr(0, 5);
-    this.context.updateCart({ id: id });
-  };
-
-  dummyGraphqlQuery = async () => {
-    const query = `
-      query{
-        products(pageSize: 10, search: "a"){
-          items {
-            id
-            name
-            image {
-              url
-            }
-            price_range {
-              minimum_price {
-                regular_price {
-                  value
-                  currency
-                }
-              }
-              maximum_price {
-                regular_price {
-                  value
-                  currency
-                }
-              }
-            }
-          }
-          total_count
-        }
-      }
-    `;
-    try {
-      const resp = await request(query);
-      this.setState({ debugGraphqlResponse: JSON.stringify(resp) });
-      console.log(resp);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   renderDebug() {
     const cartData = this.context.cart;
     console.log(this.state);
@@ -108,13 +61,7 @@ export class Cart extends React.Component<Props, State> {
         Context cart data:
         <br />
         <code>{JSON.stringify(cartData)}</code>
-        <button onClick={this.updateCart} style={{ marginBottom: 20 }}>
-          Randomize cart id
-        </button>
-        <code>{this.state.debugGraphqlResponse}</code>
-        <button onClick={this.dummyGraphqlQuery} style={{ marginBottom: 20 }}>
-          Trigger GraphQL products query
-        </button>
+        <br />
         [INPUTS]
         <div className={styles.debugInputContainer}>
           <div className={styles.debugInlineContainer}>

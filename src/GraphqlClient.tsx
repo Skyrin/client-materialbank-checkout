@@ -1,4 +1,4 @@
-export const request = async (query: string, variables?: Object) => {
+export const graphqlRequest = async (query: string, variables?: Object) => {
   const url = process.env.REACT_APP_GRAPHQL_URL;
   if (!url) {
     console.error("GraphQL URL is not set");

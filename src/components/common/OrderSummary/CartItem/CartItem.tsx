@@ -13,15 +13,22 @@ export default function CartItem(props: Props) {
         <img
           className={styles.image}
           alt=""
-          src="http://18.221.132.151/pub/static/version1605751353/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/image.jpg"
+          src={props.cartItem.product?.image?.url}
         />
         <div className={styles.infoContainer}>
-          <span className={styles.lightText}>{props.cartItem.productType}</span>
-          <span className={styles.boldText}>{props.cartItem.name}</span>
+          <span className={styles.lightText}>Walls & Co.</span>
+          <span className={styles.boldText}>
+            {props.cartItem.product?.name}
+          </span>
           <span className={styles.lightText}>Oatmeal</span>
         </div>
       </div>
-      <span className={styles.price}>{`$${props.cartItem.price}`}</span>
+      <div className={styles.priceContainer}>
+        <span className={styles.price}>{`$${
+          props.cartItem.prices?.row_total_including_tax?.value || ""
+        }`}</span>
+        <span className={styles.quantity}>{}</span>
+      </div>
     </div>
   );
 }
