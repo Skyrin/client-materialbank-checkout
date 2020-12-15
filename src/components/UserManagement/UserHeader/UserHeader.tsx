@@ -2,6 +2,7 @@ import styles from "./UserHeader.module.scss";
 import cn from "classnames";
 import * as React from "react";
 import searchIcon from "assets/images/search_icon.svg";
+import { NavLink } from "react-router-dom";
 
 export enum PageOption {
   OrderHistory = "order-history",
@@ -14,45 +15,43 @@ type Props = {
   title: string;
 };
 
-type State = {
-  selectedPage: PageOption;
-};
-
 class UserHeader extends React.Component<Props, any> {
   state = {
     selectedPage: PageOption.OrderHistory,
   };
 
-  buttons = [
-    { name: "Order History", page: PageOption.OrderHistory },
-    { name: "Account", page: PageOption.Account },
-    { name: "Billing", page: PageOption.Billing },
-    { name: "Shipping", page: PageOption.Shipping },
+  pages = [
+    { name: "Order History", id: PageOption.OrderHistory },
+    { name: "Account", id: PageOption.Account },
+    { name: "Billing", id: PageOption.Billing },
+    { name: "Shipping", id: PageOption.Shipping },
   ];
 
   renderButtons = () => {
-    return this.buttons.map((button, index) => {
+    return this.pages.map((button, index) => {
       return (
-        <button
-          className={cn(
-            styles.headerButton,
-            { [styles.alignEnd]: index === 0 },
-            { [styles.selected]: this.state.selectedPage === button.page }
-          )}
-          onClick={() => {
-            this.setState({ selectedPage: button.page });
-          }}
+        <NavLink
+          to={button.id}
+          className={cn(styles.headerButton, {
+            [styles.alignEnd]: index === 0,
+          })}
+          activeClassName={styles.selected}
         >
           {button.name}
-        </button>
+        </NavLink>
       );
     });
   };
 
   render() {
+    let page = this.pages.find((page) => {
+      return page.id === this.props.title;
+    });
+    page = !page ? this.pages[0] : page;
+
     return (
       <div className="row bottom-vertically">
-        <div className={styles.title}>Order History</div>
+        <div className={styles.title}>{page.name}</div>
         <div className={styles.searchBar}>
           <img
             src={searchIcon}
@@ -65,7 +64,6 @@ class UserHeader extends React.Component<Props, any> {
             placeholder="Search for order history"
           />
         </div>
-
         {this.renderButtons()}
       </div>
     );

@@ -29,6 +29,7 @@ button {
   height: 20px;
   cursor: pointer;
   transition: color 0.1s $ease-in-out;
+  text-decoration: none;
 
   &:not(:last-of-type) {
     margin-right: $margin-medium-5;
