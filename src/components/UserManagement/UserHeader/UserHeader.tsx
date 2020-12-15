@@ -1,7 +1,6 @@
 import styles from "./UserHeader.module.scss";
 import cn from "classnames";
 import * as React from "react";
-import searchIcon from "assets/images/search_icon.svg";
 import { NavLink } from "react-router-dom";
 import {
   USER_ACCOUNT_URL,
@@ -53,7 +52,6 @@ class UserHeader extends React.Component<Props, any> {
   };
 
   render() {
-    console.log(this.renderButtons());
     return (
       <div className="row bottom-vertically">
         <div className={styles.title}>{this.props.title}</div>
