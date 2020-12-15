@@ -13,13 +13,10 @@ export enum PageOption {
 
 type Props = {
   title: string;
+  extraContent?: any;
 };
 
 class UserHeader extends React.Component<Props, any> {
-  state = {
-    selectedPage: PageOption.OrderHistory,
-  };
-
   pages = [
     { name: "Order History", id: PageOption.OrderHistory },
     { name: "Account", id: PageOption.Account },
@@ -36,6 +33,7 @@ class UserHeader extends React.Component<Props, any> {
             [styles.alignEnd]: index === 0,
           })}
           activeClassName={styles.selected}
+          key={button.id}
         >
           {button.name}
         </NavLink>
@@ -52,18 +50,7 @@ class UserHeader extends React.Component<Props, any> {
     return (
       <div className="row bottom-vertically">
         <div className={styles.title}>{page.name}</div>
-        <div className={styles.searchBar}>
-          <img
-            src={searchIcon}
-            alt="Search Icon"
-            className={styles.searchIcon}
-          />
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="Search for order history"
-          />
-        </div>
+        {this.props.extraContent}
         {this.renderButtons()}
       </div>
     );
