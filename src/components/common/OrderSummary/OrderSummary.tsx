@@ -26,7 +26,6 @@ export default class OrderSummary extends React.Component<Props, State> {
   render() {
     const cart = this.context.cart;
     const cartItems = cart.items || [];
-    console.log(cart);
 
     return (
       <div className={styles.OrderSummary}>
