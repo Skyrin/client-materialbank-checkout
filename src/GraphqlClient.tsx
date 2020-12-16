@@ -1,9 +1,5 @@
 export const graphqlRequest = async (query: string, variables?: Object) => {
-  const url = process.env.REACT_APP_GRAPHQL_URL;
-  if (!url) {
-    console.error("GraphQL URL is not set");
-    return;
-  }
+  const url = process.env.REACT_APP_GRAPHQL_URL || "/graphql";
 
   const authToken = localStorage.getItem("token");
   const headers: any = {

@@ -30,9 +30,8 @@ export default class AppContextManager extends React.Component<Props> {
     this.forceUpdate();
     const cartInfo = await requestCartInfo(cartId);
     console.log("GOT CART INFO", cartInfo);
-    this.updateCart(cartInfo);
     this.contextState.cartInfoLoading = false;
-    this.forceUpdate();
+    this.updateCart(cartInfo);
   };
 
   render() {

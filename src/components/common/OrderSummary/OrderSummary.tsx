@@ -51,7 +51,7 @@ export default class OrderSummary extends React.Component<Props, State> {
         <div className={styles.pricesContainer}>
           <div className={styles.priceLine}>
             <span>Subtotal</span>
-            <span>{`$${cart.prices?.subtotal_including_tax?.value}`}</span>
+            <span>{`$${cart.prices?.subtotal_including_tax?.value || 0}`}</span>
           </div>
           <div className={styles.priceLine}>
             <span>Shipping</span>
@@ -60,7 +60,7 @@ export default class OrderSummary extends React.Component<Props, State> {
         </div>
         <div className={styles.totalContainer}>
           <span>Total</span>
-          <span>{`$${cart.prices?.subtotal_including_tax?.value}`}</span>
+          <span>{`$${cart.prices?.subtotal_including_tax?.value || 0}`}</span>
         </div>
       </div>
     );
