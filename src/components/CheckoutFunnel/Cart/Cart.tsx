@@ -7,7 +7,6 @@ import Logo from "components/common/Logo/Logo";
 import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import { BREADCRUMBS_STEPS } from "constants/general";
 import { PERSONAL_INFORMATION_URL } from "constants/urls";
-import { graphqlRequest } from "GraphqlClient";
 import Checkbox from "components/common/Checkbox/Checkbox";
 import Input from "components/common/Input/Input";
 import {
@@ -60,7 +59,7 @@ export class Cart extends React.Component<Props, State> {
         <br />
         Context cart data:
         <br />
-        <code>{JSON.stringify(cartData)}</code>
+        <pre>{JSON.stringify(cartData, null, 2)}</pre>
         <br />
         [INPUTS]
         <div className={styles.debugInputContainer}>

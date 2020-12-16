@@ -8,6 +8,11 @@ export type CartT = {
     subtotal_including_tax?: PriceT;
   };
   billing_address?: BilingAddressT;
+  shipping_addresses?: ShippingAddressT[]; // Why multiple? ¯\_(ツ)_/¯
+  email?: string;
+  available_payment_methods?: PaymentMethodT;
+  selected_payment_method?: SelectedPaymentMethodT;
+  applied_coupons?: CouponT;
 };
 
 export type CartItemT = {
@@ -47,10 +52,36 @@ export type AddressT = {
 
 export type BilingAddressT = AddressT;
 
-export type ShippingAddressT = AddressT & {};
+export type ShippingAddressT = AddressT & {
+  available_shipping_methods?: ShippingMethodT[];
+  selected_shipping_method?: ShippingMethodT;
+};
 
 export type RegionT = {
   code?: string;
   label?: string;
   region_id?: number;
+};
+
+export type PaymentMethodT = {
+  code?: string;
+  title?: string;
+};
+
+export type SelectedPaymentMethodT = PaymentMethodT & {
+  purchase_order_number?: string;
+};
+
+export type ShippingMethodT = {
+  amount?: PriceT;
+  available?: boolean;
+  carrier_code?: string;
+  carrier_title?: string;
+  price_incl_tax?: PriceT;
+  method_code?: string;
+  method_title?: string;
+};
+
+export type CouponT = {
+  code?: string;
 };
