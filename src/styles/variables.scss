@@ -26,6 +26,7 @@
   --font-size-xl: 20px;
   --font-size-xxl: 24px;
   --font-size-title: 36px;
+  --font-size-title-big: 48px;
 
   // Font weights
   --font-weight-light: 300;
@@ -65,3 +66,29 @@
   --card-border-radius-nm: 16px;
   --card-border-radius-bg: 20px;
 }
+
+$primary-color-user: #2f2f2f;
+$primary-color-10-user: rgba($primary-color-user, 0.1);
+$primary-color-60-user: rgba($primary-color-user, 0.6);
+$primary-color-80-user: rgba($primary-color-user, 0.8);
+
+$margin-small: 5px;
+$margin-small-2: 10px;
+$margin-small-3: 15px;
+$margin-small-4: 20px;
+$margin-small-5: 25px;
+$margin-medium: 30px;
+$margin-medium-2: 35px;
+$margin-medium-3: 40px;
+$margin-medium-4: 45px;
+$margin-medium-5: 50px;
+$margin-large: 55px;
+$margin-large-2: 60px;
+$margin-large-3: 65px;
+$margin-large-4: 70px;
+$margin-large-5: 75px;
+$margin-huge: 80px;
+$margin-huge-2: 85px;
+$margin-huge-3: 90px;
+$margin-huge-4: 95px;
+$margin-huge-5: 100px;
