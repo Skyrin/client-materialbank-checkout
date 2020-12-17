@@ -7,6 +7,15 @@
   --primary-color-s: 14%;
   --primary-color-l: 25%;
 
+  --color-orange: #e89237;
+  --color-orange-rgb: 232, 146, 55;
+
+  --color-red: #e83d27;
+  --color-red-rgb: 232, 61,39;
+
+  --color-green: #a6d800;
+  --color-green-rgb: 166, 216, 0;
+
   --color-purple: #6156fa;
   --color-purple-rgb: 97, 86, 250;
   --color-purple-light: rgba(var(--color-purple-rgb), 0.6);
@@ -36,6 +45,7 @@
   // Spacing
   --vertical-spacing-normal: 20px;
   --vertical-spacing-half: calc(var(--vertical-spacing-normal) / 2);
+  --vertical-spacing-quarter: calc(var(--vertical-spacing-half) / 2);
   --horizontal-spacing-normal: 20px;
   --horizontal-spacing-half: calc(var(--horizontal-spacing-normal) / 2);
 
