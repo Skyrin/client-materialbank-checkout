@@ -3,8 +3,12 @@ import { CartItemT } from "constants/types";
 import * as React from "react";
 import CartItem from "./CartItem/CartItem";
 import styles from "./OrderSummary.module.scss";
+import { isOnMobile } from "utils/responsive";
+import cn from "classnames";
 
-type Props = {};
+type Props = {
+  className?: string;
+};
 type State = {
   cartItems: CartItemT[];
   promoCode: string;
@@ -40,39 +44,56 @@ export default class OrderSummary extends React.Component<Props, State> {
     this.setState({ promoCode: "" });
   };
 
+  renderPromoCodeSection = () => {
+    return (
+      <div className={styles.promoCodeContainer}>
+        <h4 className={styles.subtitle}>Promo Code</h4>
+        <Input
+          placeholder="Have a promo code?"
+          value={this.state.promoCode}
+          onChange={(val: string) => {
+            this.setState({ promoCode: val });
+          }}
+          actionButton="Apply"
+          onActionButtonClick={this.onActionButtonClick}
+        />
+      </div>
+    );
+  };
+
+  renderPricesSection = () => {
+    const subtotal = this.state.cartItems.reduce((s, ci) => s + ci.price, 0);
+    return (
+      <div className={styles.pricesContainer}>
+        <div className={styles.priceLine}>
+          <span>Subtotal</span>
+          <span>{`$${subtotal}`}</span>
+        </div>
+        <div className={styles.priceLine}>
+          <span>Shipping</span>
+          <span>FREE</span>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     const subtotal = this.state.cartItems.reduce((s, ci) => s + ci.price, 0);
 
     return (
-      <div className={styles.OrderSummary}>
+      <div className={cn(styles.OrderSummary, this.props.className)}>
         <h3 className={styles.title}>Order Summary</h3>
         <div className={styles.itemsContainer}>
           {this.state.cartItems.map((ci: CartItemT) => (
             <CartItem key={ci.itemId} cartItem={ci} />
           ))}
         </div>
-        <div className={styles.promoCodeContainer}>
-          <h4 className={styles.subtitle}>Promo Code</h4>
-          <Input
-            placeholder="Have a promo code?"
-            value={this.state.promoCode}
-            onChange={(val: string) => {
-              this.setState({ promoCode: val });
-            }}
-            actionButton="Apply"
-            onActionButtonClick={this.onActionButtonClick}
-          />
-        </div>
-        <div className={styles.pricesContainer}>
-          <div className={styles.priceLine}>
-            <span>Subtotal</span>
-            <span>{`$${subtotal}`}</span>
-          </div>
-          <div className={styles.priceLine}>
-            <span>Shipping</span>
-            <span>FREE</span>
-          </div>
-        </div>
+        {!isOnMobile() && (
+          <React.Fragment>
+            {this.renderPromoCodeSection()}
+            {this.renderPricesSection()}
+          </React.Fragment>
+        )}
         <div className={styles.totalContainer}>
           <span>Total</span>
           <span>{`$${subtotal}`}</span>

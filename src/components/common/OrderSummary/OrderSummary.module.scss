@@ -1,5 +1,6 @@
+@import "styles/mixins";
+
 .OrderSummary {
-  width: 40%;
   padding: 50px 60px;
   background-color: rgba(var(--primary-color-rgb), 0.02);
 
@@ -48,5 +49,13 @@
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
     color: var(--primary-color);
+  }
+
+  @include mobile-media {
+    padding: 20px;
+
+    .title {
+      display: none;
+    }
   }
 }

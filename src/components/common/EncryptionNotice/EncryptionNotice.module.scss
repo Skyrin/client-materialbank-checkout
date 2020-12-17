@@ -1,3 +1,5 @@
+@import "styles/mixins.scss";
+
 .encryptionNotice {
   display: flex;
   justify-content: center;
@@ -7,6 +9,12 @@
   padding: var(--vertical-spacing-half) var(--horizontal-spacing-normal);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-normal);
+
+  @include mobile-media {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    justify-content: left;
+  }
 
   .lockIcon {
     font-size: 16px;
