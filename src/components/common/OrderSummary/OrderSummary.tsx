@@ -3,6 +3,7 @@ import { CartItemT } from "constants/types";
 import * as React from "react";
 import CartItem from "./CartItem/CartItem";
 import styles from "./OrderSummary.module.scss";
+import { isOnMobile } from "utils/responsive";
 
 type Props = {};
 type State = {
@@ -42,6 +43,8 @@ export default class OrderSummary extends React.Component<Props, State> {
 
   render() {
     const subtotal = this.state.cartItems.reduce((s, ci) => s + ci.price, 0);
+
+    console.log(isOnMobile());
 
     return (
       <div className={styles.OrderSummary}>
