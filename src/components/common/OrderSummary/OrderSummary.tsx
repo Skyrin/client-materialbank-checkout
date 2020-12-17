@@ -5,6 +5,7 @@ import CartItem from "./CartItem/CartItem";
 import styles from "./OrderSummary.module.scss";
 import { isOnMobile } from "utils/responsive";
 import cn from "classnames";
+import { reach } from "yup";
 
 type Props = {
   className?: string;
@@ -44,10 +45,42 @@ export default class OrderSummary extends React.Component<Props, State> {
     this.setState({ promoCode: "" });
   };
 
-  render() {
-    const subtotal = this.state.cartItems.reduce((s, ci) => s + ci.price, 0);
+  renderPromoCodeSection = () => {
+    return (
+      <div className={styles.promoCodeContainer}>
+        <h4 className={styles.subtitle}>Promo Code</h4>
+        <Input
+          placeholder="Have a promo code?"
+          value={this.state.promoCode}
+          onChange={(val: string) => {
+            this.setState({ promoCode: val });
+          }}
+          actionButton="Apply"
+          onActionButtonClick={this.onActionButtonClick}
+        />
+      </div>
+    );
+  };
 
+  renderPricesSection = () => {
+    const subtotal = this.state.cartItems.reduce((s, ci) => s + ci.price, 0);
+    return (
+      <div className={styles.pricesContainer}>
+        <div className={styles.priceLine}>
+          <span>Subtotal</span>
+          <span>{`$${subtotal}`}</span>
+        </div>
+        <div className={styles.priceLine}>
+          <span>Shipping</span>
+          <span>FREE</span>
+        </div>
+      </div>
+    );
+  };
+
+  render() {
     console.log(isOnMobile());
+    const subtotal = this.state.cartItems.reduce((s, ci) => s + ci.price, 0);
 
     return (
       <div className={cn(styles.OrderSummary, this.props.className)}>
@@ -57,28 +90,12 @@ export default class OrderSummary extends React.Component<Props, State> {
             <CartItem key={ci.itemId} cartItem={ci} />
           ))}
         </div>
-        <div className={styles.promoCodeContainer}>
-          <h4 className={styles.subtitle}>Promo Code</h4>
-          <Input
-            placeholder="Have a promo code?"
-            value={this.state.promoCode}
-            onChange={(val: string) => {
-              this.setState({ promoCode: val });
-            }}
-            actionButton="Apply"
-            onActionButtonClick={this.onActionButtonClick}
-          />
-        </div>
-        <div className={styles.pricesContainer}>
-          <div className={styles.priceLine}>
-            <span>Subtotal</span>
-            <span>{`$${subtotal}`}</span>
-          </div>
-          <div className={styles.priceLine}>
-            <span>Shipping</span>
-            <span>FREE</span>
-          </div>
-        </div>
+        {!isOnMobile() && (
+          <React.Fragment>
+            {this.renderPromoCodeSection()}
+            {this.renderPricesSection()}
+          </React.Fragment>
+        )}
         <div className={styles.totalContainer}>
           <span>Total</span>
           <span>{`$${subtotal}`}</span>
