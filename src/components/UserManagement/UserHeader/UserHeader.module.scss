@@ -1,0 +1,49 @@
+@import "styles/global.scss";
+@import "styles/variables.scss";
+
+body,
+input,
+textarea,
+button {
+  font-family: "IBM Plex Sans", sans-serif;
+}
+
+.alignEnd {
+  margin-left: auto;
+}
+
+.title {
+  line-height: 28pt;
+  font-size: var(--font-size-title-big);
+  font-weight: var(--font-weight-medium);
+  color: $primary-color-user;
+}
+
+.headerButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: $primary-color-60-user;
+  height: 20px;
+  cursor: pointer;
+  transition: color 0.1s $ease-in-out;
+  text-decoration: none;
+
+  &:not(:last-of-type) {
+    margin-right: $margin-medium-5;
+  }
+
+  &.selected {
+    color: $primary-color-user;
+  }
+
+  &:hover {
+    color: $primary-color-80-user;
+
+    &.selected {
+      color: $primary-color-user;
+    }
+  }
+}
