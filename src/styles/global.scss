@@ -31,6 +31,10 @@ a {
   flex-direction: column;
   background-color: #fff;
   padding: 40px 80px;
+
+  @include mobile-media {
+    padding: 40px 0px;
+  }
 }
 
 h1 {
