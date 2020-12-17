@@ -4,8 +4,11 @@ import * as React from "react";
 import CartItem from "./CartItem/CartItem";
 import styles from "./OrderSummary.module.scss";
 import { isOnMobile } from "utils/responsive";
+import cn from "classnames";
 
-type Props = {};
+type Props = {
+  className?: string;
+};
 type State = {
   cartItems: CartItemT[];
   promoCode: string;
@@ -47,7 +50,7 @@ export default class OrderSummary extends React.Component<Props, State> {
     console.log(isOnMobile());
 
     return (
-      <div className={styles.OrderSummary}>
+      <div className={cn(styles.OrderSummary, this.props.className)}>
         <h3 className={styles.title}>Order Summary</h3>
         <div className={styles.itemsContainer}>
           {this.state.cartItems.map((ci: CartItemT) => (

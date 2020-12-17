@@ -1,9 +1,21 @@
+@import "styles/mixins";
+
 .pageContent {
-  display: flex;
+  display: grid;
+  grid-template-areas: "page-wrapper page-wrapper page-wrapper order-summary order-summary"; // Get a 60% / 40% distribution
   flex-grow: 1;
 
+  @include mobile-media {
+    grid-template-areas:
+      "order-summary"
+      "page-wrapper";
+  }
+
   .pageWrapper {
-    max-width: 60%;
-    flex-grow: 1;
+    grid-area: page-wrapper;
+  }
+
+  .orderSummary {
+    grid-area: order-summary;
   }
 }

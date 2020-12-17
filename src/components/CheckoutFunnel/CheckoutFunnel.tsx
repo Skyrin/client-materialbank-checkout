@@ -34,7 +34,7 @@ export default function CheckoutFunnel() {
             />
           </Switch>
         </div>
-        <OrderSummary />
+        <OrderSummary className={styles.orderSummary} />
       </div>
       <Footer />
     </React.Fragment>
