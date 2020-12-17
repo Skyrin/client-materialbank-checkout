@@ -24,27 +24,27 @@ export default class UserOrderHistory extends React.Component<Props, any> {
       id: "1", image: "https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png",
       brand: "Floor Brand", model: "Luxury Vinyl Plank",
       color: "White Oak", currency: "$", pricePerSample: 8,
-      pricePerArea: 4.56, areaMeasurementUnit: "sq ft", shopNumber: 2
+      pricePerArea: 4.56, areaMeasurementUnit: "sq ft", numberOfShops: 2
     }, {
       id: "2", image: "", brand: "Floor Brand", model: " Vinyl Plank",
       color: "Blond Bamboo", currency: "$", pricePerSample: 7,
-      pricePerArea: 4.09, areaMeasurementUnit: "m2", shopNumber: 3
+      pricePerArea: 4.09, areaMeasurementUnit: "m2", numberOfShops: 3
     }, {
       id: "3", image: "", brand: "Fabricbrand Co.", model: "Laundered Belgian Linen",
       color: "White Oak", currency: "$", pricePerSample: 8,
-      pricePerArea: 80, areaMeasurementUnit: "yd", shopNumber: 2
+      pricePerArea: 80, areaMeasurementUnit: "yd", numberOfShops: 2
     }, {
       id: "4", image: "", brand: "Fabricbrand Co.", model: "Laundered Belgian Linen",
       color: "White Oak", currency: "$", pricePerSample: 8,
-      pricePerArea: 80, areaMeasurementUnit: "yd", shopNumber: 2
+      pricePerArea: 80, areaMeasurementUnit: "yd", numberOfShops: 2
     }, {
       id: "5", image: "", brand: "Fabricbrand Co.", model: "Laundered Belgian Linen",
       color: "White Oak", currency: "$", pricePerSample: 8,
-      pricePerArea: 80, areaMeasurementUnit: "yd", shopNumber: 2
+      pricePerArea: 80, areaMeasurementUnit: "yd", numberOfShops: 2
     }, {
       id: "6", image: "", brand: "Fabricbrand Co.", model: "Laundered Belgian Linen",
       color: "White Oak", currency: "$", pricePerSample: 8,
-      pricePerArea: 80, areaMeasurementUnit: "yd", shopNumber: 2
+      pricePerArea: 80, areaMeasurementUnit: "yd", numberOfShops: 2
     }],
     details: {
       deliveryAddress: {
@@ -69,15 +69,15 @@ export default class UserOrderHistory extends React.Component<Props, any> {
     items: [{
       id: "1", image: "", brand: "Floor Brand", model: "Luxury Vinyl Plank",
       color: "White Oak", currency: "$", pricePerSample: 8,
-      pricePerArea: 4.56, areaMeasurementUnit: "sq ft", shopNumber: 2
+      pricePerArea: 4.56, areaMeasurementUnit: "sq ft", numberOfShops: 2
     }, {
       id: "2", image: "", brand: "Floor Brand", model: " Vinyl Plank",
       color: "Blond Bamboo", currency: "$", pricePerSample: 7,
-      pricePerArea: 4.09, areaMeasurementUnit: "m2", shopNumber: 3
+      pricePerArea: 4.09, areaMeasurementUnit: "m2", numberOfShops: 3
     }, {
       id: "3", image: "", brand: "Fabricbrand Co.", model: "Laundered Belgian Linen",
       color: "White Oak", currency: "$", pricePerSample: 8,
-      pricePerArea: 80, areaMeasurementUnit: "yd", shopNumber: 2
+      pricePerArea: 80, areaMeasurementUnit: "yd", numberOfShops: 2
     }],
     details: {
       deliveryAddress: {
@@ -102,7 +102,7 @@ export default class UserOrderHistory extends React.Component<Props, any> {
     items: [{
       id: "1", image: "", brand: "Floor Brand", model: "Luxury Vinyl Plank",
       color: "White Oak", currency: "$", pricePerSample: 8,
-      pricePerArea: 4.56, areaMeasurementUnit: "sq ft", shopNumber: 2
+      pricePerArea: 4.56, areaMeasurementUnit: "sq ft", numberOfShops: 2
     }],
     details: {
       deliveryAddress: {

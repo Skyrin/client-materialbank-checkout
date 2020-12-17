@@ -17,9 +17,7 @@ export interface Item {
   pricePerArea: number;
   areaMeasurementUnit: string;
   pricePerSample: number;
-
-  // TODO: Rename this once we know what the (n) number is on the "Shop this flooring" button
-  shopNumber: number;
+  numberOfShops: number;
 }
 
 export function HistoryOrderItem(props: Props) {
@@ -59,7 +57,7 @@ export function HistoryOrderItem(props: Props) {
       <div className={cn(styles["right-container"])}>
         <button className={cn(styles["shop-button"], "font-weight-medium")}
                 onClick={props.onClick}>
-          Shop this flooring ({item.shopNumber})
+          Shop this flooring ({item.numberOfShops})
         </button>
       </div>
 
