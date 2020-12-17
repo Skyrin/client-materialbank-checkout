@@ -191,6 +191,10 @@ button {
   &.center-vertically {
     align-items: center;
   }
+
+  &.bottom-vertically {
+    align-items: baseline;
+  }
 }
 
 .big-text {

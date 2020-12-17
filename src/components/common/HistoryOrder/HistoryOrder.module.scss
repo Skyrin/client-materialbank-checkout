@@ -1,14 +1,11 @@
 @import "styles/mixins.scss";
 
-
-.UserOrderHistory {
+.HistoryOrder {
   width: 100%;
   border-radius: var(--card-border-radius-sm);
   border: 1px solid var(--color-separator);
 
-  & + .UserOrderHistory {
-    margin-top: calc(var(--vertical-spacing-normal) * 2);
-  }
+  margin-top: calc(var(--vertical-spacing-normal) * 3);
 }
 
 .header {
@@ -45,7 +42,8 @@
 }
 
 .content {
-  padding: var(--spacing-big) calc(var(--spacing-big) + var(--horizontal-spacing-normal));
+  padding: var(--spacing-big)
+    calc(var(--spacing-big) + var(--horizontal-spacing-normal));
 
   & + .content {
     border-top: 1px solid var(--color-separator);
@@ -110,7 +108,8 @@ a {
   text-align: center;
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  border-radius: 0 0 calc(var(--card-border-radius-sm) - 1px) calc(var(--card-border-radius-sm) - 1px);
+  border-radius: 0 0 calc(var(--card-border-radius-sm) - 1px)
+    calc(var(--card-border-radius-sm) - 1px);
   transition: background-color 0.1s;
 
   i {
@@ -118,7 +117,8 @@ a {
     transition: transform 0.2s ease-in-out;
   }
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background-color: rgba(var(--primary-color-rgb), 0.05);
 
     .more-items-info {
@@ -151,9 +151,7 @@ a {
     border-top-right-radius: var(--card-border-radius-sm);
     transition: transform 0.1s, background-color 0.1s;
   }
-
 }
-
 
 // Animations
 
