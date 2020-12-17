@@ -21,6 +21,7 @@ import AddressForm, {
   DEFAULT_ADDRESS_FORM_VALUES,
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
+import { isOnMobile } from "utils/responsive";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -150,7 +151,12 @@ export class PaymentInformation extends React.Component<Props, State> {
     return (
       <div>
         <h3 className="margin-top">Billing Address</h3>
-        <div className="margin-top normal-text">
+        <div
+          className={cn(
+            { "margin-top normal-text": !isOnMobile() },
+            { "margin-top-half x-small-text": isOnMobile() }
+          )}
+        >
           Select the address that matches your card or payment method
         </div>
 
@@ -201,7 +207,8 @@ export class PaymentInformation extends React.Component<Props, State> {
       <div className={cn("funnel-page", styles.PaymentInformation)}>
         <Logo className={styles.logo} />
         <Breadcrumbs steps={BREADCRUMBS_STEPS} className={styles.breadcrumbs} />
-        <EncryptionNotice />
+
+        {!isOnMobile() && <EncryptionNotice />}
 
         {this.renderContactInfoSection()}
         {this.renderShipToInfoSection()}
@@ -236,15 +243,25 @@ export class PaymentInformation extends React.Component<Props, State> {
             <span>Privacy Policy</span>{" "}
           </a>
         </div>
+
         <div className={cn("margin-top-big", styles.navigationContainer)}>
-          <Link to={PERSONAL_INFORMATION_URL} className="link-button">
+          {isOnMobile() && (
+            <button className="button large">Place My Order</button>
+          )}
+
+          <Link
+            to={PERSONAL_INFORMATION_URL}
+            className={cn("link-button", { "margin-top": isOnMobile() })}
+          >
             <i className="far fa-long-arrow-left" />
             Return to information
           </Link>
 
-          <button className="button large" disabled>
-            Checkout
-          </button>
+          {!isOnMobile() && (
+            <button className="button large" disabled>
+              Checkout
+            </button>
+          )}
         </div>
       </div>
     );
