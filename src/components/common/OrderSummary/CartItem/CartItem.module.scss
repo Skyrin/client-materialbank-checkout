@@ -37,9 +37,23 @@
     }
   }
 
-  .price {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-medium);
-    color: rgba(var(--primary-color-rgb), 0.6);
+  .priceContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-shrink: 0;
+
+    .price {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+      color: rgba(var(--primary-color-rgb), 0.6);
+    }
+
+    .quantity {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-medium);
+      color: rgba(var(--primary-color-rgb), 0.6);
+    }
   }
 }

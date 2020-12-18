@@ -27,7 +27,9 @@ export default function CartItem(props: Props) {
         <span className={styles.price}>{`$${
           props.cartItem.prices?.row_total_including_tax?.value || ""
         }`}</span>
-        <span className={styles.quantity}>{}</span>
+        <span
+          className={styles.quantity}
+        >{`Quantity: ${props.cartItem.quantity}`}</span>
       </div>
     </div>
   );

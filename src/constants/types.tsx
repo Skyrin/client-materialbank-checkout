@@ -23,6 +23,7 @@ export type CartItemT = {
     row_total_including_tax?: PriceT;
   };
   product?: ProductT;
+  quantity?: number;
 };
 
 export type PriceT = {

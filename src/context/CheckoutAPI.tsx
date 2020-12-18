@@ -44,6 +44,7 @@ export const requestCartInfo = async (cartId: string) => {
               url
             }
           }
+          quantity
         }
         billing_address {
           ${AddressFragment}
