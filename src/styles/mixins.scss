@@ -1,3 +1,5 @@
+@import "styles/variables";
+
 // Changes the lightness of a HSL color. >1 increases lightness (1.1 = 10% lighter), <1 decreases (0.9 = 10% darker)
 @function lightness($color-variable, $multiplier) {
   $color-variable-h: var(#{$color-variable + "-h"});
@@ -52,4 +54,10 @@ $shadow-color-xxdark: rgba(black, 0.5);
 @function shadow($size, $color) {
   @return map-get($size, "x") map-get($size, "y") map-get($size, "blur")
     map-get($size, "spread") $color;
+}
+
+@mixin mobile-media {
+  @media (max-width: $mobile-width) {
+    @content;
+  }
 }

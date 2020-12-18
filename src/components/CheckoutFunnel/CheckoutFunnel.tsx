@@ -45,7 +45,7 @@ export default class CheckoutFunnel extends React.Component<Props> {
               />
             </Switch>
           </div>
-          <OrderSummary />
+          <OrderSummary className={styles.orderSummary} />
         </div>
         <Footer />
       </React.Fragment>

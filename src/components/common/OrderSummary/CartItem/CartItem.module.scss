@@ -1,3 +1,5 @@
+@import "styles/mixins";
+
 .CartItem {
   --image-size: 60px;
 
@@ -54,6 +56,17 @@
       font-size: var(--font-size-md);
       font-weight: var(--font-weight-medium);
       color: rgba(var(--primary-color-rgb), 0.6);
+    }
+  }
+
+  @include mobile-media {
+    --image-size: 88px;
+    padding: 16px 0;
+
+    .itemInfo {
+      .image {
+        margin-right: 8px;
+      }
     }
   }
 }
