@@ -10,11 +10,6 @@
     align-items: center;
   }
 
-  code {
-    max-width: 100%;
-    overflow: scroll;
-  }
-
   .debugInputContainer {
     display: grid;
     grid-template-columns: 1;
@@ -35,5 +30,9 @@
 
   .debugCheckbox {
     margin-right: 10px;
+  }
+  pre {
+    max-width: 500px;
+    overflow-x: scroll;
   }
 }
