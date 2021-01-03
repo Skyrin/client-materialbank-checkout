@@ -1,0 +1,121 @@
+.OrderItemOverlay {
+  background-color: white;
+  padding: 40px 0;
+  max-width: 560px;
+}
+
+.x-button {
+  padding: 7px 10px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding-right: 70px;
+  padding-left: 55px;
+
+  .image {
+    height: 85px;
+    width: 85px;
+    margin-right: var(--horizontal-spacing-normal);
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    background-image: url("../../../assets/images/Fill.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    @media (max-width: 970px) {
+      height: 60px;
+      width: 60px;
+      margin-right: var(--horizontal-spacing-half);
+      border-radius: var(--card-border-radius-bg);
+    }
+  }
+
+  .title-price {
+    flex: 1;
+    padding-top: 5px;
+  }
+
+  .price {
+    margin-top: var(--vertical-spacing-half);
+  }
+}
+
+.shops {
+  margin-top: var(--vertical-spacing-normal);
+}
+
+.shop {
+  position: relative;
+  height: 80px;
+  padding: 0 80px 0 55px;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: flex-start;
+  border-top: 1px solid var(--color-separator);
+  cursor: pointer;
+  text-decoration: none;
+  width: 100%;
+
+  .address {
+    margin-top: var(--vertical-spacing-quarter);
+  }
+
+  .chevron {
+    position: absolute;
+    top: 50%;
+    right: 55px;
+    transform: translateY(-50%);
+    font-size: var(--font-size-sm);
+  }
+
+  &:last-of-type {
+    border-bottom: 1px solid var(--color-separator);
+  }
+
+  &:hover {
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+  }
+
+  &:active {
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+  }
+}
+
+.bottom {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.add-to-cart-button {
+  color: var(--primary-color);
+  background-color: white;
+  border-color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--horizontal-spacing-normal);
+  width: 240px;
+  margin-top: var(--vertical-spacing-half);
+  font-size: var(--font-size-sm);
+
+  &:hover {
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+  }
+
+  &:active {
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+  }
+
+  .button-text {
+    margin-left: var(--vertical-spacing-quarter);
+  }
+}

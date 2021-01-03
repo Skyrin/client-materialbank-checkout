@@ -142,14 +142,16 @@ export default class OrderConfirmation extends React.Component {
 
         {/* RECOMMENDATIONS */}
 
-        <h2 className={styles["section-title"]}>
-          Based on your order, we think you'll love these:
-        </h2>
-        <Recommendations
-          className={styles["Recommendations"]}
-          recommendations={this.recommendations}
-          recommendationClick={this.recommendationClick}
-        />
+        <div className={styles["recommendations-container"]}>
+          <h2 className={styles["section-title"]}>
+            Based on your order, we think you'll love these:
+          </h2>
+          <Recommendations
+            className={styles["Recommendations"]}
+            recommendations={this.recommendations}
+            recommendationClick={this.recommendationClick}
+          />
+        </div>
 
         {/* CUSTOMER INFORMATION */}
 

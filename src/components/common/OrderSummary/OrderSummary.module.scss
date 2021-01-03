@@ -1,3 +1,5 @@
+@import "styles/variables.scss";
+
 .OrderSummary {
   width: 40%;
   padding: 50px 60px;
@@ -16,6 +18,7 @@
 
   .promoCodeContainer {
     @extend .section;
+
     .subtitle {
       margin-bottom: var(--vertical-spacing-normal);
     }
@@ -23,6 +26,7 @@
 
   .pricesContainer {
     @extend .section;
+
     .priceLine {
       display: flex;
       justify-content: space-between;
@@ -48,5 +52,57 @@
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
     color: var(--primary-color);
+  }
+}
+
+.mobile-expand-button {
+  display: none;
+}
+
+@media (max-width: $tablet-s) {
+  .OrderSummary {
+    position: fixed;
+    top: 40px;
+    left: 0;
+    height: calc(100% - 40px);
+    width: 100vw;
+    padding: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .mobile-expand-button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding-left: 20px;
+    height: 40px;
+    border-bottom: 1px solid var(--color-separator);
+    color: var(--primary-color);
+    background-color: #f3f3f3;
+    pointer-events: initial;
+
+    .expand-text {
+      margin-left: 10px;
+      margin-right: 10px;
+      font-size: var(--font-size-sm);
+    }
+
+    .expand-price {
+      position: absolute;
+      right: 20px;
+      font-weight: var(--font-weight-medium);
+    }
+  }
+
+  .content {
+    padding: 20px;
+    height: calc(100% - 40px);
+    background-color: white;
+    pointer-events: initial;
+
+    &:not(.mobile-expanded) {
+      display: none;
+    }
   }
 }

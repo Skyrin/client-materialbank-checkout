@@ -75,6 +75,16 @@
   --card-border-radius-sm: 10px;
   --card-border-radius-nm: 16px;
   --card-border-radius-bg: 20px;
+
+  //  Screen Sizes
+  --desktop: 1920px;
+  --laptop: 1440px;
+  --tablet-l: 1280px;
+  --tablet: 1024px;
+  --tablet-s: 768px;
+  --mobile-l: 500px;
+  --mobile: 375px;
+  --mobile-s: 325px;
 }
 
 $primary-color-user: #2f2f2f;
@@ -102,3 +112,13 @@ $margin-huge-2: 85px;
 $margin-huge-3: 90px;
 $margin-huge-4: 95px;
 $margin-huge-5: 100px;
+
+//  Screen Sizes
+$desktop: 1920px;
+$laptop: 1440px;
+$tablet-l: 1280px;
+$tablet: 1024px;
+$tablet-s: 768px;
+$mobile-l: 500px;
+$mobile: 375px;
+$mobile-s: 325px;

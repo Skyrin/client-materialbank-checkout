@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Ref } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import UserHeader, {
   UserPages,
@@ -8,6 +8,9 @@ import { HistoryOrder } from "components/common/HistoryOrder/HistoryOrder";
 import cn from "classnames";
 import styles from "./UserOrderHistory.module.scss";
 import { DateTime } from "luxon";
+import { OrderItemOverlay } from "components/common/OrderItemOverlay/OrderItemOverlay";
+import { Item } from "components/common/HistoryOrderItem/HistoryOrderItem";
+import { Modal } from "components/common/Modal/Modal";
 
 interface Props extends RouteComponentProps {}
 
@@ -32,7 +35,14 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           pricePerSample: 8,
           pricePerArea: 4.56,
           areaMeasurementUnit: "sq ft",
-          numberOfShops: 2,
+          shops: [
+            {
+              link: "",
+              name: "Fabricbrand Co.",
+              address: "123 Nearby Ave., Yourtown MO 11223",
+            },
+            { link: "", name: "Luxury Fabric Shop" },
+          ],
         },
         {
           id: "2",
@@ -44,7 +54,14 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           pricePerSample: 7,
           pricePerArea: 4.09,
           areaMeasurementUnit: "m2",
-          numberOfShops: 3,
+          shops: [
+            {
+              link: "",
+              name: "Fabricbrand Co.",
+              address: "123 Nearby Ave., Yourtown MO 11223",
+            },
+            { link: "", name: "Luxury Fabric Shop" },
+          ],
         },
         {
           id: "3",
@@ -56,7 +73,14 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           pricePerSample: 8,
           pricePerArea: 80,
           areaMeasurementUnit: "yd",
-          numberOfShops: 2,
+          shops: [
+            {
+              link: "",
+              name: "Fabricbrand Co.",
+              address: "123 Nearby Ave., Yourtown MO 11223",
+            },
+            { link: "", name: "Luxury Fabric Shop" },
+          ],
         },
         {
           id: "4",
@@ -68,7 +92,14 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           pricePerSample: 8,
           pricePerArea: 80,
           areaMeasurementUnit: "yd",
-          numberOfShops: 2,
+          shops: [
+            {
+              link: "",
+              name: "Fabricbrand Co.",
+              address: "123 Nearby Ave., Yourtown MO 11223",
+            },
+            { link: "", name: "Luxury Fabric Shop" },
+          ],
         },
         {
           id: "5",
@@ -80,7 +111,14 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           pricePerSample: 8,
           pricePerArea: 80,
           areaMeasurementUnit: "yd",
-          numberOfShops: 2,
+          shops: [
+            {
+              link: "",
+              name: "Fabricbrand Co.",
+              address: "123 Nearby Ave., Yourtown MO 11223",
+            },
+            { link: "", name: "Luxury Fabric Shop" },
+          ],
         },
         {
           id: "6",
@@ -92,7 +130,14 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           pricePerSample: 8,
           pricePerArea: 80,
           areaMeasurementUnit: "yd",
-          numberOfShops: 2,
+          shops: [
+            {
+              link: "",
+              name: "Fabricbrand Co.",
+              address: "123 Nearby Ave., Yourtown MO 11223",
+            },
+            { link: "", name: "Luxury Fabric Shop" },
+          ],
         },
       ],
       details: {
@@ -140,7 +185,13 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           pricePerSample: 8,
           pricePerArea: 4.56,
           areaMeasurementUnit: "sq ft",
-          numberOfShops: 2,
+          shops: [
+            {
+              link: "",
+              name: "Fabricbrand Co.",
+              address: "123 Nearby Ave., Yourtown MO 11223",
+            },
+          ],
         },
         {
           id: "2",
@@ -152,7 +203,15 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           pricePerSample: 7,
           pricePerArea: 4.09,
           areaMeasurementUnit: "m2",
-          numberOfShops: 3,
+          shops: [
+            {
+              link: "",
+              name: "Fabricbrand Co.",
+              address: "123 Nearby Ave., Yourtown MO 11223",
+            },
+            { link: "", name: "Luxury Fabric Shop" },
+            { link: "", name: "Alice's Local Fabrics" },
+          ],
         },
         {
           id: "3",
@@ -164,7 +223,14 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           pricePerSample: 8,
           pricePerArea: 80,
           areaMeasurementUnit: "yd",
-          numberOfShops: 2,
+          shops: [
+            {
+              link: "",
+              name: "Fabricbrand Co.",
+              address: "123 Nearby Ave., Yourtown MO 11223",
+            },
+            { link: "", name: "Luxury Fabric Shop" },
+          ],
         },
       ],
       details: {
@@ -212,7 +278,14 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           pricePerSample: 8,
           pricePerArea: 4.56,
           areaMeasurementUnit: "sq ft",
-          numberOfShops: 2,
+          shops: [
+            {
+              link: "",
+              name: "Fabricbrand Co.",
+              address: "123 Nearby Ave., Yourtown MO 11223",
+            },
+            { link: "", name: "Luxury Fabric Shop" },
+          ],
         },
       ],
       details: {
@@ -244,11 +317,24 @@ export default class UserOrderHistory extends React.Component<Props, any> {
       },
     },
   ];
-
   canLoadMore: boolean = true;
+  modalRef: any;
+
+  constructor(props: Props) {
+    super(props);
+    this.modalRef = React.createRef();
+  }
 
   loadMore(): void {
     //  TODO: Implement functionality once we have API
+  }
+
+  addItemToCart(item: Item): void {}
+
+  openItemOverlay(item: Item): void {
+    this.modalRef.current.open(
+      <OrderItemOverlay item={item} addToCart={this.addItemToCart} />
+    );
   }
 
   render() {
@@ -267,7 +353,11 @@ export default class UserOrderHistory extends React.Component<Props, any> {
         />
 
         {this.orders.map((order) => (
-          <HistoryOrder key={order.orderNumber} order={order} />
+          <HistoryOrder
+            key={order.orderNumber}
+            order={order}
+            shopItem={(item) => this.openItemOverlay(item)}
+          />
         ))}
 
         {this.canLoadMore && (
@@ -278,6 +368,7 @@ export default class UserOrderHistory extends React.Component<Props, any> {
             LOAD MORE
           </button>
         )}
+        <Modal ref={this.modalRef} />
       </div>
     );
   }

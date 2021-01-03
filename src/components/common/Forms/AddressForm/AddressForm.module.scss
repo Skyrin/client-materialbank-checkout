@@ -1,4 +1,6 @@
 @import "styles/global";
+@import "styles/variables.scss";
+
 .addressForm {
   display: flex;
   flex-direction: column;
@@ -8,6 +10,7 @@
   overflow: hidden;
   transition: max-height 0.35s $ease-in-out, opacity 0.35s $ease-in-out,
     margin-top 0.35s $ease-in-out;
+
   &.visible {
     max-height: 500px;
     opacity: 1;
@@ -32,4 +35,15 @@
   font-weight: var(--font-weight-normal);
   color: var(--primary-color);
   margin-bottom: var(--vertical-spacing-half);
+}
+
+@media (max-width: $tablet-s) {
+  .inputLine {
+    column-gap: var(--horizontal-spacing-half);
+  }
+
+  .zipCodeDescription {
+    font-size: var(--font-size-xs);
+    letter-spacing: -0.2px;
+  }
 }

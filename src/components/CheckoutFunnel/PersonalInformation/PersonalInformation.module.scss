@@ -1,3 +1,5 @@
+@import "styles/variables.scss";
+
 .PersonalInformation {
   --button-height: 40px;
 
@@ -142,5 +144,62 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+}
+
+@media (max-width: $tablet-s) {
+  .PersonalInformation {
+    --font-size-sm: 10px;
+    --font-size-md: 12px;
+    --font-size-lg: 12px;
+    --font-size-xl: 14px;
+    padding-top: 140px;
+
+    .breadcrumbs {
+      margin-bottom: var(--vertical-spacing-quarter);
+    }
+
+    .encryptionNoticeContainer {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      top: 80px;
+    }
+
+    .expressCheckoutSubtitle {
+      margin-bottom: var(--vertical-spacing-half);
+    }
+
+    .expressCheckoutOptions {
+      flex-flow: column;
+      width: 100%;
+
+      .expressCheckoutOption {
+        width: 100%;
+        margin-top: var(--vertical-spacing-half);
+      }
+    }
+
+    .loginHint {
+      display: none;
+    }
+
+    .loginLink {
+      margin-right: 0;
+    }
+
+    .navigationContainer {
+      flex-flow: column-reverse;
+      margin-bottom: var(--vertical-spacing-normal);
+
+      .continueButton {
+        height: 50px;
+        padding-left: 60px;
+        padding-right: 60px;
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-medium);
+        margin-bottom: var(--vertical-spacing-half);
+      }
+    }
   }
 }

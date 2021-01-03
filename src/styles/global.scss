@@ -1,4 +1,5 @@
 @import "styles/mixins.scss";
+@import "styles/variables.scss";
 
 html,
 body,
@@ -229,3 +230,15 @@ button {
 }
 
 $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+@media (max-width: $tablet-l) {
+  .funnel-page {
+    padding: 40px 40px;
+  }
+}
+
+@media (max-width: $tablet-s) {
+  .funnel-page {
+    padding: 100px 20px 20px;
+  }
+}

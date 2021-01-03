@@ -17,6 +17,7 @@ import AddressForm, {
   DEFAULT_ADDRESS_FORM_VALUES,
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
+import { request } from "GraphqlClient";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -165,7 +166,9 @@ export class PersonalInformation extends React.Component<Props, State> {
       <div className={cn("funnel-page", styles.PersonalInformation)}>
         <Logo className={styles.logo} />
         <Breadcrumbs steps={BREADCRUMBS_STEPS} className={styles.breadcrumbs} />
-        <EncryptionNotice />
+        <div className={styles.encryptionNoticeContainer}>
+          <EncryptionNotice />
+        </div>
         {this.renderExpressCheckoutSection()}
         {this.renderContactInfoSection()}
         {this.renderShippingMethodSection()}
@@ -177,7 +180,7 @@ export class PersonalInformation extends React.Component<Props, State> {
             Return to cart
           </Link>
           <button
-            className="button large"
+            className={`button large ${styles.continueButton}`}
             onClick={() => {
               this.props.history.push(PAYMENT_URL);
             }}

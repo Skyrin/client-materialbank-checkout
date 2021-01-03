@@ -18,6 +18,7 @@ interface Props {
     items: Item[];
     details: any;
   };
+  shopItem: (item: Item) => any;
 }
 
 interface State {
@@ -36,10 +37,6 @@ export class HistoryOrder extends React.Component<Props, State> {
 
   private toggleExpand(): void {
     this.setState((prevState) => ({ isExpanded: !prevState.isExpanded }));
-  }
-
-  onItemClick(item: Item): void {
-    // TODO: Implement functionality
   }
 
   render() {
@@ -86,7 +83,7 @@ export class HistoryOrder extends React.Component<Props, State> {
             ? order.items.map((item) => (
                 <HistoryOrderItem
                   item={item}
-                  onClick={() => this.onItemClick(item)}
+                  onClick={() => this.props.shopItem(item)}
                   key={item.id}
                 />
               ))
@@ -95,7 +92,7 @@ export class HistoryOrder extends React.Component<Props, State> {
                 .map((item) => (
                   <HistoryOrderItem
                     item={item}
-                    onClick={() => this.onItemClick(item)}
+                    onClick={() => this.props.shopItem(item)}
                     key={item.id}
                   />
                 ))}
