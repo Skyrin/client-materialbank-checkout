@@ -17,6 +17,7 @@ import AddressForm, {
   DEFAULT_ADDRESS_FORM_VALUES,
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
+import { isOnMobile } from "utils/responsive";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -228,13 +229,18 @@ export class PersonalInformation extends React.Component<Props, State> {
           {this.renderShippingMethodSection()}
           {this.renderShippingAddressSection()}
 
+          {isOnMobile() && <div className={cn("horizontal-divider")} />}
+
           <div className={styles.navigationContainer}>
-            <Link to={CART_URL} className="link-button">
+            <Link
+              to={CART_URL}
+              className={cn("link-button", { "margin-top": isOnMobile() })}
+            >
               <i className="far fa-long-arrow-left" />
               Return to cart
             </Link>
             <button
-              className="button large"
+              className={cn("button large", { "margin-top": isOnMobile() })}
               onClick={() => {
                 this.props.history.push(PAYMENT_URL);
               }}

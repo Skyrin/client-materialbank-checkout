@@ -49,6 +49,10 @@
       justify-content: space-between;
       align-items: flex-end;
       margin-bottom: var(--vertical-spacing-normal);
+
+      @include mobile-media {
+        margin-bottom: $margin-small-3;
+      }
     }
   }
 
@@ -120,12 +124,20 @@
     font-weight: var(--font-weight-medium);
     color: var(--text-color-light);
     margin-right: var(--horizontal-spacing-half);
+
+    @include mobile-media {
+      font-size: var(--font-size-xs);
+    }
   }
 
   .loginLink {
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
     color: var(--primary-color);
+
+    @include mobile-media {
+      font-size: var(--font-size-xs);
+    }
   }
 
   .createAccountSection {
@@ -139,6 +151,17 @@
       "first-name last-name"
       "email email"
       "password confirm-password";
+
+    @include mobile-media {
+      font-size: var(--font-size-xs);
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "first-name"
+        "last-name"
+        "email"
+        "password"
+        "confirm-password";
+    }
 
     .firstName {
       grid-area: first-name;
@@ -178,12 +201,20 @@
           font-size: var(--font-size-lg);
           font-weight: var(--font-weight-medium);
           color: var(--primary-color);
+
+          @include mobile-media {
+            font-size: var(--font-size-sm);
+          }
         }
 
         .methodEstimatedDelivery {
           font-size: var(--font-size-md);
           font-weight: var(--font-weight-normal);
           color: var(--text-color-light);
+
+          @include mobile-media {
+            font-size: var(--font-size-sm);
+          }
         }
       }
 
@@ -191,6 +222,10 @@
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-medium);
         color: var(--primary-color);
+
+        @include mobile-media {
+          font-size: var(--font-size-sm);
+        }
       }
     }
   }
@@ -198,11 +233,20 @@
   .shippingAddressSection {
     border-bottom: 0;
     margin-bottom: var(--vertical-spacing-normal);
+
+    @include mobile-media {
+      margin-bottom: 0;
+    }
   }
 
   .navigationContainer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    @include mobile-media {
+      flex-flow: column;
+      flex-direction: column-reverse;
+    }
   }
 }
