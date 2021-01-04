@@ -1,3 +1,6 @@
+@import "styles/variables";
+@import "styles/global";
+
 .PersonalInformation {
   --button-height: 40px;
 
@@ -22,6 +25,12 @@
     }
   }
 
+  .informationContainer {
+    @include mobile-media {
+      padding: 0 $margin-small-3;
+    }
+  }
+
   .expressCheckoutSubtitle {
     text-align: center;
     margin-bottom: 15px; // This seems to be a random 15px compared to most other spacings...
@@ -30,6 +39,10 @@
   .section {
     padding: var(--vertical-spacing-normal) 0;
     border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
+
+    @include mobile-media {
+      padding: $margin-small-3 0;
+    }
 
     .sectionTitleLine {
       display: flex;
@@ -44,6 +57,11 @@
     justify-content: space-between;
     align-items: center;
 
+    @include mobile-media {
+      flex-flow: column;
+      row-gap: $margin-small-2;
+    }
+
     .expressCheckoutOption {
       width: calc(50% - (var(--horizontal-spacing-normal) / 2));
       height: var(--button-height);
@@ -53,6 +71,10 @@
       border-radius: 4px;
       cursor: pointer;
       transition: background-color 0.1s linear;
+
+      @include mobile-media {
+        width: 100%;
+      }
 
       &.paypal {
         background-color: #f6c657;
@@ -84,6 +106,13 @@
     color: var(--text-color-light);
     margin-bottom: var(--vertical-spacing-half);
     line-height: 1.5;
+
+    @include mobile-media {
+      width: 100%;
+      margin-top: $margin-small-3;
+      line-height: 0;
+      font-size: var(--font-size-sm);
+    }
   }
 
   .loginHint {
@@ -97,6 +126,39 @@
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
     color: var(--primary-color);
+  }
+
+  .createAccountSection {
+    display: grid;
+    align-content: space-between;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    row-gap: var(--vertical-spacing-half);
+    column-gap: var(--vertical-spacing-half);
+    grid-template-areas:
+      "first-name last-name"
+      "email email"
+      "password confirm-password";
+
+    .firstName {
+      grid-area: first-name;
+    }
+
+    .lastName {
+      grid-area: last-name;
+    }
+
+    .email {
+      grid-area: email;
+    }
+
+    .password {
+      grid-area: password;
+    }
+
+    .confirmPassword {
+      grid-area: confirm-password;
+    }
   }
 
   .shippingMethodSection {
