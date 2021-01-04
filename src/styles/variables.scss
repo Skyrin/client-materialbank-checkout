@@ -72,6 +72,10 @@
   --button-large-radius: 30px;
   --button-large-font-size: var(--font-size-xl);
 
+  --button-large-height-mobile: 48px;
+  --button-large-radius-mobile: 24px;
+  --button-large-font-size-mobile: var(--font-size-md);
+
   --card-border-radius-sm: 10px;
   --card-border-radius-nm: 16px;
   --card-border-radius-bg: 20px;
@@ -87,14 +91,16 @@
   --mobile-s: 325px;
 }
 
+$mobile-width: 970px;
+
 $primary-color-user: #2f2f2f;
 $primary-color-10-user: rgba($primary-color-user, 0.1);
 $primary-color-60-user: rgba($primary-color-user, 0.6);
 $primary-color-80-user: rgba($primary-color-user, 0.8);
 
 $margin-small: 5px;
-$margin-small-2: 10px;
-$margin-small-3: 15px;
+$margin-small-2: 8px;
+$margin-small-3: 16px;
 $margin-small-4: 20px;
 $margin-small-5: 25px;
 $margin-medium: 30px;

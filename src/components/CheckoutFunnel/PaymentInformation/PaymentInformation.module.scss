@@ -1,4 +1,5 @@
 @import "styles/mixins.scss";
+@import "styles/variables";
 
 .PaymentInformation {
   .logo,
@@ -6,10 +7,20 @@
     margin-bottom: var(--vertical-spacing-normal);
   }
 
+  @include mobile-media {
+    padding-top: $margin-small-4;
+    padding-left: $margin-small-4;
+    padding-right: $margin-small-4;
+  }
+
   .navigationContainer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    @include mobile-media {
+      flex-flow: column;
+    }
   }
 
   .infoSection {
@@ -21,6 +32,10 @@
     grid-template-areas:
       "title changeButton"
       "value value";
+
+    @include mobile-media {
+      height: auto;
+    }
 
     .changeButton {
       grid-area: changeButton;
@@ -36,24 +51,44 @@
           var(--text-button-hover-color-lightness)
         );
       }
+
+      @include mobile-media {
+        font-size: var(--font-size-sm);
+      }
     }
 
     .title {
       grid-area: title;
+      @include mobile-media {
+        font-size: var(--font-size-sm);
+      }
     }
 
     .value {
       grid-area: value;
+
+      @include mobile-media {
+        font-size: var(--font-size-md);
+        margin-top: $margin-small-2;
+      }
     }
   }
 
   .paddingContainer {
     padding: var(--vertical-spacing-normal) 0;
     border-bottom: 1px solid var(--color-separator);
+
+    @include mobile-media {
+      padding: $margin-small-3 0;
+    }
   }
 
   .radioButton {
-    margin-right: 20px;
+    margin-right: var(--vertical-spacing-normal);
+
+    @include mobile-media {
+      margin-right: $margin-small-2;
+    }
   }
 
   .paymentLogoIcon {

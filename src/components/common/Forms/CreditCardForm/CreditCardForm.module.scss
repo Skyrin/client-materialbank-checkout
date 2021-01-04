@@ -6,7 +6,7 @@
   overflow: hidden;
   opacity: 0;
   margin-top: 0;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   grid-template-rows: auto;
   column-gap: var(--horizontal-spacing-normal);
   row-gap: var(--horizontal-spacing-normal);
@@ -15,6 +15,17 @@
     "card-name card-name card-name";
   transition: max-height 0.35s $ease-in-out, margin-top 0.35s $ease-in-out,
     opacity 0.35s $ease-in-out;
+
+  @include mobile-media {
+    grid-template-areas:
+      "card-number card-number"
+      "card-name card-name"
+      "expiration cvv";
+
+    column-gap: $margin-small-2;
+    row-gap: $margin-small-2;
+    font-size: var(--font-size-sm);
+  }
 
   &.visible {
     max-height: 300px;

@@ -1,19 +1,26 @@
-@import "styles/variables.scss";
+@import "styles/mixins";
 
 .pageContent {
-  display: flex;
+  display: grid;
+  grid-template-areas: "page-wrapper page-wrapper page-wrapper order-summary order-summary"; // Get a 60% / 40% distribution
   flex-grow: 1;
 
   .pageWrapper {
-    max-width: 60%;
-    flex-grow: 1;
+    grid-area: page-wrapper;
   }
-}
 
-@media (max-width: $tablet-s) {
-  .pageContent {
-    .pageWrapper {
-      max-width: unset;
+  .orderSummary {
+    min-width: 350px;
+    grid-area: order-summary;
+  }
+
+  @include mobile-media {
+    grid-template-areas:
+      "order-summary"
+      "page-wrapper";
+
+    .orderSummary {
+      min-width: unset;
     }
   }
 }

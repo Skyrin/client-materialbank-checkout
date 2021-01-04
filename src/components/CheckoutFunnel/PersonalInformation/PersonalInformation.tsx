@@ -17,7 +17,6 @@ import AddressForm, {
   DEFAULT_ADDRESS_FORM_VALUES,
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
-import { request } from "GraphqlClient";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
