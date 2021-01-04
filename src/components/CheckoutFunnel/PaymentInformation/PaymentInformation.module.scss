@@ -8,6 +8,7 @@
   }
 
   @include mobile-media {
+    padding-top: $margin-small-4;
     padding-left: $margin-small-4;
     padding-right: $margin-small-4;
   }

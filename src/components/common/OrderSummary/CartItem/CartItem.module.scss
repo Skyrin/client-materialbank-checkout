@@ -25,7 +25,6 @@
 
       .lightText {
         font-size: var(--font-size-sm);
-        // font-weight: var(--font-weight-medium);
         color: rgba(var(--primary-color-rgb), 0.6);
         line-height: 1.33;
       }
@@ -60,12 +59,38 @@
   }
 
   @include mobile-media {
-    --image-size: 88px;
-    padding: 16px 0;
+    --image-size: 60px;
+    padding: 10px 0;
 
     .itemInfo {
       .image {
-        margin-right: 8px;
+        margin-right: 10px;
+      }
+
+      .infoContainer {
+        .lightText {
+          font-size: var(--font-size-xs);
+        }
+
+        .boldText {
+          font-size: var(--font-size-sm);
+        }
+      }
+    }
+
+    .priceContainer {
+      .price,
+      .quantity {
+        color: var(--primary-color);
+        font-weight: var(--font-weight-normal);
+      }
+
+      .price {
+        font-size: var(--font-size-sm);
+      }
+
+      .quantity {
+        font-size: var(--font-size-xs);
       }
     }
   }
