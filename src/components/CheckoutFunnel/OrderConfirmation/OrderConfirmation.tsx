@@ -16,14 +16,14 @@ export default class OrderConfirmation extends React.Component {
   recommendations = [
     {
       id: 1,
-      title: "Your mother was a hamster",
+      title: "Product Title 1",
       image:
         "https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png",
       type: 1,
     },
     {
       id: 2,
-      title: "And your father smelled of elderberries",
+      title: "Product Title 2",
       image: "",
       type: 1,
     },

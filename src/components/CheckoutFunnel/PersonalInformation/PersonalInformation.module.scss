@@ -1,7 +1,12 @@
-@import "styles/variables.scss";
+@import "styles/variables";
+@import "styles/global";
 
 .PersonalInformation {
   --button-height: 40px;
+
+  @include mobile-media {
+    padding: 0 0 $margin-small-3;
+  }
 
   .logo,
   .breadcrumbs {
@@ -24,6 +29,12 @@
     }
   }
 
+  .informationContainer {
+    @include mobile-media {
+      padding: 0 $margin-small-3;
+    }
+  }
+
   .expressCheckoutSubtitle {
     text-align: center;
     margin-bottom: 15px; // This seems to be a random 15px compared to most other spacings...
@@ -33,11 +44,19 @@
     padding: var(--vertical-spacing-normal) 0;
     border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
 
+    @include mobile-media {
+      padding: $margin-small-3 0;
+    }
+
     .sectionTitleLine {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
       margin-bottom: var(--vertical-spacing-normal);
+
+      @include mobile-media {
+        margin-bottom: $margin-small-3;
+      }
     }
   }
 
@@ -45,6 +64,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    @include mobile-media {
+      flex-flow: column;
+      row-gap: $margin-small-2;
+    }
 
     .expressCheckoutOption {
       width: calc(50% - (var(--horizontal-spacing-normal) / 2));
@@ -55,6 +79,10 @@
       border-radius: 4px;
       cursor: pointer;
       transition: background-color 0.1s linear;
+
+      @include mobile-media {
+        width: 100%;
+      }
 
       &.paypal {
         background-color: #f6c657;
@@ -86,6 +114,13 @@
     color: var(--text-color-light);
     margin-bottom: var(--vertical-spacing-half);
     line-height: 1.5;
+
+    @include mobile-media {
+      width: 100%;
+      margin-top: $margin-small-3;
+      line-height: 0;
+      font-size: var(--font-size-sm);
+    }
   }
 
   .loginHint {
@@ -93,12 +128,64 @@
     font-weight: var(--font-weight-medium);
     color: var(--text-color-light);
     margin-right: var(--horizontal-spacing-half);
+
+    @include mobile-media {
+      font-size: var(--font-size-xs);
+    }
   }
 
   .loginLink {
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
     color: var(--primary-color);
+
+    @include mobile-media {
+      font-size: var(--font-size-xs);
+    }
+  }
+
+  .createAccountSection {
+    display: grid;
+    align-content: space-between;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    row-gap: var(--vertical-spacing-half);
+    column-gap: var(--vertical-spacing-half);
+    grid-template-areas:
+      "first-name last-name"
+      "email email"
+      "password confirm-password";
+
+    @include mobile-media {
+      font-size: var(--font-size-xs);
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "first-name"
+        "last-name"
+        "email"
+        "password"
+        "confirm-password";
+    }
+
+    .firstName {
+      grid-area: first-name;
+    }
+
+    .lastName {
+      grid-area: last-name;
+    }
+
+    .email {
+      grid-area: email;
+    }
+
+    .password {
+      grid-area: password;
+    }
+
+    .confirmPassword {
+      grid-area: confirm-password;
+    }
   }
 
   .shippingMethodSection {
@@ -118,12 +205,20 @@
           font-size: var(--font-size-lg);
           font-weight: var(--font-weight-medium);
           color: var(--primary-color);
+
+          @include mobile-media {
+            font-size: var(--font-size-sm);
+          }
         }
 
         .methodEstimatedDelivery {
           font-size: var(--font-size-md);
           font-weight: var(--font-weight-normal);
           color: var(--text-color-light);
+
+          @include mobile-media {
+            font-size: var(--font-size-sm);
+          }
         }
       }
 
@@ -131,6 +226,10 @@
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-medium);
         color: var(--primary-color);
+
+        @include mobile-media {
+          font-size: var(--font-size-sm);
+        }
       }
     }
   }
@@ -138,68 +237,20 @@
   .shippingAddressSection {
     border-bottom: 0;
     margin-bottom: var(--vertical-spacing-normal);
+
+    @include mobile-media {
+      margin-bottom: 0;
+    }
   }
 
   .navigationContainer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-}
 
-@media (max-width: $tablet-s) {
-  .PersonalInformation {
-    --font-size-sm: 10px;
-    --font-size-md: 12px;
-    --font-size-lg: 12px;
-    --font-size-xl: 14px;
-    padding-top: 140px;
-
-    .breadcrumbs {
-      margin-bottom: var(--vertical-spacing-quarter);
-    }
-
-    .encryptionNoticeContainer {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      top: 80px;
-    }
-
-    .expressCheckoutSubtitle {
-      margin-bottom: var(--vertical-spacing-half);
-    }
-
-    .expressCheckoutOptions {
+    @include mobile-media {
       flex-flow: column;
-      width: 100%;
-
-      .expressCheckoutOption {
-        width: 100%;
-        margin-top: var(--vertical-spacing-half);
-      }
-    }
-
-    .loginHint {
-      display: none;
-    }
-
-    .loginLink {
-      margin-right: 0;
-    }
-
-    .navigationContainer {
-      flex-flow: column-reverse;
-      margin-bottom: var(--vertical-spacing-normal);
-
-      .continueButton {
-        height: 50px;
-        padding-left: 60px;
-        padding-right: 60px;
-        font-size: var(--font-size-xl);
-        font-weight: var(--font-weight-medium);
-        margin-bottom: var(--vertical-spacing-half);
-      }
+      flex-direction: column-reverse;
     }
   }
 }

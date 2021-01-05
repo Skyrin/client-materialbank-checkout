@@ -15,6 +15,10 @@
     max-height: 500px;
     opacity: 1;
     margin-top: var(--vertical-spacing-half);
+
+    @include mobile-media {
+      margin-top: $margin-small-3;
+    }
   }
 }
 
@@ -28,6 +32,10 @@
   grid-template-columns: auto auto;
   column-gap: var(--horizontal-spacing-normal);
   align-items: center;
+
+  @include mobile-media {
+    column-gap: $margin-small-2;
+  }
 }
 
 .zipCodeDescription {
@@ -35,6 +43,11 @@
   font-weight: var(--font-weight-normal);
   color: var(--primary-color);
   margin-bottom: var(--vertical-spacing-half);
+
+  @include mobile-media {
+    column-gap: $margin-small-2;
+    font-size: var(--font-size-xs);
+  }
 }
 
 @media (max-width: $tablet-s) {
