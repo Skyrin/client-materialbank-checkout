@@ -220,9 +220,14 @@ export class PersonalInformation extends React.Component<Props, State> {
   render() {
     return (
       <div className={cn("funnel-page", styles.PersonalInformation)}>
-        <Logo className={styles.logo} />
-        <Breadcrumbs steps={BREADCRUMBS_STEPS} className={styles.breadcrumbs} />
-        <EncryptionNotice />
+        {!isOnMobile() && <Logo className={styles.logo} />}
+        {!isOnMobile() && (
+          <Breadcrumbs
+            steps={BREADCRUMBS_STEPS}
+            className={styles.breadcrumbs}
+          />
+        )}
+        {!isOnMobile() && <EncryptionNotice />}
         <div className={styles.informationContainer}>
           {this.renderExpressCheckoutSection()}
           {this.renderContactInfoSection()}

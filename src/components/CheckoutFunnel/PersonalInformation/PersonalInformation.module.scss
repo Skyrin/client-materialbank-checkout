@@ -4,6 +4,10 @@
 .PersonalInformation {
   --button-height: 40px;
 
+  @include mobile-media {
+    padding: 0 0 $margin-small-3;
+  }
+
   .logo,
   .breadcrumbs {
     margin-bottom: var(--vertical-spacing-normal);
