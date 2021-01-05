@@ -6,12 +6,14 @@ import styles from "./OrderSummary.module.scss";
 import { AppContext, AppContextT } from "context/AppContext";
 import { isOnMobile } from "utils/responsive";
 import cn from "classnames";
+import { get } from "lodash-es";
 
 type Props = {
   className?: string;
 };
 type State = {
   promoCode: string;
+  promoCodeError: string | null;
   isOpen: boolean;
 };
 
@@ -21,11 +23,23 @@ export default class OrderSummary extends React.Component<Props, State> {
 
   state = {
     promoCode: "",
+    promoCodeError: null,
     isOpen: false,
   };
 
-  onActionButtonClick = () => {
+  onActionButtonClick = async () => {
     console.log("APPLY PROMO CODE", this.state.promoCode);
+    try {
+      await this.context.applyCouponToCart(
+        get(this.context, "cart.id", ""),
+        this.state.promoCode
+      );
+    } catch (e) {
+      console.error("AAAAAAARGH");
+      console.log("ERROR IN ORDER SUMMARY COMPONENT", e);
+      console.log(e.graphqlErrors);
+      this.setState({ promoCodeError: e.graphqlErrors[0].message });
+    }
     this.setState({ promoCode: "" });
   };
 
@@ -63,8 +77,9 @@ export default class OrderSummary extends React.Component<Props, State> {
         <Input
           placeholder="Have a promo code?"
           value={this.state.promoCode}
+          error={this.state.promoCodeError}
           onChange={(val: string) => {
-            this.setState({ promoCode: val });
+            this.setState({ promoCode: val, promoCodeError: null });
           }}
           actionButton="Apply"
           onActionButtonClick={this.onActionButtonClick}

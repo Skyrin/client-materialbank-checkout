@@ -2,7 +2,7 @@ import { CartT } from "constants/types";
 import * as React from "react";
 import { AppContext, AppContextT, defaultValues } from "./AppContext";
 import { cloneDeep, merge } from "lodash-es";
-import { requestCartInfo } from "./CheckoutAPI";
+import { applyCouponToCart, requestCartInfo } from "./CheckoutAPI";
 
 type Props = {
   children: React.ReactNode;
@@ -17,6 +17,7 @@ export default class AppContextManager extends React.Component<Props> {
       ...defaultValues,
       updateCart: this.updateCart,
       requestCartInfo: this.requestCartInfo,
+      applyCouponToCart: this.applyCouponToCart,
     };
   }
 
@@ -30,6 +31,15 @@ export default class AppContextManager extends React.Component<Props> {
     this.forceUpdate();
     const cartInfo = await requestCartInfo(cartId);
     console.log("GOT CART INFO", cartInfo);
+    this.contextState.cartInfoLoading = false;
+    this.updateCart(cartInfo);
+  };
+
+  applyCouponToCart = async (cartId: string, couponCode: string) => {
+    this.contextState.cartInfoLoading = true;
+    this.forceUpdate();
+    const cartInfo = await applyCouponToCart(cartId, couponCode);
+    console.log("COUPON", cartInfo);
     this.contextState.cartInfoLoading = false;
     this.updateCart(cartInfo);
   };
