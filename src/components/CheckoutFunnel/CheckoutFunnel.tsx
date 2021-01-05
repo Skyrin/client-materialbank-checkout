@@ -50,7 +50,15 @@ export default class CheckoutFunnel extends React.Component<Props> {
             </Switch>
           </div>
           <OrderSummary className={styles.orderSummary} />
-          {isOnMobile() && <EncryptionNotice />}
+          <Switch>
+            {isOnMobile() && (
+              <Route
+                path={[PERSONAL_INFORMATION_URL, PAYMENT_URL]}
+                component={EncryptionNotice}
+              />
+            )}
+          </Switch>
+
           {isOnMobile() && (
             <Breadcrumbs
               steps={BREADCRUMBS_STEPS}

@@ -21,8 +21,8 @@
 
   @include mobile-media {
     grid-template-areas:
-      "order-summary"
       "encryption-notice"
+      "order-summary"
       "bread-crumbs"
       "page-wrapper";
 
