@@ -1,5 +1,8 @@
+@import "styles/mixins.scss";
+
 .Breadcrumbs {
   --arrow-spacing: 12px;
+  --arrow-spacing-mobile: 8px;
 
   display: flex;
   align-items: center;
@@ -16,12 +19,21 @@
       transition: color 0.1s linear;
       outline: none;
 
+      @include mobile-media {
+        font-weight: var(--font-weight-normal);
+        font-size: var(--font-size-xs);
+      }
+
       &:hover {
         color: var(--primary-color);
       }
 
       &.active {
         color: var(--primary-color);
+
+        @include mobile-media {
+          font-weight: var(--font-weight-medium);
+        }
       }
 
       &.disabled {
@@ -34,6 +46,10 @@
       margin: 0 var(--arrow-spacing);
       color: rgba(var(--primary-color-rgb), 0.1);
       font-size: 12px;
+
+      @include mobile-media {
+        margin: 0 var(--arrow-spacing-mobile);
+      }
     }
   }
 }

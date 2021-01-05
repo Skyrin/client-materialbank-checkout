@@ -15,6 +15,10 @@ import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./CheckoutFunnel.module.scss";
 import OrderConfirmation from "components/CheckoutFunnel/OrderConfirmation/OrderConfirmation";
 import { AppContext, AppContextT } from "context/AppContext";
+import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
+import { BREADCRUMBS_STEPS } from "constants/general";
+import { isOnMobile } from "utils/responsive";
+import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 
 type Props = RouteComponentProps;
 
@@ -46,6 +50,21 @@ export default class CheckoutFunnel extends React.Component<Props> {
             </Switch>
           </div>
           <OrderSummary className={styles.orderSummary} />
+          <Switch>
+            {isOnMobile() && (
+              <Route
+                path={[PERSONAL_INFORMATION_URL, PAYMENT_URL]}
+                component={EncryptionNotice}
+              />
+            )}
+          </Switch>
+
+          {isOnMobile() && (
+            <Breadcrumbs
+              steps={BREADCRUMBS_STEPS}
+              className={styles.breadCrumbs}
+            />
+          )}
         </div>
         <Footer />
       </React.Fragment>

@@ -17,6 +17,7 @@ import AddressForm, {
   DEFAULT_ADDRESS_FORM_VALUES,
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
+import { isOnMobile } from "utils/responsive";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -25,22 +26,38 @@ const contactInfoSchema = yup.object().shape({
 type Props = RouteComponentProps;
 
 type State = {
-  contactInfo: {
+  createAccount: {
+    firstName: string;
+    lastName: string;
     email: string;
+    password: string;
+    confirmPassword: string;
   };
-  contactInfoErrors: {
+  createAccountErrors: {
+    firstName: string | null;
+    lastName: string | null;
     email: string | null;
+    password: string | null;
+    confirmPassword: string | null;
   };
   shippingAddress: AddressFormValuesT;
 };
 
 export class PersonalInformation extends React.Component<Props, State> {
   state = {
-    contactInfo: {
+    createAccount: {
+      firstName: "",
+      lastName: "",
       email: "",
+      password: "",
+      confirmPassword: "",
     },
-    contactInfoErrors: {
+    createAccountErrors: {
+      firstName: null,
+      lastName: null,
       email: null,
+      password: null,
+      confirmPassword: null,
     },
     shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
   };
@@ -69,23 +86,23 @@ export class PersonalInformation extends React.Component<Props, State> {
             </div>
           </div>
         </div>
-        <span className={styles.expressCheckoutFootnote}>
+        <div className={styles.expressCheckoutFootnote}>
           Or continue to pay with a credit card
-        </span>
+        </div>
       </React.Fragment>
     );
   };
 
   validateContactInfo = () => {
     try {
-      contactInfoSchema.validateSync(this.state.contactInfo, {
+      contactInfoSchema.validateSync(this.state.createAccount, {
         abortEarly: false,
       });
     } catch (e) {
       const errors = extractErrors(e);
       this.setState({
-        contactInfoErrors: {
-          ...this.state.contactInfoErrors,
+        createAccountErrors: {
+          ...this.state.createAccountErrors,
           ...errors,
         },
       });
@@ -96,7 +113,7 @@ export class PersonalInformation extends React.Component<Props, State> {
     return (
       <div className={styles.section}>
         <div className={styles.sectionTitleLine}>
-          <h3 className={styles.sectionTitle}>Contact Info</h3>
+          <h3 className={styles.sectionTitle}>Create an Account</h3>
           <div>
             <span className={styles.loginHint}>Already have an account?</span>
             <a href="/" className={styles.loginLink}>
@@ -104,18 +121,58 @@ export class PersonalInformation extends React.Component<Props, State> {
             </a>
           </div>
         </div>
-        <Input
-          placeholder="Email Address"
-          value={this.state.contactInfo.email}
-          onChange={(val: string) => {
-            this.setState({
-              contactInfo: { email: val },
-              contactInfoErrors: { email: null },
-            });
-          }}
-          onBlur={this.validateContactInfo}
-          error={this.state.contactInfoErrors.email}
-        />
+        <div className={styles.createAccountSection}>
+          <Input
+            className={styles.firstName}
+            placeholder="First Name"
+            value={this.state.createAccount.firstName}
+            onChange={(val: string) => {
+              this.updateField("firstName", val);
+            }}
+            onBlur={this.validateContactInfo}
+            error={this.state.createAccountErrors.firstName}
+          />
+          <Input
+            className={styles.lastName}
+            placeholder="Last Name"
+            value={this.state.createAccount.lastName}
+            onChange={(val: string) => {
+              this.updateField("lastName", val);
+            }}
+            onBlur={this.validateContactInfo}
+            error={this.state.createAccountErrors.lastName}
+          />
+          <Input
+            className={styles.email}
+            placeholder="Email Address"
+            value={this.state.createAccount.email}
+            onChange={(val: string) => {
+              this.updateField("email", val);
+            }}
+            onBlur={this.validateContactInfo}
+            error={this.state.createAccountErrors.email}
+          />
+          <Input
+            className={styles.password}
+            placeholder="Create Password"
+            value={this.state.createAccount.password}
+            onChange={(val: string) => {
+              this.updateField("password", val);
+            }}
+            onBlur={this.validateContactInfo}
+            error={this.state.createAccountErrors.password}
+          />
+          <Input
+            className={styles.confirmPassword}
+            placeholder="Re-Enter Password"
+            value={this.state.createAccount.confirmPassword}
+            onChange={(val: string) => {
+              this.updateField("confirmPassword", val);
+            }}
+            onBlur={this.validateContactInfo}
+            error={this.state.createAccountErrors.confirmPassword}
+          />
+        </div>
       </div>
     );
   };
@@ -163,35 +220,61 @@ export class PersonalInformation extends React.Component<Props, State> {
   render() {
     return (
       <div className={cn("funnel-page", styles.PersonalInformation)}>
-        <Logo className={styles.logo} />
-        <Breadcrumbs steps={BREADCRUMBS_STEPS} className={styles.breadcrumbs} />
-        <EncryptionNotice />
-        {this.renderExpressCheckoutSection()}
-        {this.renderContactInfoSection()}
-        {this.renderShippingMethodSection()}
-        {this.renderShippingAddressSection()}
+        {!isOnMobile() && <Logo className={styles.logo} />}
+        {!isOnMobile() && (
+          <Breadcrumbs
+            steps={BREADCRUMBS_STEPS}
+            className={styles.breadcrumbs}
+          />
+        )}
+        {!isOnMobile() && <EncryptionNotice />}
+        <div className={styles.informationContainer}>
+          {this.renderExpressCheckoutSection()}
+          {this.renderContactInfoSection()}
+          {this.renderShippingMethodSection()}
+          {this.renderShippingAddressSection()}
 
-        <div className={styles.navigationContainer}>
-          <Link to={CART_URL} className="link-button">
-            <i className="far fa-long-arrow-left" />
-            Return to cart
-          </Link>
-          <button
-            className="button large"
-            onClick={() => {
-              this.props.history.push(PAYMENT_URL);
-            }}
-            disabled={
-              !contactInfoSchema.isValidSync(this.state.contactInfo) ||
-              (this.shippingAddressForm && !this.shippingAddressForm.isValid())
-            }
-          >
-            Continue to Payment
-          </button>
+          {isOnMobile() && <div className={cn("horizontal-divider")} />}
+
+          <div className={styles.navigationContainer}>
+            <Link
+              to={CART_URL}
+              className={cn("link-button", { "margin-top": isOnMobile() })}
+            >
+              <i className="far fa-long-arrow-left" />
+              Return to cart
+            </Link>
+            <button
+              className={cn("button large", { "margin-top": isOnMobile() })}
+              onClick={() => {
+                this.props.history.push(PAYMENT_URL);
+              }}
+              disabled={
+                !contactInfoSchema.isValidSync(this.state.createAccount) ||
+                (this.shippingAddressForm &&
+                  !this.shippingAddressForm.isValid())
+              }
+            >
+              Continue to Payment
+            </button>
+          </div>
         </div>
       </div>
     );
   }
+
+  updateField = (fieldName: string, value: string) => {
+    this.setState({
+      createAccount: {
+        ...this.state.createAccount,
+        [fieldName]: value,
+      },
+      createAccountErrors: {
+        ...this.state.createAccountErrors,
+        [fieldName]: null,
+      },
+    });
+  };
 }
 
 export default withRouter(PersonalInformation);

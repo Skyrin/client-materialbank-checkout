@@ -14,13 +14,24 @@
     grid-area: order-summary;
   }
 
+  .breadCrumbs {
+    grid-area: bread-crumbs;
+    margin: $margin-small-2 $margin-small-3 0;
+  }
+
   @include mobile-media {
     grid-template-areas:
+      "encryption-notice"
       "order-summary"
+      "bread-crumbs"
       "page-wrapper";
 
     .orderSummary {
       min-width: unset;
+    }
+
+    .encryptionNotice {
+      grid-area: encryption-notice;
     }
   }
 }
