@@ -5,7 +5,10 @@ import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PaymentInformation.module.scss";
 import cn from "classnames";
-import { PERSONAL_INFORMATION_URL } from "constants/urls";
+import {
+  ORDER_CONFIRMATION_URL,
+  PERSONAL_INFORMATION_URL,
+} from "constants/urls";
 import applePayLogo from "assets/images/apple_pay_logo_black.svg";
 import payPalLogo from "assets/images/paypal_logo.svg";
 
@@ -246,7 +249,14 @@ export class PaymentInformation extends React.Component<Props, State> {
 
         <div className={cn("margin-top-big", styles.navigationContainer)}>
           {isOnMobile() && (
-            <button className="button large">Place My Order</button>
+            <button
+              className="button large"
+              onClick={() => {
+                this.props.history.push(ORDER_CONFIRMATION_URL);
+              }}
+            >
+              Place My Order
+            </button>
           )}
 
           <Link
@@ -258,7 +268,12 @@ export class PaymentInformation extends React.Component<Props, State> {
           </Link>
 
           {!isOnMobile() && (
-            <button className="button large" disabled>
+            <button
+              className="button large"
+              onClick={() => {
+                this.props.history.push(ORDER_CONFIRMATION_URL);
+              }}
+            >
               Checkout
             </button>
           )}
