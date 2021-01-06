@@ -14,6 +14,7 @@ export type AddressFormValuesT = {
   aptNumber: string;
   zipCode: string;
   phone: string;
+  city?: string;
 };
 
 export const DEFAULT_ADDRESS_FORM_VALUES: AddressFormValuesT = {
@@ -24,6 +25,7 @@ export const DEFAULT_ADDRESS_FORM_VALUES: AddressFormValuesT = {
   aptNumber: "",
   zipCode: "",
   phone: "",
+  city: "",
 };
 
 const DEFAULT_FORM_SCHEMA = yup.object().shape({
@@ -68,6 +70,7 @@ export default class AddressForm extends React.Component<Props, State> {
   static defaultProps = {
     visible: true,
   };
+
   constructor(props: Props) {
     super(props);
 

@@ -18,6 +18,10 @@ import AddressForm, {
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
+import { setGuestEmailOnCart } from "../../../context/CheckoutAPI";
+import { setShippingAddressOnCart } from "../../../context/CheckoutAPI";
+import { AppContext, AppContextT } from "../../../context/AppContext";
+import { cloneDeep } from "lodash-es";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -44,6 +48,9 @@ type State = {
 };
 
 export class PersonalInformation extends React.Component<Props, State> {
+  static contextType = AppContext;
+  context!: AppContextT;
+
   state = {
     createAccount: {
       firstName: "",
@@ -61,8 +68,15 @@ export class PersonalInformation extends React.Component<Props, State> {
     },
     shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
   };
-
   shippingAddressForm?: AddressForm;
+
+  componentDidMount(): void {
+    this.updateGuestEmail();
+  }
+
+  private updateGuestEmail(): void {
+    console.log(this.context.cart);
+  }
 
   renderExpressCheckoutSection = () => {
     return (
@@ -217,6 +231,41 @@ export class PersonalInformation extends React.Component<Props, State> {
     );
   };
 
+  async onSubmit() {
+    await this.setEmail();
+    await this.setShippingAddress();
+    // Show server errors if needed
+    this.props.history.push(PAYMENT_URL);
+  }
+
+  async setEmail() {
+    const cart = cloneDeep(this.context.cart);
+    const resp = await setGuestEmailOnCart(
+      cart.id as string,
+      this.state.createAccount.email
+    );
+    cart.email = resp.email;
+    this.context.updateCart(cart);
+  }
+
+  async setShippingAddress() {
+    const cart = cloneDeep(this.context.cart);
+    const resp = await setShippingAddressOnCart(cart.id as string, {
+      company: this.state.shippingAddress.company,
+      firstname: this.state.shippingAddress.firstName,
+      lastname: this.state.shippingAddress.lastName,
+      postcode: this.state.shippingAddress.zipCode,
+      street: this.state.shippingAddress.address,
+      telephone: this.state.shippingAddress.phone,
+      city: "",
+      country_code: "001",
+    });
+
+    // TODO: Uncomment these after we fix the mutation request
+    // cart.shipping_addresses = resp.shipping_address;
+    // this.context.updateCart(cart);
+  }
+
   render() {
     return (
       <div className={cn("funnel-page", styles.PersonalInformation)}>
@@ -246,9 +295,7 @@ export class PersonalInformation extends React.Component<Props, State> {
             </Link>
             <button
               className={cn("button large", { "margin-top": isOnMobile() })}
-              onClick={() => {
-                this.props.history.push(PAYMENT_URL);
-              }}
+              onClick={() => this.onSubmit()}
               disabled={
                 !contactInfoSchema.isValidSync(this.state.createAccount) ||
                 (this.shippingAddressForm &&
