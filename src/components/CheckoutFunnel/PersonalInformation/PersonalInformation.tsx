@@ -14,17 +14,17 @@ import { extractErrors } from "utils/forms";
 import { DateTime } from "luxon";
 import AddressForm, {
   AddressFormValuesT,
-  DEFAULT_ADDRESS_FORM_VALUES,
+  DEFAULT_ADDRESS_FORM_VALUES
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
-import { setGuestEmailOnCart } from "../../../context/CheckoutAPI";
+import { CartAddressInput, setGuestEmailOnCart } from "../../../context/CheckoutAPI";
 import { setShippingAddressOnCart } from "../../../context/CheckoutAPI";
 import { AppContext, AppContextT } from "../../../context/AppContext";
 import { cloneDeep } from "lodash-es";
 
 const contactInfoSchema = yup.object().shape({
-  email: yup.string().email().required(),
+  email: yup.string().email().required()
 });
 
 type Props = RouteComponentProps;
@@ -57,25 +57,41 @@ export class PersonalInformation extends React.Component<Props, State> {
       lastName: "",
       email: "",
       password: "",
-      confirmPassword: "",
+      confirmPassword: ""
     },
     createAccountErrors: {
       firstName: null,
       lastName: null,
       email: null,
       password: null,
-      confirmPassword: null,
+      confirmPassword: null
     },
-    shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
+    shippingAddress: DEFAULT_ADDRESS_FORM_VALUES
   };
   shippingAddressForm?: AddressForm;
 
   componentDidMount(): void {
-    this.updateGuestEmail();
+
+    //TODO: Find a smarter way to wait from backend data
+    window.setTimeout(() => {
+      this.initialiseData();
+    }, 1000);
   }
 
-  private updateGuestEmail(): void {
-    console.log(this.context.cart);
+  initialiseData(): void {
+    this.setState((prevState) => ({
+      shippingAddress: {
+        firstName: this.context.cart.shipping_addresses[0].firstname,
+        lastName: this.context.cart.shipping_addresses[0].lastname,
+        company: this.context.cart.shipping_addresses[0].company,
+        address: this.context.cart.shipping_addresses[0].street[0],
+        aptNumber: DEFAULT_ADDRESS_FORM_VALUES.aptNumber,
+        zipCode: this.context.cart.shipping_addresses[0].postcode,
+        phone: this.context.cart.shipping_addresses[0].telephone,
+        city: this.context.cart.shipping_addresses[0].city
+      },
+      createAccount: { ...prevState.createAccount, email: this.context.cart.email }
+    }));
   }
 
   renderExpressCheckoutSection = () => {
@@ -110,15 +126,15 @@ export class PersonalInformation extends React.Component<Props, State> {
   validateContactInfo = () => {
     try {
       contactInfoSchema.validateSync(this.state.createAccount, {
-        abortEarly: false,
+        abortEarly: false
       });
     } catch (e) {
       const errors = extractErrors(e);
       this.setState({
         createAccountErrors: {
           ...this.state.createAccountErrors,
-          ...errors,
-        },
+          ...errors
+        }
       });
     }
   };
@@ -220,7 +236,7 @@ export class PersonalInformation extends React.Component<Props, State> {
         <AddressForm
           onChange={(newValues: AddressFormValuesT) => {
             this.setState({
-              shippingAddress: newValues,
+              shippingAddress: newValues
             });
           }}
           componentRef={(ref) => {
@@ -235,7 +251,7 @@ export class PersonalInformation extends React.Component<Props, State> {
     await this.setEmail();
     await this.setShippingAddress();
     // Show server errors if needed
-    this.props.history.push(PAYMENT_URL);
+    // this.props.history.push(PAYMENT_URL);
   }
 
   async setEmail() {
@@ -250,57 +266,49 @@ export class PersonalInformation extends React.Component<Props, State> {
 
   async setShippingAddress() {
     const cart = cloneDeep(this.context.cart);
-    const resp = await setShippingAddressOnCart(cart.id as string, {
-      company: this.state.shippingAddress.company,
-      firstname: this.state.shippingAddress.firstName,
-      lastname: this.state.shippingAddress.lastName,
-      postcode: this.state.shippingAddress.zipCode,
-      street: this.state.shippingAddress.address,
-      telephone: this.state.shippingAddress.phone,
-      city: "",
-      country_code: "001",
-    });
+    console.log(new CartAddressInput(this.state.shippingAddress));
+    const resp = await setShippingAddressOnCart(cart.id as string, new CartAddressInput(this.state.shippingAddress));
 
     // TODO: Uncomment these after we fix the mutation request
-    // cart.shipping_addresses = resp.shipping_address;
-    // this.context.updateCart(cart);
+    cart.shipping_addresses = resp.shipping_address;
+    this.context.updateCart(cart);
   }
 
   render() {
     return (
       <div className={cn("funnel-page", styles.PersonalInformation)}>
-        {!isOnMobile() && <Logo className={styles.logo} />}
+        {!isOnMobile() && <Logo className={styles.logo}/>}
         {!isOnMobile() && (
           <Breadcrumbs
             steps={BREADCRUMBS_STEPS}
             className={styles.breadcrumbs}
           />
         )}
-        {!isOnMobile() && <EncryptionNotice />}
+        {!isOnMobile() && <EncryptionNotice/>}
         <div className={styles.informationContainer}>
           {this.renderExpressCheckoutSection()}
           {this.renderContactInfoSection()}
           {this.renderShippingMethodSection()}
           {this.renderShippingAddressSection()}
 
-          {isOnMobile() && <div className={cn("horizontal-divider")} />}
+          {isOnMobile() && <div className={cn("horizontal-divider")}/>}
 
           <div className={styles.navigationContainer}>
             <Link
               to={CART_URL}
               className={cn("link-button", { "margin-top": isOnMobile() })}
             >
-              <i className="far fa-long-arrow-left" />
+              <i className="far fa-long-arrow-left"/>
               Return to cart
             </Link>
             <button
               className={cn("button large", { "margin-top": isOnMobile() })}
               onClick={() => this.onSubmit()}
-              disabled={
-                !contactInfoSchema.isValidSync(this.state.createAccount) ||
-                (this.shippingAddressForm &&
-                  !this.shippingAddressForm.isValid())
-              }
+              // disabled={
+              //   !contactInfoSchema.isValidSync(this.state.createAccount) ||
+              //   (this.shippingAddressForm &&
+              //     !this.shippingAddressForm.isValid())
+              // }
             >
               Continue to Payment
             </button>
@@ -314,12 +322,12 @@ export class PersonalInformation extends React.Component<Props, State> {
     this.setState({
       createAccount: {
         ...this.state.createAccount,
-        [fieldName]: value,
+        [fieldName]: value
       },
       createAccountErrors: {
         ...this.state.createAccountErrors,
-        [fieldName]: null,
-      },
+        [fieldName]: null
+      }
     });
   };
 }

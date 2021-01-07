@@ -77,15 +77,14 @@ export const requestCartInfo = async (cartId: string) => {
   }
 };
 
-export const setGuestEmailOnCart = async (cartId: string, email: string) => {
+
+export const setGuestEmailOnCart = async (cart_id: string, email: string) => {
+
+  email = email || "gmail@gmail.com";
+
   const query = `
-      mutation{
-      setGuestEmailOnCart(
-        input: {
-          cart_id: "${cartId}",
-          email: "${email}"
-        }
-      )
+    mutation ($input: SetGuestEmailOnCartInput!) {
+      setGuestEmailOnCart(input: $input)
       {
         cart {
           id
@@ -96,7 +95,9 @@ export const setGuestEmailOnCart = async (cartId: string, email: string) => {
   `;
 
   try {
-    const resp = await graphqlRequest(query, { cart_id: cartId, email: email });
+    const resp = await graphqlRequest(
+      query, { input: { cart_id, email } }
+    );
     console.log("GQL RESPONSE", resp);
     // TODO: Process response
     return resp["setGuestEmailOnCart"]["cart"];
@@ -106,65 +107,86 @@ export const setGuestEmailOnCart = async (cartId: string, email: string) => {
 };
 
 export class CartAddressInput {
-  city: string = "Washington";
-  company?: string = "Rodeapps";
-  country_code: string = "001";
-  firstname: string = "Test-Verginica";
-  lastname: string = "Test-Vergescu";
-  postcode?: string = "400123";
-  region?: string = "Ardeal";
-  region_id?: number = 1;
-  street: string = "Str. Fericirii";
-  telephone: string = "+40123123123";
+  city: string;
+  company: string;
+  country_code: string;
+  firstname: string;
+  lastname: string;
+  postcode: string;
+  region_id: number;
+  telephone: string;
+  street: string[];
+
+  private static readonly defaults = {
+    city: "Washington",
+    company: undefined,
+    country_code: "US",
+    firstname: undefined,
+    lastname: undefined,
+    postcode: undefined,
+    region_id: 1, // TODO Address this: Currently region is not present on design, but required on backend
+    telephone: undefined,
+    street: undefined
+  };
+
+  constructor(obj?: any) {
+    this.city = obj?.city || CartAddressInput.defaults.city;
+    this.company = obj?.company || CartAddressInput.defaults.company;
+    this.country_code = obj?.country_code || CartAddressInput.defaults.country_code;
+    this.firstname = obj?.firstname || obj?.firstName || CartAddressInput.defaults.firstname;
+    this.lastname = obj?.lastname || obj?.lastName || CartAddressInput.defaults.lastname;
+    this.postcode = obj?.postcode || obj?.zipCode || CartAddressInput.defaults.postcode;
+    this.region_id = obj?.region_id || CartAddressInput.defaults.region_id;
+    this.telephone = obj?.telephone || obj?.phone || CartAddressInput.defaults.telephone;
+    this.street =
+      obj?.street ?
+        Array.isArray(obj.street) ? obj.street : [obj.street]
+        : obj?.address ?
+        Array.isArray(obj.address) ? obj.address : [obj.address]
+        : CartAddressInput.defaults.street;
+  }
 }
 
 export const setShippingAddressOnCart = async (
   cartId: string,
   shippingAddress: CartAddressInput
 ) => {
-  const query = `mutation{
-  setShippingAddressesOnCart(
-    input: {
-    	cart_id: "${cartId}",
-      shipping_addresses: [
-        ${JSON.stringify(shippingAddress)}
-      ]
-  	}
-  )
-  {
-    cart {
-      id,
-      shipping_addresses {
-        city
-        company
-        country {
-          code
-          label
+  const query = `
+    mutation ($input: SetShippingAddressesOnCartInput!) {
+      setShippingAddressesOnCart(input: $input) {
+        cart {
+          id
+          shipping_addresses {
+            city
+            company
+            country {
+              code
+              label
+            }
+            firstname
+            lastname
+            postcode
+            region {
+              code
+              label
+              region_id
+            }
+            street
+            telephone
+          }
         }
-        customer_notes
-        firstname
-        lastname
-        pickup_location_code
-        postcode
-        region {
-          code
-          label
-          region_id
-        }
-        street
-        telephone
       }
     }
-  }
-}
-`;
+  `;
 
   try {
-    // TODO: See why the server tells us Error: GraphQL error: Syntax Error: Expected Name, found String "city"
-
     const resp = await graphqlRequest(query, {
-      cart_id: cartId,
-      shipping_address: shippingAddress,
+      input: {
+        cart_id: cartId,
+        shipping_addresses: [{
+          address: shippingAddress
+        }]
+      }
     });
     console.log("GQL RESPONSE", resp);
     // TODO: Process response
@@ -183,39 +205,23 @@ export const setBillingAddressOnCart = async (
     ? { same_as_shipping: true }
     : { address: billingAddress };
 
-  const query = `mutation{
-  setShippingAddressesOnCart(
-    input: {
-    	cart_id: "${cartId}",
-      billing_address: ${JSON.stringify(billingAddressInput)}
-  	}
-  )
-  {
-    cart {
-      id,
-      billing_address {
-        city
-        company
-        country {
-          code
-          label
+  const query = `
+  mutation {
+    setShippingAddressesOnCart(
+      input: {
+        cart_id: "${cartId}",
+        billing_address: ${JSON.stringify(billingAddressInput)}
+      }
+    )
+    {
+      cart {
+        id,
+        billing_address {
+          ${AddressFragment}
         }
-        customer_notes
-        firstname
-        lastname
-        pickup_location_code
-        postcode
-        region {
-          code
-          label
-          region_id
-        }
-        street
-        telephone
       }
     }
   }
-}
 `;
 
   try {
@@ -223,7 +229,7 @@ export const setBillingAddressOnCart = async (
 
     const resp = await graphqlRequest(query, {
       cart_id: cartId,
-      billing_address: billingAddress,
+      billing_address: billingAddress
     });
     console.log("GQL RESPONSE", resp);
     // TODO: Process response

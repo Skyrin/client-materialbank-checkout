@@ -7,21 +7,21 @@ import styles from "./PaymentInformation.module.scss";
 import cn from "classnames";
 import {
   ORDER_CONFIRMATION_URL,
-  PERSONAL_INFORMATION_URL,
+  PERSONAL_INFORMATION_URL
 } from "constants/urls";
 import applePayLogo from "assets/images/apple_pay_logo_black.svg";
 import payPalLogo from "assets/images/paypal_logo.svg";
 
 import CreditCardForm, {
   CreditCardFormValuesT,
-  DEFAULT_CREDIT_CARD_FORM_VALUES,
+  DEFAULT_CREDIT_CARD_FORM_VALUES
 } from "components/common/Forms/CreditCardForm/CreditCardForm";
 
 import Checkbox from "components/common/Checkbox/Checkbox";
 import RadioButton from "components/common/RadioButton/RadioButton";
 import AddressForm, {
   AddressFormValuesT,
-  DEFAULT_ADDRESS_FORM_VALUES,
+  DEFAULT_ADDRESS_FORM_VALUES
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
@@ -59,7 +59,7 @@ export class PaymentInformation extends React.Component<Props, State> {
     paymentOption: PaymentOption.CreditCard,
     creditCardInfo: DEFAULT_CREDIT_CARD_FORM_VALUES,
     billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
-    rememberMeCheck: true,
+    rememberMeCheck: true
   };
 
   creditCardForm?: CreditCardForm;
@@ -83,16 +83,17 @@ export class PaymentInformation extends React.Component<Props, State> {
         firstname: this.state.billingAddress.firstName,
         lastname: this.state.billingAddress.lastName,
         postcode: this.state.billingAddress.zipCode,
-        street: this.state.billingAddress.address,
+        street: [this.state.billingAddress.address],
         telephone: this.state.billingAddress.phone,
         city: "",
-        country_code: "001",
+        country_code: "US",
+        region_id: 1
       },
       this.state.addressOption === "shipping-address"
     );
     // TODO: Uncomment these after we fix the mutation request
-    // cart.billing_address = resp.billing_address;
-    // this.context.updateCart(cart);
+    cart.billing_address = resp.billing_address;
+    this.context.updateCart(cart);
   }
 
   renderContactInfoSection = () => {
@@ -142,7 +143,7 @@ export class PaymentInformation extends React.Component<Props, State> {
             visible={this.state.paymentOption === PaymentOption.CreditCard}
             onChange={(newValues: CreditCardFormValuesT) => {
               this.setState({
-                creditCardInfo: newValues,
+                creditCardInfo: newValues
               });
               this.creditCardForm?.validateForm();
             }}
@@ -210,7 +211,7 @@ export class PaymentInformation extends React.Component<Props, State> {
             option={AddressOption.ShippingAddress}
             onChange={(val: string) => {
               this.setState({
-                addressOption: val as AddressOption,
+                addressOption: val as AddressOption
               });
             }}
           />
@@ -223,7 +224,7 @@ export class PaymentInformation extends React.Component<Props, State> {
             option={AddressOption.BillingAddress}
             onChange={(val: string) => {
               this.setState({
-                addressOption: val as AddressOption,
+                addressOption: val as AddressOption
               });
             }}
           />
@@ -234,7 +235,7 @@ export class PaymentInformation extends React.Component<Props, State> {
           visible={this.state.addressOption === AddressOption.BillingAddress}
           onChange={(newValues: AddressFormValuesT) => {
             this.setState({
-              billingAddress: newValues,
+              billingAddress: newValues
             });
           }}
           componentRef={(ref) => {
@@ -248,7 +249,7 @@ export class PaymentInformation extends React.Component<Props, State> {
   render() {
     return (
       <div className={cn("funnel-page", styles.PaymentInformation)}>
-        {!isOnMobile() && <Logo className={styles.logo} />}
+        {!isOnMobile() && <Logo className={styles.logo}/>}
         {!isOnMobile() && (
           <Breadcrumbs
             steps={BREADCRUMBS_STEPS}
@@ -256,14 +257,14 @@ export class PaymentInformation extends React.Component<Props, State> {
           />
         )}
 
-        {!isOnMobile() && <EncryptionNotice />}
+        {!isOnMobile() && <EncryptionNotice/>}
 
         {this.renderContactInfoSection()}
         {this.renderShipToInfoSection()}
         {this.renderPaymentInfoSection()}
         {this.renderAddressSection()}
 
-        <div className="horizontal-divider margin-top" />
+        <div className="horizontal-divider margin-top"/>
 
         <h3 className="margin-top">Remember me</h3>
         <div className="row center-vertically margin-top">
@@ -272,7 +273,7 @@ export class PaymentInformation extends React.Component<Props, State> {
             value={this.state.rememberMeCheck}
             onChange={(val: boolean) => {
               this.setState({
-                rememberMeCheck: val,
+                rememberMeCheck: val
               });
             }}
           />
@@ -303,7 +304,7 @@ export class PaymentInformation extends React.Component<Props, State> {
             to={PERSONAL_INFORMATION_URL}
             className={cn("link-button", { "margin-top": isOnMobile() })}
           >
-            <i className="far fa-long-arrow-left" />
+            <i className="far fa-long-arrow-left"/>
             Return to information
           </Link>
 
