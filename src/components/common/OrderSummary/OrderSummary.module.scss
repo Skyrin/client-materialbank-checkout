@@ -16,13 +16,6 @@
     border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
   }
 
-  .promoCodeContainer {
-    @extend .section;
-    .subtitle {
-      margin-bottom: var(--vertical-spacing-normal);
-    }
-  }
-
   .pricesContainer {
     @extend .section;
     .priceLine {
@@ -48,6 +41,35 @@
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
     color: var(--primary-color);
+  }
+
+  .giftSectionHeader {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--primary-color);
+
+    .giftIcon {
+      font-size: 18px;
+      color: var(--primary-color);
+      margin-right: 8px;
+    }
+  }
+
+  .giftSectionDescription {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-normal);
+    color: var(--text-color-light);
+
+    margin-top: 6px;
+    margin-bottom: var(--vertical-spacing-normal);
+  }
+
+  .giftsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(calc(max(200px, 25%)), 1fr));
+    grid-column-gap: var(--horizontal-spacing-normal);
+    grid-row-gap: var(--vertical-spacing-normal);
+    margin-bottom: var(--vertical-spacing-normal);
   }
 
   @include mobile-media {

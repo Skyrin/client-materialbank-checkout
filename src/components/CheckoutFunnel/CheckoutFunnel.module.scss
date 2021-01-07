@@ -2,7 +2,8 @@
 
 .pageContent {
   display: grid;
-  grid-template-areas: "page-wrapper page-wrapper page-wrapper order-summary order-summary"; // Get a 60% / 40% distribution
+  grid-template-columns: 3fr 2fr;
+  grid-template-areas: "page-wrapper order-summary"; // Get a 60% / 40% distribution
   flex-grow: 1;
 
   .pageWrapper {
@@ -20,6 +21,7 @@
   }
 
   @include mobile-media {
+    grid-template-columns: auto;
     grid-template-areas:
       "encryption-notice"
       "order-summary"

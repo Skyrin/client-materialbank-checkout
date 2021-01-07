@@ -198,8 +198,7 @@ export default class AddressForm extends React.Component<Props, State> {
         <div
           className={styles.inputLine}
           style={{
-            gridTemplateColumns:
-              "calc(65% - var(--horizontal-spacing-normal) / 2) calc(35% - var(--horizontal-spacing-normal) / 2)",
+            gridTemplateColumns: "6.5fr 3.5fr",
           }}
         >
           <Input

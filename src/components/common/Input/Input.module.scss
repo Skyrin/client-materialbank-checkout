@@ -21,6 +21,9 @@
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
     font-size: var(--font-size-md);
     transition: border-color 0.1s linear, box-shadow 0.1s linear;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 
     @include mobile-media {
       font-size: var(--font-size-sm);
