@@ -1,3 +1,10 @@
+@import "styles/variables.scss";
+
+.OrderConfirmation {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
 .logo {
   margin-bottom: var(--vertical-spacing-normal);
 }
@@ -111,5 +118,59 @@
 
   .back-to-shopping {
     margin-bottom: 20px;
+  }
+}
+
+// Responsiveness ------------------------------------------------------------
+
+@media (max-width: $mobile-width) {
+  .confirmation-text {
+    margin-top: 0;
+  }
+
+  .recommendations-container {
+    display: none;
+  }
+
+  .confirmation-text-row {
+    margin-bottom: 15px !important;
+  }
+
+  .pill {
+    font-size: var(--font-size-xs);
+  }
+
+  .section-title {
+    font-size: var(--font-size-md);
+    margin-top: 40px;
+  }
+  .customer-info-grid {
+    grid-column-gap: 20px;
+    grid-row-gap: 30px;
+
+    .cell-title {
+      font-size: var(--font-size-sm);
+      margin-bottom: 10px;
+    }
+
+    .text-row {
+      font-size: var(--font-size-sm);
+    }
+  }
+
+  .bottom-actions {
+    flex-flow: column-reverse;
+    align-items: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+
+    .contact-us {
+      margin-right: 0;
+      font-size: var(--font-size-sm);
+
+      .chat-icon {
+        font-size: 20px;
+      }
+    }
   }
 }

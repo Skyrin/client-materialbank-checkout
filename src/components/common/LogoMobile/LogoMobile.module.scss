@@ -1,0 +1,25 @@
+@import "styles/variables.scss";
+
+.LogoMobile {
+  display: flex;
+  align-items: center;
+  position: relative;
+  justify-content: center;
+  height: 40px;
+  border-bottom: 1px solid var(--color-separator);
+  background-color: white;
+  z-index: 1;
+  --circle-size: 60px;
+
+  h1 {
+    font-size: var(--font-size-nm);
+  }
+}
+
+.back-button {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--font-size-md);
+}

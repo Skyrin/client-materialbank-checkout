@@ -1,0 +1,26 @@
+.Modal {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.background {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(#222, 0.9);
+}
+
+.content {
+  position: relative;
+  max-width: calc(100% - var(--horizontal-spacing-normal) * 2);
+  max-height: calc(100% - var(--vertical-spacing-normal) * 2);
+  z-index: 1;
+}
