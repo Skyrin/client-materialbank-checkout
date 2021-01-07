@@ -117,6 +117,7 @@ export class CartAddressInput {
   telephone: string;
   street: string[];
 
+  // TODO Address this: Defaults with values are required on Backend but not present in Design.
   private static readonly defaults = {
     city: "Washington",
     company: undefined,
@@ -124,7 +125,7 @@ export class CartAddressInput {
     firstname: undefined,
     lastname: undefined,
     postcode: undefined,
-    region_id: 1, // TODO Address this: Currently region is not present on design, but required on backend
+    region_id: 1,
     telephone: undefined,
     street: undefined
   };

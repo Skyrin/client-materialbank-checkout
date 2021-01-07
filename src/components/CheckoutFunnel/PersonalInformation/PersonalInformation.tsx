@@ -266,11 +266,22 @@ export class PersonalInformation extends React.Component<Props, State> {
 
   async setShippingAddress() {
     const cart = cloneDeep(this.context.cart);
-    console.log(new CartAddressInput(this.state.shippingAddress));
-    const resp = await setShippingAddressOnCart(cart.id as string, new CartAddressInput(this.state.shippingAddress));
+    const resp = await setShippingAddressOnCart(
+      cart.id as string,
+      new CartAddressInput(this.state.shippingAddress)
+    );
 
-    // TODO: Uncomment these after we fix the mutation request
-    cart.shipping_addresses = resp.shipping_address;
+    const address = resp.shipping_addresses[0];
+    cart.shipping_addresses = [{
+      city: address.city,
+      company: address.company,
+      firstname: address.firstname,
+      lastname: address.lastname,
+      postcode: address.zipcode,
+      street: address.street[0],
+      telephone: address.telephone,
+      region: address.region
+    }];
     this.context.updateCart(cart);
   }
 
