@@ -126,7 +126,7 @@
   .loginHint {
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
-    color: var(--text-color-light);
+    color: var(--text-color-slight);
     margin-right: var(--horizontal-spacing-half);
 
     @include mobile-media {
@@ -141,6 +141,53 @@
 
     @include mobile-media {
       font-size: var(--font-size-xs);
+    }
+  }
+
+  .contactInfoSection {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "contact-info logged-in log-out"
+      "user-name user-name user-name"
+      "user-email user-email user-email";
+
+    .contactInfoTitle {
+      grid-area: contact-info;
+    }
+
+    .loggedIn {
+      grid-area: logged-in;
+
+      .loggedInName {
+        font-style: italic;
+      }
+    }
+
+    .logOut {
+      grid-area: log-out;
+    }
+
+    .userName {
+      color: var(--primary-color);
+      margin-top: $margin-small-3;
+      grid-area: user-name;
+
+      @include mobile-media {
+        font-size: var(--font-size-md);
+        margin-top: var(--vertical-spacing-half);
+      }
+    }
+
+    .userEmail {
+      color: var(--primary-color);
+      margin-top: $margin-small;
+      grid-area: user-email;
+
+      @include mobile-media {
+        font-size: var(--font-size-md);
+      }
     }
   }
 
@@ -235,11 +282,32 @@
   }
 
   .shippingAddressSection {
-    border-bottom: 0;
     margin-bottom: var(--vertical-spacing-normal);
 
     @include mobile-media {
       margin-bottom: 0;
+    }
+
+    .addressLine {
+      font-size: var(--font-size-md);
+      color: var(--primary-color);
+      font-weight: var(--font-weight-normal);
+
+      @include mobile-media {
+        font-size: var(--font-size-sm);
+      }
+
+      & + .addressLine {
+        margin-top: $margin-small;
+
+        @include mobile-media {
+          margin-top: 0;
+        }
+      }
+    }
+
+    .radioButton {
+      margin-right: $margin-small-3;
     }
   }
 
