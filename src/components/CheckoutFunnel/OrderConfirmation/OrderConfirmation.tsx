@@ -3,6 +3,7 @@ import cn from "classnames";
 import styles from "./OrderConfirmation.module.scss";
 import Logo from "components/common/Logo/Logo";
 import { Recommendations } from "components/common/Recommendations/Recommendations";
+import { isOnMobile } from "../../../utils/responsive";
 
 export default class OrderConfirmation extends React.Component {
   user = {
@@ -91,8 +92,8 @@ export default class OrderConfirmation extends React.Component {
     const billingAddress = this.customerInfo.billingAddress;
 
     return (
-      <div className={cn("funnel-page")}>
-        <Logo />
+      <div className={cn("funnel-page", styles["OrderConfirmation"])}>
+        {!isOnMobile() && <Logo className={styles.logo} />}
 
         {/* CONFIRMATION TEXTS */}
 

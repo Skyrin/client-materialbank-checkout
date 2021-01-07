@@ -21,6 +21,7 @@
 
   @include mobile-media {
     grid-template-areas:
+      "logo"
       "encryption-notice"
       "order-summary"
       "bread-crumbs"

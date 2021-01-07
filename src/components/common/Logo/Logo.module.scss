@@ -2,7 +2,6 @@
 
 .Logo {
   --circle-size: 60px;
-
   display: flex;
   align-items: center;
 
@@ -17,35 +16,4 @@
 
 .back-button {
   display: none;
-}
-
-@media (max-width: $tablet-s) {
-  .Logo {
-    top: 0;
-    left: 0;
-    position: fixed;
-    width: 100vw;
-    justify-content: center;
-    height: 40px;
-    border-bottom: 1px solid var(--color-separator);
-    background-color: white;
-    z-index: 1;
-
-    h1 {
-      font-size: var(--font-size-nm);
-    }
-  }
-
-  .back-button {
-    display: initial;
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: var(--font-size-md);
-  }
-
-  .circle {
-    display: none;
-  }
 }
