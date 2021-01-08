@@ -28,7 +28,7 @@ export default class PromoCode extends React.Component<Props, State> {
     promoCodes: [],
   };
 
-  onActionButtonClick = async () => {
+  applyCoupon = async () => {
     console.log("APPLY PROMO CODE", this.state.promoCode);
     try {
       await this.context.applyCouponToCart(
@@ -39,8 +39,33 @@ export default class PromoCode extends React.Component<Props, State> {
       console.log("ERROR IN ORDER SUMMARY COMPONENT", e);
       console.log(e.graphqlErrors);
       this.setState({ promoCodeError: e.graphqlErrors[0].message });
+    } finally {
+      this.setState({
+        promoCode: "",
+        promoCodes: [...this.state.promoCodes, this.state.promoCode],
+      });
     }
-    this.setState({ promoCode: "" });
+  };
+
+  removeCoupon = async (promoCode: string) => {
+    console.log("REMOVE PROMO CODE", promoCode);
+    try {
+      await this.context.removeCouponFromCart(
+        get(this.context, "cart.id", ""),
+        promoCode
+      );
+    } catch (e) {
+      console.log("ERROR IN ORDER SUMMARY COMPONENT", e);
+      console.log(e.graphqlErrors);
+      this.setState({ promoCodeError: e.graphqlErrors[0].message });
+    } finally {
+      const newCodes = [...this.state.promoCodes].filter(
+        (pc) => pc !== promoCode
+      );
+      this.setState({
+        promoCodes: newCodes,
+      });
+    }
   };
 
   render() {
@@ -61,19 +86,40 @@ export default class PromoCode extends React.Component<Props, State> {
           />
         </div>
 
-        <Input
-          className={cn(styles.promoCodeInput, {
-            [styles.visible]: this.state.isOpen,
-          })}
-          placeholder="Have a promo code?"
-          value={this.state.promoCode}
-          error={this.state.promoCodeError}
-          onChange={(val: string) => {
-            this.setState({ promoCode: val, promoCodeError: null });
-          }}
-          actionButton="Apply"
-          onActionButtonClick={this.onActionButtonClick}
-        />
+        {this.state.promoCodes.length === 0 && (
+          <Input
+            className={cn(styles.promoCodeInput, {
+              [styles.visible]: this.state.isOpen,
+            })}
+            placeholder="Have a promo code?"
+            value={this.state.promoCode}
+            error={this.state.promoCodeError}
+            onChange={(val: string) => {
+              this.setState({ promoCode: val, promoCodeError: null });
+            }}
+            actionButton="Apply"
+            onActionButtonClick={this.applyCoupon}
+          />
+        )}
+
+        {this.state.promoCodes.length > 0 && (
+          <div className={styles.promoCodes}>
+            {this.state.promoCodes.map((pc) => (
+              <div className={styles.promoCode} key={`promo_code_${pc}`}>
+                <div className={styles.codeWrapper}>
+                  <i className={cn("far", "fa-tags", styles.couponIcon)} />
+                  <span className={styles.code}>{pc}</span>
+                </div>
+                <i
+                  className={cn("far", "fa-times", styles.removeCodeIcon)}
+                  onClick={() => {
+                    this.removeCoupon(pc);
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   }

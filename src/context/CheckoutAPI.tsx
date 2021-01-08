@@ -96,3 +96,25 @@ export const applyCouponToCart = async (cartId: string, couponCode: string) => {
   // TODO: Process response
   return resp["applyCouponToCart"]["cart"];
 };
+
+export const removeCouponFromCart = async (
+  cartId: string,
+  couponCode: string
+) => {
+  const RemoveCouponMutation = `
+    mutation($input: RemoveCouponFromCartInput!) {
+      removeCouponFromCart(input: $input) {
+        cart {
+          ${CartFragment}
+        }
+      }
+    }
+  `;
+  const resp = await graphqlRequest(RemoveCouponMutation, {
+    input: {
+      cart_id: cartId,
+    },
+  });
+  console.log("REMOVE COUPON RESPONSE, resp");
+  return resp["removeCouponFromCart"]["cart"];
+};

@@ -36,4 +36,31 @@
       opacity: 1;
     }
   }
+
+  .promoCodes {
+    .promoCode {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      border-radius: 8px;
+      margin-top: var(--vertical-spacing-half);
+      box-shadow: shadow($shadow-size-sm, $shadow-color-normal);
+    }
+
+    .codeWrapper {
+      display: flex;
+      align-items: center;
+      font-size: var(--font-size-md);
+
+      .couponIcon {
+        font-size: 12px;
+        margin-right: var(--horizontal-spacing-half);
+      }
+    }
+
+    .removeCodeIcon {
+      cursor: pointer;
+    }
+  }
 }
