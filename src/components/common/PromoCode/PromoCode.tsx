@@ -36,7 +36,7 @@ export default class PromoCode extends React.Component<Props, State> {
         this.state.promoCode
       );
     } catch (e) {
-      console.log("ERROR IN ORDER SUMMARY COMPONENT", e);
+      console.log("ERROR IN PROMO CODE COMPONENT", e);
       console.log(e.graphqlErrors);
       this.setState({ promoCodeError: e.graphqlErrors[0].message });
     } finally {
@@ -55,7 +55,7 @@ export default class PromoCode extends React.Component<Props, State> {
         promoCode
       );
     } catch (e) {
-      console.log("ERROR IN ORDER SUMMARY COMPONENT", e);
+      console.log("ERROR IN PROMO CODE COMPONENT", e);
       console.log(e.graphqlErrors);
       this.setState({ promoCodeError: e.graphqlErrors[0].message });
     } finally {
