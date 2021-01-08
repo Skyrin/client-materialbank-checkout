@@ -23,6 +23,7 @@
   @include mobile-media {
     grid-template-columns: auto;
     grid-template-areas:
+      "logo"
       "encryption-notice"
       "order-summary"
       "bread-crumbs"

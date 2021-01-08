@@ -18,10 +18,20 @@ import AddressForm, {
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
+import RadioButton from "components/common/RadioButton/RadioButton";
+import {
+  AddressOption,
+  PaymentOption,
+} from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
 });
+
+export enum ShippingAddressOption {
+  Existing = "existing",
+  New = "new",
+}
 
 type Props = RouteComponentProps;
 
@@ -40,6 +50,8 @@ type State = {
     password: string | null;
     confirmPassword: string | null;
   };
+  isLoggedIn: boolean;
+  shippingAddressOption: ShippingAddressOption;
   shippingAddress: AddressFormValuesT;
 };
 
@@ -59,6 +71,8 @@ export class PersonalInformation extends React.Component<Props, State> {
       password: null,
       confirmPassword: null,
     },
+    isLoggedIn: Math.random() < 0.5,
+    shippingAddressOption: ShippingAddressOption.Existing,
     shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
   };
 
@@ -110,6 +124,23 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   renderContactInfoSection = () => {
+    return (
+      <div className={cn(styles.contactInfoSection, styles.section)}>
+        <h3 className={styles.contactInfoTitle}>Contact Info</h3>
+        <div className={cn(styles.loggedIn, styles.loginHint)}>
+          Logged in as&nbsp;
+          <span className={styles.loggedInName}>John Mock</span>
+        </div>
+        <a href="/" className={cn(styles.logOut, styles.loginLink)}>
+          Log Out
+        </a>
+        <div className={styles.userName}>John Doe</div>
+        <div className={styles.userEmail}>johnmock@gmail.com</div>
+      </div>
+    );
+  };
+
+  renderCreateAccountSection = () => {
     return (
       <div className={styles.section}>
         <div className={styles.sectionTitleLine}>
@@ -203,7 +234,50 @@ export class PersonalInformation extends React.Component<Props, State> {
     return (
       <div className={cn(styles.section, styles.shippingAddressSection)}>
         <h3 className={styles.sectionTitle}>Shipping Address</h3>
+
+        {this.state.isLoggedIn && (
+          <div className={cn("row margin-top")}>
+            <RadioButton
+              className={styles.radioButton}
+              value={this.state.shippingAddressOption}
+              option={ShippingAddressOption.Existing}
+              onChange={(val: string) => {
+                this.setState({
+                  shippingAddressOption: val as ShippingAddressOption,
+                });
+              }}
+            />
+            <div>
+              <div className={styles.addressLine}>John Doe</div>
+              <div className={styles.addressLine}>
+                236 West 30th Street 11th Floor
+              </div>
+              <div className={styles.addressLine}>New York, NY 10001</div>
+            </div>
+          </div>
+        )}
+        {this.state.isLoggedIn && (
+          <div className={cn("row margin-top")}>
+            <RadioButton
+              className={styles.radioButton}
+              value={this.state.shippingAddressOption}
+              option={ShippingAddressOption.New}
+              onChange={(val: string) => {
+                this.setState({
+                  shippingAddressOption: val as ShippingAddressOption,
+                });
+              }}
+            />
+            <div className={styles.addressLine}>
+              Use a different shipping address
+            </div>
+          </div>
+        )}
         <AddressForm
+          visible={
+            this.state.shippingAddressOption === ShippingAddressOption.New ||
+            !this.state.isLoggedIn
+          }
           onChange={(newValues: AddressFormValuesT) => {
             this.setState({
               shippingAddress: newValues,
@@ -221,16 +295,20 @@ export class PersonalInformation extends React.Component<Props, State> {
     return (
       <div className={cn("funnel-page", styles.PersonalInformation)}>
         {!isOnMobile() && <Logo className={styles.logo} />}
+
         {!isOnMobile() && (
           <Breadcrumbs
             steps={BREADCRUMBS_STEPS}
             className={styles.breadcrumbs}
           />
         )}
+
         {!isOnMobile() && <EncryptionNotice />}
+
         <div className={styles.informationContainer}>
           {this.renderExpressCheckoutSection()}
-          {this.renderContactInfoSection()}
+          {this.state.isLoggedIn && this.renderContactInfoSection()}
+          {!this.state.isLoggedIn && this.renderCreateAccountSection()}
           {this.renderShippingMethodSection()}
           {this.renderShippingAddressSection()}
 

@@ -1,6 +1,7 @@
+@import "styles/variables.scss";
+
 .Logo {
   --circle-size: 60px;
-
   display: flex;
   align-items: center;
 
@@ -11,4 +12,8 @@
     border-radius: 100%;
     margin-right: var(--horizontal-spacing-normal);
   }
+}
+
+.back-button {
+  display: none;
 }

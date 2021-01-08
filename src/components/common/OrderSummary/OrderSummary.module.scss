@@ -18,6 +18,7 @@
 
   .pricesContainer {
     @extend .section;
+
     .priceLine {
       display: flex;
       justify-content: space-between;

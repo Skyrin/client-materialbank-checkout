@@ -1,0 +1,28 @@
+.UserOrderHistory {
+  padding: 62px 100px 162px;
+
+  @media (max-width: 970px) {
+    padding: calc(var(--vertical-spacing-normal) * 2)
+      calc(var(--vertical-spacing-normal) * 2) 50px;
+  }
+}
+
+.load-more-button {
+  display: block;
+  height: 120px;
+  width: 120px;
+  border: 1px solid var(--primary-color);
+  border-radius: 120px;
+  font-size: var(--font-size-sm);
+  margin: 80px auto 0;
+  font-weight: var(--font-weight-medium);
+
+  &:hover,
+  &:focus {
+    background-color: rgba(black, 0.05);
+  }
+
+  &:active {
+    background-color: rgba(black, 0.1);
+  }
+}
