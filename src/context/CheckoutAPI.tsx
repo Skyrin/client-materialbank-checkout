@@ -1,6 +1,6 @@
 import { graphqlRequest } from "GraphqlClient";
 
-const AddressFragment = `
+export const AddressFragment = `
   city
   company
   firstname

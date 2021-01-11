@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CartT } from "constants/types";
+import { CartT, CustomerT } from "constants/types";
 
 const CART_MOCK_DATA = {
   id: "testId",
@@ -65,6 +65,13 @@ export type AppContextT = {
   updateCart: (newCart: CartT) => void;
   requestCartInfo: (cartId: string) => void;
   cartInfoLoading: boolean;
+  isLoggedIn: boolean;
+  setLoggedIn: (loggedIn: boolean) => void;
+  customer: CustomerT;
+  requestCurrentCustomer: () => void;
+  customerLoading: boolean;
+  login: (email: string, password: string) => void;
+  logout: () => void;
 };
 
 export const defaultValues = {
@@ -72,6 +79,13 @@ export const defaultValues = {
   updateCart: (newCart: CartT) => {},
   requestCartInfo: (cartId: string) => {},
   cartInfoLoading: false,
+  isLoggedIn: false,
+  setLoggedIn: (loggedIn: boolean) => {},
+  customer: {} as CustomerT,
+  requestCurrentCustomer: () => {},
+  customerLoading: false,
+  login: (email: string, password: string) => {},
+  logout: () => {},
 };
 
 export const AppContext = React.createContext(defaultValues);

@@ -23,6 +23,7 @@ import {
   AddressOption,
   PaymentOption,
 } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
+import { AppContext, AppContextT } from "context/AppContext";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -50,12 +51,14 @@ type State = {
     password: string | null;
     confirmPassword: string | null;
   };
-  isLoggedIn: boolean;
   shippingAddressOption: ShippingAddressOption;
   shippingAddress: AddressFormValuesT;
 };
 
 export class PersonalInformation extends React.Component<Props, State> {
+  static contextType = AppContext;
+  context!: AppContextT;
+
   state = {
     createAccount: {
       firstName: "",
@@ -71,7 +74,6 @@ export class PersonalInformation extends React.Component<Props, State> {
       password: null,
       confirmPassword: null,
     },
-    isLoggedIn: Math.random() < 0.5,
     shippingAddressOption: ShippingAddressOption.Existing,
     shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
   };
@@ -131,9 +133,14 @@ export class PersonalInformation extends React.Component<Props, State> {
           Logged in as&nbsp;
           <span className={styles.loggedInName}>John Mock</span>
         </div>
-        <a href="/" className={cn(styles.logOut, styles.loginLink)}>
+        <span
+          className={cn(styles.logOut, styles.loginLink)}
+          onClick={() => {
+            this.context.logout();
+          }}
+        >
           Log Out
-        </a>
+        </span>
         <div className={styles.userName}>John Doe</div>
         <div className={styles.userEmail}>johnmock@gmail.com</div>
       </div>
@@ -147,9 +154,18 @@ export class PersonalInformation extends React.Component<Props, State> {
           <h3 className={styles.sectionTitle}>Create an Account</h3>
           <div>
             <span className={styles.loginHint}>Already have an account?</span>
-            <a href="/" className={styles.loginLink}>
+            <span
+              className={styles.loginLink}
+              onClick={() => {
+                // Hardcoded for now, so we don't create a ton of accounts unless we want to test the register
+                this.context.login(
+                  "vlad.dolineanu+materialbank@rodeapps.com",
+                  "StrongPassword1"
+                );
+              }}
+            >
               Log In
-            </a>
+            </span>
           </div>
         </div>
         <div className={styles.createAccountSection}>
@@ -235,7 +251,7 @@ export class PersonalInformation extends React.Component<Props, State> {
       <div className={cn(styles.section, styles.shippingAddressSection)}>
         <h3 className={styles.sectionTitle}>Shipping Address</h3>
 
-        {this.state.isLoggedIn && (
+        {this.context.isLoggedIn && (
           <div className={cn("row margin-top")}>
             <RadioButton
               className={styles.radioButton}
@@ -256,7 +272,7 @@ export class PersonalInformation extends React.Component<Props, State> {
             </div>
           </div>
         )}
-        {this.state.isLoggedIn && (
+        {this.context.isLoggedIn && (
           <div className={cn("row margin-top")}>
             <RadioButton
               className={styles.radioButton}
@@ -276,7 +292,7 @@ export class PersonalInformation extends React.Component<Props, State> {
         <AddressForm
           visible={
             this.state.shippingAddressOption === ShippingAddressOption.New ||
-            !this.state.isLoggedIn
+            !this.context.isLoggedIn
           }
           onChange={(newValues: AddressFormValuesT) => {
             this.setState({
@@ -307,8 +323,8 @@ export class PersonalInformation extends React.Component<Props, State> {
 
         <div className={styles.informationContainer}>
           {this.renderExpressCheckoutSection()}
-          {this.state.isLoggedIn && this.renderContactInfoSection()}
-          {!this.state.isLoggedIn && this.renderCreateAccountSection()}
+          {this.context.isLoggedIn && this.renderContactInfoSection()}
+          {!this.context.isLoggedIn && this.renderCreateAccountSection()}
           {this.renderShippingMethodSection()}
           {this.renderShippingAddressSection()}
 

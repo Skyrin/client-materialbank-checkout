@@ -86,3 +86,10 @@ export type ShippingMethodT = {
 export type CouponT = {
   code?: string;
 };
+
+export type CustomerT = {
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  addresses?: AddressT[];
+};
