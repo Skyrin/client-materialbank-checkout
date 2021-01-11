@@ -14,6 +14,7 @@ export type AddressFormValuesT = {
   aptNumber: string;
   zipCode: string;
   phone: string;
+  city?: string;
 };
 
 export const DEFAULT_ADDRESS_FORM_VALUES: AddressFormValuesT = {
@@ -24,6 +25,7 @@ export const DEFAULT_ADDRESS_FORM_VALUES: AddressFormValuesT = {
   aptNumber: "",
   zipCode: "",
   phone: "",
+  city: ""
 };
 
 const DEFAULT_FORM_SCHEMA = yup.object().shape({
@@ -36,7 +38,7 @@ const DEFAULT_FORM_SCHEMA = yup.object().shape({
     .string()
     .matches(/[0-9]+/, "Digits Only")
     .required(),
-  phone: yup.string(),
+  phone: yup.string().required()
 });
 
 type AddressFormErrorsT = {
@@ -64,10 +66,14 @@ type State = {
   errors: AddressFormErrorsT;
 };
 
+// TODO: Find a way to update the AddressForm from the parent asynchronously  (not in the constructor)
+//       Why: When we get data from the backend after the form has initialised
+
 export default class AddressForm extends React.Component<Props, State> {
   static defaultProps = {
-    visible: true,
+    visible: true
   };
+
   constructor(props: Props) {
     super(props);
 
@@ -80,8 +86,8 @@ export default class AddressForm extends React.Component<Props, State> {
         address: null,
         aptNumber: null,
         zipCode: null,
-        phone: null,
-      },
+        phone: null
+      }
     };
 
     if (props.componentRef) {
@@ -96,12 +102,12 @@ export default class AddressForm extends React.Component<Props, State> {
       {
         values: {
           ...this.state.values,
-          [fieldName]: value,
+          [fieldName]: value
         },
         errors: {
           ...this.state.errors,
-          [fieldName]: null,
-        },
+          [fieldName]: null
+        }
       },
       () => {
         this.props.onChange(this.state.values);
@@ -114,8 +120,8 @@ export default class AddressForm extends React.Component<Props, State> {
     this.setState({
       errors: {
         ...this.state.errors,
-        ...errors,
-      },
+        ...errors
+      }
     });
   };
 
@@ -123,7 +129,7 @@ export default class AddressForm extends React.Component<Props, State> {
     try {
       const schema = this.getSchema();
       schema.validateSync(this.state.values, {
-        abortEarly: false,
+        abortEarly: false
       });
     } catch (e) {
       this.processErrors(e);
@@ -143,7 +149,7 @@ export default class AddressForm extends React.Component<Props, State> {
     try {
       const schema = this.getSchema();
       schema.validateSyncAt(fieldName, this.state.values, {
-        abortEarly: false,
+        abortEarly: false
       });
     } catch (e) {
       this.processErrors(e);
@@ -154,7 +160,7 @@ export default class AddressForm extends React.Component<Props, State> {
     return (
       <div
         className={cn(styles.addressForm, this.props.listClassName, {
-          [styles.visible]: this.props.visible === true,
+          [styles.visible]: this.props.visible === true
         })}
       >
         <div className={styles.inputLine}>
@@ -199,7 +205,7 @@ export default class AddressForm extends React.Component<Props, State> {
           className={styles.inputLine}
           style={{
             gridTemplateColumns:
-              "calc(65% - var(--horizontal-spacing-normal) / 2) calc(35% - var(--horizontal-spacing-normal) / 2)",
+              "calc(65% - var(--horizontal-spacing-normal) / 2) calc(35% - var(--horizontal-spacing-normal) / 2)"
           }}
         >
           <Input

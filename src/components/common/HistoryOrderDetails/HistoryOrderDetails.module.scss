@@ -11,7 +11,6 @@
   flex: 1;
 }
 
-
 .container {
   padding: var(--spacing-big) 0;
   white-space: nowrap;
@@ -23,7 +22,6 @@
 
   animation: container-appear 0.05s 0s ease-out 1 backwards;
 }
-
 
 .title {
   font-weight: var(--font-weight-medium);
@@ -59,7 +57,6 @@
   font-size: 34px;
   margin-right: var(--horizontal-spacing-half);
 }
-
 
 // animations
 
