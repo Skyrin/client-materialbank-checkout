@@ -25,6 +25,7 @@ import AddressForm, {
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
+import PromoCode from "components/common/PromoCode/PromoCode";
 import { AppContext, AppContextT } from "../../../context/AppContext";
 import { cloneDeep } from "lodash-es";
 import {
@@ -121,6 +122,17 @@ export class PaymentInformation extends React.Component<Props, State> {
         <div className={cn("big-text", styles.value)}>
           236 West 30th Street 11th Floor, New York, NY 10001
         </div>
+      </div>
+    );
+  };
+
+  renderPromoCodeSection = () => {
+    return (
+      <div>
+        <div className="row center-vertically margin-top full-width">
+          <PromoCode className={styles.promoCode} />
+        </div>
+        <div className="horizontal-divider margin-top" />
       </div>
     );
   };
@@ -265,6 +277,7 @@ export class PaymentInformation extends React.Component<Props, State> {
 
         {this.renderContactInfoSection()}
         {this.renderShipToInfoSection()}
+        {isOnMobile() && this.renderPromoCodeSection()}
         {this.renderPaymentInfoSection()}
         {this.renderAddressSection()}
 
