@@ -80,7 +80,9 @@ export class PaymentInformation extends React.Component<Props, State> {
     const cart = cloneDeep(this.context.cart);
     const addressInput =
       this.state.addressOption === "shipping-address"
-        ? new CartAddressInput(cart.shipping_addresses[0])
+        ? new CartAddressInput(
+            cart.shipping_addresses ? cart.shipping_addresses[0] : null
+          )
         : new CartAddressInput(this.state.billingAddress);
     const resp = await setBillingAddressOnCart(cart.id as string, addressInput);
     const address = resp.billing_address;
