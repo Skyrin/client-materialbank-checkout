@@ -101,7 +101,7 @@ export class PaymentInformation extends React.Component<Props, State> {
     return (
       <div className={`${styles.infoSection} ${styles.paddingContainer}`}>
         <h3 className={styles.title}>Contact</h3>
-        <Link className={styles.changeButton} to={"information"}>
+        <Link className={styles.changeButton} to={PERSONAL_INFORMATION_URL}>
           Change
         </Link>
         <div className={cn("big-text", styles.value)}>johndoe@gmail.com</div>

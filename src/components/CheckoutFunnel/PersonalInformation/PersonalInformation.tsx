@@ -14,17 +14,20 @@ import { extractErrors } from "utils/forms";
 import { DateTime } from "luxon";
 import AddressForm, {
   AddressFormValuesT,
-  DEFAULT_ADDRESS_FORM_VALUES
+  DEFAULT_ADDRESS_FORM_VALUES,
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
-import { CartAddressInput, setGuestEmailOnCart } from "../../../context/CheckoutAPI";
+import {
+  CartAddressInput,
+  setGuestEmailOnCart,
+} from "../../../context/CheckoutAPI";
 import { setShippingAddressOnCart } from "../../../context/CheckoutAPI";
 import { AppContext, AppContextT } from "../../../context/AppContext";
 import { cloneDeep } from "lodash-es";
 
 const contactInfoSchema = yup.object().shape({
-  email: yup.string().email().required()
+  email: yup.string().email().required(),
 });
 
 type Props = RouteComponentProps;
@@ -57,21 +60,20 @@ export class PersonalInformation extends React.Component<Props, State> {
       lastName: "",
       email: "",
       password: "",
-      confirmPassword: ""
+      confirmPassword: "",
     },
     createAccountErrors: {
       firstName: null,
       lastName: null,
       email: null,
       password: null,
-      confirmPassword: null
+      confirmPassword: null,
     },
-    shippingAddress: DEFAULT_ADDRESS_FORM_VALUES
+    shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
   };
   shippingAddressForm?: AddressForm;
 
   componentDidMount(): void {
-
     //TODO: Find a smarter way to wait from backend data
     window.setTimeout(() => {
       this.initialiseData();
@@ -88,9 +90,12 @@ export class PersonalInformation extends React.Component<Props, State> {
         aptNumber: DEFAULT_ADDRESS_FORM_VALUES.aptNumber,
         zipCode: this.context.cart.shipping_addresses[0].postcode,
         phone: this.context.cart.shipping_addresses[0].telephone,
-        city: this.context.cart.shipping_addresses[0].city
+        city: this.context.cart.shipping_addresses[0].city,
       },
-      createAccount: { ...prevState.createAccount, email: this.context.cart.email }
+      createAccount: {
+        ...prevState.createAccount,
+        email: this.context.cart.email,
+      },
     }));
   }
 
@@ -126,15 +131,15 @@ export class PersonalInformation extends React.Component<Props, State> {
   validateContactInfo = () => {
     try {
       contactInfoSchema.validateSync(this.state.createAccount, {
-        abortEarly: false
+        abortEarly: false,
       });
     } catch (e) {
       const errors = extractErrors(e);
       this.setState({
         createAccountErrors: {
           ...this.state.createAccountErrors,
-          ...errors
-        }
+          ...errors,
+        },
       });
     }
   };
@@ -236,7 +241,7 @@ export class PersonalInformation extends React.Component<Props, State> {
         <AddressForm
           onChange={(newValues: AddressFormValuesT) => {
             this.setState({
-              shippingAddress: newValues
+              shippingAddress: newValues,
             });
           }}
           componentRef={(ref) => {
@@ -251,7 +256,7 @@ export class PersonalInformation extends React.Component<Props, State> {
     await this.setEmail();
     await this.setShippingAddress();
     // Show server errors if needed
-    // this.props.history.push(PAYMENT_URL);
+    this.props.history.push(PAYMENT_URL);
   }
 
   async setEmail() {
@@ -272,44 +277,46 @@ export class PersonalInformation extends React.Component<Props, State> {
     );
 
     const address = resp.shipping_addresses[0];
-    cart.shipping_addresses = [{
-      city: address.city,
-      company: address.company,
-      firstname: address.firstname,
-      lastname: address.lastname,
-      postcode: address.zipcode,
-      street: address.street[0],
-      telephone: address.telephone,
-      region: address.region
-    }];
+    cart.shipping_addresses = [
+      {
+        city: address.city,
+        company: address.company,
+        firstname: address.firstname,
+        lastname: address.lastname,
+        postcode: address.zipcode,
+        street: address.street[0],
+        telephone: address.telephone,
+        region: address.region,
+      },
+    ];
     this.context.updateCart(cart);
   }
 
   render() {
     return (
       <div className={cn("funnel-page", styles.PersonalInformation)}>
-        {!isOnMobile() && <Logo className={styles.logo}/>}
+        {!isOnMobile() && <Logo className={styles.logo} />}
         {!isOnMobile() && (
           <Breadcrumbs
             steps={BREADCRUMBS_STEPS}
             className={styles.breadcrumbs}
           />
         )}
-        {!isOnMobile() && <EncryptionNotice/>}
+        {!isOnMobile() && <EncryptionNotice />}
         <div className={styles.informationContainer}>
           {this.renderExpressCheckoutSection()}
           {this.renderContactInfoSection()}
           {this.renderShippingMethodSection()}
           {this.renderShippingAddressSection()}
 
-          {isOnMobile() && <div className={cn("horizontal-divider")}/>}
+          {isOnMobile() && <div className={cn("horizontal-divider")} />}
 
           <div className={styles.navigationContainer}>
             <Link
               to={CART_URL}
               className={cn("link-button", { "margin-top": isOnMobile() })}
             >
-              <i className="far fa-long-arrow-left"/>
+              <i className="far fa-long-arrow-left" />
               Return to cart
             </Link>
             <button
@@ -333,12 +340,12 @@ export class PersonalInformation extends React.Component<Props, State> {
     this.setState({
       createAccount: {
         ...this.state.createAccount,
-        [fieldName]: value
+        [fieldName]: value,
       },
       createAccountErrors: {
         ...this.state.createAccountErrors,
-        [fieldName]: null
-      }
+        [fieldName]: null,
+      },
     });
   };
 }
