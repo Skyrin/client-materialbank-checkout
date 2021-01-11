@@ -14,6 +14,7 @@ export type AddressFormValuesT = {
   aptNumber: string;
   zipCode: string;
   phone: string;
+  city?: string;
 };
 
 export const DEFAULT_ADDRESS_FORM_VALUES: AddressFormValuesT = {
@@ -24,6 +25,7 @@ export const DEFAULT_ADDRESS_FORM_VALUES: AddressFormValuesT = {
   aptNumber: "",
   zipCode: "",
   phone: "",
+  city: "",
 };
 
 const DEFAULT_FORM_SCHEMA = yup.object().shape({
@@ -36,7 +38,7 @@ const DEFAULT_FORM_SCHEMA = yup.object().shape({
     .string()
     .matches(/[0-9]+/, "Digits Only")
     .required(),
-  phone: yup.string(),
+  phone: yup.string().required(),
 });
 
 type AddressFormErrorsT = {
@@ -64,10 +66,14 @@ type State = {
   errors: AddressFormErrorsT;
 };
 
+// TODO: Find a way to update the AddressForm from the parent asynchronously  (not in the constructor)
+//       Why: When we get data from the backend after the form has initialised
+
 export default class AddressForm extends React.Component<Props, State> {
   static defaultProps = {
     visible: true,
   };
+
   constructor(props: Props) {
     super(props);
 
