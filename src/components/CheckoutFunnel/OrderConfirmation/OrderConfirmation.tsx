@@ -81,9 +81,7 @@ export default class OrderConfirmation extends React.Component {
     },
   };
 
-  recommendationClick(productId: number): void {
-    console.log(productId);
-  }
+  recommendationClick(productId: number): void {}
 
   render() {
     const customerEmail = this.customerInfo.customerEmail;
@@ -215,7 +213,7 @@ export default class OrderConfirmation extends React.Component {
           <div className={styles["contact-us"]}>
             <i className={cn(styles["chat-icon"], "fas fa-comments-alt")} />
             Need Help?
-            <a href=" ">Contact Us</a>
+            <a href="/">Contact Us</a>
           </div>
 
           <div className={cn(styles["back-to-shopping"], "button")}>
