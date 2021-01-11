@@ -25,8 +25,7 @@ import AddressForm, {
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
-import { AppContext, AppContextT } from "../../../context/AppContext";
-import { cloneDeep } from "lodash-es";
+import { AppContext, AppContextState } from "../../../context/AppContext";
 import {
   CartAddressInput,
   setBillingAddressOnCart,
@@ -55,7 +54,7 @@ type State = {
 
 export class PaymentInformation extends React.Component<Props, State> {
   static contextType = AppContext;
-  context!: AppContextT;
+  context!: AppContextState;
 
   state = {
     addressOption: AddressOption.ShippingAddress,
@@ -77,26 +76,29 @@ export class PaymentInformation extends React.Component<Props, State> {
   }
 
   async setBillingAddress() {
-    const cart = cloneDeep(this.context.cart);
+    const cart = this.context.cart;
     const addressInput =
       this.state.addressOption === "shipping-address"
         ? new CartAddressInput(
             cart.shipping_addresses ? cart.shipping_addresses[0] : null
           )
         : new CartAddressInput(this.state.billingAddress);
+
     const resp = await setBillingAddressOnCart(cart.id as string, addressInput);
     const address = resp.billing_address;
-    cart.billing_address = {
-      city: address.city,
-      company: address.company,
-      firstname: address.firstname,
-      lastname: address.lastname,
-      postcode: address.zipcode,
-      street: address.street[0],
-      telephone: address.telephone,
-      region: address.region,
-    };
-    this.context.updateCart(cart);
+
+    this.context.updateCart({
+      billing_address: {
+        city: address.city,
+        company: address.company,
+        firstname: address.firstname,
+        lastname: address.lastname,
+        postcode: address.zipcode,
+        street: address.street[0],
+        telephone: address.telephone,
+        region: address.region,
+      },
+    });
   }
 
   renderContactInfoSection = () => {

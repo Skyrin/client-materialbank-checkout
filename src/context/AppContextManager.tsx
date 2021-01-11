@@ -1,6 +1,6 @@
 import { CartT } from "constants/types";
 import * as React from "react";
-import { AppContext, AppContextT, defaultValues } from "./AppContext";
+import { AppContext, AppContextState } from "./AppContext";
 import { cloneDeep, merge } from "lodash-es";
 import { requestCartInfo } from "./CheckoutAPI";
 
@@ -9,15 +9,14 @@ type Props = {
 };
 
 export default class AppContextManager extends React.Component<Props> {
-  contextState: AppContextT;
+  contextState: AppContextState;
 
   constructor(props: Props) {
     super(props);
-    this.contextState = {
-      ...defaultValues,
+    this.contextState = new AppContextState({
       updateCart: this.updateCart,
       requestCartInfo: this.requestCartInfo,
-    };
+    });
   }
 
   updateCart = (newCart: CartT) => {
@@ -28,6 +27,7 @@ export default class AppContextManager extends React.Component<Props> {
   requestCartInfo = async (cartId: string) => {
     this.contextState.cartInfoLoading = true;
     this.forceUpdate();
+
     const cartInfo = await requestCartInfo(cartId);
     console.log("GOT CART INFO", cartInfo);
     this.contextState.cartInfoLoading = false;
@@ -35,9 +35,9 @@ export default class AppContextManager extends React.Component<Props> {
   };
 
   render() {
-    const context = cloneDeep(this.contextState);
+    const contextState = cloneDeep(this.contextState);
     return (
-      <AppContext.Provider value={context}>
+      <AppContext.Provider value={contextState}>
         {this.props.children}
       </AppContext.Provider>
     );

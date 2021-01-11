@@ -3,7 +3,7 @@ import { CartItemT } from "constants/types";
 import * as React from "react";
 import CartItem from "./CartItem/CartItem";
 import styles from "./OrderSummary.module.scss";
-import { AppContext, AppContextT } from "context/AppContext";
+import { AppContext, AppContextState } from "context/AppContext";
 import { isOnMobile } from "utils/responsive";
 import cn from "classnames";
 
@@ -17,7 +17,7 @@ type State = {
 
 export default class OrderSummary extends React.Component<Props, State> {
   static contextType = AppContext;
-  context!: AppContextT;
+  context!: AppContextState;
 
   state = {
     promoCode: "",
@@ -50,7 +50,7 @@ export default class OrderSummary extends React.Component<Props, State> {
           />
         </div>
         <span className={styles.total}>{`$${
-          cart.prices?.subtotal_including_tax?.value || 0
+          cart?.prices?.subtotal_including_tax?.value || 0
         }`}</span>
       </div>
     );
@@ -80,7 +80,7 @@ export default class OrderSummary extends React.Component<Props, State> {
       <div className={styles.pricesContainer}>
         <div className={styles.priceLine}>
           <span>Subtotal</span>
-          <span>{`$${cart.prices?.subtotal_including_tax?.value || 0}`}</span>
+          <span>{`$${cart?.prices?.subtotal_including_tax?.value || 0}`}</span>
         </div>
         <div className={styles.priceLine}>
           <span>Shipping</span>
@@ -92,7 +92,7 @@ export default class OrderSummary extends React.Component<Props, State> {
 
   render() {
     const cart = this.context.cart;
-    const cartItems = cart.items || [];
+    const cartItems = cart?.items || [];
 
     return (
       <div
@@ -113,7 +113,9 @@ export default class OrderSummary extends React.Component<Props, State> {
           {this.renderPricesSection()}
           <div className={styles.totalContainer}>
             <span>Total</span>
-            <span>{`$${cart.prices?.subtotal_including_tax?.value || 0}`}</span>
+            <span>{`$${
+              cart?.prices?.subtotal_including_tax?.value || 0
+            }`}</span>
           </div>
         </div>
       </div>

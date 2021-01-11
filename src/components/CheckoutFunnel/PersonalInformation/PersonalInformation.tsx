@@ -20,16 +20,11 @@ import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotic
 import { isOnMobile } from "utils/responsive";
 import RadioButton from "components/common/RadioButton/RadioButton";
 import {
-  AddressOption,
-  PaymentOption,
-} from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
-import {
   CartAddressInput,
   setGuestEmailOnCart,
 } from "../../../context/CheckoutAPI";
 import { setShippingAddressOnCart } from "../../../context/CheckoutAPI";
-import { AppContext, AppContextT } from "../../../context/AppContext";
-import { cloneDeep } from "lodash-es";
+import { AppContext, AppContextState } from "../../../context/AppContext";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -64,7 +59,7 @@ type State = {
 
 export class PersonalInformation extends React.Component<Props, State> {
   static contextType = AppContext;
-  context!: AppContextT;
+  context!: AppContextState;
 
   state = {
     createAccount: {
@@ -96,20 +91,22 @@ export class PersonalInformation extends React.Component<Props, State> {
   }
 
   initialiseData(): void {
+    const cart = this.context.cart;
+
     this.setState((prevState) => ({
       shippingAddress: {
-        firstName: this.context.cart.shipping_addresses[0].firstname,
-        lastName: this.context.cart.shipping_addresses[0].lastname,
-        company: this.context.cart.shipping_addresses[0].company,
-        address: this.context.cart.shipping_addresses[0].street[0],
+        firstName: cart.shipping_addresses[0].firstname,
+        lastName: cart.shipping_addresses[0].lastname,
+        company: cart.shipping_addresses[0].company,
+        address: cart.shipping_addresses[0].street[0],
         aptNumber: DEFAULT_ADDRESS_FORM_VALUES.aptNumber,
-        zipCode: this.context.cart.shipping_addresses[0].postcode,
-        phone: this.context.cart.shipping_addresses[0].telephone,
-        city: this.context.cart.shipping_addresses[0].city,
+        zipCode: cart.shipping_addresses[0].postcode,
+        phone: cart.shipping_addresses[0].telephone,
+        city: cart.shipping_addresses[0].city,
       },
       createAccount: {
         ...prevState.createAccount,
-        email: this.context.cart.email,
+        email: cart.email,
       },
     }));
   }
@@ -335,36 +332,39 @@ export class PersonalInformation extends React.Component<Props, State> {
   }
 
   async setEmail() {
-    const cart = cloneDeep(this.context.cart);
+    const cart = this.context.cart;
     const resp = await setGuestEmailOnCart(
       cart.id as string,
       this.state.createAccount.email
     );
-    cart.email = resp.email;
-    this.context.updateCart(cart);
+
+    this.context.updateCart({
+      email: resp.email,
+    });
   }
 
   async setShippingAddress() {
-    const cart = cloneDeep(this.context.cart);
+    const cart = this.context.cart;
     const resp = await setShippingAddressOnCart(
       cart.id as string,
       new CartAddressInput(this.state.shippingAddress)
     );
 
     const address = resp.shipping_addresses[0];
-    cart.shipping_addresses = [
-      {
-        city: address.city,
-        company: address.company,
-        firstname: address.firstname,
-        lastname: address.lastname,
-        postcode: address.zipcode,
-        street: address.street[0],
-        telephone: address.telephone,
-        region: address.region,
-      },
-    ];
-    this.context.updateCart(cart);
+    this.context.updateCart({
+      shipping_addresses: [
+        {
+          city: address.city,
+          company: address.company,
+          firstname: address.firstname,
+          lastname: address.lastname,
+          postcode: address.zipcode,
+          street: address.street[0],
+          telephone: address.telephone,
+          region: address.region,
+        },
+      ],
+    });
   }
 
   render() {

@@ -1,77 +1,69 @@
 import * as React from "react";
 import { CartT } from "constants/types";
+import { cloneDeep } from "lodash-es";
+import { CART_MOCK_DATA } from "./cartMockData";
 
-const CART_MOCK_DATA = {
-  id: "testId",
-  prices: {
-    subtotal_including_tax: {
-      value: 400,
-    },
-  },
-  items: [
-    {
-      id: "1",
-      product: {
-        name: "Test Product 1",
-        image: {
-          url:
-            "http://18.221.132.151/pub/static/version1605751353/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/image.jpg",
-        },
-      },
-      prices: {
-        row_total_including_tax: {
-          value: 100,
-        },
-      },
-      quantity: 1,
-    },
-    {
-      id: "2",
-      product: {
-        name: "Test Product 2",
-        image: {
-          url:
-            "http://18.221.132.151/pub/static/version1605751353/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/image.jpg",
-        },
-      },
-      prices: {
-        row_total_including_tax: {
-          value: 200,
-        },
-      },
-      quantity: 2,
-    },
-    {
-      id: "3",
-      product: {
-        name: "Test Product 3",
-        image: {
-          url:
-            "http://18.221.132.151/pub/static/version1605751353/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/image.jpg",
-        },
-      },
-      prices: {
-        row_total_including_tax: {
-          value: 100,
-        },
-      },
-      quantity: 1,
-    },
-  ],
-};
-
-export type AppContextT = {
-  cart: CartT;
-  updateCart: (newCart: CartT) => void;
-  requestCartInfo: (cartId: string) => void;
-  cartInfoLoading: boolean;
-};
-
-export const defaultValues = {
-  cart: CART_MOCK_DATA as CartT,
-  updateCart: (newCart: CartT) => {},
-  requestCartInfo: (cartId: string) => {},
+const defaultValues = {
+  cart: CART_MOCK_DATA,
   cartInfoLoading: false,
+  updateCart: (newCart: CartT) => null,
+  requestCartInfo: (cartId: string) => null,
 };
 
-export const AppContext = React.createContext(defaultValues);
+/** BaseAppContext
+ * This class is used for handling the Context's internal data.
+ * All properties must be private and accessible ONLY through getters/setters
+ * Getters and setters should usually use Deep Clones (unless required otherwise)
+ * */
+class InternalAppContextState {
+  private internalCart: CartT;
+  private internalCartInfoLoading: boolean;
+
+  constructor(obj?: any) {
+    this.internalCart = obj ? obj.internalCart : defaultValues.cart;
+    this.internalCartInfoLoading = obj
+      ? obj.cartInfoLoading
+      : defaultValues.cartInfoLoading;
+  }
+
+  public get cart() {
+    return cloneDeep(this.internalCart);
+  }
+
+  public set cart(newCart: CartT) {
+    this.internalCart = cloneDeep(newCart);
+  }
+
+  public get cartInfoLoading() {
+    return !!this.internalCartInfoLoading;
+  }
+
+  public set cartInfoLoading(newValue: boolean) {
+    this.internalCartInfoLoading = newValue;
+  }
+}
+
+/** AppContextState
+ * This class holds public complex methods on the context
+ * Its methods should be overwritten by the AppContextManager
+ */
+export class AppContextState extends InternalAppContextState {
+  public updateCart: (newCart: CartT) => void;
+  public requestCartInfo: (cartId: string) => void;
+
+  constructor(obj: {
+    updateCart: (...params) => any;
+    requestCartInfo: (...params) => any;
+  }) {
+    super(obj);
+    this.updateCart = obj.updateCart;
+    this.requestCartInfo = obj.requestCartInfo;
+  }
+}
+
+export const AppContext = React.createContext(
+  new AppContextState({
+    updateCart: defaultValues.updateCart,
+    requestCartInfo: defaultValues.requestCartInfo,
+  })
+);
