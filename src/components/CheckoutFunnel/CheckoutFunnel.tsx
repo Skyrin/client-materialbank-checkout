@@ -19,6 +19,7 @@ import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import { BREADCRUMBS_STEPS } from "constants/general";
 import { isOnMobile } from "utils/responsive";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
+import LogoMobile from "../common/LogoMobile/LogoMobile";
 
 type Props = RouteComponentProps;
 
@@ -31,9 +32,12 @@ export default class CheckoutFunnel extends React.Component<Props> {
   }
 
   render() {
+    console.log(isOnMobile());
     return (
       <React.Fragment>
         <div className={styles.pageContent}>
+          {isOnMobile() && <LogoMobile />}
+
           <div className={styles.pageWrapper}>
             <Switch>
               <Redirect exact from={CHECKOUT_FUNNEL_URL} to={CART_URL} />

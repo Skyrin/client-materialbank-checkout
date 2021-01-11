@@ -1,4 +1,5 @@
 @import "styles/mixins.scss";
+@import "styles/variables.scss";
 
 html,
 body,
@@ -33,7 +34,7 @@ a {
   padding: 40px 80px;
 
   @include mobile-media {
-    padding: 40px 0px;
+    padding: 40px 0;
   }
 }
 

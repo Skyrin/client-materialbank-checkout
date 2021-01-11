@@ -253,6 +253,7 @@ export class PaymentInformation extends React.Component<Props, State> {
     return (
       <div className={cn("funnel-page", styles.PaymentInformation)}>
         {!isOnMobile() && <Logo className={styles.logo} />}
+
         {!isOnMobile() && (
           <Breadcrumbs
             steps={BREADCRUMBS_STEPS}

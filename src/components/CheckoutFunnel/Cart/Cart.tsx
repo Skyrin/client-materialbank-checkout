@@ -147,7 +147,6 @@ export class Cart extends React.Component<Props, State> {
   render() {
     return (
       <div className={cn("funnel-page", styles.Cart)}>
-        <Logo className={styles.logo} />
         <Breadcrumbs steps={BREADCRUMBS_STEPS} className={styles.breadcrumbs} />
         {this.renderDebug()}
         <div className={styles.navigationContainer}>
