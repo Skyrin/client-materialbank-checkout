@@ -96,6 +96,14 @@ export class PersonalInformation extends React.Component<Props, State> {
   }
 
   initialiseData(): void {
+    // TODO: Fix this for real.
+    // This is stupid, but it should stop the app from crashing if the cart query takes longer than 1s
+    if (!this.context.cart.shipping_addresses) {
+      window.setTimeout(() => {
+        this.initialiseData();
+      }, 1000);
+      return;
+    }
     this.setState((prevState) => ({
       shippingAddress: {
         firstName: this.context.cart.shipping_addresses[0].firstname,
