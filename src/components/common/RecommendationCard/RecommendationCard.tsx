@@ -11,6 +11,7 @@ type Props = {
 export function RecommendationCard(props: Props) {
   enum productTypes {
     "Upsell / Gift" = 1,
+    "Free Gift" = 2,
   }
 
   return (

@@ -64,6 +64,8 @@ export type AppContextT = {
   cart: CartT;
   updateCart: (newCart: CartT) => void;
   requestCartInfo: (cartId: string) => void;
+  applyCouponToCart: (cartId: string, couponCode: string) => void;
+  removeCouponFromCart: (cartId: string, couponCode: string) => void;
   cartInfoLoading: boolean;
 };
 
@@ -71,6 +73,8 @@ export const defaultValues = {
   cart: CART_MOCK_DATA as CartT,
   updateCart: (newCart: CartT) => {},
   requestCartInfo: (cartId: string) => {},
+  applyCouponToCart: (cartId: string, couponCode: string) => {},
+  removeCouponFromCart: (cartId: string, couponCode: string) => {},
   cartInfoLoading: false,
 };
 

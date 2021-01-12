@@ -25,6 +25,13 @@ import AddressForm, {
 } from "components/common/Forms/AddressForm/AddressForm";
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
+import PromoCode from "components/common/PromoCode/PromoCode";
+import { AppContext, AppContextT } from "../../../context/AppContext";
+import { cloneDeep } from "lodash-es";
+import {
+  CartAddressInput,
+  setBillingAddressOnCart,
+} from "../../../context/CheckoutAPI";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -48,6 +55,9 @@ type State = {
 };
 
 export class PaymentInformation extends React.Component<Props, State> {
+  static contextType = AppContext;
+  context!: AppContextT;
+
   state = {
     addressOption: AddressOption.ShippingAddress,
     paymentOption: PaymentOption.CreditCard,
@@ -59,11 +69,44 @@ export class PaymentInformation extends React.Component<Props, State> {
   creditCardForm?: CreditCardForm;
   billingAddressForm?: AddressForm;
 
+  async onSubmit() {
+    await this.setBillingAddress();
+    // TODO: handle contact
+    // TODO: handle payment
+    // TODO: handle checkout before redirect to confirmation page
+    this.props.history.push(ORDER_CONFIRMATION_URL);
+  }
+
+  async setBillingAddress() {
+    const cart = cloneDeep(this.context.cart);
+    const addressInput =
+      this.state.addressOption === "shipping-address"
+        ? new CartAddressInput(
+            cart.shipping_addresses ? cart.shipping_addresses[0] : null
+          )
+        : new CartAddressInput(this.state.billingAddress);
+    const resp = await setBillingAddressOnCart(cart.id as string, addressInput);
+    const address = resp.billing_address;
+    cart.billing_address = {
+      city: address.city,
+      company: address.company,
+      firstname: address.firstname,
+      lastname: address.lastname,
+      postcode: address.zipcode,
+      street: address.street[0],
+      telephone: address.telephone,
+      region: address.region,
+    };
+    this.context.updateCart(cart);
+  }
+
   renderContactInfoSection = () => {
     return (
       <div className={`${styles.infoSection} ${styles.paddingContainer}`}>
         <h3 className={styles.title}>Contact</h3>
-        <div className={styles.changeButton}>Change</div>
+        <Link className={styles.changeButton} to={PERSONAL_INFORMATION_URL}>
+          Change
+        </Link>
         <div className={cn("big-text", styles.value)}>johndoe@gmail.com</div>
       </div>
     );
@@ -73,10 +116,23 @@ export class PaymentInformation extends React.Component<Props, State> {
     return (
       <div className={`${styles.infoSection} ${styles.paddingContainer}`}>
         <h3 className={styles.title}>Ship To</h3>
-        <div className={styles.changeButton}>Change</div>
+        <Link className={styles.changeButton} to={"information"}>
+          Change
+        </Link>
         <div className={cn("big-text", styles.value)}>
           236 West 30th Street 11th Floor, New York, NY 10001
         </div>
+      </div>
+    );
+  };
+
+  renderPromoCodeSection = () => {
+    return (
+      <div>
+        <div className="row center-vertically margin-top full-width">
+          <PromoCode className={styles.promoCode} />
+        </div>
+        <div className="horizontal-divider margin-top" />
       </div>
     );
   };
@@ -237,6 +293,7 @@ export class PaymentInformation extends React.Component<Props, State> {
 
         {this.renderContactInfoSection()}
         {this.renderShipToInfoSection()}
+        {isOnMobile() && this.renderPromoCodeSection()}
         {this.renderPaymentInfoSection()}
         {this.renderAddressSection()}
 
@@ -273,12 +330,7 @@ export class PaymentInformation extends React.Component<Props, State> {
 
         <div className={cn("margin-top-big", styles.navigationContainer)}>
           {isOnMobile() && (
-            <button
-              className="button large"
-              onClick={() => {
-                this.props.history.push(ORDER_CONFIRMATION_URL);
-              }}
-            >
+            <button className="button large" onClick={() => this.onSubmit()}>
               Place My Order
             </button>
           )}
@@ -292,12 +344,7 @@ export class PaymentInformation extends React.Component<Props, State> {
           </Link>
 
           {!isOnMobile() && (
-            <button
-              className="button large"
-              onClick={() => {
-                this.props.history.push(ORDER_CONFIRMATION_URL);
-              }}
-            >
+            <button className="button large" onClick={() => this.onSubmit()}>
               Checkout
             </button>
           )}

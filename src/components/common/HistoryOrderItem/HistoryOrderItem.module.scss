@@ -8,11 +8,14 @@
   }
 }
 
-.left-container, .middle-container, .right-container {
+.left-container,
+.middle-container,
+.right-container {
   overflow: hidden;
 }
 
-.middle-container, .right-container {
+.middle-container,
+.right-container {
   padding-left: var(--spacing-big);
 
   @media (max-width: 970px) {
@@ -78,7 +81,6 @@
   }
 }
 
-
 .right-container {
   display: flex;
   align-items: center;
@@ -94,7 +96,8 @@
   border-radius: 40px;
   font-size: var(--font-size-lg);
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background-color: rgba(black, 0.05);
   }
 
