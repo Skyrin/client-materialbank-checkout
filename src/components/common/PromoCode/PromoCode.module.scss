@@ -1,0 +1,66 @@
+@import "styles/mixins";
+@import "styles/global";
+
+.promoCodeContainer {
+  width: 100%;
+  font-weight: var(--font-weight-normal);
+
+  .titleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+
+    .title {
+      font-size: var(--font-size-md);
+      color: var(--primary-color);
+      margin-bottom: 0;
+    }
+
+    .promoCodeChevron {
+      font-size: 16px;
+    }
+  }
+
+  .promoCodeInput {
+    margin-top: 0;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: margin 0.35s $ease-in-out, opacity 0.35s linear,
+      max-height 0.35s $ease-in-out;
+
+    &.visible {
+      margin-top: 16px;
+      max-height: 60px;
+      opacity: 1;
+    }
+  }
+
+  .promoCodes {
+    .promoCode {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      border-radius: 8px;
+      margin-top: var(--vertical-spacing-half);
+      box-shadow: shadow($shadow-size-sm, $shadow-color-normal);
+    }
+
+    .codeWrapper {
+      display: flex;
+      align-items: center;
+      font-size: var(--font-size-md);
+
+      .couponIcon {
+        font-size: 12px;
+        margin-right: var(--horizontal-spacing-half);
+      }
+    }
+
+    .removeCodeIcon {
+      cursor: pointer;
+    }
+  }
+}

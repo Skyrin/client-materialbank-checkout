@@ -40,7 +40,11 @@ export default class CheckoutFunnel extends React.Component<Props> {
 
           <div className={styles.pageWrapper}>
             <Switch>
-              <Redirect exact from={CHECKOUT_FUNNEL_URL} to={CART_URL} />
+              <Redirect
+                exact
+                from={CHECKOUT_FUNNEL_URL}
+                to={PERSONAL_INFORMATION_URL}
+              />
               <Route path={CART_URL} component={Cart} />
               <Route
                 path={PERSONAL_INFORMATION_URL}

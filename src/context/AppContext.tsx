@@ -3,13 +3,6 @@ import { CartT } from "constants/types";
 import { cloneDeep } from "lodash-es";
 import { CART_MOCK_DATA } from "./cartMockData";
 
-const defaultValues = {
-  cart: CART_MOCK_DATA,
-  cartInfoLoading: false,
-  updateCart: (newCart: CartT) => null,
-  requestCartInfo: (cartId: string) => null,
-};
-
 /** BaseAppContext
  * This class is used for handling the Context's internal data.
  * All properties must be private and accessible ONLY through getters/setters
@@ -50,20 +43,37 @@ class InternalAppContextState {
 export class AppContextState extends InternalAppContextState {
   public updateCart: (newCart: CartT) => void;
   public requestCartInfo: (cartId: string) => void;
+  public applyCouponToCart: (cartId: string, couponCode: string) => void;
+  public removeCouponFromCart: (cartId: string, couponCode: string) => void;
 
   constructor(obj: {
     updateCart: (...params) => any;
     requestCartInfo: (...params) => any;
+    applyCouponToCart: (...params) => any;
+    removeCouponFromCart: (...params) => any;
   }) {
     super(obj);
     this.updateCart = obj.updateCart;
     this.requestCartInfo = obj.requestCartInfo;
+    this.applyCouponToCart = obj.applyCouponToCart;
+    this.removeCouponFromCart = obj.removeCouponFromCart;
   }
 }
+
+const defaultValues = {
+  cart: CART_MOCK_DATA,
+  cartInfoLoading: false,
+  updateCart: (newCart: CartT) => null,
+  requestCartInfo: (cartId: string) => null,
+  applyCouponToCart: (cartId: string, couponCode: string) => null,
+  removeCouponFromCart: (cartId: string, couponCode: string) => null,
+};
 
 export const AppContext = React.createContext(
   new AppContextState({
     updateCart: defaultValues.updateCart,
     requestCartInfo: defaultValues.requestCartInfo,
+    applyCouponToCart: defaultValues.applyCouponToCart,
+    removeCouponFromCart: defaultValues.removeCouponFromCart,
   })
 );
