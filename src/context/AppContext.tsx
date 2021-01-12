@@ -3,21 +3,14 @@ import { CartT } from "constants/types";
 import { cloneDeep } from "lodash-es";
 import { CART_MOCK_DATA } from "./cartMockData";
 
-/** BaseAppContext
+/**
  * This class is used for handling the Context's internal data.
  * All properties must be private and accessible ONLY through getters/setters
- * Getters and setters should usually use Deep Clones (unless required otherwise)
+ * Getters and setters should usually use deepClone (unless necessary otherwise)
  * */
-class InternalAppContextState {
-  private internalCart: CartT;
-  private internalCartInfoLoading: boolean;
-
-  constructor(obj?: any) {
-    this.internalCart = obj ? obj.internalCart : defaultValues.cart;
-    this.internalCartInfoLoading = obj
-      ? obj.cartInfoLoading
-      : defaultValues.cartInfoLoading;
-  }
+abstract class BaseAppContextState {
+  private internalCart?: CartT = CART_MOCK_DATA;
+  private internalCartInfoLoading?: boolean = false;
 
   public get cart() {
     return cloneDeep(this.internalCart);
@@ -36,44 +29,19 @@ class InternalAppContextState {
   }
 }
 
-/** AppContextState
- * This class holds public complex methods on the context
- * Its methods should be overwritten by the AppContextManager
+/**
+ * By instantiating the BaseAppContextState and defining what context-manipulation
+ * methods can be implemented, this class describes the 'shape' the context
+ * which will be provided to consumers
  */
-export class AppContextState extends InternalAppContextState {
-  public updateCart: (newCart: CartT) => void;
-  public requestCartInfo: (cartId: string) => void;
-  public applyCouponToCart: (cartId: string, couponCode: string) => void;
-  public removeCouponFromCart: (cartId: string, couponCode: string) => void;
+export class AppContextState extends BaseAppContextState {
+  updateCart(newCart: CartT) {}
 
-  constructor(obj: {
-    updateCart: (...params) => any;
-    requestCartInfo: (...params) => any;
-    applyCouponToCart: (...params) => any;
-    removeCouponFromCart: (...params) => any;
-  }) {
-    super(obj);
-    this.updateCart = obj.updateCart;
-    this.requestCartInfo = obj.requestCartInfo;
-    this.applyCouponToCart = obj.applyCouponToCart;
-    this.removeCouponFromCart = obj.removeCouponFromCart;
-  }
+  async requestCartInfo(cartId: string) {}
+
+  async applyCouponToCart(cartId: string, couponCode: string) {}
+
+  async removeCouponFromCart(cartId: string, couponCode: string) {}
 }
 
-const defaultValues = {
-  cart: CART_MOCK_DATA,
-  cartInfoLoading: false,
-  updateCart: (newCart: CartT) => null,
-  requestCartInfo: (cartId: string) => null,
-  applyCouponToCart: (cartId: string, couponCode: string) => null,
-  removeCouponFromCart: (cartId: string, couponCode: string) => null,
-};
-
-export const AppContext = React.createContext(
-  new AppContextState({
-    updateCart: defaultValues.updateCart,
-    requestCartInfo: defaultValues.requestCartInfo,
-    applyCouponToCart: defaultValues.applyCouponToCart,
-    removeCouponFromCart: defaultValues.removeCouponFromCart,
-  })
-);
+export const AppContext = React.createContext(new AppContextState() as any);
