@@ -2,6 +2,7 @@ import * as React from "react";
 import { CartT } from "constants/types";
 import { cloneDeep } from "lodash-es";
 import { CART_MOCK_DATA } from "./cartMockData";
+import { CartAddressInput } from "./CheckoutAPI";
 
 /**
  * This class is used for handling the Context's internal data.
@@ -42,6 +43,10 @@ export class AppContextState extends BaseAppContextState {
   async applyCouponToCart(cartId: string, couponCode: string) {}
 
   async removeCouponFromCart(cartId: string, couponCode: string) {}
+
+  async setBillingAddress(cartId: string, address: CartAddressInput) {}
+
+  async setShippingAddress(cartId: string, address: CartAddressInput) {}
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);

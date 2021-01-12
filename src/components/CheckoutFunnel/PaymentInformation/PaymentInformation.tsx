@@ -27,10 +27,7 @@ import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotic
 import { isOnMobile } from "utils/responsive";
 import PromoCode from "components/common/PromoCode/PromoCode";
 import { AppContext, AppContextState } from "../../../context/AppContext";
-import {
-  CartAddressInput,
-  setBillingAddressOnCart,
-} from "../../../context/CheckoutAPI";
+import { CartAddressInput } from "../../../context/CheckoutAPI";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -78,27 +75,14 @@ export class PaymentInformation extends React.Component<Props, State> {
 
   async setBillingAddress() {
     const cart = this.context.cart;
-    const addressInput =
+    const address =
       this.state.addressOption === "shipping-address"
         ? new CartAddressInput(
             cart.shipping_addresses ? cart.shipping_addresses[0] : null
           )
         : new CartAddressInput(this.state.billingAddress);
-    const resp = await setBillingAddressOnCart(cart.id as string, addressInput);
-    const address = resp?.billing_address;
 
-    this.context.updateCart({
-      billing_address: {
-        city: address.city,
-        company: address.company,
-        firstname: address.firstname,
-        lastname: address.lastname,
-        postcode: address.zipcode,
-        street: address.street[0],
-        telephone: address.telephone,
-        region: address.region,
-      },
-    });
+    await this.context.setBillingAddress(cart.id, address);
   }
 
   renderContactInfoSection = () => {

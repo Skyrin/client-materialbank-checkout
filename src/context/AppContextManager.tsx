@@ -4,8 +4,11 @@ import { AppContext, AppContextState } from "./AppContext";
 import { cloneDeep, isArray, merge, mergeWith } from "lodash-es";
 import {
   applyCouponToCart,
+  CartAddressInput,
   removeCouponFromCart,
   requestCartInfo,
+  setBillingAddressOnCart,
+  setShippingAddressOnCart,
 } from "./CheckoutAPI";
 
 type Props = {
@@ -16,8 +19,8 @@ export default class AppContextManager extends React.Component<Props> {
   // 'contextState' holds the context data
   private contextState: AppContextState = new AppContextState();
 
-  // 'methods' holds all the functions which can be used by context consumers to manipulate the context
-  private methods = {
+  // 'actions' holds all the functions which can be used by context consumers to manipulate the context
+  private actions = {
     updateCart: (newCart: CartT) => {
       const customizer = (objValue: any, newValue: any) => {
         // Replace arrays when merging carts
@@ -43,7 +46,7 @@ export default class AppContextManager extends React.Component<Props> {
       const cartInfo = await requestCartInfo(cartId);
       console.log("GOT CART INFO", cartInfo);
       this.contextState.cartInfoLoading = false;
-      this.methods.updateCart(cartInfo);
+      this.actions.updateCart(cartInfo);
       return this.contextState.cart;
     },
 
@@ -53,7 +56,7 @@ export default class AppContextManager extends React.Component<Props> {
       const cartInfo = await applyCouponToCart(cartId, couponCode);
       console.log("COUPON", cartInfo);
       this.contextState.cartInfoLoading = false;
-      this.methods.updateCart(cartInfo);
+      this.actions.updateCart(cartInfo);
       return this.contextState.cart;
     },
 
@@ -63,7 +66,32 @@ export default class AppContextManager extends React.Component<Props> {
       const cartInfo = await removeCouponFromCart(cartId, couponCode);
       console.log("REMOVED COUPON", cartInfo);
       this.contextState.cartInfoLoading = false;
-      this.methods.updateCart(cartInfo);
+      this.actions.updateCart(cartInfo);
+      return this.contextState.cart;
+    },
+
+    setBillingAddress: async (cartId: string, address: CartAddressInput) => {
+      this.contextState.cartInfoLoading = true;
+      this.forceUpdate();
+
+      const cartInfo = await setBillingAddressOnCart(cartId as string, address);
+      console.log("SET BILLING ADDRESS", cartInfo);
+      this.contextState.cartInfoLoading = false;
+      this.actions.updateCart(cartInfo);
+      return this.contextState.cart;
+    },
+
+    setShippingAddress: async (cartId: string, address: CartAddressInput) => {
+      this.contextState.cartInfoLoading = true;
+      this.forceUpdate();
+
+      const cartInfo = await setShippingAddressOnCart(
+        cartId as string,
+        address
+      );
+      console.log("SET SHIPPING ADDRESS", cartInfo);
+      this.contextState.cartInfoLoading = false;
+      this.actions.updateCart(cartInfo);
       return this.contextState.cart;
     },
   };
@@ -73,9 +101,9 @@ export default class AppContextManager extends React.Component<Props> {
   }
 
   render() {
-    // Provide both the cart data and the cart methods to consumers
+    // Provide both the cart data and the cart actions to consumers
     const context = cloneDeep(this.contextState);
-    merge(context, cloneDeep(this.methods));
+    merge(context, cloneDeep(this.actions));
 
     return (
       <AppContext.Provider value={context}>

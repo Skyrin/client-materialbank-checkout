@@ -23,7 +23,6 @@ import {
   CartAddressInput,
   setGuestEmailOnCart,
 } from "../../../context/CheckoutAPI";
-import { setShippingAddressOnCart } from "../../../context/CheckoutAPI";
 import { AppContext, AppContextState } from "../../../context/AppContext";
 
 const contactInfoSchema = yup.object().shape({
@@ -354,26 +353,8 @@ export class PersonalInformation extends React.Component<Props, State> {
 
   async setShippingAddress() {
     const cart = this.context.cart;
-    const resp = await setShippingAddressOnCart(
-      cart.id as string,
-      new CartAddressInput(this.state.shippingAddress)
-    );
-
-    const address = resp.shipping_addresses[0];
-    this.context.updateCart({
-      shipping_addresses: [
-        {
-          city: address.city,
-          company: address.company,
-          firstname: address.firstname,
-          lastname: address.lastname,
-          postcode: address.zipcode,
-          street: address.street[0],
-          telephone: address.telephone,
-          region: address.region,
-        },
-      ],
-    });
+    const addressInput = new CartAddressInput(this.state.shippingAddress);
+    this.context.setShippingAddress(cart.id, addressInput);
   }
 
   render() {
