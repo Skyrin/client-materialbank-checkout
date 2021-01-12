@@ -1,4 +1,3 @@
-import Input from "components/common/Input/Input";
 import { CartItemT } from "constants/types";
 import * as React from "react";
 import CartItem from "./CartItem/CartItem";
@@ -6,12 +5,13 @@ import styles from "./OrderSummary.module.scss";
 import { AppContext, AppContextT } from "context/AppContext";
 import { isOnMobile } from "utils/responsive";
 import cn from "classnames";
+import { RecommendationCard } from "../RecommendationCard/RecommendationCard";
+import PromoCode from "../PromoCode/PromoCode";
 
 type Props = {
   className?: string;
 };
 type State = {
-  promoCode: string;
   isOpen: boolean;
 };
 
@@ -20,13 +20,7 @@ export default class OrderSummary extends React.Component<Props, State> {
   context!: AppContextT;
 
   state = {
-    promoCode: "",
     isOpen: false,
-  };
-
-  onActionButtonClick = () => {
-    console.log("APPLY PROMO CODE", this.state.promoCode);
-    this.setState({ promoCode: "" });
   };
 
   renderSummaryHeader = () => {
@@ -56,19 +50,36 @@ export default class OrderSummary extends React.Component<Props, State> {
     );
   };
 
-  renderPromoCodeSection = () => {
+  renderGiftSection = () => {
     return (
-      <div className={styles.promoCodeContainer}>
-        <h4 className={styles.subtitle}>Promo Code</h4>
-        <Input
-          placeholder="Have a promo code?"
-          value={this.state.promoCode}
-          onChange={(val: string) => {
-            this.setState({ promoCode: val });
-          }}
-          actionButton="Apply"
-          onActionButtonClick={this.onActionButtonClick}
-        />
+      <div className={styles.section}>
+        <div className={styles.giftSectionHeader}>
+          <i className={cn("fal", "fa-gift", styles.giftIcon)} />
+          <span className={styles.giftSectionTitle}>
+            Select A Free Gift With Your Order
+          </span>
+        </div>
+        <span className={styles.giftSectionDescription}>
+          Get an issue of Table Magazine or Mockup Magazine as a thank you for
+          ordering from Design Shop!
+        </span>
+        <div className={styles.giftsContainer}>
+          <RecommendationCard
+            title="Table Magazine Issue #45"
+            type={2}
+            click={() => {
+              console.log("CLICKED GIFT CARD");
+            }}
+          />
+          <RecommendationCard
+            title="Mockup Magazine Issue #21"
+            type={2}
+            click={() => {
+              console.log("CLICKED GIFT CARD");
+            }}
+          />
+        </div>
+        <PromoCode />
       </div>
     );
   };
@@ -109,7 +120,7 @@ export default class OrderSummary extends React.Component<Props, State> {
               <CartItem key={ci.id} cartItem={ci} />
             ))}
           </div>
-          {!isOnMobile() && this.renderPromoCodeSection()}
+          {!isOnMobile() && this.renderGiftSection()}
           {this.renderPricesSection()}
           <div className={styles.totalContainer}>
             <span>Total</span>

@@ -23,7 +23,13 @@ import {
   AddressOption,
   PaymentOption,
 } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
-import { AppContext, AppContextT } from "context/AppContext";
+import {
+  CartAddressInput,
+  setGuestEmailOnCart,
+} from "../../../context/CheckoutAPI";
+import { setShippingAddressOnCart } from "../../../context/CheckoutAPI";
+import { AppContext, AppContextT } from "../../../context/AppContext";
+import { cloneDeep } from "lodash-es";
 
 const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -79,6 +85,40 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   shippingAddressForm?: AddressForm;
+
+  componentDidMount(): void {
+    //TODO: Find a smarter way to wait from backend data
+    window.setTimeout(() => {
+      this.initialiseData();
+    }, 1000);
+  }
+
+  initialiseData(): void {
+    // TODO: Fix this for real.
+    // This is stupid, but it should stop the app from crashing if the cart query takes longer than 1s
+    if (!this.context.cart.shipping_addresses) {
+      window.setTimeout(() => {
+        this.initialiseData();
+      }, 1000);
+      return;
+    }
+    this.setState((prevState) => ({
+      shippingAddress: {
+        firstName: this.context.cart.shipping_addresses[0].firstname,
+        lastName: this.context.cart.shipping_addresses[0].lastname,
+        company: this.context.cart.shipping_addresses[0].company,
+        address: this.context.cart.shipping_addresses[0].street[0],
+        aptNumber: DEFAULT_ADDRESS_FORM_VALUES.aptNumber,
+        zipCode: this.context.cart.shipping_addresses[0].postcode,
+        phone: this.context.cart.shipping_addresses[0].telephone,
+        city: this.context.cart.shipping_addresses[0].city,
+      },
+      createAccount: {
+        ...prevState.createAccount,
+        email: this.context.cart.email,
+      },
+    }));
+  }
 
   renderExpressCheckoutSection = () => {
     return (
@@ -307,6 +347,46 @@ export class PersonalInformation extends React.Component<Props, State> {
     );
   };
 
+  async onSubmit() {
+    await this.setEmail();
+    await this.setShippingAddress();
+    // Show server errors if needed
+    this.props.history.push(PAYMENT_URL);
+  }
+
+  async setEmail() {
+    const cart = cloneDeep(this.context.cart);
+    const resp = await setGuestEmailOnCart(
+      cart.id as string,
+      this.state.createAccount.email
+    );
+    cart.email = resp.email;
+    this.context.updateCart(cart);
+  }
+
+  async setShippingAddress() {
+    const cart = cloneDeep(this.context.cart);
+    const resp = await setShippingAddressOnCart(
+      cart.id as string,
+      new CartAddressInput(this.state.shippingAddress)
+    );
+
+    const address = resp.shipping_addresses[0];
+    cart.shipping_addresses = [
+      {
+        city: address.city,
+        company: address.company,
+        firstname: address.firstname,
+        lastname: address.lastname,
+        postcode: address.zipcode,
+        street: address.street[0],
+        telephone: address.telephone,
+        region: address.region,
+      },
+    ];
+    this.context.updateCart(cart);
+  }
+
   render() {
     return (
       <div className={cn("funnel-page", styles.PersonalInformation)}>
@@ -340,9 +420,7 @@ export class PersonalInformation extends React.Component<Props, State> {
             </Link>
             <button
               className={cn("button large", { "margin-top": isOnMobile() })}
-              onClick={() => {
-                this.props.history.push(PAYMENT_URL);
-              }}
+              onClick={() => this.onSubmit()}
               disabled={
                 !contactInfoSchema.isValidSync(this.state.createAccount) ||
                 (this.shippingAddressForm &&

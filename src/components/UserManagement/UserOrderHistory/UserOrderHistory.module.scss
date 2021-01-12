@@ -2,11 +2,10 @@
   padding: 62px 100px 162px;
 
   @media (max-width: 970px) {
-    padding: calc(var(--vertical-spacing-normal) * 2) calc(var(--vertical-spacing-normal) * 2) 50px;
+    padding: calc(var(--vertical-spacing-normal) * 2)
+      calc(var(--vertical-spacing-normal) * 2) 50px;
   }
 }
-
-
 
 .load-more-button {
   display: block;
@@ -18,7 +17,8 @@
   margin: 80px auto 0;
   font-weight: var(--font-weight-medium);
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background-color: rgba(black, 0.05);
   }
 
