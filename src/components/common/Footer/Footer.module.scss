@@ -1,12 +1,17 @@
+@import "styles/mixins.scss";
+
 .Footer {
   --footer-height: 44px;
   --link-spacing: 55px;
-
   display: flex;
   align-items: center;
   padding: 0 80px;
   height: var(--footer-height);
   background-color: var(--primary-color);
+
+  @include mobile-media {
+    padding: 0 $margin-small-3;
+  }
 
   .link {
     font-size: var(--font-size-xs);
@@ -14,5 +19,9 @@
     text-decoration: none;
     color: #fff;
     margin-right: var(--link-spacing);
+
+    @include mobile-media {
+      margin-right: $margin-small-3;
+    }
   }
 }

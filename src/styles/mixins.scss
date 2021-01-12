@@ -1,4 +1,4 @@
-@import "styles/variables";
+@import "styles/variablesscss";
 
 // Changes the lightness of a HSL color. >1 increases lightness (1.1 = 10% lighter), <1 decreases (0.9 = 10% darker)
 @function lightness($color-variable, $multiplier) {
