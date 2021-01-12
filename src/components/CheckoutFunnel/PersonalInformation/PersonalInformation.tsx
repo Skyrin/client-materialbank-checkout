@@ -236,16 +236,18 @@ export class PersonalInformation extends React.Component<Props, State> {
         <h3 className={styles.sectionTitle}>Shipping Address</h3>
 
         {this.state.isLoggedIn && (
-          <div className={cn("row margin-top")}>
+          <div
+            className={cn("row margin-top clickable")}
+            onClick={() => {
+              this.setState({
+                shippingAddressOption: ShippingAddressOption.Existing,
+              });
+            }}
+          >
             <RadioButton
               className={styles.radioButton}
               value={this.state.shippingAddressOption}
               option={ShippingAddressOption.Existing}
-              onChange={(val: string) => {
-                this.setState({
-                  shippingAddressOption: val as ShippingAddressOption,
-                });
-              }}
             />
             <div>
               <div className={styles.addressLine}>John Doe</div>
@@ -257,16 +259,18 @@ export class PersonalInformation extends React.Component<Props, State> {
           </div>
         )}
         {this.state.isLoggedIn && (
-          <div className={cn("row margin-top")}>
+          <div
+            className={cn("row margin-top clickable")}
+            onClick={() => {
+              this.setState({
+                shippingAddressOption: ShippingAddressOption.New,
+              });
+            }}
+          >
             <RadioButton
               className={styles.radioButton}
               value={this.state.shippingAddressOption}
               option={ShippingAddressOption.New}
-              onChange={(val: string) => {
-                this.setState({
-                  shippingAddressOption: val as ShippingAddressOption,
-                });
-              }}
             />
             <div className={styles.addressLine}>
               Use a different shipping address

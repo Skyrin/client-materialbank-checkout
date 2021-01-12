@@ -243,15 +243,17 @@ export class PaymentInformation extends React.Component<Props, State> {
         <div className="horizontal-divider margin-top" />
 
         <h3 className="margin-top">Remember me</h3>
-        <div className="row center-vertically margin-top">
+        <div
+          className="row center-vertically margin-top clickable"
+          onClick={() => {
+            this.setState({
+              rememberMeCheck: !this.state.rememberMeCheck,
+            });
+          }}
+        >
           <Checkbox
             className={styles.radioButton}
             value={this.state.rememberMeCheck}
-            onChange={(val: boolean) => {
-              this.setState({
-                rememberMeCheck: val,
-              });
-            }}
           />
           <div className="big-text">
             Save my information for a faster checkout
