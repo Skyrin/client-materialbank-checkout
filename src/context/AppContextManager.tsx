@@ -6,7 +6,8 @@ import { cloneDeep, isArray, mergeWith } from "lodash-es";
 import {
   applyCouponToCart,
   removeCouponFromCart,
-  requestCartInfo,
+  requestGuestCartInfo,
+  requestCustomerCartInfo,
 } from "./CheckoutAPI";
 
 type Props = {
@@ -60,7 +61,12 @@ export default class AppContextManager extends React.Component<Props> {
   requestCartInfo = async (cartId: string) => {
     this.contextState.cartInfoLoading = true;
     this.forceUpdate();
-    const cartInfo = await requestCartInfo(cartId);
+    let cartInfo = {};
+    if (this.contextState.isLoggedIn) {
+      cartInfo = await requestCustomerCartInfo();
+    } else {
+      cartInfo = await requestGuestCartInfo(cartId);
+    }
     console.log("GOT CART INFO", cartInfo);
     this.contextState.cartInfoLoading = false;
     this.updateCart(cartInfo);
@@ -80,7 +86,7 @@ export default class AppContextManager extends React.Component<Props> {
     console.log("LOGIN", token);
     if (token) {
       localStorage.setItem("token", token);
-      this.contextState.isLoggedIn = true;
+      this.setLoggedIn(true);
       await this.contextState.requestCurrentCustomer();
     }
   };
@@ -93,8 +99,7 @@ export default class AppContextManager extends React.Component<Props> {
   logout = () => {
     // TODO: Figure out what else we might need to do here
     localStorage.removeItem("token");
-    this.contextState.isLoggedIn = false;
-    this.forceUpdate();
+    this.setLoggedIn(false);
   };
 
   applyCouponToCart = async (cartId: string, couponCode: string) => {

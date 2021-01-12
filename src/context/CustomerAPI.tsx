@@ -3,17 +3,18 @@ import { graphqlRequest } from "GraphqlClient";
 // For whatever reason, the adresses on the customer object are a bit different
 // from the cart ones. Magento...why?
 const CustomerAddressFragment = `
-city
-company
-firstname
-lastname
-postcode
-street
-telephone
-region {
-  region_code
-  region_id
-}
+  id
+  city
+  company
+  firstname
+  lastname
+  postcode
+  street
+  telephone
+  region {
+    region_code
+    region_id
+  }
 `;
 
 const CustomerFragment = `
@@ -23,6 +24,7 @@ const CustomerFragment = `
   email
   firstname
   lastname
+  default_shipping
 `;
 
 export const requestCurrentCustomer = async () => {

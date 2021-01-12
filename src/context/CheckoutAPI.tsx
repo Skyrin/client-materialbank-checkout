@@ -63,7 +63,7 @@ const CartFragment = `
   }
 `;
 
-export const requestCartInfo = async (cartId: string) => {
+export const requestGuestCartInfo = async (cartId: string) => {
   const CartQuery = `
     query($cart_id: String!) {
       cart(cart_id: $cart_id) {
@@ -74,6 +74,18 @@ export const requestCartInfo = async (cartId: string) => {
   const resp = await graphqlRequest(CartQuery, { cart_id: cartId });
   // TODO: Process response
   return resp["cart"];
+};
+
+export const requestCustomerCartInfo = async () => {
+  const CartQuery = `
+    query {
+      customerCart {
+        ${CartFragment}
+      }
+    }
+  `;
+  const resp = await graphqlRequest(CartQuery);
+  return resp["customerCart"];
 };
 
 export const applyCouponToCart = async (cartId: string, couponCode: string) => {

@@ -41,6 +41,7 @@ export type ProductT = {
 };
 
 export type AddressT = {
+  id?: number;
   city?: string;
   company?: string;
   firstname?: string;
@@ -62,6 +63,7 @@ export type RegionT = {
   code?: string;
   label?: string;
   region_id?: number;
+  region_code?: string;
 };
 
 export type PaymentMethodT = {
@@ -92,4 +94,5 @@ export type CustomerT = {
   lastname?: string;
   email?: string;
   addresses?: AddressT[];
+  default_shipping?: string;
 };

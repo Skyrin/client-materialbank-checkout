@@ -83,7 +83,7 @@ export const defaultValues = {
   applyCouponToCart: (cartId: string, couponCode: string) => {},
   removeCouponFromCart: (cartId: string, couponCode: string) => {},
   cartInfoLoading: false,
-  isLoggedIn: false,
+  isLoggedIn: !!localStorage.getItem("token"),
   setLoggedIn: (loggedIn: boolean) => {},
   customer: {} as CustomerT,
   requestCurrentCustomer: () => {},
