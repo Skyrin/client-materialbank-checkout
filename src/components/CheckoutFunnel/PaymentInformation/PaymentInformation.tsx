@@ -92,21 +92,30 @@ export class PaymentInformation extends React.Component<Props, State> {
         <Link className={styles.changeButton} to={PERSONAL_INFORMATION_URL}>
           Change
         </Link>
-        <div className={cn("big-text", styles.value)}>johndoe@gmail.com</div>
+        <div className={cn("big-text", styles.value)}>
+          {this.context.customer?.email || "johndoe@gmail.com"}
+        </div>
       </div>
     );
   };
 
   renderShipToInfoSection = () => {
+    console.log(this.context.cart);
+    const shippingAddress =
+      this.context.cart?.shipping_addresses &&
+      this.context.cart?.shipping_addresses[0];
+    const address = shippingAddress
+      ? `${shippingAddress.street.join(" ")}, ${shippingAddress.city}, ${
+          shippingAddress.region.code
+        } ${shippingAddress.postcode}`
+      : "236 West 30th Street 11th Floor, New York, NY 10001";
     return (
       <div className={`${styles.infoSection} ${styles.paddingContainer}`}>
         <h3 className={styles.title}>Ship To</h3>
         <Link className={styles.changeButton} to={"information"}>
           Change
         </Link>
-        <div className={cn("big-text", styles.value)}>
-          236 West 30th Street 11th Floor, New York, NY 10001
-        </div>
+        <div className={cn("big-text", styles.value)}>{address}</div>
       </div>
     );
   };
