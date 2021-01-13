@@ -1,7 +1,6 @@
 import { AppContext, AppContextState } from "context/AppContext";
 import * as React from "react";
 import Input from "components/common/Input/Input";
-import { get } from "lodash-es";
 import styles from "./PromoCode.module.scss";
 import cn from "classnames";
 
@@ -31,10 +30,7 @@ export default class PromoCode extends React.Component<Props, State> {
   applyCoupon = async () => {
     console.log("APPLY PROMO CODE", this.state.promoCode);
     try {
-      await this.context.applyCouponToCart(
-        get(this.context, "cart.id", ""),
-        this.state.promoCode
-      );
+      await this.context.applyCouponToCart(this.state.promoCode);
     } catch (e) {
       console.log("ERROR IN PROMO CODE COMPONENT", e);
       console.log(e.graphqlErrors);
@@ -50,10 +46,7 @@ export default class PromoCode extends React.Component<Props, State> {
   removeCoupon = async (promoCode: string) => {
     console.log("REMOVE PROMO CODE", promoCode);
     try {
-      await this.context.removeCouponFromCart(
-        get(this.context, "cart.id", ""),
-        promoCode
-      );
+      await this.context.removeCouponFromCart(promoCode);
     } catch (e) {
       console.log("ERROR IN PROMO CODE COMPONENT", e);
       console.log(e.graphqlErrors);

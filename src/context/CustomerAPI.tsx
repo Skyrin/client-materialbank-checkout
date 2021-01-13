@@ -66,3 +66,38 @@ export const login = async (email: string, password: string) => {
     console.error(e);
   }
 };
+
+export class CreateCustomerInput {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+
+  constructor(obj?: any) {
+    this.firstname = obj?.firstname;
+    this.lastname = obj?.lastname;
+    this.email = obj?.email;
+    this.password = obj?.password;
+  }
+}
+
+export const createCustomer = async (customer: CreateCustomerInput) => {
+  const Mutation = `
+    mutation($input: CustomerCreateInput!) {
+      createCustomerV2(input: $input) {
+        customer {
+          ${CustomerFragment}
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await graphqlRequest(Mutation, {
+      input: customer,
+    });
+    return response["createCustomerV2"]["customer"];
+  } catch (e) {
+    console.error(e);
+  }
+};

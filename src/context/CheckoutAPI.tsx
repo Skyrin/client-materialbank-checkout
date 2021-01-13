@@ -131,31 +131,6 @@ export const removeCouponFromCart = async (
   return resp["removeCouponFromCart"]["cart"];
 };
 
-export const setGuestEmailOnCart = async (cart_id: string, email: string) => {
-  email = email || "gmail@gmail.com";
-
-  const query = `
-    mutation ($input: SetGuestEmailOnCartInput!) {
-      setGuestEmailOnCart(input: $input)
-      {
-        cart {
-          id
-          email
-        }
-      }
-    }
-  `;
-
-  try {
-    const resp = await graphqlRequest(query, { input: { cart_id, email } });
-    console.log("GQL RESPONSE", resp);
-    // TODO: Process response
-    return resp["setGuestEmailOnCart"]["cart"];
-  } catch (e) {
-    console.error(e);
-  }
-};
-
 export class CartAddressInput {
   city: string;
   company: string;
@@ -163,11 +138,14 @@ export class CartAddressInput {
   firstname: string;
   lastname: string;
   postcode: string;
-  region_id: number;
+  region: {
+    region_id: string;
+  };
   telephone: string;
   street: string[];
 
   // TODO Clarify this: city, country_code, region_id are required on Backend but not present in Design.
+  // TODO: Figure out zip-code resolution / address validations
   private static readonly defaults = {
     city: "Washington",
     company: undefined,
@@ -191,24 +169,21 @@ export class CartAddressInput {
       obj?.lastname || obj?.lastName || CartAddressInput.defaults.lastname;
     this.postcode =
       obj?.postcode || obj?.zipCode || CartAddressInput.defaults.postcode;
-    this.region_id = obj?.region_id || CartAddressInput.defaults.region_id;
+    this.region = {
+      region_id: obj?.region_id || CartAddressInput.defaults.region_id,
+    };
     this.telephone =
       obj?.telephone || obj?.phone || CartAddressInput.defaults.telephone;
-    this.street = obj?.street
-      ? Array.isArray(obj.street)
-        ? obj.street
-        : [obj.street]
-      : obj?.address
-      ? Array.isArray(obj.address)
-        ? obj.address
-        : [obj.address]
-      : CartAddressInput.defaults.street;
+    this.street = [obj?.address];
+    if (obj?.aptName) {
+      this.street.push(obj?.aptName);
+    }
   }
 }
 
 export const setShippingAddressOnCart = async (
   cartId: string,
-  shippingAddress: CartAddressInput
+  addressId: number
 ) => {
   const query = `
     mutation ($input: SetShippingAddressesOnCartInput!) {
@@ -226,7 +201,7 @@ export const setShippingAddressOnCart = async (
         cart_id: cartId,
         shipping_addresses: [
           {
-            address: shippingAddress,
+            customer_address_id: addressId,
           },
         ],
       },
@@ -263,6 +238,25 @@ export const setBillingAddressOnCart = async (
     console.log("GQL RESPONSE", resp);
     // TODO: Process response
     return resp["setBillingAddressOnCart"]["cart"];
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const createCustomerAddress = async (address: CartAddressInput) => {
+  const Mutation = `
+    mutation ($input: CustomerAddressInput!) {
+      createCustomerAddress(input: $input) {
+        id
+      }
+    }
+  `;
+
+  try {
+    const resp = await graphqlRequest(Mutation, {
+      input: { ...address, default_shipping: true, default_billing: true },
+    });
+    return resp["createCustomerAddress"];
   } catch (e) {
     console.error(e);
   }

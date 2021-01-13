@@ -6,11 +6,11 @@ import cn from "classnames";
 import CheckoutFunnel from "components/CheckoutFunnel/CheckoutFunnel";
 import UserManagement from "components/UserManagement/UserManagement";
 import { isOnMobile } from "utils/responsive";
-import { AppContext, AppContextT } from "context/AppContext";
+import { AppContext, AppContextState } from "context/AppContext";
 
 class App extends React.Component {
   static contextType = AppContext;
-  context!: AppContextT;
+  context!: AppContextState;
   oldIsOnMobile = isOnMobile();
 
   resizeHandler = () => {

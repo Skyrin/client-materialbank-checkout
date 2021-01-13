@@ -82,7 +82,7 @@ export class PaymentInformation extends React.Component<Props, State> {
           )
         : new CartAddressInput(this.state.billingAddress);
 
-    await this.context.setBillingAddress(cart.id, address);
+    await this.context.setBillingAddress(address);
   }
 
   renderContactInfoSection = () => {

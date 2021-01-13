@@ -19,15 +19,14 @@ import AddressForm, {
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
 import RadioButton from "components/common/RadioButton/RadioButton";
-import {
-  CartAddressInput,
-  setGuestEmailOnCart,
-} from "../../../context/CheckoutAPI";
+import { CartAddressInput } from "../../../context/CheckoutAPI";
 import { AppContext, AppContextState } from "../../../context/AppContext";
+import { isEqual, get } from "lodash-es";
+import { CreateCustomerInput } from "context/CustomerAPI";
 
 const contactInfoSchema = yup.object().shape({
-  firstName: yup.string().required("Required"),
-  lastName: yup.string().required("Required"),
+  firstname: yup.string().required("Required"),
+  lastname: yup.string().required("Required"),
   email: yup.string().email().required("Required"),
   password: yup.string().required("Required"),
   confirmPassword: yup
@@ -40,15 +39,15 @@ type Props = RouteComponentProps;
 
 type State = {
   createAccount: {
-    firstName: string;
-    lastName: string;
+    firstname: string;
+    lastname: string;
     email: string;
     password: string;
     confirmPassword: string;
   };
   createAccountErrors: {
-    firstName: string | null;
-    lastName: string | null;
+    firstname: string | null;
+    lastname: string | null;
     email: string | null;
     password: string | null;
     confirmPassword: string | null;
@@ -62,24 +61,31 @@ export class PersonalInformation extends React.Component<Props, State> {
   context!: AppContextState;
   oldContext!: AppContextState;
 
-  state = {
-    createAccount: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-    createAccountErrors: {
-      firstName: null,
-      lastName: null,
-      email: null,
-      password: null,
-      confirmPassword: null,
-    },
-    selectedShippingAddressId: -1,
-    shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
-  };
+  constructor(props: Props, context: AppContextState) {
+    super(props, context);
+    const defaultShipping = context.customer?.default_shipping;
+
+    this.state = {
+      createAccount: {
+        firstname: "",
+        lastname: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      },
+      createAccountErrors: {
+        firstname: null,
+        lastname: null,
+        email: null,
+        password: null,
+        confirmPassword: null,
+      },
+      selectedShippingAddressId: defaultShipping
+        ? parseInt(defaultShipping)
+        : -1,
+      shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
+    };
+  }
 
   shippingAddressForm?: AddressForm;
 
@@ -89,8 +95,18 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   componentDidUpdate = (prevProps: Props, prevState: State) => {
+    // Listening for context changes
     if (!isEqual(this.oldContext, this.context)) {
-      console.log("CONTEXT CHANGED");
+      const oldDefaultShipping = get(
+        this.oldContext,
+        "customer.default_shipping"
+      );
+      const newDefaultShipping = get(this.context, "customer.default_shipping");
+      if (oldDefaultShipping !== newDefaultShipping && !!newDefaultShipping) {
+        this.setState({
+          selectedShippingAddressId: parseInt(newDefaultShipping),
+        });
+      }
     }
   };
 
@@ -173,7 +189,7 @@ export class PersonalInformation extends React.Component<Props, State> {
           Log Out
         </span>
         <div className={styles.userName}>{name}</div>
-        <div className={styles.userEmail}>{this.context.customer.email}</div>
+        <div className={styles.userEmail}>{this.context.customer?.email}</div>
       </div>
     );
   };
@@ -189,10 +205,7 @@ export class PersonalInformation extends React.Component<Props, State> {
               className={styles.loginLink}
               onClick={() => {
                 // Hardcoded for now, so we don't create a ton of accounts unless we want to test the register
-                this.context.login(
-                  "vlad.dolineanu+materialbank@rodeapps.com",
-                  "StrongPassword1"
-                );
+                this.context.login("test@example.com", "StrongPassword1");
               }}
             >
               Log In
@@ -203,22 +216,22 @@ export class PersonalInformation extends React.Component<Props, State> {
           <Input
             className={styles.firstName}
             placeholder="First Name"
-            value={this.state.createAccount.firstName}
+            value={this.state.createAccount.firstname}
             onChange={(val: string) => {
-              this.updateField("firstName", val);
+              this.updateField("firstname", val);
             }}
-            onBlur={() => this.validateContactInfoField("firstName")}
-            error={this.state.createAccountErrors.firstName}
+            onBlur={() => this.validateContactInfoField("firstname")}
+            error={this.state.createAccountErrors.firstname}
           />
           <Input
             className={styles.lastName}
             placeholder="Last Name"
-            value={this.state.createAccount.lastName}
+            value={this.state.createAccount.lastname}
             onChange={(val: string) => {
-              this.updateField("lastName", val);
+              this.updateField("lastname", val);
             }}
-            onBlur={() => this.validateContactInfoField("lastName")}
-            error={this.state.createAccountErrors.lastName}
+            onBlur={() => this.validateContactInfoField("lastname")}
+            error={this.state.createAccountErrors.lastname}
           />
           <Input
             className={styles.email}
@@ -352,28 +365,26 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   async onSubmit() {
-    await this.setEmail();
-    await this.setShippingAddress();
+    if (!this.context.isLoggedIn) {
+      const createCustomerInput = new CreateCustomerInput(
+        this.state.createAccount
+      );
+      await this.context.createCustomer(createCustomerInput);
+    }
+
+    let addressId = this.state.selectedShippingAddressId;
+    if (addressId === -1) {
+      const address = await this.createCustomerAddress();
+      addressId = address.id;
+    }
+    await this.context.setShippingAddress(addressId);
     // Show server errors if needed
     this.props.history.push(PAYMENT_URL);
   }
 
-  async setEmail() {
-    const cart = this.context.cart;
-    const resp = await setGuestEmailOnCart(
-      cart.id as string,
-      this.state.createAccount.email
-    );
-
-    this.context.updateCart({
-      email: resp.email,
-    });
-  }
-
-  async setShippingAddress() {
-    const cart = this.context.cart;
+  async createCustomerAddress() {
     const addressInput = new CartAddressInput(this.state.shippingAddress);
-    this.context.setShippingAddress(cart.id, addressInput);
+    return await this.context.createCustomerAddress(addressInput);
   }
 
   render() {
