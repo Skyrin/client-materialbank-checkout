@@ -1,10 +1,5 @@
 @import "styles/variables.scss";
 
-.OrderConfirmation {
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
 .logo {
   margin-bottom: var(--vertical-spacing-normal);
 }
@@ -124,6 +119,10 @@
 // Responsiveness ------------------------------------------------------------
 
 @media (max-width: $mobile-width) {
+  .OrderConfirmation {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
   .confirmation-text {
     margin-top: 0;
   }
