@@ -25,7 +25,7 @@ import {
 } from "../../../context/CheckoutAPI";
 import { setShippingAddressOnCart } from "../../../context/CheckoutAPI";
 import { AppContext, AppContextT } from "../../../context/AppContext";
-import { cloneDeep, isNumber } from "lodash-es";
+import { cloneDeep, isEqual } from "lodash-es";
 
 const contactInfoSchema = yup.object().shape({
   firstName: yup.string().required("Required"),
@@ -62,6 +62,7 @@ type State = {
 export class PersonalInformation extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextT;
+  oldContext!: AppContextT;
 
   state = {
     createAccount: {
@@ -83,6 +84,17 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   shippingAddressForm?: AddressForm;
+
+  shouldComponentUpdate = (nextProps: Props, nextState: State) => {
+    this.oldContext = this.context;
+    return true;
+  };
+
+  componentDidUpdate = (prevProps: Props, prevState: State) => {
+    if (!isEqual(this.oldContext, this.context)) {
+      console.log("CONTEXT CHANGED");
+    }
+  };
 
   renderExpressCheckoutSection = () => {
     return (
