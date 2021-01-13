@@ -100,7 +100,6 @@ export class PaymentInformation extends React.Component<Props, State> {
   };
 
   renderShipToInfoSection = () => {
-    console.log(this.context.cart);
     const shippingAddress =
       this.context.cart?.shipping_addresses &&
       this.context.cart?.shipping_addresses[0];
