@@ -81,9 +81,7 @@ export default class OrderConfirmation extends React.Component {
     },
   };
 
-  recommendationClick(productId: number): void {
-    console.log(productId);
-  }
+  recommendationClick(productId: number): void {}
 
   render() {
     const customerEmail = this.customerInfo.customerEmail;

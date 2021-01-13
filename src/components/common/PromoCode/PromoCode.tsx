@@ -1,4 +1,4 @@
-import { AppContext, AppContextT } from "context/AppContext";
+import { AppContext, AppContextState } from "context/AppContext";
 import * as React from "react";
 import Input from "components/common/Input/Input";
 import { get } from "lodash-es";
@@ -19,7 +19,7 @@ type State = {
 
 export default class PromoCode extends React.Component<Props, State> {
   static contextType = AppContext;
-  context!: AppContextT;
+  context!: AppContextState;
 
   state = {
     promoCode: "",
