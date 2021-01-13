@@ -31,10 +31,6 @@ export class HistoryOrder extends React.Component<Props, State> {
     isExpanded: false,
   };
 
-  constructor(props: Readonly<Props>) {
-    super(props);
-  }
-
   private toggleExpand(): void {
     this.setState((prevState) => ({ isExpanded: !prevState.isExpanded }));
   }

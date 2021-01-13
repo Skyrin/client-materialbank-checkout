@@ -1,9 +1,8 @@
-import { AppContext, AppContextT } from "context/AppContext";
+import { AppContext, AppContextState } from "context/AppContext";
 import * as React from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import styles from "./Cart.module.scss";
 import cn from "classnames";
-import Logo from "components/common/Logo/Logo";
 import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import { BREADCRUMBS_STEPS } from "constants/general";
 import { PERSONAL_INFORMATION_URL } from "constants/urls";
@@ -34,7 +33,7 @@ type State = {
 
 export class Cart extends React.Component<Props, State> {
   static contextType = AppContext;
-  context!: AppContextT;
+  context!: AppContextState;
 
   state = {
     products: [],
@@ -50,7 +49,6 @@ export class Cart extends React.Component<Props, State> {
 
   renderDebug() {
     const cartData = this.context.cart;
-    console.log(this.state);
     return (
       <React.Fragment>
         [CONTEXT DEBUG AREA]

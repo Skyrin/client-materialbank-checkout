@@ -214,25 +214,7 @@ export const setShippingAddressOnCart = async (
     mutation ($input: SetShippingAddressesOnCartInput!) {
       setShippingAddressesOnCart(input: $input) {
         cart {
-          id
-          shipping_addresses {
-            city
-            company
-            country {
-              code
-              label
-            }
-            firstname
-            lastname
-            postcode
-            region {
-              code
-              label
-              region_id
-            }
-            street
-            telephone
-          }
+          ${CartFragment}
         }
       }
     }
@@ -265,25 +247,7 @@ export const setBillingAddressOnCart = async (
     mutation ($input: SetBillingAddressOnCartInput!) {
       setBillingAddressOnCart(input: $input) {
         cart {
-          id
-          billing_address {
-            city
-            company
-            country {
-              code
-              label
-            }
-            firstname
-            lastname
-            postcode
-            region {
-              code
-              label
-              region_id
-            }
-            street
-            telephone
-          }
+          ${CartFragment}
         }
       }
     }

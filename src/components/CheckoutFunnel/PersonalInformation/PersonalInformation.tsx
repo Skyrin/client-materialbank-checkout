@@ -23,9 +23,7 @@ import {
   CartAddressInput,
   setGuestEmailOnCart,
 } from "../../../context/CheckoutAPI";
-import { setShippingAddressOnCart } from "../../../context/CheckoutAPI";
-import { AppContext, AppContextT } from "../../../context/AppContext";
-import { cloneDeep, isEqual } from "lodash-es";
+import { AppContext, AppContextState } from "../../../context/AppContext";
 
 const contactInfoSchema = yup.object().shape({
   firstName: yup.string().required("Required"),
@@ -61,8 +59,8 @@ type State = {
 
 export class PersonalInformation extends React.Component<Props, State> {
   static contextType = AppContext;
-  context!: AppContextT;
-  oldContext!: AppContextT;
+  context!: AppContextState;
+  oldContext!: AppContextState;
 
   state = {
     createAccount: {
@@ -295,18 +293,18 @@ export class PersonalInformation extends React.Component<Props, State> {
             const cityState = `${address.city}, ${address.region.region_code}, ${address.postcode}`;
             return (
               <div
-                className={cn("row margin-top")}
+                className={cn("row margin-top clickable")}
                 key={`address_${address.id}`}
+                onClick={() => {
+                  this.setState({
+                    selectedShippingAddressId: address.id,
+                  });
+                }}
               >
                 <RadioButton
                   className={styles.radioButton}
                   value={this.state.selectedShippingAddressId}
                   option={address.id}
-                  onChange={(val: number) => {
-                    this.setState({
-                      selectedShippingAddressId: val,
-                    });
-                  }}
                 />
                 <div>
                   <div className={styles.addressLine}>{contactName}</div>
@@ -317,16 +315,18 @@ export class PersonalInformation extends React.Component<Props, State> {
             );
           })}
         {this.context.isLoggedIn && (
-          <div className={cn("row margin-top")}>
+          <div
+            className={cn("row margin-top clickable")}
+            onClick={() => {
+              this.setState({
+                selectedShippingAddressId: -1,
+              });
+            }}
+          >
             <RadioButton
               className={styles.radioButton}
               value={this.state.selectedShippingAddressId}
               option={-1}
-              onChange={(val: number) => {
-                this.setState({
-                  selectedShippingAddressId: val,
-                });
-              }}
             />
             <div className={styles.addressLine}>
               Use a different shipping address
@@ -359,36 +359,21 @@ export class PersonalInformation extends React.Component<Props, State> {
   }
 
   async setEmail() {
-    const cart = cloneDeep(this.context.cart);
+    const cart = this.context.cart;
     const resp = await setGuestEmailOnCart(
       cart.id as string,
       this.state.createAccount.email
     );
-    cart.email = resp.email;
-    this.context.updateCart(cart);
+
+    this.context.updateCart({
+      email: resp.email,
+    });
   }
 
   async setShippingAddress() {
-    const cart = cloneDeep(this.context.cart);
-    const resp = await setShippingAddressOnCart(
-      cart.id as string,
-      new CartAddressInput(this.state.shippingAddress)
-    );
-
-    const address = resp.shipping_addresses[0];
-    cart.shipping_addresses = [
-      {
-        city: address.city,
-        company: address.company,
-        firstname: address.firstname,
-        lastname: address.lastname,
-        postcode: address.zipcode,
-        street: address.street[0],
-        telephone: address.telephone,
-        region: address.region,
-      },
-    ];
-    this.context.updateCart(cart);
+    const cart = this.context.cart;
+    const addressInput = new CartAddressInput(this.state.shippingAddress);
+    this.context.setShippingAddress(cart.id, addressInput);
   }
 
   render() {
