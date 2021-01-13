@@ -217,6 +217,10 @@ button {
   }
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .big-text {
   font-size: var(--font-size-lg);
   color: var(--primary-color);

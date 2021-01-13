@@ -5,7 +5,7 @@ import cn from "classnames";
 type Props = {
   value: string;
   option: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   className?: string;
 };
 
@@ -16,7 +16,7 @@ export default function RadioButton(props: Props) {
         [styles.selected]: props.value === props.option,
       })}
       onClick={() => {
-        props.onChange(props.option);
+        props.onChange?.(props.option);
       }}
     />
   );
