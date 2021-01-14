@@ -28,7 +28,13 @@ const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
   lastname: yup.string().required("Required"),
   email: yup.string().email().required("Required"),
-  password: yup.string().required("Required"),
+  password: yup
+    .string()
+    .required("Required")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character"
+    ),
   confirmPassword: yup
     .string()
     .required("Required")
