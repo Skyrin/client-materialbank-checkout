@@ -1,0 +1,61 @@
+@import "styles/variablesscss";
+
+.UserAccount {
+  padding: 62px 100px 162px;
+  font-family: "IBM Plex Sans", sans-serif;
+
+  @media (max-width: 970px) {
+    padding: calc(var(--vertical-spacing-normal) * 2)
+      calc(var(--vertical-spacing-normal) * 2) 50px;
+  }
+
+  .pageContent {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto;
+    column-gap: $margin-small-4;
+    margin-top: $margin-medium-3;
+  }
+
+  .section {
+    border: 1px solid $color-user-border;
+    border-radius: 8px;
+    padding: $margin-medium-3 $margin-medium-3;
+  }
+
+  .sectionHeader {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-medium);
+    color: $primary-color-user;
+  }
+
+  .passwordInputLayout {
+    margin-top: $margin-medium-2;
+  }
+
+  .inputHint {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: $margin-small;
+  }
+
+  .whiteButton {
+    height: 40px;
+    width: 100%;
+    margin-top: $margin-medium-2;
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+    border-radius: 40px;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-md);
+
+    &:hover,
+    &:focus {
+      background-color: rgba(black, 0.05);
+    }
+
+    &:active {
+      background-color: rgba(black, 0.1);
+    }
+  }
+}
