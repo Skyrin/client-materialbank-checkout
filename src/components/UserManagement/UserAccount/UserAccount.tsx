@@ -18,11 +18,23 @@ export class ResetPasswordModel {
 
 export class ResetPasswordErrors {
   currentPassword = new InputErrorModel(["required"]);
-  newPassword = new InputErrorModel(["required"]);
+  newPassword = new InputErrorModel(["required"], this.newPasswordValidator);
   confirmNewPassword = new InputErrorModel(
     ["required"],
     this.confirmPasswordValidator
   );
+
+  private newPasswordValidator(
+    value,
+    context: { data: any; topDownKeysList: [] }
+  ): string {
+    if (value) {
+      if (value.length < 7) {
+        return "Password needs to have at least 6 characters";
+      }
+    }
+    return null;
+  }
 
   private confirmPasswordValidator(
     value,
