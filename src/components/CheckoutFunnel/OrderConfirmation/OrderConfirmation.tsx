@@ -57,6 +57,7 @@ export default class OrderConfirmation extends React.Component {
   // TODO: Create a class/type for this info once we have API docs
   customerInfo = {
     customerEmail: "johndoe@gmail.com",
+    customerName: "John Doe",
     paymentInfo: {
       cardIssuer: "VISA",
       cardNumber: "1234",
@@ -85,6 +86,7 @@ export default class OrderConfirmation extends React.Component {
 
   render() {
     const customerEmail = this.customerInfo.customerEmail;
+    const customerName = this.customerInfo.customerName;
     const paymentInfo = this.customerInfo.paymentInfo;
     const shippingAddress = this.customerInfo.shippingAddress;
     const billingAddress = this.customerInfo.billingAddress;
@@ -162,6 +164,7 @@ export default class OrderConfirmation extends React.Component {
               className={cn(styles["info-cell"], styles["contact-information"])}
             >
               <div className={styles["cell-title"]}>Contact Information</div>
+              <div className={styles["text-row"]}>{customerName}</div>
               <div className={styles["text-row"]}>{customerEmail}</div>
             </div>
 

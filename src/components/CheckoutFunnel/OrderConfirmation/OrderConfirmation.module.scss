@@ -49,7 +49,6 @@
 
   .info-cell {
     min-height: 80px;
-    //min-width: 260px;
     white-space: nowrap;
     margin: 0 calc(var(--horizontal-spacing-normal) * 3)
       calc(var(--horizontal-spacing-normal) * 3) 0;
@@ -154,8 +153,7 @@
     grid-row-gap: 30px;
 
     .info-cell {
-      margin: 0 var(--horizontal-spacing-normal)
-        var(--horizontal-spacing-normal) 0;
+      margin: 0 var(--horizontal-spacing-half) var(--horizontal-spacing-half) 0;
     }
 
     .cell-title {
