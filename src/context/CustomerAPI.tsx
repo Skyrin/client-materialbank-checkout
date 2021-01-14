@@ -1,3 +1,4 @@
+import { AppContextState } from "context/AppContext";
 import { graphqlRequest } from "GraphqlClient";
 
 // For whatever reason, the adresses on the customer object are a bit different
@@ -27,7 +28,7 @@ const CustomerFragment = `
   default_shipping
 `;
 
-export const requestCurrentCustomer = async () => {
+export const requestCurrentCustomer = async (context: AppContextState) => {
   const CustomerQuery = `
     query {
       customer {
@@ -37,7 +38,7 @@ export const requestCurrentCustomer = async () => {
   `;
 
   try {
-    const resp = await graphqlRequest(CustomerQuery);
+    const resp = await graphqlRequest(context, CustomerQuery);
     console.log("GQL RESPONSE", resp);
     // TODO: Process response
     return resp["customer"];
@@ -81,7 +82,10 @@ export class CreateCustomerInput {
   }
 }
 
-export const createCustomer = async (customer: CreateCustomerInput) => {
+export const createCustomer = async (
+  context: AppContextState,
+  customer: CreateCustomerInput
+) => {
   const Mutation = `
     mutation($input: CustomerCreateInput!) {
       createCustomerV2(input: $input) {
@@ -93,7 +97,7 @@ export const createCustomer = async (customer: CreateCustomerInput) => {
   `;
 
   try {
-    const response = await graphqlRequest(Mutation, {
+    const response = await graphqlRequest(context, Mutation, {
       input: customer,
     });
     return response["createCustomerV2"]["customer"];

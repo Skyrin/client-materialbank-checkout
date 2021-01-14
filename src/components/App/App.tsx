@@ -46,6 +46,7 @@ class App extends React.Component {
         {/* Hidden icons that should make the browser pre-load the webfonts for fas(FontAwesome Solid) and far(FontAwesome Regular) */}
         <i className={cn("fas fa-star", styles.hiddenIcon)} />
         <i className={cn("far fa-star", styles.hiddenIcon)} />
+        <i className={cn("fab fa-cc-visa", styles.hiddenIcon)} />
       </React.Fragment>
     );
   }

@@ -1,3 +1,4 @@
+import { AppContextState } from "context/AppContext";
 import { graphqlRequest } from "GraphqlClient";
 
 export const AddressFragment = `
@@ -63,7 +64,10 @@ const CartFragment = `
   }
 `;
 
-export const requestGuestCartInfo = async (cartId: string) => {
+export const requestGuestCartInfo = async (
+  context: AppContextState,
+  cartId: string
+) => {
   const CartQuery = `
     query($cart_id: String!) {
       cart(cart_id: $cart_id) {
@@ -71,12 +75,12 @@ export const requestGuestCartInfo = async (cartId: string) => {
       }
     }
   `;
-  const resp = await graphqlRequest(CartQuery, { cart_id: cartId });
+  const resp = await graphqlRequest(context, CartQuery, { cart_id: cartId });
   // TODO: Process response
   return resp["cart"];
 };
 
-export const requestCustomerCartInfo = async () => {
+export const requestCustomerCartInfo = async (context: AppContextState) => {
   const CartQuery = `
     query {
       customerCart {
@@ -84,11 +88,15 @@ export const requestCustomerCartInfo = async () => {
       }
     }
   `;
-  const resp = await graphqlRequest(CartQuery);
+  const resp = await graphqlRequest(context, CartQuery);
   return resp["customerCart"];
 };
 
-export const applyCouponToCart = async (cartId: string, couponCode: string) => {
+export const applyCouponToCart = async (
+  context: AppContextState,
+  cartId: string,
+  couponCode: string
+) => {
   const ApplyCouponMutation = `
     mutation($input: ApplyCouponToCartInput!) {
       applyCouponToCart(input: $input) {
@@ -98,7 +106,7 @@ export const applyCouponToCart = async (cartId: string, couponCode: string) => {
       }
     }
   `;
-  const resp = await graphqlRequest(ApplyCouponMutation, {
+  const resp = await graphqlRequest(context, ApplyCouponMutation, {
     input: {
       cart_id: cartId,
       coupon_code: couponCode,
@@ -110,6 +118,7 @@ export const applyCouponToCart = async (cartId: string, couponCode: string) => {
 };
 
 export const removeCouponFromCart = async (
+  context: AppContextState,
   cartId: string,
   couponCode: string
 ) => {
@@ -122,7 +131,7 @@ export const removeCouponFromCart = async (
       }
     }
   `;
-  const resp = await graphqlRequest(RemoveCouponMutation, {
+  const resp = await graphqlRequest(context, RemoveCouponMutation, {
     input: {
       cart_id: cartId,
     },
@@ -182,6 +191,7 @@ export class CartAddressInput {
 }
 
 export const setShippingAddressOnCart = async (
+  context: AppContextState,
   cartId: string,
   addressId: number
 ) => {
@@ -196,7 +206,7 @@ export const setShippingAddressOnCart = async (
   `;
 
   try {
-    const resp = await graphqlRequest(query, {
+    const resp = await graphqlRequest(context, query, {
       input: {
         cart_id: cartId,
         shipping_addresses: [
@@ -215,6 +225,7 @@ export const setShippingAddressOnCart = async (
 };
 
 export const setBillingAddressOnCart = async (
+  context: AppContextState,
   cartId: string,
   billingAddress: CartAddressInput
 ) => {
@@ -229,7 +240,7 @@ export const setBillingAddressOnCart = async (
   `;
 
   try {
-    const resp = await graphqlRequest(query, {
+    const resp = await graphqlRequest(context, query, {
       input: {
         cart_id: cartId,
         billing_address: { address: billingAddress },
@@ -243,7 +254,10 @@ export const setBillingAddressOnCart = async (
   }
 };
 
-export const createCustomerAddress = async (address: CartAddressInput) => {
+export const createCustomerAddress = async (
+  context: AppContextState,
+  address: CartAddressInput
+) => {
   const Mutation = `
     mutation ($input: CustomerAddressInput!) {
       createCustomerAddress(input: $input) {
@@ -253,7 +267,7 @@ export const createCustomerAddress = async (address: CartAddressInput) => {
   `;
 
   try {
-    const resp = await graphqlRequest(Mutation, {
+    const resp = await graphqlRequest(context, Mutation, {
       input: { ...address, default_shipping: true, default_billing: true },
     });
     return resp["createCustomerAddress"];

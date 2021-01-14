@@ -67,9 +67,12 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
       let cartInfo = {};
       if (this.contextState.isLoggedIn) {
-        cartInfo = await requestCustomerCartInfo();
+        cartInfo = await requestCustomerCartInfo(this.getFullContext());
       } else {
-        cartInfo = await requestGuestCartInfo(cartId || "");
+        cartInfo = await requestGuestCartInfo(
+          this.getFullContext(),
+          cartId || ""
+        );
       }
       console.log("GOT CART INFO", cartInfo);
       this.contextState.cartInfoLoading = false;
@@ -80,7 +83,7 @@ export default class AppContextManager extends React.Component<Props> {
     requestCurrentCustomer: async () => {
       this.contextState.customerLoading = true;
       this.forceUpdate();
-      const customer = await requestCurrentCustomer();
+      const customer = await requestCurrentCustomer(this.getFullContext());
       console.log("GOT CUSTOMER", customer);
       this.contextState.customerLoading = false;
       this.actions.updateCustomer(customer);
@@ -109,7 +112,7 @@ export default class AppContextManager extends React.Component<Props> {
 
     createCustomer: async (customer: CreateCustomerInput) => {
       this.contextState.customerLoading = true;
-      await createCustomer(customer);
+      await createCustomer(this.getFullContext(), customer);
       await this.actions.login(customer.email, customer.password);
     },
 
@@ -117,7 +120,11 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.cartInfoLoading = true;
       this.forceUpdate();
       const cartId = this.contextState.cart.id;
-      const cartInfo = await applyCouponToCart(cartId, couponCode);
+      const cartInfo = await applyCouponToCart(
+        this.getFullContext(),
+        cartId,
+        couponCode
+      );
       console.log("COUPON", cartInfo);
       this.contextState.cartInfoLoading = false;
       this.actions.updateCart(cartInfo);
@@ -128,7 +135,11 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.cartInfoLoading = true;
       this.forceUpdate();
       const cartId = this.contextState.cart.id;
-      const cartInfo = await removeCouponFromCart(cartId, couponCode);
+      const cartInfo = await removeCouponFromCart(
+        this.getFullContext(),
+        cartId,
+        couponCode
+      );
       console.log("REMOVED COUPON", cartInfo);
       this.contextState.cartInfoLoading = false;
       this.actions.updateCart(cartInfo);
@@ -139,7 +150,11 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.cartInfoLoading = true;
       this.forceUpdate();
       const cartId = this.contextState.cart.id;
-      const cartInfo = await setBillingAddressOnCart(cartId as string, address);
+      const cartInfo = await setBillingAddressOnCart(
+        this.getFullContext(),
+        cartId as string,
+        address
+      );
       console.log("SET BILLING ADDRESS", cartInfo);
       this.contextState.cartInfoLoading = false;
       this.actions.updateCart(cartInfo);
@@ -151,6 +166,7 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
       const cartId = this.contextState.cart.id;
       const cartInfo = await setShippingAddressOnCart(
+        this.getFullContext(),
         cartId as string,
         addressId
       );
@@ -163,16 +179,24 @@ export default class AppContextManager extends React.Component<Props> {
     createCustomerAddress: async (address: CartAddressInput) => {
       this.contextState.customerLoading = true;
       this.forceUpdate();
-      const createdAddress = await createCustomerAddress(address);
+      const createdAddress = await createCustomerAddress(
+        this.getFullContext(),
+        address
+      );
       await this.actions.requestCurrentCustomer();
       return createdAddress;
     },
   };
 
-  render() {
-    // Provide both the cart data and the cart actions to consumers
+  getFullContext = () => {
     const context = cloneDeep(this.contextState);
     merge(context, cloneDeep(this.actions));
+    return context;
+  };
+
+  render() {
+    // Provide both the cart data and the cart actions to consumers
+    const context = this.getFullContext();
 
     return (
       <AppContext.Provider value={context}>
