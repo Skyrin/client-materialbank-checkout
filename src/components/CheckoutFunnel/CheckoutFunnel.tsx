@@ -32,7 +32,6 @@ export default class CheckoutFunnel extends React.Component<Props> {
   }
 
   render() {
-    console.log(isOnMobile());
     return (
       <React.Fragment>
         <div className={styles.pageContent}>

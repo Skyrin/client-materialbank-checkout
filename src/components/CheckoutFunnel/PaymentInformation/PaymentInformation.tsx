@@ -28,6 +28,8 @@ import { isOnMobile } from "utils/responsive";
 import PromoCode from "components/common/PromoCode/PromoCode";
 import { AppContext, AppContextState } from "../../../context/AppContext";
 import { CartAddressInput } from "../../../context/CheckoutAPI";
+import visaCardIcon from "assets/images/visa-card.png";
+import { isEqual, get } from "lodash-es";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -35,6 +37,7 @@ export enum AddressOption {
 }
 
 export enum PaymentOption {
+  ExistingCreditCard = "existing-credit-card",
   CreditCard = "credit-card",
   PayPal = "pay-pal",
   ApplePay = "apple-pay",
@@ -53,17 +56,46 @@ type State = {
 export class PaymentInformation extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
+  oldContext!: AppContextState;
 
-  state = {
-    addressOption: AddressOption.ShippingAddress,
-    paymentOption: PaymentOption.CreditCard,
-    creditCardInfo: DEFAULT_CREDIT_CARD_FORM_VALUES,
-    billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
-    rememberMeCheck: true,
-  };
+  constructor(props: Props, context: AppContextState) {
+    super(props, context);
+    this.state = {
+      addressOption: AddressOption.ShippingAddress,
+      paymentOption:
+        context.customer?.email === "test@example.com"
+          ? PaymentOption.ExistingCreditCard
+          : PaymentOption.CreditCard,
+      creditCardInfo: DEFAULT_CREDIT_CARD_FORM_VALUES,
+      billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
+      rememberMeCheck: true,
+    };
+  }
 
   creditCardForm?: CreditCardForm;
   billingAddressForm?: AddressForm;
+
+  shouldComponentUpdate = (nextProps: Props, nextState: State) => {
+    this.oldContext = this.context;
+    return true;
+  };
+
+  componentDidUpdate = (prevProps: Props, prevState: State) => {
+    // Listening for context changes
+    if (!isEqual(this.oldContext, this.context)) {
+      const oldUserEmail = get(this.oldContext, "customer.email");
+      const newUserEmail = get(this.context, "customer.email");
+
+      if (
+        oldUserEmail !== newUserEmail &&
+        newUserEmail === "test@example.com"
+      ) {
+        this.setState({
+          paymentOption: PaymentOption.ExistingCreditCard,
+        });
+      }
+    }
+  };
 
   async onSubmit() {
     await this.setBillingAddress();
@@ -82,7 +114,7 @@ export class PaymentInformation extends React.Component<Props, State> {
           )
         : new CartAddressInput(this.state.billingAddress);
 
-    await this.context.setBillingAddress(cart.id, address);
+    await this.context.setBillingAddress(address);
   }
 
   renderContactInfoSection = () => {
@@ -92,21 +124,29 @@ export class PaymentInformation extends React.Component<Props, State> {
         <Link className={styles.changeButton} to={PERSONAL_INFORMATION_URL}>
           Change
         </Link>
-        <div className={cn("big-text", styles.value)}>johndoe@gmail.com</div>
+        <div className={cn("big-text", styles.value)}>
+          {this.context.customer?.email || "johndoe@gmail.com"}
+        </div>
       </div>
     );
   };
 
   renderShipToInfoSection = () => {
+    const shippingAddress =
+      this.context.cart?.shipping_addresses &&
+      this.context.cart?.shipping_addresses[0];
+    const address = shippingAddress
+      ? `${shippingAddress.street.join(" ")}, ${shippingAddress.city}, ${
+          shippingAddress.region.code
+        } ${shippingAddress.postcode}`
+      : "236 West 30th Street 11th Floor, New York, NY 10001";
     return (
       <div className={`${styles.infoSection} ${styles.paddingContainer}`}>
         <h3 className={styles.title}>Ship To</h3>
         <Link className={styles.changeButton} to={"information"}>
           Change
         </Link>
-        <div className={cn("big-text", styles.value)}>
-          236 West 30th Street 11th Floor, New York, NY 10001
-        </div>
+        <div className={cn("big-text", styles.value)}>{address}</div>
       </div>
     );
   };
@@ -123,10 +163,35 @@ export class PaymentInformation extends React.Component<Props, State> {
   };
 
   renderPaymentInfoSection = () => {
+    const existingUser = this.context.customer?.email === "test@example.com";
+
     return (
       <div>
         <h3 className="margin-top">Payment</h3>
         <div className={styles.paddingContainer}>
+          {existingUser && (
+            <div
+              className={cn(
+                "row center-vertically clickable",
+                styles.existingCardOption
+              )}
+              onClick={() => {
+                this.setState({
+                  paymentOption: PaymentOption.ExistingCreditCard,
+                });
+              }}
+            >
+              <RadioButton
+                className={styles.radioButton}
+                value={this.state.paymentOption}
+                option={PaymentOption.ExistingCreditCard}
+              />
+              <div className="big-text row center-vertically">
+                <img src={visaCardIcon} className={styles.cardIcon} />
+                Saved VISA ending in 1234
+              </div>
+            </div>
+          )}
           <div
             className="row center-vertically clickable"
             onClick={() => {
@@ -140,7 +205,9 @@ export class PaymentInformation extends React.Component<Props, State> {
               value={this.state.paymentOption}
               option={PaymentOption.CreditCard}
             />
-            <div className="big-text">Credit Card</div>
+            <div className="big-text">
+              {existingUser ? "Use a different card" : "Credit Card"}
+            </div>
           </div>
 
           <CreditCardForm

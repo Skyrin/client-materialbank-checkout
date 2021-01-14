@@ -19,105 +19,96 @@ import AddressForm, {
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
 import RadioButton from "components/common/RadioButton/RadioButton";
-import {
-  CartAddressInput,
-  setGuestEmailOnCart,
-} from "../../../context/CheckoutAPI";
+import { CartAddressInput } from "../../../context/CheckoutAPI";
 import { AppContext, AppContextState } from "../../../context/AppContext";
+import { isEqual, get } from "lodash-es";
+import { CreateCustomerInput } from "context/CustomerAPI";
 
 const contactInfoSchema = yup.object().shape({
-  email: yup.string().email().required(),
+  firstname: yup.string().required("Required"),
+  lastname: yup.string().required("Required"),
+  email: yup.string().email().required("Required"),
+  password: yup.string().required("Required"),
+  confirmPassword: yup
+    .string()
+    .required("Required")
+    .oneOf([yup.ref("password")], "Passwords don't match"),
 });
-
-export enum ShippingAddressOption {
-  Existing = "existing",
-  New = "new",
-}
 
 type Props = RouteComponentProps;
 
 type State = {
   createAccount: {
-    firstName: string;
-    lastName: string;
+    firstname: string;
+    lastname: string;
     email: string;
     password: string;
     confirmPassword: string;
   };
   createAccountErrors: {
-    firstName: string | null;
-    lastName: string | null;
+    firstname: string | null;
+    lastname: string | null;
     email: string | null;
     password: string | null;
     confirmPassword: string | null;
   };
-  isLoggedIn: boolean;
-  shippingAddressOption: ShippingAddressOption;
+  selectedShippingAddressId: number;
   shippingAddress: AddressFormValuesT;
 };
 
 export class PersonalInformation extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
+  oldContext!: AppContextState;
 
-  state = {
-    createAccount: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-    createAccountErrors: {
-      firstName: null,
-      lastName: null,
-      email: null,
-      password: null,
-      confirmPassword: null,
-    },
-    isLoggedIn: Math.random() < 0.5,
-    shippingAddressOption: ShippingAddressOption.Existing,
-    shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
-  };
+  constructor(props: Props, context: AppContextState) {
+    super(props, context);
+    const defaultShipping = context.customer?.default_shipping;
+
+    this.state = {
+      createAccount: {
+        firstname: "",
+        lastname: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      },
+      createAccountErrors: {
+        firstname: null,
+        lastname: null,
+        email: null,
+        password: null,
+        confirmPassword: null,
+      },
+      selectedShippingAddressId: defaultShipping
+        ? parseInt(defaultShipping)
+        : -1,
+      shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
+    };
+  }
 
   shippingAddressForm?: AddressForm;
 
-  componentDidMount(): void {
-    //TODO: Find a smarter way to wait from backend data
-    window.setTimeout(() => {
-      this.initialiseData();
-    }, 1000);
-  }
+  shouldComponentUpdate = (nextProps: Props, nextState: State) => {
+    this.oldContext = this.context;
+    return true;
+  };
 
-  initialiseData(): void {
-    // TODO: Fix this for real.
-    // This is stupid, but it should stop the app from crashing if the cart query takes longer than 1s
-    const cart = this.context.cart;
-
-    if (!cart.shipping_addresses) {
-      window.setTimeout(() => {
-        this.initialiseData();
-      }, 1000);
-      return;
+  componentDidUpdate = (prevProps: Props, prevState: State) => {
+    // Listening for context changes
+    if (!isEqual(this.oldContext, this.context)) {
+      const oldDefaultShipping = get(
+        this.oldContext,
+        "customer.default_shipping"
+      );
+      const newDefaultShipping = get(this.context, "customer.default_shipping");
+      if (oldDefaultShipping !== newDefaultShipping && !!newDefaultShipping) {
+        this.setState({
+          selectedShippingAddressId: parseInt(newDefaultShipping),
+        });
+      }
     }
-
-    this.setState((prevState) => ({
-      shippingAddress: {
-        firstName: cart.shipping_addresses[0].firstname,
-        lastName: cart.shipping_addresses[0].lastname,
-        company: cart.shipping_addresses[0].company,
-        address: cart.shipping_addresses[0].street[0],
-        aptNumber: DEFAULT_ADDRESS_FORM_VALUES.aptNumber,
-        zipCode: cart.shipping_addresses[0].postcode,
-        phone: cart.shipping_addresses[0].telephone,
-        city: cart.shipping_addresses[0].city,
-      },
-      createAccount: {
-        ...prevState.createAccount,
-        email: cart.email,
-      },
-    }));
-  }
+  };
 
   renderExpressCheckoutSection = () => {
     return (
@@ -164,19 +155,41 @@ export class PersonalInformation extends React.Component<Props, State> {
     }
   };
 
+  validateContactInfoField = (fieldName: string) => {
+    try {
+      contactInfoSchema.validateSyncAt(fieldName, this.state.createAccount, {
+        abortEarly: false,
+      });
+    } catch (e) {
+      const errors = extractErrors(e);
+      this.setState({
+        createAccountErrors: {
+          ...this.state.createAccountErrors,
+          ...errors,
+        },
+      });
+    }
+  };
+
   renderContactInfoSection = () => {
+    const name = `${this.context.customer.firstname} ${this.context.customer.lastname}`;
     return (
       <div className={cn(styles.contactInfoSection, styles.section)}>
         <h3 className={styles.contactInfoTitle}>Contact Info</h3>
         <div className={cn(styles.loggedIn, styles.loginHint)}>
           Logged in as&nbsp;
-          <span className={styles.loggedInName}>John Mock</span>
+          <span className={styles.loggedInName}>{name}</span>
         </div>
-        <a href="/" className={cn(styles.logOut, styles.loginLink)}>
+        <span
+          className={cn(styles.logOut, styles.loginLink)}
+          onClick={() => {
+            this.context.logout();
+          }}
+        >
           Log Out
-        </a>
-        <div className={styles.userName}>John Doe</div>
-        <div className={styles.userEmail}>johnmock@gmail.com</div>
+        </span>
+        <div className={styles.userName}>{name}</div>
+        <div className={styles.userEmail}>{this.context.customer?.email}</div>
       </div>
     );
   };
@@ -188,31 +201,37 @@ export class PersonalInformation extends React.Component<Props, State> {
           <h3 className={styles.sectionTitle}>Create an Account</h3>
           <div>
             <span className={styles.loginHint}>Already have an account?</span>
-            <a href="/" className={styles.loginLink}>
+            <span
+              className={styles.loginLink}
+              onClick={() => {
+                // Hardcoded for now, so we don't create a ton of accounts unless we want to test the register
+                this.context.login("test@example.com", "StrongPassword1");
+              }}
+            >
               Log In
-            </a>
+            </span>
           </div>
         </div>
         <div className={styles.createAccountSection}>
           <Input
             className={styles.firstName}
             placeholder="First Name"
-            value={this.state.createAccount.firstName}
+            value={this.state.createAccount.firstname}
             onChange={(val: string) => {
-              this.updateField("firstName", val);
+              this.updateField("firstname", val);
             }}
-            onBlur={this.validateContactInfo}
-            error={this.state.createAccountErrors.firstName}
+            onBlur={() => this.validateContactInfoField("firstname")}
+            error={this.state.createAccountErrors.firstname}
           />
           <Input
             className={styles.lastName}
             placeholder="Last Name"
-            value={this.state.createAccount.lastName}
+            value={this.state.createAccount.lastname}
             onChange={(val: string) => {
-              this.updateField("lastName", val);
+              this.updateField("lastname", val);
             }}
-            onBlur={this.validateContactInfo}
-            error={this.state.createAccountErrors.lastName}
+            onBlur={() => this.validateContactInfoField("lastname")}
+            error={this.state.createAccountErrors.lastname}
           />
           <Input
             className={styles.email}
@@ -221,27 +240,29 @@ export class PersonalInformation extends React.Component<Props, State> {
             onChange={(val: string) => {
               this.updateField("email", val);
             }}
-            onBlur={this.validateContactInfo}
+            onBlur={() => this.validateContactInfoField("email")}
             error={this.state.createAccountErrors.email}
           />
           <Input
             className={styles.password}
             placeholder="Create Password"
+            type="password"
             value={this.state.createAccount.password}
             onChange={(val: string) => {
               this.updateField("password", val);
             }}
-            onBlur={this.validateContactInfo}
+            onBlur={() => this.validateContactInfoField("password")}
             error={this.state.createAccountErrors.password}
           />
           <Input
             className={styles.confirmPassword}
             placeholder="Re-Enter Password"
+            type="password"
             value={this.state.createAccount.confirmPassword}
             onChange={(val: string) => {
               this.updateField("confirmPassword", val);
             }}
-            onBlur={this.validateContactInfo}
+            onBlur={() => this.validateContactInfoField("confirmPassword")}
             error={this.state.createAccountErrors.confirmPassword}
           />
         </div>
@@ -272,46 +293,53 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   renderShippingAddressSection = () => {
+    const existingAddresses = this.context.customer?.addresses || [];
     return (
       <div className={cn(styles.section, styles.shippingAddressSection)}>
         <h3 className={styles.sectionTitle}>Shipping Address</h3>
 
-        {this.state.isLoggedIn && (
-          <div
-            className={cn("row margin-top clickable")}
-            onClick={() => {
-              this.setState({
-                shippingAddressOption: ShippingAddressOption.Existing,
-              });
-            }}
-          >
-            <RadioButton
-              className={styles.radioButton}
-              value={this.state.shippingAddressOption}
-              option={ShippingAddressOption.Existing}
-            />
-            <div>
-              <div className={styles.addressLine}>John Doe</div>
-              <div className={styles.addressLine}>
-                236 West 30th Street 11th Floor
+        {this.context.isLoggedIn &&
+          existingAddresses.length > 0 &&
+          existingAddresses.map((address) => {
+            const contactName = `${address.firstname} ${address.lastname}`;
+            const street = address.street.join(" ");
+            const cityState = `${address.city}, ${address.region.region_code}, ${address.postcode}`;
+            return (
+              <div
+                className={cn("row margin-top clickable")}
+                key={`address_${address.id}`}
+                onClick={() => {
+                  this.setState({
+                    selectedShippingAddressId: address.id,
+                  });
+                }}
+              >
+                <RadioButton
+                  className={styles.radioButton}
+                  value={this.state.selectedShippingAddressId}
+                  option={address.id}
+                />
+                <div>
+                  <div className={styles.addressLine}>{contactName}</div>
+                  <div className={styles.addressLine}>{street}</div>
+                  <div className={styles.addressLine}>{cityState}</div>
+                </div>
               </div>
-              <div className={styles.addressLine}>New York, NY 10001</div>
-            </div>
-          </div>
-        )}
-        {this.state.isLoggedIn && (
+            );
+          })}
+        {this.context.isLoggedIn && (
           <div
             className={cn("row margin-top clickable")}
             onClick={() => {
               this.setState({
-                shippingAddressOption: ShippingAddressOption.New,
+                selectedShippingAddressId: -1,
               });
             }}
           >
             <RadioButton
               className={styles.radioButton}
-              value={this.state.shippingAddressOption}
-              option={ShippingAddressOption.New}
+              value={this.state.selectedShippingAddressId}
+              option={-1}
             />
             <div className={styles.addressLine}>
               Use a different shipping address
@@ -320,8 +348,8 @@ export class PersonalInformation extends React.Component<Props, State> {
         )}
         <AddressForm
           visible={
-            this.state.shippingAddressOption === ShippingAddressOption.New ||
-            !this.state.isLoggedIn
+            this.state.selectedShippingAddressId === -1 ||
+            !this.context.isLoggedIn
           }
           onChange={(newValues: AddressFormValuesT) => {
             this.setState({
@@ -337,28 +365,26 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   async onSubmit() {
-    await this.setEmail();
-    await this.setShippingAddress();
+    if (!this.context.isLoggedIn) {
+      const createCustomerInput = new CreateCustomerInput(
+        this.state.createAccount
+      );
+      await this.context.createCustomer(createCustomerInput);
+    }
+
+    let addressId = this.state.selectedShippingAddressId;
+    if (addressId === -1) {
+      const address = await this.createCustomerAddress();
+      addressId = address.id;
+    }
+    await this.context.setShippingAddress(addressId);
     // Show server errors if needed
     this.props.history.push(PAYMENT_URL);
   }
 
-  async setEmail() {
-    const cart = this.context.cart;
-    const resp = await setGuestEmailOnCart(
-      cart.id as string,
-      this.state.createAccount.email
-    );
-
-    this.context.updateCart({
-      email: resp.email,
-    });
-  }
-
-  async setShippingAddress() {
-    const cart = this.context.cart;
+  async createCustomerAddress() {
     const addressInput = new CartAddressInput(this.state.shippingAddress);
-    this.context.setShippingAddress(cart.id, addressInput);
+    return await this.context.createCustomerAddress(addressInput);
   }
 
   render() {
@@ -377,8 +403,8 @@ export class PersonalInformation extends React.Component<Props, State> {
 
         <div className={styles.informationContainer}>
           {this.renderExpressCheckoutSection()}
-          {this.state.isLoggedIn && this.renderContactInfoSection()}
-          {!this.state.isLoggedIn && this.renderCreateAccountSection()}
+          {this.context.isLoggedIn && this.renderContactInfoSection()}
+          {!this.context.isLoggedIn && this.renderCreateAccountSection()}
           {this.renderShippingMethodSection()}
           {this.renderShippingAddressSection()}
 
@@ -396,8 +422,10 @@ export class PersonalInformation extends React.Component<Props, State> {
               className={cn("button large", { "margin-top": isOnMobile() })}
               onClick={() => this.onSubmit()}
               disabled={
-                !contactInfoSchema.isValidSync(this.state.createAccount) ||
-                (this.shippingAddressForm &&
+                (!this.context.isLoggedIn &&
+                  !contactInfoSchema.isValidSync(this.state.createAccount)) ||
+                (this.state.selectedShippingAddressId === -1 &&
+                  this.shippingAddressForm &&
                   !this.shippingAddressForm.isValid())
               }
             >

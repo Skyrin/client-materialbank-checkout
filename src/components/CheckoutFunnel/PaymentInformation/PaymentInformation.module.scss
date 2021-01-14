@@ -103,4 +103,17 @@
   .promoCode {
     font-weight: var(--font-weight-medium);
   }
+
+  .existingCardOption {
+    margin-bottom: var(--vertical-spacing-half);
+
+    @include mobile-media {
+      margin-bottom: var(--vertical-spacing-normal);
+    }
+  }
+
+  .cardIcon {
+    height: 24px;
+    margin-right: $margin-small-2;
+  }
 }

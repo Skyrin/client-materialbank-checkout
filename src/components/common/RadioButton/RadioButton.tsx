@@ -3,9 +3,9 @@ import styles from "./RadioButton.module.scss";
 import cn from "classnames";
 
 type Props = {
-  value: string;
-  option: string;
-  onChange?: (value: string) => void;
+  value: any;
+  option: any;
+  onChange?: (value: any) => void;
   className?: string;
 };
 

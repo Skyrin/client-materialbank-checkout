@@ -1,6 +1,7 @@
+import { AppContextState } from "context/AppContext";
 import { graphqlRequest } from "GraphqlClient";
 
-const AddressFragment = `
+export const AddressFragment = `
   city
   company
   firstname
@@ -63,7 +64,10 @@ const CartFragment = `
   }
 `;
 
-export const requestCartInfo = async (cartId: string) => {
+export const requestGuestCartInfo = async (
+  context: AppContextState,
+  cartId: string
+) => {
   const CartQuery = `
     query($cart_id: String!) {
       cart(cart_id: $cart_id) {
@@ -71,12 +75,28 @@ export const requestCartInfo = async (cartId: string) => {
       }
     }
   `;
-  const resp = await graphqlRequest(CartQuery, { cart_id: cartId });
+  const resp = await graphqlRequest(context, CartQuery, { cart_id: cartId });
   // TODO: Process response
   return resp["cart"];
 };
 
-export const applyCouponToCart = async (cartId: string, couponCode: string) => {
+export const requestCustomerCartInfo = async (context: AppContextState) => {
+  const CartQuery = `
+    query {
+      customerCart {
+        ${CartFragment}
+      }
+    }
+  `;
+  const resp = await graphqlRequest(context, CartQuery);
+  return resp["customerCart"];
+};
+
+export const applyCouponToCart = async (
+  context: AppContextState,
+  cartId: string,
+  couponCode: string
+) => {
   const ApplyCouponMutation = `
     mutation($input: ApplyCouponToCartInput!) {
       applyCouponToCart(input: $input) {
@@ -86,7 +106,7 @@ export const applyCouponToCart = async (cartId: string, couponCode: string) => {
       }
     }
   `;
-  const resp = await graphqlRequest(ApplyCouponMutation, {
+  const resp = await graphqlRequest(context, ApplyCouponMutation, {
     input: {
       cart_id: cartId,
       coupon_code: couponCode,
@@ -98,6 +118,7 @@ export const applyCouponToCart = async (cartId: string, couponCode: string) => {
 };
 
 export const removeCouponFromCart = async (
+  context: AppContextState,
   cartId: string,
   couponCode: string
 ) => {
@@ -110,38 +131,13 @@ export const removeCouponFromCart = async (
       }
     }
   `;
-  const resp = await graphqlRequest(RemoveCouponMutation, {
+  const resp = await graphqlRequest(context, RemoveCouponMutation, {
     input: {
       cart_id: cartId,
     },
   });
   console.log("REMOVE COUPON RESPONSE, resp");
   return resp["removeCouponFromCart"]["cart"];
-};
-
-export const setGuestEmailOnCart = async (cart_id: string, email: string) => {
-  email = email || "gmail@gmail.com";
-
-  const query = `
-    mutation ($input: SetGuestEmailOnCartInput!) {
-      setGuestEmailOnCart(input: $input)
-      {
-        cart {
-          id
-          email
-        }
-      }
-    }
-  `;
-
-  try {
-    const resp = await graphqlRequest(query, { input: { cart_id, email } });
-    console.log("GQL RESPONSE", resp);
-    // TODO: Process response
-    return resp["setGuestEmailOnCart"]["cart"];
-  } catch (e) {
-    console.error(e);
-  }
 };
 
 export class CartAddressInput {
@@ -151,11 +147,14 @@ export class CartAddressInput {
   firstname: string;
   lastname: string;
   postcode: string;
-  region_id: number;
+  region: {
+    region_id: string;
+  };
   telephone: string;
   street: string[];
 
   // TODO Clarify this: city, country_code, region_id are required on Backend but not present in Design.
+  // TODO: Figure out zip-code resolution / address validations
   private static readonly defaults = {
     city: "Washington",
     company: undefined,
@@ -179,24 +178,22 @@ export class CartAddressInput {
       obj?.lastname || obj?.lastName || CartAddressInput.defaults.lastname;
     this.postcode =
       obj?.postcode || obj?.zipCode || CartAddressInput.defaults.postcode;
-    this.region_id = obj?.region_id || CartAddressInput.defaults.region_id;
+    this.region = {
+      region_id: obj?.region_id || CartAddressInput.defaults.region_id,
+    };
     this.telephone =
       obj?.telephone || obj?.phone || CartAddressInput.defaults.telephone;
-    this.street = obj?.street
-      ? Array.isArray(obj.street)
-        ? obj.street
-        : [obj.street]
-      : obj?.address
-      ? Array.isArray(obj.address)
-        ? obj.address
-        : [obj.address]
-      : CartAddressInput.defaults.street;
+    this.street = [obj?.address];
+    if (obj?.aptName) {
+      this.street.push(obj?.aptName);
+    }
   }
 }
 
 export const setShippingAddressOnCart = async (
+  context: AppContextState,
   cartId: string,
-  shippingAddress: CartAddressInput
+  addressId: number
 ) => {
   const query = `
     mutation ($input: SetShippingAddressesOnCartInput!) {
@@ -209,12 +206,12 @@ export const setShippingAddressOnCart = async (
   `;
 
   try {
-    const resp = await graphqlRequest(query, {
+    const resp = await graphqlRequest(context, query, {
       input: {
         cart_id: cartId,
         shipping_addresses: [
           {
-            address: shippingAddress,
+            customer_address_id: addressId,
           },
         ],
       },
@@ -228,6 +225,7 @@ export const setShippingAddressOnCart = async (
 };
 
 export const setBillingAddressOnCart = async (
+  context: AppContextState,
   cartId: string,
   billingAddress: CartAddressInput
 ) => {
@@ -242,7 +240,7 @@ export const setBillingAddressOnCart = async (
   `;
 
   try {
-    const resp = await graphqlRequest(query, {
+    const resp = await graphqlRequest(context, query, {
       input: {
         cart_id: cartId,
         billing_address: { address: billingAddress },
@@ -251,6 +249,28 @@ export const setBillingAddressOnCart = async (
     console.log("GQL RESPONSE", resp);
     // TODO: Process response
     return resp["setBillingAddressOnCart"]["cart"];
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const createCustomerAddress = async (
+  context: AppContextState,
+  address: CartAddressInput
+) => {
+  const Mutation = `
+    mutation ($input: CustomerAddressInput!) {
+      createCustomerAddress(input: $input) {
+        id
+      }
+    }
+  `;
+
+  try {
+    const resp = await graphqlRequest(context, Mutation, {
+      input: { ...address, default_shipping: true, default_billing: true },
+    });
+    return resp["createCustomerAddress"];
   } catch (e) {
     console.error(e);
   }

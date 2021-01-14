@@ -1,8 +1,9 @@
 import * as React from "react";
-import { CartT } from "constants/types";
+import { AddressT, CartT, CustomerT } from "constants/types";
 import { cloneDeep } from "lodash-es";
 import { CART_MOCK_DATA } from "./cartMockData";
 import { CartAddressInput } from "./CheckoutAPI";
+import { CreateCustomerInput } from "./CustomerAPI";
 
 /**
  * This class is used for handling the Context's internal data.
@@ -12,6 +13,9 @@ import { CartAddressInput } from "./CheckoutAPI";
 abstract class BaseAppContextState {
   private internalCart?: CartT = CART_MOCK_DATA;
   private internalCartInfoLoading?: boolean = false;
+  private internalCustomer?: CustomerT = {};
+  private internalCustomerLoading?: boolean = false;
+  private internalIsLoggedIn?: boolean = !!localStorage.getItem("token");
 
   public get cart() {
     return cloneDeep(this.internalCart);
@@ -28,6 +32,30 @@ abstract class BaseAppContextState {
   public set cartInfoLoading(newValue: boolean) {
     this.internalCartInfoLoading = newValue;
   }
+
+  public get isLoggedIn() {
+    return !!this.internalIsLoggedIn;
+  }
+
+  public set isLoggedIn(newValue: boolean) {
+    this.internalIsLoggedIn = newValue;
+  }
+
+  public get customer() {
+    return cloneDeep(this.internalCustomer);
+  }
+
+  public set customer(newCustomer: CustomerT) {
+    this.internalCustomer = cloneDeep(newCustomer);
+  }
+
+  public get customerLoading() {
+    return !!this.internalCustomerLoading;
+  }
+
+  public set customerLoading(newValue: boolean) {
+    this.internalCustomerLoading = newValue;
+  }
 }
 
 /**
@@ -38,15 +66,33 @@ abstract class BaseAppContextState {
 export class AppContextState extends BaseAppContextState {
   updateCart(newCart: CartT) {}
 
+  updateCustomer(newCustomer: CustomerT) {}
+
+  setLoggedIn(newValue: boolean) {}
+
   async requestCartInfo(cartId: string) {}
 
-  async applyCouponToCart(cartId: string, couponCode: string) {}
+  async requestCurrentCustomer() {}
 
-  async removeCouponFromCart(cartId: string, couponCode: string) {}
+  async applyCouponToCart(couponCode: string) {}
 
-  async setBillingAddress(cartId: string, address: CartAddressInput) {}
+  async removeCouponFromCart(couponCode: string) {}
 
-  async setShippingAddress(cartId: string, address: CartAddressInput) {}
+  async createCustomerAddress(address: CartAddressInput): Promise<AddressT> {
+    return Promise.resolve({});
+  }
+
+  async setBillingAddress(address: CartAddressInput) {}
+
+  async setShippingAddress(addressId: number) {}
+
+  async createCustomer(customer: CreateCustomerInput): Promise<CustomerT> {
+    return Promise.resolve({});
+  }
+
+  async login(email: string, password: string) {}
+
+  logout() {}
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);

@@ -256,6 +256,14 @@ button {
   margin-top: var(--vertical-spacing-half);
 }
 
+.margin-bottom {
+  margin-bottom: var(--vertical-spacing-normal);
+}
+
+.margin-bottom-half {
+  margin-bottom: var(--vertical-spacing-half);
+}
+
 .margin-top-big {
   margin-top: var(--spacing-big);
   @include mobile-media {
