@@ -40,16 +40,30 @@ export class InputErrorModel {
   }
 
   public validate(value: any, context?: any): void {
+    console.log(context.data);
     this.errorText = "";
+    let standardError = null;
+    let customError = null;
+
     if (this.standardValidators?.length) {
       this.standardValidators.forEach((key: standardValidatorKey) => {
-        this.errorText = this.standardValidatorsMap.get(key)(value);
-        if (this.errorText) {
+        standardError = this.standardValidatorsMap.get(key)(value);
+        if (standardError) {
           return;
         }
       });
-    } else if (this.customValidator) {
-      this.errorText = this.customValidator(value, context);
+    }
+
+    if (this.customValidator) {
+      customError = this.customValidator(value, context);
+    }
+
+    if (standardError) {
+      this.errorText = standardError;
+    } else if (customError) {
+      this.errorText = customError;
+    } else {
+      this.errorText = null;
     }
   }
 }

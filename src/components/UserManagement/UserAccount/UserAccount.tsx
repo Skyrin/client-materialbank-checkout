@@ -16,29 +16,39 @@ export class ResetPasswordModel {
   confirmNewPassword: string = "";
 }
 
+export class ResetPasswordErrors {
+  currentPassword = new InputErrorModel(["required"]);
+  newPassword = new InputErrorModel(["required"]);
+  confirmNewPassword = new InputErrorModel(
+    ["required"],
+    this.confirmPasswordValidator
+  );
+
+  private confirmPasswordValidator(
+    value,
+    context: { data: any; topDownKeysList: [] }
+  ): string {
+    if (context.data?.newPassword !== context.data?.confirmNewPassword) {
+      return "Passwords must match";
+    }
+    return null;
+  }
+}
+
 type State = {
   resetPassword: ResetPasswordModel;
-  resetPasswordErrors: {
-    currentPassword: InputErrorModel;
-    newPassword: InputErrorModel;
-    confirmNewPassword: InputErrorModel;
-  };
+  resetPasswordErrors: ResetPasswordErrors;
   showErrors: boolean;
 };
 
 export default class UserAccount extends React.Component<Props, State> {
   state = {
     resetPassword: new ResetPasswordModel(),
-    resetPasswordErrors: {
-      currentPassword: new InputErrorModel(["required"]),
-      newPassword: new InputErrorModel(["required"]),
-      confirmNewPassword: new InputErrorModel(["required"]),
-    },
+    resetPasswordErrors: new ResetPasswordErrors(),
     showErrors: false,
   };
 
   render() {
-    console.log(this.state);
     return (
       <div className={styles.UserAccount}>
         <UserHeader title={UserPages.Account.name} />
@@ -54,6 +64,7 @@ export default class UserAccount extends React.Component<Props, State> {
               <div className={styles.inputHint}>Current Password</div>
               <Input
                 placeholder="Current Password"
+                type={"password"}
                 value={this.state.resetPassword.currentPassword}
                 onChange={(val: string) => {
                   this.updateField("currentPassword", val);
@@ -67,6 +78,7 @@ export default class UserAccount extends React.Component<Props, State> {
               <div className={styles.inputHint}>New Password</div>
               <Input
                 placeholder="New Password"
+                type={"password"}
                 value={this.state.resetPassword.newPassword}
                 onChange={(val: string) => {
                   this.updateField("newPassword", val);
@@ -78,6 +90,7 @@ export default class UserAccount extends React.Component<Props, State> {
               <div className={styles.inputHint}>Confirm New Password</div>
               <Input
                 placeholder="Confirm New Password"
+                type={"password"}
                 value={this.state.resetPassword.confirmNewPassword}
                 onChange={(val: string) => {
                   this.updateField("confirmNewPassword", val);
@@ -139,7 +152,8 @@ export default class UserAccount extends React.Component<Props, State> {
           topDownKeysList
         );
         if (error && error instanceof InputErrorModel) {
-          error.validate(leafValue);
+          error.validate(leafValue, { data: this.state.resetPassword });
+          console.log(error);
           if (error.errorText) {
             hasErrors = true;
           }
