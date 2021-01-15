@@ -65,13 +65,19 @@ export default class CheckoutFunnel extends React.Component<Props> {
               />
             )}
           </Switch>
-
-          {isOnMobile() && (
-            <Breadcrumbs
-              steps={BREADCRUMBS_STEPS}
-              className={styles.breadCrumbs}
-            />
-          )}
+          <Switch>
+            {isOnMobile() && (
+              <Route
+                path={[PERSONAL_INFORMATION_URL, PAYMENT_URL]}
+                render={() => (
+                  <Breadcrumbs
+                    steps={BREADCRUMBS_STEPS}
+                    className={styles.breadCrumbs}
+                  />
+                )}
+              />
+            )}
+          </Switch>
         </div>
         <Footer />
       </React.Fragment>

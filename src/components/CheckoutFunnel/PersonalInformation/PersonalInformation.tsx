@@ -23,6 +23,7 @@ import { CartAddressInput } from "../../../context/CheckoutAPI";
 import { AppContext, AppContextState } from "../../../context/AppContext";
 import { isEqual, get } from "lodash-es";
 import { CreateCustomerInput } from "context/CustomerAPI";
+import { scrollToTop } from "utils/general";
 
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
@@ -94,6 +95,10 @@ export class PersonalInformation extends React.Component<Props, State> {
   }
 
   shippingAddressForm?: AddressForm;
+
+  componentDidMount() {
+    scrollToTop();
+  }
 
   shouldComponentUpdate = (nextProps: Props, nextState: State) => {
     this.oldContext = this.context;

@@ -30,6 +30,7 @@ import { AppContext, AppContextState } from "../../../context/AppContext";
 import { CartAddressInput } from "../../../context/CheckoutAPI";
 import visaCardIcon from "assets/images/visa-card.png";
 import { isEqual, get } from "lodash-es";
+import { scrollToTop } from "utils/general";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -74,6 +75,10 @@ export class PaymentInformation extends React.Component<Props, State> {
 
   creditCardForm?: CreditCardForm;
   billingAddressForm?: AddressForm;
+
+  componentDidMount() {
+    scrollToTop();
+  }
 
   shouldComponentUpdate = (nextProps: Props, nextState: State) => {
     this.oldContext = this.context;
@@ -397,7 +402,7 @@ export class PaymentInformation extends React.Component<Props, State> {
 
           {!isOnMobile() && (
             <button className="button large" onClick={() => this.onSubmit()}>
-              Checkout
+              Place My Order
             </button>
           )}
         </div>
