@@ -6,6 +6,7 @@ import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PaymentInformation.module.scss";
 import cn from "classnames";
 import {
+  MAIN_SHOP_URL,
   ORDER_CONFIRMATION_URL,
   PERSONAL_INFORMATION_URL,
 } from "constants/urls";
@@ -393,11 +394,11 @@ export class PaymentInformation extends React.Component<Props, State> {
           )}
 
           <Link
-            to={PERSONAL_INFORMATION_URL}
+            to={MAIN_SHOP_URL} // TODO: Update this to CART_URL
             className={cn("link-button", { "margin-top": isOnMobile() })}
           >
             <i className="far fa-long-arrow-left" />
-            Return to information
+            Return to cart
           </Link>
 
           {!isOnMobile() && (

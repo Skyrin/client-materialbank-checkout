@@ -5,7 +5,7 @@ import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PersonalInformation.module.scss";
 import cn from "classnames";
-import { CART_URL, PAYMENT_URL } from "constants/urls";
+import { CART_URL, MAIN_SHOP_URL, PAYMENT_URL } from "constants/urls";
 import paypalLogo from "assets/images/paypal_logo.svg";
 import applePayLogo from "assets/images/apple_pay_logo.svg";
 import Input from "components/common/Input/Input";
@@ -423,7 +423,7 @@ export class PersonalInformation extends React.Component<Props, State> {
 
           <div className={styles.navigationContainer}>
             <Link
-              to={CART_URL}
+              to={MAIN_SHOP_URL} // TODO: Update this to CART_URL
               className={cn("link-button", { "margin-top": isOnMobile() })}
             >
               <i className="far fa-long-arrow-left" />
