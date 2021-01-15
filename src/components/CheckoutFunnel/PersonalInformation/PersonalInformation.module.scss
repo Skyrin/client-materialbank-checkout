@@ -61,12 +61,13 @@
   }
 
   .expressCheckoutOptions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--horizontal-spacing-normal);
 
     @include mobile-media {
-      flex-flow: column;
+      grid-template-columns: auto;
+      column-gap: 0;
       row-gap: $margin-small-2;
     }
 
