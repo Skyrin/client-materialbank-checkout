@@ -187,7 +187,7 @@ export class PaymentInformation extends React.Component<Props, State> {
                 option={PaymentOption.ExistingCreditCard}
               />
               <div className="big-text row center-vertically">
-                <img src={visaCardIcon} className={styles.cardIcon} />
+                <img src={visaCardIcon} alt="" className={styles.cardIcon} />
                 Saved VISA ending in 1234
               </div>
             </div>

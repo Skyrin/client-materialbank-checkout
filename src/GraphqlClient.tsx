@@ -8,7 +8,11 @@ export const graphqlRequest = async (
   query: string,
   variables?: Object
 ) => {
-  const url = process.env.REACT_APP_GRAPHQL_URL || "/graphql";
+  const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === "development";
+  const url =
+    process.env.REACT_APP_GRAPHQL_URL || isDev
+      ? "/graphql"
+      : "https://dev.design.shop/graphql";
 
   const authToken = localStorage.getItem("token");
   const headers: any = {
