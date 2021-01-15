@@ -6,6 +6,7 @@ import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PaymentInformation.module.scss";
 import cn from "classnames";
 import {
+  MAIN_SHOP_URL,
   ORDER_CONFIRMATION_URL,
   PERSONAL_INFORMATION_URL,
 } from "constants/urls";
@@ -30,6 +31,7 @@ import { AppContext, AppContextState } from "../../../context/AppContext";
 import { CartAddressInput } from "../../../context/CheckoutAPI";
 import visaCardIcon from "assets/images/visa-card.png";
 import { isEqual, get } from "lodash-es";
+import { scrollToTop } from "utils/general";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -74,6 +76,10 @@ export class PaymentInformation extends React.Component<Props, State> {
 
   creditCardForm?: CreditCardForm;
   billingAddressForm?: AddressForm;
+
+  componentDidMount() {
+    scrollToTop();
+  }
 
   shouldComponentUpdate = (nextProps: Props, nextState: State) => {
     this.oldContext = this.context;
@@ -187,7 +193,7 @@ export class PaymentInformation extends React.Component<Props, State> {
                 option={PaymentOption.ExistingCreditCard}
               />
               <div className="big-text row center-vertically">
-                <img src={visaCardIcon} className={styles.cardIcon} />
+                <img src={visaCardIcon} alt="" className={styles.cardIcon} />
                 Saved VISA ending in 1234
               </div>
             </div>
@@ -329,6 +335,20 @@ export class PaymentInformation extends React.Component<Props, State> {
     );
   };
 
+  submitButtonIsDisabled = () => {
+    if (
+      this.state.paymentOption === PaymentOption.CreditCard &&
+      !this.creditCardForm.isValid()
+    )
+      return true;
+    if (
+      this.state.addressOption === AddressOption.BillingAddress &&
+      !this.billingAddressForm.isValid()
+    )
+      return true;
+    return false;
+  };
+
   render() {
     return (
       <div className={cn("funnel-page", styles.PaymentInformation)}>
@@ -382,22 +402,30 @@ export class PaymentInformation extends React.Component<Props, State> {
 
         <div className={cn("margin-top-big", styles.navigationContainer)}>
           {isOnMobile() && (
-            <button className="button large" onClick={() => this.onSubmit()}>
+            <button
+              className="button large"
+              onClick={() => this.onSubmit()}
+              disabled={this.submitButtonIsDisabled()}
+            >
               Place My Order
             </button>
           )}
 
           <Link
-            to={PERSONAL_INFORMATION_URL}
+            to={MAIN_SHOP_URL} // TODO: Update this to CART_URL
             className={cn("link-button", { "margin-top": isOnMobile() })}
           >
             <i className="far fa-long-arrow-left" />
-            Return to information
+            Return to cart
           </Link>
 
           {!isOnMobile() && (
-            <button className="button large" onClick={() => this.onSubmit()}>
-              Checkout
+            <button
+              className="button large"
+              onClick={() => this.onSubmit()}
+              disabled={this.submitButtonIsDisabled()}
+            >
+              Place My Order
             </button>
           )}
         </div>

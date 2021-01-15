@@ -127,6 +127,9 @@ h4 {
 }
 
 .button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: var(--button-medium-height);
   border-radius: var(--button-medium-radius);
   background-color: var(--button-background-color);
@@ -134,22 +137,26 @@ h4 {
   color: var(--button-color);
   font-size: var(--button-medium-font-size);
   font-weight: var(--button-font-weight);
-  padding: 10px 80px;
+  padding: 0 80px;
   outline: none;
   cursor: pointer;
+  text-decoration: none;
   transition: background-color 0.05s linear, border-color 0.05s linear;
+
+  @include mobile-media {
+    width: 100%;
+  }
 
   &.large {
     height: var(--button-large-height);
     border-radius: var(--button-large-radius);
     font-size: var(--button-large-font-size);
-    padding: 16px 45px;
+    padding: 0 45px;
 
     @include mobile-media {
       height: var(--button-large-height-mobile);
       border-radius: var(--button-large-radius-mobile);
       font-size: var(--button-large-font-size-mobile);
-      width: 100%;
     }
   }
 

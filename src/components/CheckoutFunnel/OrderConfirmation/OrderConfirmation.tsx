@@ -4,6 +4,8 @@ import styles from "./OrderConfirmation.module.scss";
 import Logo from "components/common/Logo/Logo";
 import { Recommendations } from "components/common/Recommendations/Recommendations";
 import { isOnMobile } from "../../../utils/responsive";
+import { scrollToTop } from "utils/general";
+import { MAIN_SHOP_URL } from "constants/urls";
 
 export default class OrderConfirmation extends React.Component {
   user = {
@@ -81,6 +83,10 @@ export default class OrderConfirmation extends React.Component {
       postalCode: "10001",
     },
   };
+
+  componentDidMount() {
+    scrollToTop();
+  }
 
   recommendationClick(productId: number): void {}
 
@@ -231,9 +237,12 @@ export default class OrderConfirmation extends React.Component {
             <a href="/">Contact Us</a>
           </div>
 
-          <div className={cn(styles["back-to-shopping"], "button")}>
-            Back to Shopping
-          </div>
+          <a
+            href={MAIN_SHOP_URL}
+            className={cn(styles["back-to-shopping"], "button")}
+          >
+            Continue Shopping
+          </a>
         </div>
       </div>
     );
