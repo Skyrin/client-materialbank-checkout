@@ -5,7 +5,7 @@ import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PersonalInformation.module.scss";
 import cn from "classnames";
-import { CART_URL, MAIN_SHOP_URL, PAYMENT_URL } from "constants/urls";
+import { MAIN_SHOP_URL, PAYMENT_URL } from "constants/urls";
 import paypalLogo from "assets/images/paypal_logo.svg";
 import applePayLogo from "assets/images/apple_pay_logo.svg";
 import Input from "components/common/Input/Input";
@@ -24,6 +24,7 @@ import { AppContext, AppContextState } from "../../../context/AppContext";
 import { isEqual, get } from "lodash-es";
 import { CreateCustomerInput } from "context/CustomerAPI";
 import { scrollToTop } from "utils/general";
+import { parse } from "path";
 
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
@@ -70,7 +71,6 @@ export class PersonalInformation extends React.Component<Props, State> {
 
   constructor(props: Props, context: AppContextState) {
     super(props, context);
-    const defaultShipping = context.customer?.default_shipping;
 
     this.state = {
       createAccount: {
@@ -87,12 +87,43 @@ export class PersonalInformation extends React.Component<Props, State> {
         password: null,
         confirmPassword: null,
       },
-      selectedShippingAddressId: defaultShipping
-        ? parseInt(defaultShipping)
+      selectedShippingAddressId: context.customer?.addresses
+        ? this.getDefaultSelectedShippingAddressId(context)
         : -1,
       shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
     };
   }
+
+  getDefaultSelectedShippingAddressId = (context?: AppContextState) => {
+    const usedContext = context || this.context;
+    const customerAddresses = usedContext.customer?.addresses || [];
+    const customerDefaultShipping = usedContext.customer?.default_shipping;
+    const cartAddress = (usedContext.cart?.shipping_addresses || [])[0];
+
+    // If there's no shipping address on the cart, try to get customer default
+    if (!cartAddress) {
+      if (customerDefaultShipping) {
+        return parseInt(customerDefaultShipping);
+      }
+      return -1;
+    }
+
+    // If there is a shipping address on the cart, match the existing one on the customer and return its id
+    // Magento, for whatever reason, does not allow us to get the address id from the cart object...
+    const foundAddress = customerAddresses.find((customerAddress) => {
+      if (cartAddress.city !== customerAddress.city) return false;
+      if (cartAddress.region.code !== customerAddress.region.region_code)
+        return false;
+      if (cartAddress.firstname !== customerAddress.firstname) return false;
+      if (cartAddress.lastname !== customerAddress.lastname) return false;
+      if (!isEqual(cartAddress.street, customerAddress.street)) return false;
+      return true;
+    });
+    if (foundAddress) {
+      return foundAddress.id;
+    }
+    return -1;
+  };
 
   shippingAddressForm?: AddressForm;
 
@@ -113,9 +144,25 @@ export class PersonalInformation extends React.Component<Props, State> {
         "customer.default_shipping"
       );
       const newDefaultShipping = get(this.context, "customer.default_shipping");
-      if (oldDefaultShipping !== newDefaultShipping && !!newDefaultShipping) {
+      const oldCartShippingAddress = get(
+        this.oldContext,
+        "cart.shipping_addresses[0]",
+        {}
+      );
+      const newCartShippingAddress = get(
+        this.context,
+        "cart.shipping_addresses[0]",
+        {}
+      );
+      const defaultShippingChanged =
+        oldDefaultShipping !== newDefaultShipping && !!newDefaultShipping;
+      const cartShippingAddressChanged = !isEqual(
+        oldCartShippingAddress,
+        newCartShippingAddress
+      );
+      if (defaultShippingChanged || cartShippingAddressChanged) {
         this.setState({
-          selectedShippingAddressId: parseInt(newDefaultShipping),
+          selectedShippingAddressId: this.getDefaultSelectedShippingAddressId(),
         });
       }
     }
