@@ -3,6 +3,7 @@
 .container {
   --checkbox-size: 16px;
   --checkbox-color: var(--color-purple);
+  --checkbox-color-black: #5f5b57;
   --checkbox-color-h: 244;
   --checkbox-color-s: 94%;
   --checkbox-color-l: 66%;
@@ -20,6 +21,10 @@
 
   &:hover {
     background-color: lightness(--checkbox-color, 1.4);
+
+    &.black {
+      background-color: lightness(--checkbox-color-black, 1.4);
+    }
   }
 
   &:active {
@@ -29,8 +34,16 @@
   &.checked {
     background-color: var(--checkbox-color);
 
+    &.black {
+      background-color: var(--checkbox-color-black);
+    }
+
     &:hover {
       background-color: lightness(--checkbox-color, 0.95);
+
+      &.black {
+        background-color: var(--checkbox-color-black);
+      }
     }
 
     i {

@@ -4,6 +4,52 @@
   padding: 62px 100px 162px;
   font-family: "IBM Plex Sans", sans-serif;
 
+  @mixin grayText {
+    color: $primary-color-60-user;
+    font-size: var(--font-size-md);
+  }
+
+  @mixin whiteButton {
+    height: 40px;
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+    border-radius: 40px;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-md);
+    transition: background-color 0.15s $ease-in-out;
+
+    &:hover,
+    &:focus {
+      background-color: rgba(black, 0.05);
+    }
+
+    &:active {
+      background-color: rgba(black, 0.1);
+    }
+  }
+
+  @mixin blackButton {
+    height: 40px;
+    width: 190px;
+    background-color: $primary-color-user;
+    color: white;
+    border: 1px solid var(--primary-color);
+    border-radius: 40px;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-md);
+    transition: background-color 0.15s $ease-in-out;
+
+    &:hover,
+    &:focus {
+      background-color: lighten($primary-color-user, 5%);
+    }
+
+    &:active {
+      background-color: lighten($primary-color-user, 10%);
+    }
+  }
+
   @media (max-width: 970px) {
     padding: calc(var(--vertical-spacing-normal) * 2)
       calc(var(--vertical-spacing-normal) * 2) 50px;
@@ -21,6 +67,10 @@
     border: 1px solid $color-user-border;
     border-radius: 8px;
     padding: $margin-medium-3 $margin-medium-3;
+
+    &.fitContent {
+      height: min-content;
+    }
   }
 
   .sectionHeader {
@@ -39,23 +89,115 @@
     margin-bottom: $margin-small;
   }
 
-  .whiteButton {
-    height: 40px;
-    width: 100%;
+  .savePasswordButton {
+    @include whiteButton;
     margin-top: $margin-medium-2;
-    background-color: transparent;
-    border: 1px solid var(--primary-color);
-    border-radius: 40px;
+  }
+
+  .userImage {
+    width: 86px;
+    height: 86px;
+    border-radius: 43px;
+  }
+
+  .editImageButton {
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-md);
+    margin-left: $margin-small-4;
+    cursor: pointer;
+    transition: color 0.15s $ease-in-out;
 
-    &:hover,
-    &:focus {
-      background-color: rgba(black, 0.05);
+    &:hover {
+      color: lighten($primary-color-user, 30%);
     }
 
     &:active {
-      background-color: rgba(black, 0.1);
+      color: lighten($primary-color-user, 50%);
     }
+  }
+
+  .updateProfileForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: $margin-small-4;
+    row-gap: $margin-small;
+    grid-template-rows: auto;
+  }
+
+  .profileInputLayout {
+    margin-top: $margin-medium-3;
+  }
+
+  .mobileHint {
+    @include grayText;
+    margin-left: auto;
+  }
+
+  .optInHint {
+    color: $primary-color-60-user;
+    font-size: var(--font-size-md);
+    margin-left: $margin-small-3;
+  }
+
+  .subSectionHeader {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: $margin-small;
+  }
+
+  .description {
+    @include grayText;
+  }
+
+  .linkedAccountsGrid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto;
+    row-gap: $margin-small-4;
+    margin-top: $margin-medium;
+  }
+
+  .connectAccountButton {
+    @include whiteButton;
+    width: 137px;
+  }
+
+  .connectAccountIcon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .connectAccountText {
+    @include grayText;
+    font-weight: var(--font-weight-medium);
+    margin-left: $margin-small-3;
+  }
+
+  .deleteAccountGrid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto;
+    column-gap: $margin-huge;
+  }
+
+  .cancelButton {
+    margin-left: auto;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-md);
+    color: $primary-color-user;
+    transition: color 0.15s $ease-in-out;
+    padding: $margin-small-3;
+
+    &:hover {
+      color: lighten($primary-color-user, 30%);
+    }
+
+    &:active {
+      color: lighten($primary-color-user, 50%);
+    }
+  }
+
+  .saveChangesButton {
+    @include blackButton;
   }
 }
