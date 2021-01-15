@@ -24,7 +24,6 @@ import { AppContext, AppContextState } from "../../../context/AppContext";
 import { isEqual, get } from "lodash-es";
 import { CreateCustomerInput } from "context/CustomerAPI";
 import { scrollToTop } from "utils/general";
-import { parse } from "path";
 
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),

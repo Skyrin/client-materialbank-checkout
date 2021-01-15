@@ -335,6 +335,20 @@ export class PaymentInformation extends React.Component<Props, State> {
     );
   };
 
+  submitButtonIsDisabled = () => {
+    if (
+      this.state.paymentOption === PaymentOption.CreditCard &&
+      !this.creditCardForm.isValid()
+    )
+      return true;
+    if (
+      this.state.addressOption === AddressOption.BillingAddress &&
+      !this.billingAddressForm.isValid()
+    )
+      return true;
+    return false;
+  };
+
   render() {
     return (
       <div className={cn("funnel-page", styles.PaymentInformation)}>
@@ -388,7 +402,11 @@ export class PaymentInformation extends React.Component<Props, State> {
 
         <div className={cn("margin-top-big", styles.navigationContainer)}>
           {isOnMobile() && (
-            <button className="button large" onClick={() => this.onSubmit()}>
+            <button
+              className="button large"
+              onClick={() => this.onSubmit()}
+              disabled={this.submitButtonIsDisabled()}
+            >
               Place My Order
             </button>
           )}
@@ -402,7 +420,11 @@ export class PaymentInformation extends React.Component<Props, State> {
           </Link>
 
           {!isOnMobile() && (
-            <button className="button large" onClick={() => this.onSubmit()}>
+            <button
+              className="button large"
+              onClick={() => this.onSubmit()}
+              disabled={this.submitButtonIsDisabled()}
+            >
               Place My Order
             </button>
           )}
