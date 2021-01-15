@@ -4,6 +4,8 @@
   --circle-size: 60px;
   display: flex;
   align-items: center;
+  text-decoration: none;
+  color: var(--primary-color);
 
   .circle {
     width: var(--circle-size);
