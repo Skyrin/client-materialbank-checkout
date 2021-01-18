@@ -6,6 +6,7 @@ import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PaymentInformation.module.scss";
 import cn from "classnames";
 import {
+  MAIN_SHOP_URL,
   ORDER_CONFIRMATION_URL,
   PERSONAL_INFORMATION_URL,
 } from "constants/urls";
@@ -26,12 +27,11 @@ import AddressForm, {
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
 import PromoCode from "components/common/PromoCode/PromoCode";
-import { AppContext, AppContextT } from "../../../context/AppContext";
-import { cloneDeep } from "lodash-es";
-import {
-  CartAddressInput,
-  setBillingAddressOnCart,
-} from "../../../context/CheckoutAPI";
+import { AppContext, AppContextState } from "../../../context/AppContext";
+import { CartAddressInput } from "../../../context/CheckoutAPI";
+import visaCardIcon from "assets/images/visa-card.png";
+import { isEqual, get } from "lodash-es";
+import { scrollToTop } from "utils/general";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -39,6 +39,7 @@ export enum AddressOption {
 }
 
 export enum PaymentOption {
+  ExistingCreditCard = "existing-credit-card",
   CreditCard = "credit-card",
   PayPal = "pay-pal",
   ApplePay = "apple-pay",
@@ -56,18 +57,51 @@ type State = {
 
 export class PaymentInformation extends React.Component<Props, State> {
   static contextType = AppContext;
-  context!: AppContextT;
+  context!: AppContextState;
+  oldContext!: AppContextState;
 
-  state = {
-    addressOption: AddressOption.ShippingAddress,
-    paymentOption: PaymentOption.CreditCard,
-    creditCardInfo: DEFAULT_CREDIT_CARD_FORM_VALUES,
-    billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
-    rememberMeCheck: true,
-  };
+  constructor(props: Props, context: AppContextState) {
+    super(props, context);
+    this.state = {
+      addressOption: AddressOption.ShippingAddress,
+      paymentOption:
+        context.customer?.email === "test@example.com"
+          ? PaymentOption.ExistingCreditCard
+          : PaymentOption.CreditCard,
+      creditCardInfo: DEFAULT_CREDIT_CARD_FORM_VALUES,
+      billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
+      rememberMeCheck: true,
+    };
+  }
 
   creditCardForm?: CreditCardForm;
   billingAddressForm?: AddressForm;
+
+  componentDidMount() {
+    scrollToTop();
+  }
+
+  shouldComponentUpdate = (nextProps: Props, nextState: State) => {
+    this.oldContext = this.context;
+    return true;
+  };
+
+  componentDidUpdate = (prevProps: Props, prevState: State) => {
+    // Listening for context changes
+    if (!isEqual(this.oldContext, this.context)) {
+      const oldUserEmail = get(this.oldContext, "customer.email");
+      const newUserEmail = get(this.context, "customer.email");
+
+      if (
+        oldUserEmail !== newUserEmail &&
+        newUserEmail === "test@example.com"
+      ) {
+        this.setState({
+          paymentOption: PaymentOption.ExistingCreditCard,
+        });
+      }
+    }
+  };
 
   async onSubmit() {
     await this.setBillingAddress();
@@ -78,26 +112,15 @@ export class PaymentInformation extends React.Component<Props, State> {
   }
 
   async setBillingAddress() {
-    const cart = cloneDeep(this.context.cart);
-    const addressInput =
+    const cart = this.context.cart;
+    const address =
       this.state.addressOption === "shipping-address"
         ? new CartAddressInput(
             cart.shipping_addresses ? cart.shipping_addresses[0] : null
           )
         : new CartAddressInput(this.state.billingAddress);
-    const resp = await setBillingAddressOnCart(cart.id as string, addressInput);
-    const address = resp.billing_address;
-    cart.billing_address = {
-      city: address.city,
-      company: address.company,
-      firstname: address.firstname,
-      lastname: address.lastname,
-      postcode: address.zipcode,
-      street: address.street[0],
-      telephone: address.telephone,
-      region: address.region,
-    };
-    this.context.updateCart(cart);
+
+    await this.context.setBillingAddress(address);
   }
 
   renderContactInfoSection = () => {
@@ -107,21 +130,29 @@ export class PaymentInformation extends React.Component<Props, State> {
         <Link className={styles.changeButton} to={PERSONAL_INFORMATION_URL}>
           Change
         </Link>
-        <div className={cn("big-text", styles.value)}>johndoe@gmail.com</div>
+        <div className={cn("big-text", styles.value)}>
+          {this.context.customer?.email || "johndoe@gmail.com"}
+        </div>
       </div>
     );
   };
 
   renderShipToInfoSection = () => {
+    const shippingAddress =
+      this.context.cart?.shipping_addresses &&
+      this.context.cart?.shipping_addresses[0];
+    const address = shippingAddress
+      ? `${shippingAddress.street.join(" ")}, ${shippingAddress.city}, ${
+          shippingAddress.region.code
+        } ${shippingAddress.postcode}`
+      : "236 West 30th Street 11th Floor, New York, NY 10001";
     return (
       <div className={`${styles.infoSection} ${styles.paddingContainer}`}>
         <h3 className={styles.title}>Ship To</h3>
         <Link className={styles.changeButton} to={"information"}>
           Change
         </Link>
-        <div className={cn("big-text", styles.value)}>
-          236 West 30th Street 11th Floor, New York, NY 10001
-        </div>
+        <div className={cn("big-text", styles.value)}>{address}</div>
       </div>
     );
   };
@@ -138,20 +169,51 @@ export class PaymentInformation extends React.Component<Props, State> {
   };
 
   renderPaymentInfoSection = () => {
+    const existingUser = this.context.customer?.email === "test@example.com";
+
     return (
       <div>
         <h3 className="margin-top">Payment</h3>
         <div className={styles.paddingContainer}>
-          <div className="row center-vertically">
+          {existingUser && (
+            <div
+              className={cn(
+                "row center-vertically clickable",
+                styles.existingCardOption
+              )}
+              onClick={() => {
+                this.setState({
+                  paymentOption: PaymentOption.ExistingCreditCard,
+                });
+              }}
+            >
+              <RadioButton
+                className={styles.radioButton}
+                value={this.state.paymentOption}
+                option={PaymentOption.ExistingCreditCard}
+              />
+              <div className="big-text row center-vertically">
+                <img src={visaCardIcon} alt="" className={styles.cardIcon} />
+                Saved VISA ending in 1234
+              </div>
+            </div>
+          )}
+          <div
+            className="row center-vertically clickable"
+            onClick={() => {
+              this.setState({
+                paymentOption: PaymentOption.CreditCard,
+              });
+            }}
+          >
             <RadioButton
               className={styles.radioButton}
               value={this.state.paymentOption}
               option={PaymentOption.CreditCard}
-              onChange={(val: string) => {
-                this.setState({ paymentOption: val as PaymentOption });
-              }}
             />
-            <div className="big-text">Credit Card</div>
+            <div className="big-text">
+              {existingUser ? "Use a different card" : "Credit Card"}
+            </div>
           </div>
 
           <CreditCardForm
@@ -169,14 +231,18 @@ export class PaymentInformation extends React.Component<Props, State> {
         </div>
 
         <div className={styles.paddingContainer}>
-          <div className="row center-vertically">
+          <div
+            className="row center-vertically clickable"
+            onClick={() => {
+              this.setState({
+                paymentOption: PaymentOption.PayPal,
+              });
+            }}
+          >
             <RadioButton
               className={styles.radioButton}
               value={this.state.paymentOption}
               option={PaymentOption.PayPal}
-              onChange={(val: string) => {
-                this.setState({ paymentOption: val as PaymentOption });
-              }}
             />
             <img
               src={payPalLogo}
@@ -186,14 +252,18 @@ export class PaymentInformation extends React.Component<Props, State> {
           </div>
         </div>
         <div className={styles.paddingContainer}>
-          <div className="row center-vertically">
+          <div
+            className="row center-vertically clickable"
+            onClick={() => {
+              this.setState({
+                paymentOption: PaymentOption.ApplePay,
+              });
+            }}
+          >
             <RadioButton
               className={styles.radioButton}
               value={this.state.paymentOption}
               option={PaymentOption.ApplePay}
-              onChange={(val: string) => {
-                this.setState({ paymentOption: val as PaymentOption });
-              }}
             />
             <img
               src={applePayLogo}
@@ -219,29 +289,33 @@ export class PaymentInformation extends React.Component<Props, State> {
           Select the address that matches your card or payment method
         </div>
 
-        <div className="row center-vertically margin-top">
+        <div
+          className="row center-vertically margin-top clickable"
+          onClick={() => {
+            this.setState({
+              addressOption: AddressOption.ShippingAddress,
+            });
+          }}
+        >
           <RadioButton
             className={styles.radioButton}
             value={this.state.addressOption}
             option={AddressOption.ShippingAddress}
-            onChange={(val: string) => {
-              this.setState({
-                addressOption: val as AddressOption,
-              });
-            }}
           />
           <div className="big-text">Same as shipping address</div>
         </div>
-        <div className="row center-vertically margin-top">
+        <div
+          className="row center-vertically margin-top clickable"
+          onClick={() => {
+            this.setState({
+              addressOption: AddressOption.BillingAddress,
+            });
+          }}
+        >
           <RadioButton
             className={styles.radioButton}
             value={this.state.addressOption}
             option={AddressOption.BillingAddress}
-            onChange={(val: string) => {
-              this.setState({
-                addressOption: val as AddressOption,
-              });
-            }}
           />
           <div className="big-text">Use a different billing address</div>
         </div>
@@ -259,6 +333,20 @@ export class PaymentInformation extends React.Component<Props, State> {
         />
       </div>
     );
+  };
+
+  submitButtonIsDisabled = () => {
+    if (
+      this.state.paymentOption === PaymentOption.CreditCard &&
+      !this.creditCardForm.isValid()
+    )
+      return true;
+    if (
+      this.state.addressOption === AddressOption.BillingAddress &&
+      !this.billingAddressForm.isValid()
+    )
+      return true;
+    return false;
   };
 
   render() {
@@ -284,15 +372,17 @@ export class PaymentInformation extends React.Component<Props, State> {
         <div className="horizontal-divider margin-top" />
 
         <h3 className="margin-top">Remember me</h3>
-        <div className="row center-vertically margin-top">
+        <div
+          className="row center-vertically margin-top clickable"
+          onClick={() => {
+            this.setState({
+              rememberMeCheck: !this.state.rememberMeCheck,
+            });
+          }}
+        >
           <Checkbox
             className={styles.radioButton}
             value={this.state.rememberMeCheck}
-            onChange={(val: boolean) => {
-              this.setState({
-                rememberMeCheck: val,
-              });
-            }}
           />
           <div className="big-text">
             Save my information for a faster checkout
@@ -312,22 +402,30 @@ export class PaymentInformation extends React.Component<Props, State> {
 
         <div className={cn("margin-top-big", styles.navigationContainer)}>
           {isOnMobile() && (
-            <button className="button large" onClick={() => this.onSubmit()}>
+            <button
+              className="button large"
+              onClick={() => this.onSubmit()}
+              disabled={this.submitButtonIsDisabled()}
+            >
               Place My Order
             </button>
           )}
 
           <Link
-            to={PERSONAL_INFORMATION_URL}
+            to={MAIN_SHOP_URL} // TODO: Update this to CART_URL
             className={cn("link-button", { "margin-top": isOnMobile() })}
           >
             <i className="far fa-long-arrow-left" />
-            Return to information
+            Return to cart
           </Link>
 
           {!isOnMobile() && (
-            <button className="button large" onClick={() => this.onSubmit()}>
-              Checkout
+            <button
+              className="button large"
+              onClick={() => this.onSubmit()}
+              disabled={this.submitButtonIsDisabled()}
+            >
+              Place My Order
             </button>
           )}
         </div>

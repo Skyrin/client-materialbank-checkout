@@ -1,10 +1,5 @@
 @import "styles/variables.scss";
 
-.OrderConfirmation {
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
 .logo {
   margin-bottom: var(--vertical-spacing-normal);
 }
@@ -40,24 +35,29 @@
 }
 
 .customer-info-grid {
-  display: grid;
-  //grid-auto-rows: 1fr;
-  grid-template-columns: repeat(auto-fit, minmax(calc(max(250px, 40%)), 1fr));
-  grid-column-gap: 20px;
-  grid-row-gap: 50px;
+  display: flex;
+  flex-wrap: wrap;
   color: var(--primary-color);
   margin-top: 10px;
+  justify-content: space-between;
+
+  .customer-info-column {
+    display: flex;
+    flex-flow: column;
+    min-width: 50%;
+  }
 
   .info-cell {
+    min-height: 80px;
+    white-space: nowrap;
+    margin: 0 calc(var(--horizontal-spacing-normal) * 3)
+      calc(var(--horizontal-spacing-normal) * 3) 0;
   }
 
   .cell-title {
     margin-bottom: 15px;
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-medium);
-  }
-
-  .flex {
   }
 
   .card-img {
@@ -124,6 +124,10 @@
 // Responsiveness ------------------------------------------------------------
 
 @media (max-width: $mobile-width) {
+  .OrderConfirmation {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
   .confirmation-text {
     margin-top: 0;
   }
@@ -147,6 +151,10 @@
   .customer-info-grid {
     grid-column-gap: 20px;
     grid-row-gap: 30px;
+
+    .info-cell {
+      margin: 0 var(--horizontal-spacing-half) var(--horizontal-spacing-half) 0;
+    }
 
     .cell-title {
       font-size: var(--font-size-sm);

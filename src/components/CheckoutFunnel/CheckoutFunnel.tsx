@@ -14,7 +14,7 @@ import OrderSummary from "components/common/OrderSummary/OrderSummary";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./CheckoutFunnel.module.scss";
 import OrderConfirmation from "components/CheckoutFunnel/OrderConfirmation/OrderConfirmation";
-import { AppContext, AppContextT } from "context/AppContext";
+import { AppContext, AppContextState } from "context/AppContext";
 import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import { BREADCRUMBS_STEPS } from "constants/general";
 import { isOnMobile } from "utils/responsive";
@@ -25,14 +25,13 @@ type Props = RouteComponentProps;
 
 export default class CheckoutFunnel extends React.Component<Props> {
   static contextType = AppContext;
-  context!: AppContextT;
+  context!: AppContextState;
 
   componentDidMount() {
     this.context.requestCartInfo("z4rbRA0MOXpTXZARWJQCbSO2f9rF0U68");
   }
 
   render() {
-    console.log(isOnMobile());
     return (
       <React.Fragment>
         <div className={styles.pageContent}>
@@ -66,13 +65,19 @@ export default class CheckoutFunnel extends React.Component<Props> {
               />
             )}
           </Switch>
-
-          {isOnMobile() && (
-            <Breadcrumbs
-              steps={BREADCRUMBS_STEPS}
-              className={styles.breadCrumbs}
-            />
-          )}
+          <Switch>
+            {isOnMobile() && (
+              <Route
+                path={[PERSONAL_INFORMATION_URL, PAYMENT_URL]}
+                render={() => (
+                  <Breadcrumbs
+                    steps={BREADCRUMBS_STEPS}
+                    className={styles.breadCrumbs}
+                  />
+                )}
+              />
+            )}
+          </Switch>
         </div>
         <Footer />
       </React.Fragment>

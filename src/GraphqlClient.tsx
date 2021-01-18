@@ -1,5 +1,17 @@
-export const graphqlRequest = async (query: string, variables?: Object) => {
-  const url = process.env.REACT_APP_GRAPHQL_URL || "/graphql";
+import { AppContextState } from "context/AppContext";
+
+// Although I don't really like this approach, passing the context allows us to log the user out in case
+// of an authorization error instead of having to deal with this in a lot of other places...
+
+export const graphqlRequest = async (
+  context: AppContextState,
+  query: string,
+  variables?: Object
+) => {
+  const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === "development";
+  const url =
+    process.env.REACT_APP_GRAPHQL_URL ||
+    (isDev ? "/graphql" : "https://dev.design.shop/graphql");
 
   const authToken = localStorage.getItem("token");
   const headers: any = {
@@ -30,6 +42,17 @@ export const graphqlRequest = async (query: string, variables?: Object) => {
   if (response.ok && !parsedResponse.errors && parsedResponse.data) {
     return parsedResponse.data;
   } else {
+    if (
+      parsedResponse.errors.find(
+        (e) => e.message === "The request is allowed for logged in customer"
+      )
+    ) {
+      // TEMP: This is a very quick way to deal with tokens expiring.
+      // TODO: Improve this.
+      context.logout();
+      window.location.reload();
+      return;
+    }
     throw new ClientError(
       getErrorMessage(parsedResponse.errors),
       parsedResponse.errors,

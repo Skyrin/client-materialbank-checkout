@@ -25,7 +25,11 @@ export function Breadcrumbs(props: Props) {
 
   const activeIndex = findIndex(
     props.steps,
-    (step) => !!matchPath(props.location.pathname, step.url)
+    (step) =>
+      !!matchPath(props.location.pathname, {
+        path: step.url,
+        exact: true,
+      })
   );
   return (
     <div className={cn(styles.Breadcrumbs, props.className)}>
@@ -36,6 +40,7 @@ export function Breadcrumbs(props: Props) {
             className={cn(styles.link, {
               [styles.disabled]: index >= activeIndex,
             })}
+            exact
             tabIndex={index >= activeIndex ? -1 : 0}
             activeClassName={styles.active}
           >

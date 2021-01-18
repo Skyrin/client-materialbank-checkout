@@ -1,81 +1,98 @@
 import * as React from "react";
-import { CartT } from "constants/types";
+import { AddressT, CartT, CustomerT } from "constants/types";
+import { cloneDeep } from "lodash-es";
+import { CART_MOCK_DATA } from "./cartMockData";
+import { CartAddressInput } from "./CheckoutAPI";
+import { CreateCustomerInput } from "./CustomerAPI";
 
-const CART_MOCK_DATA = {
-  id: "testId",
-  prices: {
-    subtotal_including_tax: {
-      value: 400,
-    },
-  },
-  items: [
-    {
-      id: "1",
-      product: {
-        name: "Test Product 1",
-        image: {
-          url:
-            "http://18.221.132.151/pub/static/version1605751353/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/image.jpg",
-        },
-      },
-      prices: {
-        row_total_including_tax: {
-          value: 100,
-        },
-      },
-      quantity: 1,
-    },
-    {
-      id: "2",
-      product: {
-        name: "Test Product 2",
-        image: {
-          url:
-            "http://18.221.132.151/pub/static/version1605751353/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/image.jpg",
-        },
-      },
-      prices: {
-        row_total_including_tax: {
-          value: 200,
-        },
-      },
-      quantity: 2,
-    },
-    {
-      id: "3",
-      product: {
-        name: "Test Product 3",
-        image: {
-          url:
-            "http://18.221.132.151/pub/static/version1605751353/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/image.jpg",
-        },
-      },
-      prices: {
-        row_total_including_tax: {
-          value: 100,
-        },
-      },
-      quantity: 1,
-    },
-  ],
-};
+/**
+ * This class is used for handling the Context's internal data.
+ * All properties must be private and accessible ONLY through getters/setters
+ * Getters and setters should usually use deepClone (unless necessary otherwise)
+ * */
+abstract class BaseAppContextState {
+  private internalCart?: CartT = CART_MOCK_DATA;
+  private internalCartInfoLoading?: boolean = false;
+  private internalCustomer?: CustomerT = {};
+  private internalCustomerLoading?: boolean = false;
+  private internalIsLoggedIn?: boolean = !!localStorage.getItem("token");
 
-export type AppContextT = {
-  cart: CartT;
-  updateCart: (newCart: CartT) => void;
-  requestCartInfo: (cartId: string) => void;
-  applyCouponToCart: (cartId: string, couponCode: string) => void;
-  removeCouponFromCart: (cartId: string, couponCode: string) => void;
-  cartInfoLoading: boolean;
-};
+  public get cart() {
+    return cloneDeep(this.internalCart);
+  }
 
-export const defaultValues = {
-  cart: CART_MOCK_DATA as CartT,
-  updateCart: (newCart: CartT) => {},
-  requestCartInfo: (cartId: string) => {},
-  applyCouponToCart: (cartId: string, couponCode: string) => {},
-  removeCouponFromCart: (cartId: string, couponCode: string) => {},
-  cartInfoLoading: false,
-};
+  public set cart(newCart: CartT) {
+    this.internalCart = cloneDeep(newCart);
+  }
 
-export const AppContext = React.createContext(defaultValues);
+  public get cartInfoLoading() {
+    return !!this.internalCartInfoLoading;
+  }
+
+  public set cartInfoLoading(newValue: boolean) {
+    this.internalCartInfoLoading = newValue;
+  }
+
+  public get isLoggedIn() {
+    return !!this.internalIsLoggedIn;
+  }
+
+  public set isLoggedIn(newValue: boolean) {
+    this.internalIsLoggedIn = newValue;
+  }
+
+  public get customer() {
+    return cloneDeep(this.internalCustomer);
+  }
+
+  public set customer(newCustomer: CustomerT) {
+    this.internalCustomer = cloneDeep(newCustomer);
+  }
+
+  public get customerLoading() {
+    return !!this.internalCustomerLoading;
+  }
+
+  public set customerLoading(newValue: boolean) {
+    this.internalCustomerLoading = newValue;
+  }
+}
+
+/**
+ * By instantiating the BaseAppContextState and defining what context-manipulation
+ * methods can be implemented, this class describes the 'shape' the context
+ * which will be provided to consumers
+ */
+export class AppContextState extends BaseAppContextState {
+  updateCart(newCart: CartT) {}
+
+  updateCustomer(newCustomer: CustomerT) {}
+
+  setLoggedIn(newValue: boolean) {}
+
+  async requestCartInfo(cartId: string) {}
+
+  async requestCurrentCustomer() {}
+
+  async applyCouponToCart(couponCode: string) {}
+
+  async removeCouponFromCart(couponCode: string) {}
+
+  async createCustomerAddress(address: CartAddressInput): Promise<AddressT> {
+    return Promise.resolve({});
+  }
+
+  async setBillingAddress(address: CartAddressInput) {}
+
+  async setShippingAddress(addressId: number) {}
+
+  async createCustomer(customer: CreateCustomerInput): Promise<CustomerT> {
+    return Promise.resolve({});
+  }
+
+  async login(email: string, password: string) {}
+
+  logout() {}
+}
+
+export const AppContext = React.createContext(new AppContextState() as any);

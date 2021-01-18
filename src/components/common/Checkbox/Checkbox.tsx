@@ -4,7 +4,7 @@ import cn from "classnames";
 
 type Props = {
   value: boolean;
-  onChange: Function;
+  onChange?: Function;
   className?: string;
   black?: boolean;
 };
@@ -22,7 +22,7 @@ export default function Checkbox(props: Props) {
           [styles.black]: props.black,
         }
       )}
-      onClick={() => props.onChange(!props.value)}
+      onClick={() => props.onChange?.(!props.value)}
     >
       <i className="fas fa-check" />
     </div>

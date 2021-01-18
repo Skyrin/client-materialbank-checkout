@@ -4,13 +4,17 @@
   --circle-size: 60px;
   display: flex;
   align-items: center;
+  text-decoration: none;
+  color: var(--primary-color);
 
   .circle {
     width: var(--circle-size);
     height: var(--circle-size);
-    background-color: var(--primary-color);
-    border-radius: 100%;
     margin-right: var(--horizontal-spacing-normal);
+
+    svg {
+      fill: var(--primary-color);
+    }
   }
 }
 

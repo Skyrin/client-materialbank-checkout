@@ -61,17 +61,17 @@
   }
 
   .expressCheckoutOptions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--horizontal-spacing-normal);
 
     @include mobile-media {
-      flex-flow: column;
+      grid-template-columns: auto;
+      column-gap: 0;
       row-gap: $margin-small-2;
     }
 
     .expressCheckoutOption {
-      width: calc(50% - (var(--horizontal-spacing-normal) / 2));
       height: var(--button-height);
       display: flex;
       justify-content: center;
@@ -79,10 +79,6 @@
       border-radius: 4px;
       cursor: pointer;
       transition: background-color 0.1s linear;
-
-      @include mobile-media {
-        width: 100%;
-      }
 
       &.paypal {
         background-color: #f6c657;
@@ -138,6 +134,8 @@
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
     color: var(--primary-color);
+    cursor: pointer;
+    text-decoration: underline;
 
     @include mobile-media {
       font-size: var(--font-size-xs);

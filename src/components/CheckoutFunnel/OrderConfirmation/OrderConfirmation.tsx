@@ -4,6 +4,8 @@ import styles from "./OrderConfirmation.module.scss";
 import Logo from "components/common/Logo/Logo";
 import { Recommendations } from "components/common/Recommendations/Recommendations";
 import { isOnMobile } from "../../../utils/responsive";
+import { scrollToTop } from "utils/general";
+import { MAIN_SHOP_URL } from "constants/urls";
 
 export default class OrderConfirmation extends React.Component {
   user = {
@@ -57,6 +59,7 @@ export default class OrderConfirmation extends React.Component {
   // TODO: Create a class/type for this info once we have API docs
   customerInfo = {
     customerEmail: "johndoe@gmail.com",
+    customerName: "John Doe",
     paymentInfo: {
       cardIssuer: "VISA",
       cardNumber: "1234",
@@ -81,12 +84,15 @@ export default class OrderConfirmation extends React.Component {
     },
   };
 
-  recommendationClick(productId: number): void {
-    console.log(productId);
+  componentDidMount() {
+    scrollToTop();
   }
+
+  recommendationClick(productId: number): void {}
 
   render() {
     const customerEmail = this.customerInfo.customerEmail;
+    const customerName = this.customerInfo.customerName;
     const paymentInfo = this.customerInfo.paymentInfo;
     const shippingAddress = this.customerInfo.shippingAddress;
     const billingAddress = this.customerInfo.billingAddress;
@@ -157,56 +163,69 @@ export default class OrderConfirmation extends React.Component {
         {/* CUSTOMER INFORMATION */}
 
         <h2 className={styles["section-title"]}>Customer Information</h2>
+
         <div className={styles["customer-info-grid"]}>
-          <div className={styles["info-cell"]}>
-            <div className={styles["cell-title"]}>Contact Information</div>
-            <div className={styles["text-row"]}>{customerEmail}</div>
-          </div>
-          <div className={styles["info-cell"]}>
-            <div className={styles["cell-title"]}>Payment Method</div>
-            <div className={styles["text-row"]}>
-              <div className={styles["card-img"]} />
-              <span>
-                ending in {paymentInfo.cardNumber}&nbsp; -{" "}
-                {paymentInfo.currency}
-                {paymentInfo.amount}
-              </span>
+          <div className={styles["customer-info-column"]}>
+            <div
+              className={cn(styles["info-cell"], styles["contact-information"])}
+            >
+              <div className={styles["cell-title"]}>Contact Information</div>
+              <div className={styles["text-row"]}>{customerName}</div>
+              <div className={styles["text-row"]}>{customerEmail}</div>
+            </div>
+
+            <div
+              className={cn(styles["info-cell"], styles["shipping-address"])}
+            >
+              <div className={styles["cell-title"]}>Shipping Address</div>
+              <div className={styles["text-row"]}>
+                <span>{shippingAddress.name}</span>
+              </div>
+              <div className={styles["text-row"]}>
+                <span>{shippingAddress.companyName}</span>
+              </div>
+              <div className={styles["text-row"]}>
+                <span>{shippingAddress.address}</span>
+              </div>
+              <div className={styles["text-row"]}>
+                <span>
+                  {shippingAddress.city},&nbsp;{shippingAddress.state}&nbsp;
+                  {shippingAddress.postalCode}
+                </span>
+              </div>
             </div>
           </div>
-          <div className={styles["info-cell"]}>
-            <div className={styles["cell-title"]}>Shipping Address</div>
-            <div className={styles["text-row"]}>
-              <span>{shippingAddress.name}</span>
+
+          <div className={styles["customer-info-column"]}>
+            <div className={cn(styles["info-cell"], styles["payment-method"])}>
+              <div className={styles["cell-title"]}>Payment Method</div>
+              <div className={styles["text-row"]}>
+                <div className={styles["card-img"]} />
+                <span>
+                  ending in {paymentInfo.cardNumber}&nbsp; -{" "}
+                  {paymentInfo.currency}
+                  {paymentInfo.amount}
+                </span>
+              </div>
             </div>
-            <div className={styles["text-row"]}>
-              <span>{shippingAddress.companyName}</span>
-            </div>
-            <div className={styles["text-row"]}>
-              <span>{shippingAddress.address}</span>
-            </div>
-            <div className={styles["text-row"]}>
-              <span>
-                {shippingAddress.city},&nbsp;{shippingAddress.state}&nbsp;
-                {shippingAddress.postalCode}
-              </span>
-            </div>
-          </div>
-          <div className={styles["info-cell"]}>
-            <div className={styles["cell-title"]}>Billing Address</div>
-            <div className={styles["text-row"]}>
-              <span>{billingAddress.name}</span>
-            </div>
-            <div className={styles["text-row"]}>
-              <span>{billingAddress.companyName}</span>
-            </div>
-            <div className={styles["text-row"]}>
-              <span>{billingAddress.address}</span>
-            </div>
-            <div className={styles["text-row"]}>
-              <span>
-                {billingAddress.city},&nbsp;{billingAddress.state}&nbsp;
-                {billingAddress.postalCode}
-              </span>
+
+            <div className={cn(styles["info-cell"], styles["billing-address"])}>
+              <div className={styles["cell-title"]}>Billing Address</div>
+              <div className={styles["text-row"]}>
+                <span>{billingAddress.name}</span>
+              </div>
+              <div className={styles["text-row"]}>
+                <span>{billingAddress.companyName}</span>
+              </div>
+              <div className={styles["text-row"]}>
+                <span>{billingAddress.address}</span>
+              </div>
+              <div className={styles["text-row"]}>
+                <span>
+                  {billingAddress.city},&nbsp;{billingAddress.state}&nbsp;
+                  {billingAddress.postalCode}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -218,9 +237,12 @@ export default class OrderConfirmation extends React.Component {
             <a href="/">Contact Us</a>
           </div>
 
-          <div className={cn(styles["back-to-shopping"], "button")}>
-            Back to Shopping
-          </div>
+          <a
+            href={MAIN_SHOP_URL}
+            className={cn(styles["back-to-shopping"], "button")}
+          >
+            Continue Shopping
+          </a>
         </div>
       </div>
     );
