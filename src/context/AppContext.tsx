@@ -70,7 +70,7 @@ export class AppContextState extends BaseAppContextState {
 
   setLoggedIn(newValue: boolean) {}
 
-  async requestCartInfo(cartId: string) {}
+  async requestCartInfo(cartId?: string) {}
 
   async requestCurrentCustomer() {}
 

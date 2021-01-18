@@ -24,6 +24,7 @@ import { AppContext, AppContextState } from "../../../context/AppContext";
 import { isEqual, get } from "lodash-es";
 import { CreateCustomerInput } from "context/CustomerAPI";
 import { scrollToTop } from "utils/general";
+import Loader from "components/common/Loader/Loader";
 
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
@@ -247,6 +248,12 @@ export class PersonalInformation extends React.Component<Props, State> {
         </span>
         <div className={styles.userName}>{name}</div>
         <div className={styles.userEmail}>{this.context.customer?.email}</div>
+        {this.context.customerLoading && (
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        )}
       </div>
     );
   };
@@ -417,6 +424,12 @@ export class PersonalInformation extends React.Component<Props, State> {
             this.shippingAddressForm = ref;
           }}
         />
+        {this.context.customerLoading && (
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        )}
       </div>
     );
   };

@@ -7,6 +7,7 @@ import CheckoutFunnel from "components/CheckoutFunnel/CheckoutFunnel";
 import UserManagement from "components/UserManagement/UserManagement";
 import { isOnMobile } from "utils/responsive";
 import { AppContext, AppContextState } from "context/AppContext";
+import Loader from "components/common/Loader/Loader";
 
 class App extends React.Component {
   static contextType = AppContext;
@@ -26,6 +27,7 @@ class App extends React.Component {
     window.addEventListener("resize", this.resizeHandler);
     if (localStorage.getItem("token")) {
       await this.context.requestCurrentCustomer();
+      await this.context.requestCartInfo();
     }
   }
 
