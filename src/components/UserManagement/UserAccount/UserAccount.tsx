@@ -11,17 +11,12 @@ import UpdateProfileForm from "components/common/Forms/UpdateProfileForm/UpdateP
 
 type Props = RouteComponentProps;
 
-//
-// type State = {
-//   resetPassword: ResetPasswordModel;
-//   resetPasswordErrors: ResetPasswordErrors;
-//   updateProfile: UpdateProfileModel;
-//   updateProfileErrors: UpdateProfileErrors;
-//   optIn: boolean;
-//   showErrors: boolean;
-// };
+type State = {
+  showErrors: boolean;
+  profileImageUrl: any;
+};
 
-export default class UserAccount extends React.Component<Props, any> {
+export default class UserAccount extends React.Component<Props, State> {
   state = {
     showErrors: false,
     profileImageUrl: null,
@@ -57,6 +52,7 @@ export default class UserAccount extends React.Component<Props, any> {
                 : imagePlaceholder
             }
             className={styles.userImage}
+            alt=""
           />
           <input
             className={styles.uploadInput}
