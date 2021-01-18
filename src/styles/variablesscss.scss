@@ -39,3 +39,28 @@ $mobile: 375px;
 $mobile-s: 325px;
 
 $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+@mixin whiteButton {
+  height: 40px;
+  width: 100%;
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  border-radius: 40px;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  transition: background-color 0.15s $ease-in-out;
+
+  &:hover,
+  &:focus {
+    background-color: rgba(black, 0.05);
+  }
+
+  &:active {
+    background-color: rgba(black, 0.1);
+  }
+}
+
+@mixin grayText {
+  color: $primary-color-60-user;
+  font-size: var(--font-size-md);
+}

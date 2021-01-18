@@ -4,31 +4,6 @@
   padding: 62px 100px 162px;
   font-family: "IBM Plex Sans", sans-serif;
 
-  @mixin grayText {
-    color: $primary-color-60-user;
-    font-size: var(--font-size-md);
-  }
-
-  @mixin whiteButton {
-    height: 40px;
-    width: 100%;
-    background-color: transparent;
-    border: 1px solid var(--primary-color);
-    border-radius: 40px;
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-md);
-    transition: background-color 0.15s $ease-in-out;
-
-    &:hover,
-    &:focus {
-      background-color: rgba(black, 0.05);
-    }
-
-    &:active {
-      background-color: rgba(black, 0.1);
-    }
-  }
-
   @mixin blackButton {
     height: 40px;
     width: 190px;
@@ -83,12 +58,6 @@
     margin-top: $margin-medium-2;
   }
 
-  .inputHint {
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-medium);
-    margin-bottom: $margin-small;
-  }
-
   .savePasswordButton {
     @include whiteButton;
     margin-top: $margin-medium-2;
@@ -114,29 +83,6 @@
     &:active {
       color: lighten($primary-color-user, 50%);
     }
-  }
-
-  .updateProfileForm {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: $margin-small-4;
-    row-gap: $margin-small;
-    grid-template-rows: auto;
-  }
-
-  .profileInputLayout {
-    margin-top: $margin-medium-3;
-  }
-
-  .mobileHint {
-    @include grayText;
-    margin-left: auto;
-  }
-
-  .optInHint {
-    color: $primary-color-60-user;
-    font-size: var(--font-size-md);
-    margin-left: $margin-small-3;
   }
 
   .subSectionHeader {
@@ -199,5 +145,20 @@
 
   .saveChangesButton {
     @include blackButton;
+  }
+
+  .uploadInput {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+  }
+
+  .uploadLabel {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
   }
 }

@@ -1,0 +1,34 @@
+@import "styles/variablesscss";
+
+.updateProfileForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: $margin-small-4;
+  row-gap: $margin-small;
+  grid-template-rows: auto;
+}
+
+.profileInputLayout {
+  margin-top: $margin-medium-3;
+}
+
+.mobileHint {
+  @include grayText;
+  margin-left: auto;
+}
+
+.optInHint {
+  color: $primary-color-60-user;
+  font-size: var(--font-size-md);
+  margin-left: $margin-small-3;
+}
+
+.inputHint {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: $margin-small;
+}
+
+.description {
+  @include grayText;
+}
