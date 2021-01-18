@@ -15,8 +15,22 @@ export class UpdateProfileModel {
 export class UpdateProfileErrors {
   firstName = new InputErrorModel(["required"]);
   lastName = new InputErrorModel(["required"]);
-  email = new InputErrorModel(["required"]);
-  mobile = new InputErrorModel(["required"]);
+  email = new InputErrorModel(["required"], UpdateProfileErrors.emailValidator);
+  mobile = new InputErrorModel([], UpdateProfileErrors.mobileValidator);
+
+  private static emailValidator(value): string {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      return "Email address is invalid";
+    }
+    return null;
+  }
+
+  private static mobileValidator(value): string {
+    if (value && !/^(\+|\d)[0-9]{7,16}$/.test(value)) {
+      return "Phone number is invalid";
+    }
+    return null;
+  }
 }
 
 type State = {
