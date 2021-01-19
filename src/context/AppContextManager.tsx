@@ -5,7 +5,6 @@ import { cloneDeep, isArray, isString, merge, mergeWith } from "lodash-es";
 import {
   applyCouponToCart,
   CartAddressInput,
-  createCustomerAddress,
   removeCouponFromCart,
   requestCustomerCartInfo,
   requestGuestCartInfo,
@@ -15,9 +14,12 @@ import {
 import {
   createCustomer,
   CreateCustomerInput,
+  CustomerAddressInput,
   login,
   requestCurrentCustomer,
+  createCustomerAddress,
 } from "./CustomerAPI";
+import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 
 type Props = {
   children: React.ReactNode;
@@ -146,13 +148,17 @@ export default class AppContextManager extends React.Component<Props> {
       return this.contextState.cart;
     },
 
-    setBillingAddress: async (address: CartAddressInput) => {
+    setBillingAddress: async (
+      sameAsShipping: boolean,
+      address?: CartAddressInput
+    ) => {
       this.contextState.cartInfoLoading = true;
       this.forceUpdate();
       const cartId = this.contextState.cart.id;
       const cartInfo = await setBillingAddressOnCart(
         this.getFullContext(),
         cartId as string,
+        sameAsShipping,
         address
       );
       console.log("SET BILLING ADDRESS", cartInfo);
@@ -176,7 +182,7 @@ export default class AppContextManager extends React.Component<Props> {
       return this.contextState.cart;
     },
 
-    createCustomerAddress: async (address: CartAddressInput) => {
+    createCustomerAddress: async (address: CustomerAddressInput) => {
       this.contextState.customerLoading = true;
       this.forceUpdate();
       const createdAddress = await createCustomerAddress(
@@ -185,6 +191,11 @@ export default class AppContextManager extends React.Component<Props> {
       );
       await this.actions.requestCurrentCustomer();
       return createdAddress;
+    },
+
+    setSelectedPaymentOption: (newValue: PaymentOption) => {
+      this.contextState.selectedPaymentOption = newValue;
+      this.forceUpdate();
     },
   };
 

@@ -26,6 +26,7 @@ class App extends React.Component {
     window.addEventListener("resize", this.resizeHandler);
     if (localStorage.getItem("token")) {
       await this.context.requestCurrentCustomer();
+      await this.context.requestCartInfo();
     }
   }
 

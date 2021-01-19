@@ -1,5 +1,6 @@
 import { AppContextState } from "context/AppContext";
 import { graphqlRequest } from "GraphqlClient";
+import { getAddressId } from "utils/context";
 
 export const AddressFragment = `
   city
@@ -147,9 +148,7 @@ export class CartAddressInput {
   firstname: string;
   lastname: string;
   postcode: string;
-  region: {
-    region_id: string;
-  };
+  region: string;
   telephone: string;
   street: string[];
 
@@ -178,14 +177,12 @@ export class CartAddressInput {
       obj?.lastname || obj?.lastName || CartAddressInput.defaults.lastname;
     this.postcode =
       obj?.postcode || obj?.zipCode || CartAddressInput.defaults.postcode;
-    this.region = {
-      region_id: obj?.region_id || CartAddressInput.defaults.region_id,
-    };
+    this.region = obj?.region_id || CartAddressInput.defaults.region_id;
     this.telephone =
       obj?.telephone || obj?.phone || CartAddressInput.defaults.telephone;
     this.street = [obj?.address];
-    if (obj?.aptName) {
-      this.street.push(obj?.aptName);
+    if (obj?.aptNumber) {
+      this.street.push(obj?.aptNumber);
     }
   }
 }
@@ -227,7 +224,8 @@ export const setShippingAddressOnCart = async (
 export const setBillingAddressOnCart = async (
   context: AppContextState,
   cartId: string,
-  billingAddress: CartAddressInput
+  sameAsShipping: boolean,
+  billingAddress?: CartAddressInput
 ) => {
   const query = `
     mutation ($input: SetBillingAddressOnCartInput!) {
@@ -240,37 +238,29 @@ export const setBillingAddressOnCart = async (
   `;
 
   try {
+    let billingAddressInput = {};
+    if (sameAsShipping) {
+      billingAddressInput = {
+        customer_address_id: getAddressId(
+          context,
+          context.cart.shipping_addresses[0]
+        ),
+        same_as_shipping: true,
+      };
+    } else {
+      billingAddressInput = {
+        address: billingAddress,
+      };
+    }
     const resp = await graphqlRequest(context, query, {
       input: {
         cart_id: cartId,
-        billing_address: { address: billingAddress },
+        billing_address: billingAddressInput,
       },
     });
     console.log("GQL RESPONSE", resp);
     // TODO: Process response
     return resp["setBillingAddressOnCart"]["cart"];
-  } catch (e) {
-    console.error(e);
-  }
-};
-
-export const createCustomerAddress = async (
-  context: AppContextState,
-  address: CartAddressInput
-) => {
-  const Mutation = `
-    mutation ($input: CustomerAddressInput!) {
-      createCustomerAddress(input: $input) {
-        id
-      }
-    }
-  `;
-
-  try {
-    const resp = await graphqlRequest(context, Mutation, {
-      input: { ...address, default_shipping: true, default_billing: true },
-    });
-    return resp["createCustomerAddress"];
   } catch (e) {
     console.error(e);
   }

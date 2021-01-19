@@ -144,6 +144,7 @@
 
   .contactInfoSection {
     display: grid;
+    position: relative;
     grid-template-columns: 1fr auto auto;
     grid-template-rows: auto;
     grid-template-areas:
@@ -280,6 +281,7 @@
   }
 
   .shippingAddressSection {
+    position: relative;
     margin-bottom: var(--vertical-spacing-normal);
 
     @include mobile-media {
@@ -317,6 +319,19 @@
     @include mobile-media {
       flex-flow: column;
       flex-direction: column-reverse;
+    }
+  }
+
+  .loaderContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+
+    .loader {
+      font-size: 40px;
     }
   }
 }

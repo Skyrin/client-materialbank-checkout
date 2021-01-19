@@ -7,6 +7,7 @@ import { isOnMobile } from "utils/responsive";
 import cn from "classnames";
 import { RecommendationCard } from "../RecommendationCard/RecommendationCard";
 import PromoCode from "../PromoCode/PromoCode";
+import Loader from "../Loader/Loader";
 
 type Props = {
   className?: string;
@@ -128,6 +129,13 @@ export default class OrderSummary extends React.Component<Props, State> {
               cart?.prices?.subtotal_including_tax?.value || 0
             }`}</span>
           </div>
+
+          {this.context.cartInfoLoading && (
+            <Loader
+              containerClassName={styles.loaderContainer}
+              loaderClassName={styles.loader}
+            />
+          )}
         </div>
       </div>
     );
