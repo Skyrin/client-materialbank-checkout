@@ -5,6 +5,8 @@ $primary-color-10-user: rgba($primary-color-user, 0.1);
 $primary-color-60-user: rgba($primary-color-user, 0.6);
 $primary-color-80-user: rgba($primary-color-user, 0.8);
 
+$color-user-border: #e3e2e2;
+
 $margin-small: 5px;
 $margin-small-2: 8px;
 $margin-small-3: 16px;
@@ -35,3 +37,30 @@ $tablet-s: 768px;
 $mobile-l: 500px;
 $mobile: 375px;
 $mobile-s: 325px;
+
+$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+@mixin whiteButton {
+  height: 40px;
+  width: 100%;
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  border-radius: 40px;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  transition: background-color 0.15s $ease-in-out;
+
+  &:hover,
+  &:focus {
+    background-color: rgba(black, 0.05);
+  }
+
+  &:active {
+    background-color: rgba(black, 0.1);
+  }
+}
+
+@mixin grayText {
+  color: $primary-color-60-user;
+  font-size: var(--font-size-md);
+}

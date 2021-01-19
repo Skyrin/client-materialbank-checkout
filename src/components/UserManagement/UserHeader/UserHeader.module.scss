@@ -35,6 +35,10 @@ button {
     margin-right: $margin-medium-5;
   }
 
+  &:last-of-type {
+    margin-right: 0;
+  }
+
   &.selected {
     color: $primary-color-user;
   }

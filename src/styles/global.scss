@@ -259,6 +259,10 @@ button {
   margin-top: var(--vertical-spacing-normal);
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .margin-top-half {
   margin-top: var(--vertical-spacing-half);
 }
