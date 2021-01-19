@@ -3,7 +3,8 @@ import { AddressT, CartT, CustomerT } from "constants/types";
 import { cloneDeep } from "lodash-es";
 import { CART_MOCK_DATA } from "./cartMockData";
 import { CartAddressInput } from "./CheckoutAPI";
-import { CreateCustomerInput } from "./CustomerAPI";
+import { CreateCustomerInput, CustomerAddressInput } from "./CustomerAPI";
+import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 
 /**
  * This class is used for handling the Context's internal data.
@@ -16,6 +17,7 @@ abstract class BaseAppContextState {
   private internalCustomer?: CustomerT = {};
   private internalCustomerLoading?: boolean = false;
   private internalIsLoggedIn?: boolean = !!localStorage.getItem("token");
+  private internalSelectedPaymentOption?: PaymentOption;
 
   public get cart() {
     return cloneDeep(this.internalCart);
@@ -56,6 +58,14 @@ abstract class BaseAppContextState {
   public set customerLoading(newValue: boolean) {
     this.internalCustomerLoading = newValue;
   }
+
+  public get selectedPaymentOption() {
+    return this.internalSelectedPaymentOption;
+  }
+
+  public set selectedPaymentOption(newValue: PaymentOption) {
+    this.internalSelectedPaymentOption = newValue;
+  }
 }
 
 /**
@@ -70,6 +80,8 @@ export class AppContextState extends BaseAppContextState {
 
   setLoggedIn(newValue: boolean) {}
 
+  setSelectedPaymentOption(newValue: PaymentOption) {}
+
   async requestCartInfo(cartId?: string) {}
 
   async requestCurrentCustomer() {}
@@ -78,11 +90,16 @@ export class AppContextState extends BaseAppContextState {
 
   async removeCouponFromCart(couponCode: string) {}
 
-  async createCustomerAddress(address: CartAddressInput): Promise<AddressT> {
+  async createCustomerAddress(
+    address: CustomerAddressInput
+  ): Promise<AddressT> {
     return Promise.resolve({});
   }
 
-  async setBillingAddress(address: CartAddressInput) {}
+  async setBillingAddress(
+    sameAsShipping: boolean,
+    address?: CartAddressInput
+  ) {}
 
   async setShippingAddress(addressId: number) {}
 

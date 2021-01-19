@@ -22,7 +22,7 @@ import RadioButton from "components/common/RadioButton/RadioButton";
 import { CartAddressInput } from "../../../context/CheckoutAPI";
 import { AppContext, AppContextState } from "../../../context/AppContext";
 import { isEqual, get } from "lodash-es";
-import { CreateCustomerInput } from "context/CustomerAPI";
+import { CreateCustomerInput, CustomerAddressInput } from "context/CustomerAPI";
 import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
 
@@ -113,6 +113,7 @@ export class PersonalInformation extends React.Component<Props, State> {
     const foundAddress = customerAddresses.find((customerAddress) => {
       if (cartAddress.city !== customerAddress.city) return false;
       if (cartAddress.region.code !== customerAddress.region.region_code)
+        // Come on magento...
         return false;
       if (cartAddress.firstname !== customerAddress.firstname) return false;
       if (cartAddress.lastname !== customerAddress.lastname) return false;
@@ -453,7 +454,7 @@ export class PersonalInformation extends React.Component<Props, State> {
   }
 
   async createCustomerAddress() {
-    const addressInput = new CartAddressInput(this.state.shippingAddress);
+    const addressInput = new CustomerAddressInput(this.state.shippingAddress);
     return await this.context.createCustomerAddress(addressInput);
   }
 

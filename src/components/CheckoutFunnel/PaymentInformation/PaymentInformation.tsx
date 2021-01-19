@@ -32,6 +32,7 @@ import { CartAddressInput } from "../../../context/CheckoutAPI";
 import visaCardIcon from "assets/images/visa-card.png";
 import { isEqual, get } from "lodash-es";
 import { scrollToTop } from "utils/general";
+import Loader from "components/common/Loader/Loader";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -62,12 +63,16 @@ export class PaymentInformation extends React.Component<Props, State> {
 
   constructor(props: Props, context: AppContextState) {
     super(props, context);
-    this.state = {
-      addressOption: AddressOption.ShippingAddress,
-      paymentOption:
+    let paymentOption = context.selectedPaymentOption;
+    if (!paymentOption) {
+      paymentOption =
         context.customer?.email === "test@example.com"
           ? PaymentOption.ExistingCreditCard
-          : PaymentOption.CreditCard,
+          : PaymentOption.CreditCard;
+    }
+    this.state = {
+      addressOption: AddressOption.ShippingAddress,
+      paymentOption: paymentOption,
       creditCardInfo: DEFAULT_CREDIT_CARD_FORM_VALUES,
       billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
       rememberMeCheck: true,
@@ -113,14 +118,17 @@ export class PaymentInformation extends React.Component<Props, State> {
 
   async setBillingAddress() {
     const cart = this.context.cart;
-    const address =
-      this.state.addressOption === "shipping-address"
-        ? new CartAddressInput(
-            cart.shipping_addresses ? cart.shipping_addresses[0] : null
-          )
-        : new CartAddressInput(this.state.billingAddress);
+    const sameAsShipping =
+      this.state.addressOption === AddressOption.ShippingAddress;
 
-    await this.context.setBillingAddress(address);
+    if (sameAsShipping) {
+      await this.context.setBillingAddress(true);
+    } else {
+      await this.context.setBillingAddress(
+        false,
+        new CartAddressInput(this.state.billingAddress)
+      );
+    }
   }
 
   renderContactInfoSection = () => {
@@ -131,7 +139,16 @@ export class PaymentInformation extends React.Component<Props, State> {
           Change
         </Link>
         <div className={cn("big-text", styles.value)}>
+          {`${this.context.customer?.firstname} ${this.context.customer?.lastname}` ||
+            "John Doe"}
+          <br />
           {this.context.customer?.email || "johndoe@gmail.com"}
+          {this.context.customerLoading && (
+            <Loader
+              containerClassName={styles.loaderContainer}
+              loaderClassName={styles.loader}
+            />
+          )}
         </div>
       </div>
     );
@@ -141,18 +158,28 @@ export class PaymentInformation extends React.Component<Props, State> {
     const shippingAddress =
       this.context.cart?.shipping_addresses &&
       this.context.cart?.shipping_addresses[0];
+    const contact = shippingAddress
+      ? `${shippingAddress.firstname} ${shippingAddress.lastname}`
+      : "John Doe";
     const address = shippingAddress
-      ? `${shippingAddress.street.join(" ")}, ${shippingAddress.city}, ${
-          shippingAddress.region.code
-        } ${shippingAddress.postcode}`
-      : "236 West 30th Street 11th Floor, New York, NY 10001";
+      ? `${shippingAddress.street.join(" ")}`
+      : "236 West 30th Street 11th Floor";
+    const cityState = shippingAddress
+      ? `${shippingAddress.city}, ${shippingAddress.region.code} ${shippingAddress.postcode}`
+      : "New York, NY 10001";
     return (
       <div className={`${styles.infoSection} ${styles.paddingContainer}`}>
         <h3 className={styles.title}>Ship To</h3>
         <Link className={styles.changeButton} to={"information"}>
           Change
         </Link>
-        <div className={cn("big-text", styles.value)}>{address}</div>
+        <div className={cn("big-text", styles.value)}>
+          {contact}
+          <br />
+          {address}
+          <br />
+          {cityState}
+        </div>
       </div>
     );
   };
@@ -172,7 +199,7 @@ export class PaymentInformation extends React.Component<Props, State> {
     const existingUser = this.context.customer?.email === "test@example.com";
 
     return (
-      <div>
+      <div className={styles.paymentSection}>
         <h3 className="margin-top">Payment</h3>
         <div className={styles.paddingContainer}>
           {existingUser && (
@@ -185,6 +212,9 @@ export class PaymentInformation extends React.Component<Props, State> {
                 this.setState({
                   paymentOption: PaymentOption.ExistingCreditCard,
                 });
+                this.context.setSelectedPaymentOption(
+                  PaymentOption.ExistingCreditCard
+                );
               }}
             >
               <RadioButton
@@ -204,6 +234,7 @@ export class PaymentInformation extends React.Component<Props, State> {
               this.setState({
                 paymentOption: PaymentOption.CreditCard,
               });
+              this.context.setSelectedPaymentOption(PaymentOption.CreditCard);
             }}
           >
             <RadioButton
@@ -237,6 +268,7 @@ export class PaymentInformation extends React.Component<Props, State> {
               this.setState({
                 paymentOption: PaymentOption.PayPal,
               });
+              this.context.setSelectedPaymentOption(PaymentOption.PayPal);
             }}
           >
             <RadioButton
@@ -258,6 +290,7 @@ export class PaymentInformation extends React.Component<Props, State> {
               this.setState({
                 paymentOption: PaymentOption.ApplePay,
               });
+              this.context.setSelectedPaymentOption(PaymentOption.ApplePay);
             }}
           >
             <RadioButton
@@ -272,6 +305,12 @@ export class PaymentInformation extends React.Component<Props, State> {
             />
           </div>
         </div>
+        {this.context.customerLoading && (
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        )}
       </div>
     );
   };
@@ -338,7 +377,7 @@ export class PaymentInformation extends React.Component<Props, State> {
   submitButtonIsDisabled = () => {
     if (
       this.state.paymentOption === PaymentOption.CreditCard &&
-      !this.creditCardForm.isValid()
+      (!this.creditCardForm || !this.creditCardForm.isValid())
     )
       return true;
     if (
@@ -391,11 +430,11 @@ export class PaymentInformation extends React.Component<Props, State> {
 
         <div className="small-text margin-top-big">
           By placing this order, you agree to our&nbsp;
-          <a href="/">
+          <a href="/" className={styles.inlineLink}>
             <span>Terms of Service</span>{" "}
           </a>
           &nbsp;and understand our&nbsp;
-          <a href="/">
+          <a href="/" className={styles.inlineLink}>
             <span>Privacy Policy</span>{" "}
           </a>
         </div>

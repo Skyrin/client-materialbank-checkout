@@ -25,13 +25,13 @@
 
   .infoSection {
     display: grid;
-    height: 100px;
     align-content: space-between;
     grid-template-columns: 1fr auto;
     grid-template-rows: auto;
     grid-template-areas:
       "title changeButton"
       "value value";
+    row-gap: 17px;
 
     @include mobile-media {
       height: auto;
@@ -65,7 +65,9 @@
     }
 
     .value {
+      position: relative;
       grid-area: value;
+      line-height: 1.43;
 
       @include mobile-media {
         font-size: var(--font-size-md);
@@ -105,7 +107,7 @@
   }
 
   .existingCardOption {
-    margin-bottom: var(--vertical-spacing-half);
+    margin-bottom: 15px;
 
     @include mobile-media {
       margin-bottom: var(--vertical-spacing-normal);
@@ -115,5 +117,26 @@
   .cardIcon {
     height: 24px;
     margin-right: $margin-small-2;
+  }
+
+  .inlineLink {
+    margin: 0;
+  }
+
+  .paymentSection {
+    position: relative;
+  }
+
+  .loaderContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+
+    .loader {
+      font-size: 40px;
+    }
   }
 }

@@ -105,3 +105,77 @@ export const createCustomer = async (
     console.error(e);
   }
 };
+
+export class CustomerAddressInput {
+  city: string;
+  company: string;
+  country_code: string;
+  firstname: string;
+  lastname: string;
+  postcode: string;
+  region: {
+    region_id: string;
+  };
+  telephone: string;
+  street: string[];
+
+  // TODO Clarify this: city, country_code, region_id are required on Backend but not present in Design.
+  // TODO: Figure out zip-code resolution / address validations
+  private static readonly defaults = {
+    city: "Washington",
+    company: undefined,
+    country_code: "US",
+    firstname: undefined,
+    lastname: undefined,
+    postcode: undefined,
+    region_id: 1,
+    telephone: undefined,
+    street: undefined,
+  };
+
+  constructor(obj?: any) {
+    this.city = obj?.city || CustomerAddressInput.defaults.city;
+    this.company = obj?.company || CustomerAddressInput.defaults.company;
+    this.country_code =
+      obj?.country_code || CustomerAddressInput.defaults.country_code;
+    this.firstname =
+      obj?.firstname ||
+      obj?.firstName ||
+      CustomerAddressInput.defaults.firstname;
+    this.lastname =
+      obj?.lastname || obj?.lastName || CustomerAddressInput.defaults.lastname;
+    this.postcode =
+      obj?.postcode || obj?.zipCode || CustomerAddressInput.defaults.postcode;
+    this.region = {
+      region_id: obj?.region_id || CustomerAddressInput.defaults.region_id,
+    };
+    this.telephone =
+      obj?.telephone || obj?.phone || CustomerAddressInput.defaults.telephone;
+    this.street = [obj?.address];
+    if (obj?.aptNumber) {
+      this.street.push(obj?.aptNumber);
+    }
+  }
+}
+
+export const createCustomerAddress = async (
+  context: AppContextState,
+  address: CustomerAddressInput
+) => {
+  const Mutation = `
+    mutation ($input: CustomerAddressInput!) {
+      createCustomerAddress(input: $input) {
+        id
+      }
+    }
+  `;
+
+  try {
+    const resp = await graphqlRequest(context, Mutation, {
+      input: { ...address, default_shipping: true, default_billing: true },
+    });
+    return resp["createCustomerAddress"];
+  } catch (e) {
+    console.error(e);
+  }
+};
