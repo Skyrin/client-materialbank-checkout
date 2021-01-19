@@ -86,7 +86,7 @@ export default class UserAccount extends React.Component<Props, State> {
           <button
             className={styles.saveChangesButton}
             onClick={() => {
-              this.updateProfileForm.validateForm();
+              this.updateProfileForm.validateContactInfo();
             }}
           >
             Save Changes
@@ -102,7 +102,7 @@ export default class UserAccount extends React.Component<Props, State> {
         <div className={styles.subSectionHeader}>Linked Accounts</div>
         <div className={styles.description}>
           We use this to let you sign in and to populate your profile
-          information. Only one account ay be linked at a time.
+          information. Only one account may be linked at a time.
         </div>
         <div className={styles.linkedAccountsGrid}>
           <div className="row center-vertically">

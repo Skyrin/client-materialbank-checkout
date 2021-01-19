@@ -1,51 +1,49 @@
 import React from "react";
-import { InputErrorModel } from "utils/input-error.model";
 import styles from "components/common/Forms/ResetPasswordForm/ResetPasswordForm.module.scss";
 import Input from "components/common/Input/Input";
-import { TreeUtils } from "utils/TreeUtils";
+import * as yup from "yup";
+import { extractErrors } from "utils/forms";
 
-export class ResetPasswordModel {
-  currentPassword: string = "";
-  newPassword: string = "";
-  confirmNewPassword: string = "";
-}
+const resetPasswordSchema = yup.object().shape({
+  currentPassword: yup.string().required("Required"),
+  newPassword: yup
+    .string()
+    .required("Required")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character"
+    ),
+  confirmNewPassword: yup
+    .string()
+    .required("Required")
+    .oneOf([yup.ref("newPassword")], "Passwords don't match"),
+});
 
-export class ResetPasswordErrors {
-  currentPassword = new InputErrorModel(["required"]);
-  newPassword = new InputErrorModel(
-    ["required"],
-    ResetPasswordErrors.newPasswordValidator
-  );
-  confirmNewPassword = new InputErrorModel(
-    ["required"],
-    ResetPasswordErrors.confirmPasswordValidator
-  );
+type State = {
+  resetPassword: {
+    currentPassword: string;
+    newPassword: string;
+    confirmNewPassword: string;
+  };
+  resetPasswordErrors: {
+    currentPassword: string | null;
+    newPassword: string | null;
+    confirmNewPassword: string | null;
+  };
+};
 
-  private static newPasswordValidator(value): string {
-    if (value) {
-      if (value.length < 9) {
-        return "Password needs to have at least 8 characters";
-      }
-    }
-    return null;
-  }
-
-  private static confirmPasswordValidator(
-    value,
-    context: { data: any; topDownKeysList: [] }
-  ): string {
-    if (context.data?.newPassword !== value) {
-      return "Passwords must match";
-    }
-    return null;
-  }
-}
-
-export default class ResetPasswordForm extends React.Component<any, any> {
+export default class ResetPasswordForm extends React.Component<any, State> {
   state = {
-    resetPassword: new ResetPasswordModel(),
-    resetPasswordErrors: new ResetPasswordErrors(),
-    optIn: true,
+    resetPassword: {
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    },
+    resetPasswordErrors: {
+      currentPassword: null,
+      newPassword: null,
+      confirmNewPassword: null,
+    },
   };
 
   render() {
@@ -60,7 +58,7 @@ export default class ResetPasswordForm extends React.Component<any, any> {
             onChange={(val: string) => {
               this.updatePasswordForm("currentPassword", val);
             }}
-            error={this.state.resetPasswordErrors?.currentPassword?.errorText}
+            error={this.state.resetPasswordErrors.currentPassword}
           />
         </div>
         <div className={styles.passwordInputLayout}>
@@ -72,7 +70,7 @@ export default class ResetPasswordForm extends React.Component<any, any> {
             onChange={(val: string) => {
               this.updatePasswordForm("newPassword", val);
             }}
-            error={this.state.resetPasswordErrors?.newPassword?.errorText}
+            error={this.state.resetPasswordErrors.newPassword}
           />
         </div>
         <div className={styles.passwordInputLayout}>
@@ -84,13 +82,13 @@ export default class ResetPasswordForm extends React.Component<any, any> {
             onChange={(val: string) => {
               this.updatePasswordForm("confirmNewPassword", val);
             }}
-            error={this.state.resetPasswordErrors.confirmNewPassword?.errorText}
+            error={this.state.resetPasswordErrors.confirmNewPassword}
           />
         </div>
         <button
           className={styles.savePasswordButton}
           onClick={() => {
-            this.validateForm();
+            this.validateContactInfo();
           }}
         >
           Save New Password
@@ -100,54 +98,31 @@ export default class ResetPasswordForm extends React.Component<any, any> {
   }
 
   updatePasswordForm = (fieldName: string, value: string) => {
-    const newResetPassword = Object.assign({}, this.state.resetPassword);
-    newResetPassword[fieldName] = value;
-
-    const newResetPasswordErrors = Object.assign(
-      {},
-      this.state.resetPasswordErrors
-    );
-    newResetPasswordErrors[fieldName].errorText = "";
-
     this.setState({
-      resetPassword: newResetPassword,
-      resetPasswordErrors: newResetPasswordErrors,
+      resetPassword: {
+        ...this.state.resetPassword,
+        [fieldName]: value,
+      },
+      resetPasswordErrors: {
+        ...this.state.resetPasswordErrors,
+        [fieldName]: null,
+      },
     });
   };
 
-  validateForm(): boolean {
-    // Returns true if has errors
-    const newResetPasswordErrors = Object.assign(
-      {},
-      this.state.resetPasswordErrors
-    );
-
-    this.setState({
-      showErrors: true,
-    });
-    let hasErrors = false;
-
-    // we traverse the data tree and get the leaves (and the stack of nested properties)
-    TreeUtils.traverseTree(
-      this.state.resetPassword,
-      (leafValue, topDownKeysList) => {
-        // we get the error objects from the found data leaves
-        const error: InputErrorModel = TreeUtils.accessTreeByTopDownKeysList(
-          newResetPasswordErrors,
-          topDownKeysList
-        );
-        if (error && error instanceof InputErrorModel) {
-          error.validate(leafValue, { data: this.state.resetPassword });
-          console.log(error);
-          if (error.errorText) {
-            hasErrors = true;
-          }
-        }
-      }
-    );
-    this.setState({
-      resetPasswordErrors: newResetPasswordErrors,
-    });
-    return hasErrors;
-  }
+  validateContactInfo = () => {
+    try {
+      resetPasswordSchema.validateSync(this.state.resetPassword, {
+        abortEarly: false,
+      });
+    } catch (e) {
+      const errors = extractErrors(e);
+      this.setState({
+        resetPasswordErrors: {
+          ...this.state.resetPasswordErrors,
+          ...errors,
+        },
+      });
+    }
+  };
 }
