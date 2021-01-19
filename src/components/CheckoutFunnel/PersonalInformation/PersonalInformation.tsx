@@ -19,7 +19,6 @@ import AddressForm, {
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
 import RadioButton from "components/common/RadioButton/RadioButton";
-import { CartAddressInput } from "../../../context/CheckoutAPI";
 import { AppContext, AppContextState } from "../../../context/AppContext";
 import { isEqual, get } from "lodash-es";
 import { CreateCustomerInput, CustomerAddressInput } from "context/CustomerAPI";

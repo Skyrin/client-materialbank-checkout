@@ -117,7 +117,6 @@ export class PaymentInformation extends React.Component<Props, State> {
   }
 
   async setBillingAddress() {
-    const cart = this.context.cart;
     const sameAsShipping =
       this.state.addressOption === AddressOption.ShippingAddress;
 
