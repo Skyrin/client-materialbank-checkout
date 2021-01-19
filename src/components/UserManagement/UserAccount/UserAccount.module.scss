@@ -39,8 +39,7 @@
   }
 
   .section {
-    border: 1px solid $color-user-border;
-    border-radius: 8px;
+    @include roundedContainer;
     padding: $margin-medium-3 $margin-medium-3;
 
     &.fitContent {

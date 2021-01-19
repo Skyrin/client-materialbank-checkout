@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "isDefault": true,
+    "creditCard": {
+      "number": "4111111111111111",
+      "name": "Anne M. Soandso",
+      "expiration": "12/21",
+      "cvv": "123"
+    }
+  },
+  {
+    "id": 2,
+    "isDefault": false,
+    "creditCard": {
+      "number": "5500000000000004",
+      "name": "John Q. Soandso",
+      "expiration": "11/22",
+      "cvv": "321"
+    }
+  },
+  {
+    "id": 3,
+    "isDefault": false,
+    "creditCard": {
+      "number": "340000000000009",
+      "name": "Anne M. Soandso",
+      "expiration": "10/23",
+      "cvv": "222"
+    }
+  },
+  {
+    "id": 4,
+    "isDefault": false,
+    "creditCard": {
+      "number": "30000000000004",
+      "name": "Anne M. Soandso",
+      "expiration": "9/24",
+      "cvv": "111"
+    }
+  }
+]

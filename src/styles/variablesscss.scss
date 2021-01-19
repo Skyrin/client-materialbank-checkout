@@ -5,6 +5,8 @@ $primary-color-10-user: rgba($primary-color-user, 0.1);
 $primary-color-60-user: rgba($primary-color-user, 0.6);
 $primary-color-80-user: rgba($primary-color-user, 0.8);
 
+$brown-color: #745a32;
+
 $color-user-border: #e3e2e2;
 
 $margin-small: 5px;
@@ -63,4 +65,9 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 @mixin grayText {
   color: $primary-color-60-user;
   font-size: var(--font-size-md);
+}
+
+@mixin roundedContainer {
+  border: 1px solid $color-user-border;
+  border-radius: 8px;
 }

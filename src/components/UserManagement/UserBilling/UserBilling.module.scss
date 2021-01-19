@@ -1,0 +1,83 @@
+@import "styles/variablesscss";
+
+.UserBilling {
+  padding: 62px 100px 162px;
+  font-family: "IBM Plex Sans", sans-serif;
+
+  @media (max-width: 970px) {
+    padding: calc(var(--vertical-spacing-normal) * 2)
+      calc(var(--vertical-spacing-normal) * 2) 50px;
+  }
+
+  .pageContent {
+    margin-top: $margin-medium-3;
+  }
+
+  .paymentCell {
+    @include roundedContainer;
+    height: auto;
+    width: 100%;
+
+    & + .paymentCell {
+      margin-top: $margin-small-4;
+    }
+  }
+
+  .paymentRow {
+    display: grid;
+    height: 100px;
+    grid-template-columns: 170px 1fr auto auto;
+    grid-template-rows: auto;
+    align-items: center;
+  }
+
+  .makeDefault {
+    margin-right: $margin-small-4;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    color: $primary-color-user;
+    transition: color 0.15s $ease-in-out;
+
+    &:hover {
+      color: lighten($primary-color-user, 30%);
+    }
+
+    &:active {
+      color: lighten($primary-color-user, 50%);
+    }
+  }
+
+  .defaultPayment {
+    margin-right: $margin-small-4;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: $brown-color;
+  }
+
+  .editButton {
+    @include whiteButton;
+    padding: 0 $margin-small-3;
+    margin-right: $margin-medium-3;
+    width: auto;
+    font-weight: var(--font-weight-medium);
+    transition: border-color 0.2s $ease-in-out background-color 0.15s
+      $ease-in-out;
+    &.editMode {
+      background-color: rgba($primary-color-user, 0.3);
+      border-color: transparent;
+    }
+  }
+
+  .chevron {
+    transition: transform 0.2s $ease-in-out;
+    margin-left: $margin-small-2;
+
+    &.chevronUp {
+      transform: rotate(180deg);
+    }
+
+    &.chevronDown {
+    }
+  }
+}
