@@ -1,41 +1,37 @@
 import React from "react";
 import styles from "components/common/Forms/UpdateProfileForm/UpdateProfileForm.module.scss";
 import Input from "components/common/Input/Input";
-import { InputErrorModel } from "utils/input-error.model";
 import Checkbox from "components/common/Checkbox/Checkbox";
-import { TreeUtils } from "utils/TreeUtils";
+import * as yup from "yup";
+import { extractErrors } from "utils/forms";
 
-export class UpdateProfileModel {
-  firstName: string = "";
-  lastName: string = "";
-  email: string = "";
-  mobile: string = "";
-}
-
-export class UpdateProfileErrors {
-  firstName = new InputErrorModel(["required"]);
-  lastName = new InputErrorModel(["required"]);
-  email = new InputErrorModel(["required"], UpdateProfileErrors.emailValidator);
-  mobile = new InputErrorModel([], UpdateProfileErrors.mobileValidator);
-
-  private static emailValidator(value): string {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      return "Email address is invalid";
-    }
-    return null;
-  }
-
-  private static mobileValidator(value): string {
-    if (value && !/^(\+|\d)[0-9]{7,16}$/.test(value)) {
-      return "Phone number is invalid";
-    }
-    return null;
-  }
-}
+const updateProfileSchema = yup.object().shape({
+  firstName: yup.string().required("Required"),
+  lastName: yup.string().required("Required"),
+  email: yup.string().email("Email is invalid").required("Required"),
+  mobile: yup
+    .string()
+    .transform((value) => (!value ? null : value))
+    .nullable()
+    .matches(
+      /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
+      "Invalid Phone"
+    ),
+});
 
 type State = {
-  updateProfile: UpdateProfileModel;
-  updateProfileErrors: UpdateProfileErrors;
+  updateProfile: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobile: string;
+  };
+  updateProfileErrors: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobile: string;
+  };
   optIn: boolean;
   showErrors: boolean;
 };
@@ -46,8 +42,18 @@ type Props = {
 
 export default class UpdateProfileForm extends React.Component<Props, State> {
   state = {
-    updateProfile: new UpdateProfileModel(),
-    updateProfileErrors: new UpdateProfileErrors(),
+    updateProfile: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      mobile: "",
+    },
+    updateProfileErrors: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      mobile: "",
+    },
     optIn: true,
     showErrors: true,
   };
@@ -72,7 +78,7 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
               onChange={(val: string) => {
                 this.updateFieldForm("firstName", val);
               }}
-              error={this.state.updateProfileErrors.firstName?.errorText}
+              error={this.state.updateProfileErrors.firstName}
             />
           </div>
 
@@ -84,7 +90,7 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
               onChange={(val: string) => {
                 this.updateFieldForm("lastName", val);
               }}
-              error={this.state.updateProfileErrors.lastName?.errorText}
+              error={this.state.updateProfileErrors.lastName}
             />
           </div>
 
@@ -96,7 +102,7 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
               onChange={(val: string) => {
                 this.updateFieldForm("email", val);
               }}
-              error={this.state.updateProfileErrors.email?.errorText}
+              error={this.state.updateProfileErrors.email}
             />
           </div>
 
@@ -113,7 +119,7 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
               onChange={(val: string) => {
                 this.updateFieldForm("mobile", val);
               }}
-              error={this.state.updateProfileErrors.mobile?.errorText}
+              error={this.state.updateProfileErrors.mobile}
             />
           </div>
         </div>
@@ -144,53 +150,31 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
   }
 
   updateFieldForm = (fieldName: string, value: string) => {
-    const updateProfile = Object.assign({}, this.state.updateProfile);
-    updateProfile[fieldName] = value;
-
-    const updateProfileErrors = Object.assign(
-      {},
-      this.state.updateProfileErrors
-    );
-    updateProfileErrors[fieldName].errorText = "";
-
     this.setState({
-      updateProfile: updateProfile,
-      updateProfileErrors: updateProfileErrors,
+      updateProfile: {
+        ...this.state.updateProfile,
+        [fieldName]: value,
+      },
+      updateProfileErrors: {
+        ...this.state.updateProfileErrors,
+        [fieldName]: null,
+      },
     });
   };
 
-  validateForm(): boolean {
-    // Returns true if has errors
-    const newUpdateProfileErrors = Object.assign(
-      {},
-      this.state.updateProfileErrors
-    );
-
-    this.setState({
-      showErrors: true,
-    });
-    let hasErrors = false;
-
-    // we traverse the data tree and get the leaves (and the stack of nested properties)
-    TreeUtils.traverseTree(
-      this.state.updateProfile,
-      (leafValue, topDownKeysList) => {
-        // we get the error objects from the found data leaves
-        const error: InputErrorModel = TreeUtils.accessTreeByTopDownKeysList(
-          newUpdateProfileErrors,
-          topDownKeysList
-        );
-        if (error && error instanceof InputErrorModel) {
-          error.validate(leafValue, { data: this.state.updateProfile });
-          if (error.errorText) {
-            hasErrors = true;
-          }
-        }
-      }
-    );
-    this.setState({
-      updateProfileErrors: newUpdateProfileErrors,
-    });
-    return hasErrors;
-  }
+  validateContactInfo = () => {
+    try {
+      updateProfileSchema.validateSync(this.state.updateProfile, {
+        abortEarly: false,
+      });
+    } catch (e) {
+      const errors = extractErrors(e);
+      this.setState({
+        updateProfileErrors: {
+          ...this.state.updateProfileErrors,
+          ...errors,
+        },
+      });
+    }
+  };
 }
