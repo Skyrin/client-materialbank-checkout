@@ -70,7 +70,7 @@ export class PersonalInformation extends React.Component<Props, State> {
 
   constructor(props: Props, context: AppContextState) {
     super(props, context);
-
+    this.oldContext = context;
     this.state = {
       createAccount: {
         firstname: "",

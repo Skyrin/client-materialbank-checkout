@@ -8,15 +8,17 @@ import cn from "classnames";
 import { RecommendationCard } from "../RecommendationCard/RecommendationCard";
 import PromoCode from "../PromoCode/PromoCode";
 import Loader from "../Loader/Loader";
+import { RouteComponentProps, withRouter, matchPath } from "react-router-dom";
+import { ORDER_CONFIRMATION_URL } from "constants/urls";
 
-type Props = {
+type Props = RouteComponentProps & {
   className?: string;
 };
 type State = {
   isOpen: boolean;
 };
 
-export default class OrderSummary extends React.Component<Props, State> {
+class OrderSummary extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
 
@@ -85,6 +87,16 @@ export default class OrderSummary extends React.Component<Props, State> {
     );
   };
 
+  renderAddedGiftsSection = () => {
+    return (
+      <div className={styles.addedGiftsContainer}>
+        <div className={styles.giftsContainer}>
+          <RecommendationCard title="Table Magazine Issue #45" type={2} added />
+        </div>
+      </div>
+    );
+  };
+
   renderPricesSection = () => {
     const cart = this.context.cart;
 
@@ -106,6 +118,11 @@ export default class OrderSummary extends React.Component<Props, State> {
     const cart = this.context.cart;
     const cartItems = cart?.items || [];
 
+    const isOnConfirmationPage = !!matchPath(this.props.location.pathname, {
+      path: ORDER_CONFIRMATION_URL,
+      exact: true,
+    });
+
     return (
       <div
         className={cn(styles.OrderSummary, this.props.className, {
@@ -121,7 +138,10 @@ export default class OrderSummary extends React.Component<Props, State> {
               <CartItem key={ci.id} cartItem={ci} />
             ))}
           </div>
-          {!isOnMobile() && this.renderGiftSection()}
+          {!isOnMobile() &&
+            (isOnConfirmationPage
+              ? this.renderAddedGiftsSection()
+              : this.renderAddedGiftsSection())}
           {this.renderPricesSection()}
           <div className={styles.totalContainer}>
             <span>Total</span>
@@ -141,3 +161,5 @@ export default class OrderSummary extends React.Component<Props, State> {
     );
   }
 }
+
+export default withRouter(OrderSummary);

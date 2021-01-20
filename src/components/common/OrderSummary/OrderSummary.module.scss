@@ -35,6 +35,16 @@
     }
   }
 
+  .addedGiftsContainer {
+    @extend .section;
+
+    border-bottom: 0;
+
+    .giftsContainer {
+      margin-bottom: 0;
+    }
+  }
+
   .totalContainer {
     display: flex;
     justify-content: space-between;

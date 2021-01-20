@@ -29,16 +29,16 @@ export const DEFAULT_ADDRESS_FORM_VALUES: AddressFormValuesT = {
 };
 
 const DEFAULT_FORM_SCHEMA = yup.object().shape({
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
+  firstName: yup.string().required("Required"),
+  lastName: yup.string().required("Required"),
   company: yup.string(),
-  address: yup.string().required(),
+  address: yup.string().required("Required"),
   aptNumber: yup.string(),
   zipCode: yup
     .string()
     .matches(/[0-9]+/, "Digits Only")
     .required(),
-  phone: yup.string().required(),
+  phone: yup.string().required("Required"),
 });
 
 type AddressFormErrorsT = {
