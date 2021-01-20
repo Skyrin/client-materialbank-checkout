@@ -8,6 +8,13 @@ import PaymentMethod from "models/PaymentMethod";
 import styles from "./UserBilling.module.scss";
 import cn from "classnames";
 
+import amexIcon from "assets/images/amex_icon.svg";
+import visaIcon from "assets/images/visa_icon.svg";
+import masterCardIcon from "assets/images/master_card_icon.svg";
+import creditCardIcon from "assets/images/credit_card_icon.svg";
+import { CreditCardType } from "models/CreditCard";
+import EditCreditCardForm from "components/common/Forms/EditCreditCardForm/EditCreditCardForm";
+
 type Props = RouteComponentProps;
 
 type State = {
@@ -30,14 +37,28 @@ export default class UserBilling extends React.Component<Props, State> {
         <div className={styles.pageContent}>
           {this.state.paymentMethods.map(
             (paymentMethod: PaymentMethod, index) => {
-              console.log(paymentMethod);
               return (
                 <div key={paymentMethod.id} className={styles.paymentCell}>
                   <div className={styles.paymentRow}>
-                    <div>{paymentMethod.creditCard.number}</div>
-                    <div>{paymentMethod.creditCard.name}</div>
+                    <img
+                      src={this.getCreditCardIcon(paymentMethod)}
+                      className={styles.creditCardIcon}
+                    />
+                    <div className={styles.creditCardNumber}>
+                      {paymentMethod.creditCard.getObfuscatedNumber()}
+                    </div>
+                    <div className={styles.fullName}>
+                      {paymentMethod.creditCard.name}
+                    </div>
                     {!paymentMethod.isDefault && (
-                      <div className={styles.makeDefault}>Make Default</div>
+                      <div
+                        className={styles.makeDefault}
+                        onClick={() => {
+                          this.makeDefault(index);
+                        }}
+                      >
+                        Make Default
+                      </div>
                     )}
                     {paymentMethod.isDefault && (
                       <div className={styles.defaultPayment}>
@@ -61,6 +82,10 @@ export default class UserBilling extends React.Component<Props, State> {
                       />
                     </button>
                   </div>
+                  {paymentMethod.isOpen && (
+                    <div className="horizontal-divider" />
+                  )}
+                  {paymentMethod.isOpen && <EditCreditCardForm />}
                 </div>
               );
             }
@@ -77,5 +102,33 @@ export default class UserBilling extends React.Component<Props, State> {
     this.setState({
       paymentMethods: paymentMethods,
     });
+  }
+
+  makeDefault(index: number) {
+    const paymentMethods = this.state.paymentMethods;
+
+    paymentMethods.map((paymentMethod) => {
+      paymentMethod.isDefault = false;
+    });
+    paymentMethods[index].isDefault = true;
+    this.setState({
+      paymentMethods: paymentMethods,
+    });
+  }
+
+  getCreditCardIcon(paymentMethod: PaymentMethod) {
+    switch (paymentMethod.creditCard.getCreditCardBrand()) {
+      case CreditCardType.AmericanExpress:
+        return amexIcon;
+      case CreditCardType.MasterCard:
+        return masterCardIcon;
+      case CreditCardType.Visa:
+        return visaIcon;
+      case CreditCardType.Diners:
+      case CreditCardType.Discover:
+      case CreditCardType.JCB:
+      case CreditCardType.Unknown:
+        return creditCardIcon;
+    }
   }
 }

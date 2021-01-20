@@ -1,0 +1,106 @@
+@import "styles/variablesscss";
+
+.EditCreditCardForm {
+  height: auto;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  grid-template-rows: auto;
+  padding: $margin-medium;
+  grid-template-areas:
+    "title form"
+    "title buttons";
+
+  transition: height 0.35s $ease-in-out, opacity 0.35s $ease-in-out;
+
+  &.visible {
+    height: 600px;
+    opacity: 1;
+    padding: $margin-medium;
+  }
+
+  .title {
+    grid-area: title;
+    color: $primary-color-user;
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .form {
+    grid-area: form;
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
+    column-gap: $margin-small-4;
+    row-gap: $margin-medium;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "card-number card-number card-number"
+      "card-name card-expiration card-cvv";
+
+    .cardNumber {
+      grid-area: card-number;
+    }
+
+    .cardName {
+      grid-area: card-name;
+    }
+
+    .cardExpiration {
+      grid-area: card-expiration;
+    }
+
+    .cardCvv {
+      grid-area: card-cvv;
+    }
+
+    .inputHint {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-medium);
+      color: $primary-color-user;
+      margin-bottom: $margin-small;
+    }
+  }
+
+  .buttons {
+    grid-area: buttons;
+    display: flex;
+    margin-top: $margin-medium;
+  }
+
+  .saveChanges {
+    @include blackButton;
+  }
+
+  .cancelButton {
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-md);
+    color: $primary-color-user;
+    transition: color 0.15s $ease-in-out;
+    padding: $margin-small-3;
+    margin-left: auto;
+
+    &:hover {
+      color: lighten($primary-color-user, 30%);
+    }
+
+    &:active {
+      color: lighten($primary-color-user, 50%);
+    }
+  }
+
+  .deleteButton {
+    font-family: "Roboto", sans-serif;
+    font-weight: var(--font-weight-normal);
+    font-size: var(--font-size-md);
+    letter-spacing: 1px;
+    color: $red-color;
+    transition: color 0.15s $ease-in-out;
+
+    &:hover {
+      color: lighten($red-color, 10%);
+    }
+
+    &:active {
+      color: lighten($red-color, 30%);
+    }
+  }
+}
