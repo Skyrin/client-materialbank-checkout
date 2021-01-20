@@ -71,6 +71,14 @@
     margin-right: 15px;
   }
 
+  .applePay {
+    height: 20px;
+  }
+
+  .paypal {
+    height: 20px;
+  }
+
   .text-row + .text-row {
     margin-top: 5px;
   }
@@ -146,8 +154,10 @@
 
   .section-title {
     font-size: var(--font-size-md);
-    margin-top: 40px;
+    margin-top: var(--vertical-spacing-normal);
+    margin-bottom: 0;
   }
+
   .customer-info-grid {
     grid-column-gap: 20px;
     grid-row-gap: 30px;

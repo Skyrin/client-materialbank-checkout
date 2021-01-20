@@ -58,6 +58,10 @@ $card-height: 100px;
     transform: translateY(1px);
   }
 
+  &:disabled {
+    pointer-events: none;
+  }
+
   &:hover,
   &:focus {
     background-color: rgba(var(--primary-color-rgb), 0.1);

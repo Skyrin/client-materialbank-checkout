@@ -6,11 +6,16 @@ import { Recommendations } from "components/common/Recommendations/Recommendatio
 import { isOnMobile } from "../../../utils/responsive";
 import { scrollToTop } from "utils/general";
 import { MAIN_SHOP_URL } from "constants/urls";
+import { AppContext, AppContextState } from "context/AppContext";
+import { get } from "lodash-es";
+import { PaymentOption } from "../PaymentInformation/PaymentInformation";
+import applePayLogo from "assets/images/apple_pay_logo_black.svg";
+import paypalLogo from "assets/images/paypal_logo.svg";
 
 export default class OrderConfirmation extends React.Component {
-  user = {
-    firstName: "John",
-  };
+  static contextType = AppContext;
+  context!: AppContextState;
+
   order = {
     number: 2625117283,
   };
@@ -67,20 +72,26 @@ export default class OrderConfirmation extends React.Component {
       currency: "$",
     },
     shippingAddress: {
-      name: "John Doe",
-      companyName: "Vaudeville Ventures",
-      address: "236 W 30th Street 11th Floor",
+      firstname: "John",
+      lastname: "Doe",
+      company: "Vaudeville Ventures",
+      street: ["236 W 30th Street", "11th Floor"],
       city: "New York",
-      state: "NY",
-      postalCode: "10001",
+      region: {
+        code: "NY",
+      },
+      postcode: "10001",
     },
     billingAddress: {
-      name: "John Doe",
-      companyName: "Vaudeville Ventures",
-      address: "236 W 30th Street 11th Floor",
+      firstname: "John",
+      lastname: "Doe",
+      company: "Vaudeville Ventures",
+      street: ["236 W 30th Street", "11th Floor"],
       city: "New York",
-      state: "NY",
-      postalCode: "10001",
+      region: {
+        code: "NY",
+      },
+      postcode: "10001",
     },
   };
 
@@ -91,12 +102,19 @@ export default class OrderConfirmation extends React.Component {
   recommendationClick(productId: number): void {}
 
   render() {
-    const customerEmail = this.customerInfo.customerEmail;
-    const customerName = this.customerInfo.customerName;
-    const paymentInfo = this.customerInfo.paymentInfo;
-    const shippingAddress = this.customerInfo.shippingAddress;
-    const billingAddress = this.customerInfo.billingAddress;
-
+    const customerEmail = this.context.customer.email;
+    const customerName = `${this.context.customer.firstname} ${this.context.customer.lastname}`;
+    const selectedPaymentOption = this.context.selectedPaymentOption;
+    const shippingAddress = get(
+      this.context.cart,
+      "shipping_addresses[0]",
+      this.customerInfo.shippingAddress
+    );
+    const billingAddress = get(
+      this.context.cart,
+      "billing_address",
+      this.customerInfo.billingAddress
+    );
     return (
       <div className={cn("funnel-page", styles["OrderConfirmation"])}>
         {!isOnMobile() && <Logo className={styles.logo} />}
@@ -120,7 +138,7 @@ export default class OrderConfirmation extends React.Component {
               "font-weight-medium"
             )}
           >
-            Thank you, {this.user.firstName}!
+            Thank you, {this.context.customer.firstname}!
           </h2>
           <div
             className={cn(
@@ -179,18 +197,19 @@ export default class OrderConfirmation extends React.Component {
             >
               <div className={styles["cell-title"]}>Shipping Address</div>
               <div className={styles["text-row"]}>
-                <span>{shippingAddress.name}</span>
+                <span>{`${shippingAddress.firstname} ${shippingAddress.lastname}`}</span>
               </div>
               <div className={styles["text-row"]}>
-                <span>{shippingAddress.companyName}</span>
+                <span>{shippingAddress.company}</span>
               </div>
               <div className={styles["text-row"]}>
-                <span>{shippingAddress.address}</span>
+                <span>{shippingAddress.street.join(" ")}</span>
               </div>
               <div className={styles["text-row"]}>
                 <span>
-                  {shippingAddress.city},&nbsp;{shippingAddress.state}&nbsp;
-                  {shippingAddress.postalCode}
+                  {shippingAddress.city},&nbsp;{shippingAddress.region.code}
+                  &nbsp;
+                  {shippingAddress.postcode}
                 </span>
               </div>
             </div>
@@ -200,30 +219,66 @@ export default class OrderConfirmation extends React.Component {
             <div className={cn(styles["info-cell"], styles["payment-method"])}>
               <div className={styles["cell-title"]}>Payment Method</div>
               <div className={styles["text-row"]}>
-                <div className={styles["card-img"]} />
-                <span>
-                  ending in {paymentInfo.cardNumber}&nbsp; -{" "}
-                  {paymentInfo.currency}
-                  {paymentInfo.amount}
-                </span>
+                {(!selectedPaymentOption ||
+                  selectedPaymentOption === PaymentOption.ExistingCreditCard ||
+                  selectedPaymentOption === PaymentOption.CreditCard) && (
+                  <React.Fragment>
+                    <div className={styles["card-img"]} />
+                    <span>
+                      ending in 1234&nbsp;-&nbsp;
+                      {this.context.cart?.prices?.subtotal_including_tax
+                        ?.currency || "$"}
+                      {this.context.cart?.prices?.subtotal_including_tax
+                        ?.value || "172"}
+                    </span>
+                  </React.Fragment>
+                )}
+                {selectedPaymentOption === PaymentOption.ApplePay && (
+                  <React.Fragment>
+                    <img
+                      src={applePayLogo}
+                      alt=""
+                      className={styles.applePay}
+                    />
+                    <span>
+                      &nbsp;-&nbsp;
+                      {this.context.cart?.prices?.subtotal_including_tax
+                        ?.currency || "$"}
+                      {this.context.cart?.prices?.subtotal_including_tax
+                        ?.value || "172"}
+                    </span>
+                  </React.Fragment>
+                )}
+                {selectedPaymentOption === PaymentOption.PayPal && (
+                  <React.Fragment>
+                    <img src={paypalLogo} alt="" className={styles.paypal} />
+                    <span>
+                      &nbsp;-&nbsp;
+                      {this.context.cart?.prices?.subtotal_including_tax
+                        ?.currency || "$"}
+                      {this.context.cart?.prices?.subtotal_including_tax
+                        ?.value || "172"}
+                    </span>
+                  </React.Fragment>
+                )}
               </div>
             </div>
 
             <div className={cn(styles["info-cell"], styles["billing-address"])}>
               <div className={styles["cell-title"]}>Billing Address</div>
               <div className={styles["text-row"]}>
-                <span>{billingAddress.name}</span>
+                <span>{`${billingAddress.firstname} ${billingAddress.lastname}`}</span>
               </div>
               <div className={styles["text-row"]}>
-                <span>{billingAddress.companyName}</span>
+                <span>{billingAddress.company}</span>
               </div>
               <div className={styles["text-row"]}>
-                <span>{billingAddress.address}</span>
+                <span>{billingAddress.street.join(" ")}</span>
               </div>
               <div className={styles["text-row"]}>
                 <span>
-                  {billingAddress.city},&nbsp;{billingAddress.state}&nbsp;
-                  {billingAddress.postalCode}
+                  {billingAddress.city},&nbsp;{billingAddress.region.code}&nbsp;
+                  {billingAddress.postcode}
                 </span>
               </div>
             </div>

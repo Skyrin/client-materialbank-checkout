@@ -63,6 +63,7 @@ export class PaymentInformation extends React.Component<Props, State> {
 
   constructor(props: Props, context: AppContextState) {
     super(props, context);
+    this.oldContext = context;
     let paymentOption = context.selectedPaymentOption;
     if (!paymentOption) {
       paymentOption =
@@ -101,6 +102,7 @@ export class PaymentInformation extends React.Component<Props, State> {
         oldUserEmail !== newUserEmail &&
         newUserEmail === "test@example.com"
       ) {
+        console.log("EMAIL CHANGED", oldUserEmail, newUserEmail);
         this.setState({
           paymentOption: PaymentOption.ExistingCreditCard,
         });
