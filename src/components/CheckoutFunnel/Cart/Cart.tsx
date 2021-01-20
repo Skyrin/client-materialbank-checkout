@@ -16,6 +16,7 @@ import {
   expirationDateInputParser,
 } from "components/common/Input/utils";
 import RadioButton from "components/common/RadioButton/RadioButton";
+import AddressInput from "components/common/Input/AddressInput/AddressInput";
 
 type Props = RouteComponentProps;
 
@@ -137,6 +138,7 @@ export class Cart extends React.Component<Props, State> {
             placeholder="Should only accept digits"
             inputMode="numeric"
           />
+          <AddressInput />
         </div>
       </React.Fragment>
     );
