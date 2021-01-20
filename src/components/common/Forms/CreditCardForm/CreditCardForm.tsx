@@ -27,9 +27,9 @@ export const DEFAULT_CREDIT_CARD_FORM_VALUES: CreditCardFormValuesT = {
 };
 
 const DEFAULT_FORM_SCHEMA = yup.object().shape({
-  creditCardNumber: yup.string().required(),
-  creditCardName: yup.string().required(),
-  cardDate: yup.string().required(),
+  creditCardNumber: yup.string().required("Required"),
+  creditCardName: yup.string().required("Required"),
+  cardDate: yup.string().required("Required"),
   cardCVV: yup
     .string()
     .matches(/[0-9]+/, "Digits Only")
