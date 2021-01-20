@@ -160,7 +160,7 @@
 
   .customer-info-grid {
     grid-column-gap: 20px;
-    grid-row-gap: 30px;
+    grid-row-gap: var(--vertical-spacing-normal);
 
     .info-cell {
       margin: 0 var(--horizontal-spacing-half) var(--horizontal-spacing-half) 0;
