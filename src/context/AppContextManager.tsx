@@ -93,7 +93,7 @@ export default class AppContextManager extends React.Component<Props> {
     },
 
     login: async (email: string, password: string) => {
-      const token = await login(email, password);
+      const token = await login(this.getFullContext(), email, password);
       console.log("LOGIN", token);
       if (token && isString(token)) {
         localStorage.setItem("token", token);

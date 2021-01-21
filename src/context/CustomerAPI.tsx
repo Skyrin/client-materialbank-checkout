@@ -47,22 +47,24 @@ export const requestCurrentCustomer = async (context: AppContextState) => {
   }
 };
 
-export const login = async (email: string, password: string) => {
+export const login = async (
+  context: AppContextState,
+  email: string,
+  password: string
+) => {
   try {
-    const loginResponse = await fetch(
-      "/rest/all/V1/integration/customer/token",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: email,
-          password: password,
-        }),
+    const LoginMutation = `
+      mutation($email: String!, $password: String!) {
+        generateCustomerToken(email: $email, password: $password) {
+          token
+        }
       }
-    );
-    return loginResponse.json();
+    `;
+    const loginResponse = await graphqlRequest(context, LoginMutation, {
+      email: email,
+      password: password,
+    });
+    return loginResponse["generateCustomerToken"]["token"];
   } catch (e) {
     console.error(e);
   }
