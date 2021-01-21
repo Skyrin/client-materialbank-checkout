@@ -59,9 +59,6 @@
 
     .title {
       grid-area: title;
-      @include mobile-media {
-        font-size: var(--font-size-sm);
-      }
     }
 
     .value {
@@ -86,15 +83,15 @@
   }
 
   .radioButton {
-    margin-right: var(--vertical-spacing-normal);
+    margin-right: var(--horizontal-spacing-normal);
 
     @include mobile-media {
-      margin-right: $margin-small-2;
+      margin-right: var(--horizontal-spacing-normal);
     }
   }
 
   .paymentLogoIcon {
-    height: 30px;
+    height: 20px;
     width: auto;
   }
 
