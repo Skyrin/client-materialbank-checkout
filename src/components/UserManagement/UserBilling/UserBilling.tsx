@@ -12,8 +12,10 @@ import amexIcon from "assets/images/amex_icon.svg";
 import visaIcon from "assets/images/visa_icon.svg";
 import masterCardIcon from "assets/images/master_card_icon.svg";
 import creditCardIcon from "assets/images/credit_card_icon.svg";
-import { CreditCardType } from "models/CreditCard";
-import EditCreditCardForm from "components/common/Forms/EditCreditCardForm/EditCreditCardForm";
+import CreditCard, { CreditCardType } from "models/CreditCard";
+import EditCreditCardForm, {
+  CreditCardFormValuesT,
+} from "components/common/Forms/EditCreditCardForm/EditCreditCardForm";
 
 type Props = RouteComponentProps;
 
@@ -85,22 +87,119 @@ export default class UserBilling extends React.Component<Props, State> {
                   {paymentMethod.isOpen && (
                     <div className="horizontal-divider" />
                   )}
-                  {paymentMethod.isOpen && <EditCreditCardForm />}
+
+                  {paymentMethod.isOpen && (
+                    <EditCreditCardForm
+                      initialValues={{
+                        id: paymentMethod.id,
+                        creditCardNumber: paymentMethod.creditCard.number,
+                        creditCardName: paymentMethod.creditCard.name,
+                        cardDate: paymentMethod.creditCard.expiration,
+                        cardCVV: paymentMethod.creditCard.cvv,
+                      }}
+                      onSave={(values) => {
+                        this.savePayment(values);
+                      }}
+                      onCancel={(id: string) => {
+                        this.cancelSave(id);
+                      }}
+                      onDelete={(id: string) => {
+                        this.deleteCard(id);
+                      }}
+                    />
+                  )}
                 </div>
               );
             }
           )}
+          <div className={styles.addCreditCardContainer}>
+            <EditCreditCardForm
+              onSave={(values) => {
+                this.savePayment(values);
+              }}
+              onCancel={(id: string) => {
+                this.cancelSave(id);
+              }}
+              onDelete={(id: string) => {
+                this.deleteCard(id);
+              }}
+            />
+          </div>
         </div>
       </div>
     );
   }
 
   editPayment(index: number) {
-    const paymentMethods = this.state.paymentMethods;
+    const paymentMethods = this.state.paymentMethods.map(
+      (paymentMethod, itIndex) => {
+        if (itIndex !== index) {
+          paymentMethod.isOpen = false;
+        }
+        return paymentMethod;
+      }
+    );
     paymentMethods[index].isOpen = !paymentMethods[index].isOpen;
 
     this.setState({
       paymentMethods: paymentMethods,
+    });
+  }
+
+  savePayment(creditCardValues: CreditCardFormValuesT) {
+    const creditCard = new CreditCard({
+      number: creditCardValues.creditCardNumber,
+      name: creditCardValues.creditCardName,
+      expiration: creditCardValues.cardDate,
+      cvv: creditCardValues.cardCVV,
+    });
+    if (creditCardValues.id) {
+      const newPaymentMethods = this.state.paymentMethods.map(
+        (paymentMethod) => {
+          if (paymentMethod.id === creditCardValues.id) {
+            paymentMethod.creditCard = creditCard;
+          }
+          return paymentMethod;
+        }
+      );
+      this.setState({
+        paymentMethods: newPaymentMethods,
+      });
+      this.editPayment(
+        newPaymentMethods.findIndex(
+          (paymentMethod) => paymentMethod.id === creditCardValues.id
+        )
+      );
+    } else {
+      const newPaymentMethod = new PaymentMethod();
+      newPaymentMethod.id = String(Math.random());
+      newPaymentMethod.creditCard = creditCard;
+
+      const newPaymentMethods = this.state.paymentMethods;
+      newPaymentMethods.push(newPaymentMethod);
+
+      this.setState({
+        paymentMethods: newPaymentMethods,
+      });
+    }
+  }
+
+  cancelSave(id: string) {
+    if (id) {
+      this.editPayment(
+        this.state.paymentMethods.findIndex(
+          (paymentMethod) => paymentMethod.id === id
+        )
+      );
+    }
+  }
+
+  deleteCard(id: string) {
+    const newPayments = this.state.paymentMethods.filter(
+      (payment) => payment.id !== id
+    );
+    this.setState({
+      paymentMethods: newPayments,
     });
   }
 

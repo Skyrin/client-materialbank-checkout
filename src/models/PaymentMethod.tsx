@@ -3,8 +3,7 @@ import CreditCard from "models/CreditCard";
 export default class PaymentMethod {
   id: string;
   creditCard: CreditCard;
-  isDefault: boolean;
-
+  isDefault: boolean = false;
   isOpen: boolean = false;
 
   constructor(obj?) {

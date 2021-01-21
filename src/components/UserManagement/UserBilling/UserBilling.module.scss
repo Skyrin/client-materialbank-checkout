@@ -100,4 +100,9 @@
   .fullName {
     @include normalText;
   }
+
+  .addCreditCardContainer {
+    margin-top: $margin-small-4;
+    @include roundedContainer;
+  }
 }

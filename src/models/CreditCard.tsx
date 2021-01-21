@@ -26,6 +26,9 @@ export default class CreditCard {
       v = this.number.toString();
     return this.getMaskType(this.getCreditCardBrand()).replace(/#/g, (_) => {
       if (i >= v.length - 4) {
+        if (i >= v.length) {
+          return "";
+        }
         return v[i++];
       } else {
         i++;
