@@ -141,7 +141,7 @@ class OrderSummary extends React.Component<Props, State> {
           {!isOnMobile() &&
             (isOnConfirmationPage
               ? this.renderAddedGiftsSection()
-              : this.renderAddedGiftsSection())}
+              : this.renderGiftSection())}
           {this.renderPricesSection()}
           <div className={styles.totalContainer}>
             <span>Total</span>
