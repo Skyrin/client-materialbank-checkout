@@ -3,6 +3,7 @@ import Input from "../Input";
 import cn from "classnames";
 import { debounce } from "lodash-es";
 import styles from "./AddressInput.module.scss";
+import SmartyStreetsSDK from "smartystreets-javascript-sdk";
 
 type Props = {
   initialValue?: string;
@@ -12,7 +13,7 @@ type Props = {
 
 type Suggestion = {
   text: string;
-  placeId: string;
+  id: string;
 };
 
 type State = {
@@ -20,48 +21,42 @@ type State = {
   suggestions: Suggestion[];
 };
 
-declare var google;
+const AutocompleteLookup = SmartyStreetsSDK.usAutocomplete.Lookup;
 
 export default class AddressInput extends React.Component<Props, State> {
-  autocompleteService!: google.maps.places.AutocompleteService;
-  geocoder!: google.maps.Geocoder;
+  autocompleteClient!: SmartyStreetsSDK.core.Client<SmartyStreetsSDK.usAutocomplete.Lookup>;
 
   constructor(props: Props) {
     super(props);
     this.state = {
       inputValue: props.initialValue || "",
-      suggestions: [],
+      suggestions: [
+        {
+          text: "Suggestion 1",
+          id: "1234",
+        },
+        {
+          text: "Suggestion 2",
+          id: "2345",
+        },
+      ],
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.componentRef && this.props.componentRef(this);
-    if (typeof google !== "undefined") {
-      this.autocompleteService = new google.maps.places.AutocompleteService();
-      this.geocoder = new google.maps.Geocoder();
-    } else {
-      const waitingForGoogle = window.setInterval(() => {
-        if (google) {
-          this.autocompleteService = new google.maps.places.AutocompleteService();
-          this.geocoder = new google.maps.Geocoder();
-          window.clearInterval(waitingForGoogle);
-        }
-      }, 100);
-    }
-    // service.getPlacePredictions({
-    //   input: 'hel',
-    //   componentRestrictions: {
-    //     country: 'us',
-    //   }
-    // }, (predictions, status) => {
-    //   if (status !== google.maps.places.PlacesServiceStatus.OK) {
-    //     return;
-    //   }
-    //   console.log(predictions);
-    //   geocoder.geocode({ placeId: predictions[0].place_id }, (results, status) => {
-    //     console.log('GEOCODED', results, status);
-    //   })
-    // })
+    console.log(SmartyStreetsSDK);
+    // const credentials = new SmartyStreetsSDK.core.StaticCredentials('480d9b36-2536-0cfb-dd15-ad7bf6009355', 'EcFfc4it2KVbRoX8b6uw');
+    const credentials = new SmartyStreetsSDK.core.SharedCredentials(
+      process.env.REACT_APP_SMARTYSTREETS_CLIENT_KEY
+    );
+    // console.log('SET CREDENTIALS UP WITH', process.env.REACT_APP_SMARTYSTREETS_CLIENT_KEY);
+    this.autocompleteClient = SmartyStreetsSDK.core.buildClient.usAutocomplete(
+      credentials
+    );
+    const response = await this.autocompleteClient.send(
+      new AutocompleteLookup("Test")
+    );
   }
 
   handleChange = (newVal: string) => {
@@ -84,11 +79,11 @@ export default class AddressInput extends React.Component<Props, State> {
       suggestions: [
         {
           text: "Suggestion 1",
-          placeId: "1234",
+          id: "1234",
         },
         {
           text: "Suggestion 2",
-          placeId: "2345",
+          id: "2345",
         },
       ],
     });
@@ -110,7 +105,7 @@ export default class AddressInput extends React.Component<Props, State> {
         {this.state.suggestions.length > 0 && (
           <div className={styles.suggestions}>
             {this.state.suggestions.map((s) => (
-              <div className={styles.suggestion} key={s.placeId}>
+              <div className={styles.suggestion} key={s.id}>
                 {s.text}
               </div>
             ))}
