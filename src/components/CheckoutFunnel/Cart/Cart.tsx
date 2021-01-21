@@ -104,6 +104,7 @@ export class Cart extends React.Component<Props, State> {
               <span>OPTION_B</span>
             </div>
           </div>
+          <AddressInput />
           <Input
             value={this.state.debugTextInput}
             onChange={(val: string) => this.setState({ debugTextInput: val })}
@@ -138,7 +139,6 @@ export class Cart extends React.Component<Props, State> {
             placeholder="Should only accept digits"
             inputMode="numeric"
           />
-          <AddressInput />
         </div>
       </React.Fragment>
     );

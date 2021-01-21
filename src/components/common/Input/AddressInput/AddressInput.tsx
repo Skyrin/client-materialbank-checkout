@@ -1,5 +1,8 @@
 import * as React from "react";
 import Input from "../Input";
+import cn from "classnames";
+import { debounce } from "lodash-es";
+import styles from "./AddressInput.module.scss";
 
 type Props = {
   initialValue?: string;
@@ -7,8 +10,14 @@ type Props = {
   componentRef?: Function;
 };
 
+type Suggestion = {
+  text: string;
+  placeId: string;
+};
+
 type State = {
   inputValue: string;
+  suggestions: Suggestion[];
 };
 
 declare var google;
@@ -21,6 +30,7 @@ export default class AddressInput extends React.Component<Props, State> {
     super(props);
     this.state = {
       inputValue: props.initialValue || "",
+      suggestions: [],
     };
   }
 
@@ -59,6 +69,7 @@ export default class AddressInput extends React.Component<Props, State> {
     this.setState({
       inputValue: newVal,
     });
+    this.debouncedFetchSuggestions();
   };
 
   // To be used from the outside through componentRef
@@ -66,13 +77,46 @@ export default class AddressInput extends React.Component<Props, State> {
     console.log("UPDATE VALUE", newVal);
   };
 
+  fetchSuggestions = () => {
+    const input = this.state.inputValue;
+    console.log("SHOULD FETCH", input);
+    this.setState({
+      suggestions: [
+        {
+          text: "Suggestion 1",
+          placeId: "1234",
+        },
+        {
+          text: "Suggestion 2",
+          placeId: "2345",
+        },
+      ],
+    });
+  };
+
+  debouncedFetchSuggestions = debounce(this.fetchSuggestions, 400);
+
   render() {
     return (
-      <Input
-        value={this.state.inputValue}
-        onChange={(newVal) => this.handleChange(newVal)}
-        placeholder={this.props.placeholder || "Address"}
-      />
+      <div className={styles.addressInputWrapper}>
+        <Input
+          className={cn({
+            [styles.hasSuggestions]: this.state.suggestions.length > 0,
+          })}
+          value={this.state.inputValue}
+          onChange={(newVal) => this.handleChange(newVal)}
+          placeholder={this.props.placeholder || "Address"}
+        />
+        {this.state.suggestions.length > 0 && (
+          <div className={styles.suggestions}>
+            {this.state.suggestions.map((s) => (
+              <div className={styles.suggestion} key={s.placeId}>
+                {s.text}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     );
   }
 }
