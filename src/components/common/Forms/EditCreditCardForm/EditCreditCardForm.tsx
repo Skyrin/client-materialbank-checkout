@@ -157,9 +157,11 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
   };
 
   cancelClick = () => {
-    this.setState({
-      values: DEFAULT_CREDIT_CARD_FORM_VALUES,
-    });
+    if (!this.state.editMode) {
+      this.setState({
+        values: DEFAULT_CREDIT_CARD_FORM_VALUES,
+      });
+    }
     this.props.onCancel(this.state.values.id);
   };
 

@@ -88,32 +88,34 @@ export default class UserBilling extends React.Component<Props, State> {
                     <div className="horizontal-divider" />
                   )}
 
-                  {paymentMethod.isOpen && (
-                    <EditCreditCardForm
-                      initialValues={{
-                        id: paymentMethod.id,
-                        creditCardNumber: paymentMethod.creditCard.number,
-                        creditCardName: paymentMethod.creditCard.name,
-                        cardDate: paymentMethod.creditCard.expiration,
-                        cardCVV: paymentMethod.creditCard.cvv,
-                      }}
-                      onSave={(values) => {
-                        this.savePayment(values);
-                      }}
-                      onCancel={(id: string) => {
-                        this.cancelSave(id);
-                      }}
-                      onDelete={(id: string) => {
-                        this.deleteCard(id);
-                      }}
-                    />
-                  )}
+                  {/*{paymentMethod.isOpen && (*/}
+                  <EditCreditCardForm
+                    initialValues={{
+                      id: paymentMethod.id,
+                      creditCardNumber: paymentMethod.creditCard.number,
+                      creditCardName: paymentMethod.creditCard.name,
+                      cardDate: paymentMethod.creditCard.expiration,
+                      cardCVV: paymentMethod.creditCard.cvv,
+                    }}
+                    visible={paymentMethod.isOpen}
+                    onSave={(values) => {
+                      this.savePayment(values);
+                    }}
+                    onCancel={(id: string) => {
+                      this.cancelSave(id);
+                    }}
+                    onDelete={(id: string) => {
+                      this.deleteCard(id);
+                    }}
+                  />
+                  {/*)}*/}
                 </div>
               );
             }
           )}
           <div className={styles.addCreditCardContainer}>
             <EditCreditCardForm
+              visible={true}
               onSave={(values) => {
                 this.savePayment(values);
               }}

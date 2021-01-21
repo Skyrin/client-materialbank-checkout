@@ -2,19 +2,23 @@
 
 .EditCreditCardForm {
   height: auto;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
   display: grid;
   grid-template-columns: 320px 1fr;
   grid-template-rows: auto;
-  padding: $margin-medium;
+  padding: 0 $margin-medium;
   grid-template-areas:
     "title form"
     "title buttons";
 
-  transition: height 0.35s $ease-in-out, opacity 0.35s $ease-in-out;
+  transition: opacity 0.35s $ease-in-out, padding 0.35s $ease-in-out,
+    max-height 0.35s $ease-in-out;
 
   &.visible {
-    height: 600px;
     opacity: 1;
+    max-height: 600px;
     padding: $margin-medium;
   }
 
