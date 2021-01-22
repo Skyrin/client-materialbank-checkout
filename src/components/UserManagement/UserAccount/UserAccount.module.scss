@@ -3,27 +3,6 @@
 .UserAccount {
   padding: 62px 100px 162px;
 
-  @mixin blackButton {
-    height: 40px;
-    width: 190px;
-    background-color: $primary-color-user;
-    color: white;
-    border: 1px solid var(--primary-color);
-    border-radius: 40px;
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-md);
-    transition: background-color 0.15s $ease-in-out;
-
-    &:hover,
-    &:focus {
-      background-color: lighten($primary-color-user, 5%);
-    }
-
-    &:active {
-      background-color: lighten($primary-color-user, 10%);
-    }
-  }
-
   @media (max-width: 970px) {
     padding: calc(var(--vertical-spacing-normal) * 2)
       calc(var(--vertical-spacing-normal) * 2) 50px;
@@ -38,8 +17,7 @@
   }
 
   .section {
-    border: 1px solid $color-user-border;
-    border-radius: 8px;
+    @include roundedContainer;
     padding: $margin-medium-3 $margin-medium-3;
 
     &.fitContent {

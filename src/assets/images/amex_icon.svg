@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="42px" viewBox="0 0 64 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Amex</title>
+    <defs>
+        <radialGradient cx="33.581543%" cy="18.9546131%" fx="33.581543%" fy="18.9546131%" r="100%" gradientTransform="translate(0.335815,0.189546),scale(0.656250,1.000000),rotate(90.000000),translate(-0.335815,-0.189546)" id="radialGradient-1">
+            <stop stop-color="#71C8F2" offset="0%"></stop>
+            <stop stop-color="#0071BD" offset="100%"></stop>
+        </radialGradient>
+        <rect id="path-2" x="0" y="0" width="64" height="42" rx="3"></rect>
+        <filter x="-0.8%" y="-1.2%" width="101.6%" height="102.4%" filterUnits="objectBoundingBox" id="filter-3">
+            <feMorphology radius="1" operator="erode" in="SourceAlpha" result="shadowSpreadInner1"></feMorphology>
+            <feOffset dx="0" dy="0" in="shadowSpreadInner1" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.1 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="user-profile" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="billing-02" transform="translate(-152.000000, -849.000000)">
+            <g id="card" transform="translate(100.000000, 820.000000)">
+                <rect id="Rectangle" stroke="#E3E2E2" stroke-linecap="square" stroke-linejoin="round" fill-rule="nonzero" x="0" y="0" width="1240" height="100" rx="8"></rect>
+                <g id="Amex" transform="translate(52.000000, 29.000000)">
+                    <rect id="Rectangle-6" fill="url(#radialGradient-1)" x="0" y="0" width="64" height="42" rx="3"></rect>
+                    <g id="Rectangle-6-Copy">
+                        <use fill-opacity="0" fill="#E5E5E5" fill-rule="evenodd" xlink:href="#path-2"></use>
+                        <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+                    </g>
+                    <path d="M17.8108451,16 L22.5970426,26 L18.0165512,26 L17.2421552,24.2184874 L14.7150263,24.2184874 L13.9119489,26 L9.40503283,26 L14.2450079,16 L17.8108451,16 Z M33.9268797,16 L33.9268797,26 L29.8188016,26 L29.8188016,24.0113129 L28.9284393,26 L25.8969678,26 L25.0120024,24.0205323 L25.0018885,26 L20.8989068,26 L20.8989068,16 L25.7235155,16 L27.443392,19.9507971 L29.091178,16 L33.9268797,16 Z M43.5638078,16 L43.5638078,19.4789916 L43.119,19.478 L43.119,22.521 L43.6785332,22.5210084 L43.6785332,26 L33.9058917,26 L33.9058917,16 L43.5638078,16 Z M46.5058704,16 L48.0413029,17.9537094 L49.6315722,16 L54.7517481,16 L50.606542,20.8226691 L55.0301233,26 L49.7011983,26 L47.9341793,23.8140712 L46.1331791,26 L40.9714853,26 L45.3900161,20.8147157 L41.2213497,16 L46.5058704,16 Z" id="AMEX" stroke="#FFFFFF" stroke-width="2" fill-opacity="0" fill="#1793C0"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
