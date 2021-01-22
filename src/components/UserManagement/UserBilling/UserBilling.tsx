@@ -16,6 +16,7 @@ import CreditCard, { CreditCardType } from "models/CreditCard";
 import EditCreditCardForm, {
   CreditCardFormValuesT,
 } from "components/common/Forms/EditCreditCardForm/EditCreditCardForm";
+import CreditCardForm from "components/common/Forms/CreditCardForm/CreditCardForm";
 
 type Props = RouteComponentProps;
 
@@ -24,12 +25,13 @@ type State = {
 };
 
 export default class UserBilling extends React.Component<Props, State> {
+  addCreditCardForm?: EditCreditCardForm;
+
   constructor(props) {
     super(props);
     this.state = {
       paymentMethods: mockPayments.map((payment) => new PaymentMethod(payment)),
     };
-    console.log(this.state);
   }
 
   render() {
@@ -125,6 +127,9 @@ export default class UserBilling extends React.Component<Props, State> {
               onDelete={(id: string) => {
                 this.deleteCard(id);
               }}
+              componentRef={(ref) => {
+                this.addCreditCardForm = ref;
+              }}
             />
           </div>
         </div>
@@ -179,6 +184,8 @@ export default class UserBilling extends React.Component<Props, State> {
 
       const newPaymentMethods = this.state.paymentMethods;
       newPaymentMethods.push(newPaymentMethod);
+
+      this.addCreditCardForm.resetForm();
 
       this.setState({
         paymentMethods: newPaymentMethods,

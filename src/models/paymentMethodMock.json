@@ -5,7 +5,7 @@
     "creditCard": {
       "number": "4111111111111111",
       "name": "Anne M. Soandso",
-      "expiration": "12/21",
+      "expiration": "1221",
       "cvv": "123"
     }
   },
@@ -15,7 +15,7 @@
     "creditCard": {
       "number": "5500000000000004",
       "name": "John Q. Soandso",
-      "expiration": "11/22",
+      "expiration": "1122",
       "cvv": "321"
     }
   },
@@ -25,7 +25,7 @@
     "creditCard": {
       "number": "340000000000009",
       "name": "Anne M. Soandso",
-      "expiration": "10/23",
+      "expiration": "1023",
       "cvv": "222"
     }
   },
@@ -35,7 +35,7 @@
     "creditCard": {
       "number": "30000000000004",
       "name": "Anne M. Soandso",
-      "expiration": "9/24",
+      "expiration": "0924",
       "cvv": "111"
     }
   }

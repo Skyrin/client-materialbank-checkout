@@ -4,6 +4,14 @@ import cn from "classnames";
 import Input from "components/common/Input/Input";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
+import {
+  cardNumberInputFormatter,
+  cardNumberInputParser,
+  digitsOnlyInputParser,
+  expirationDateInputFormatter,
+  expirationDateInputParser,
+} from "components/common/Input/utils";
+import CreditCardForm from "components/common/Forms/CreditCardForm/CreditCardForm";
 
 const editCreditCardSchema = yup.object().shape({
   creditCardNumber: yup.string().required("Required"),
@@ -43,6 +51,7 @@ type CreditCardFormErrorsT = {
 
 type Props = {
   initialValues?: CreditCardFormValuesT;
+  componentRef?: (ref: EditCreditCardForm) => void;
   onSave?: (creditCardValues: CreditCardFormValuesT) => void;
   onCancel?: (id: string) => void;
   onDelete?: (id: string) => void;
@@ -69,6 +78,12 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
         cardCVV: null,
       },
     };
+
+    if (props.componentRef) {
+      // Can be used to call functions from outside the component.
+      // i.e. triggering a full validation, or checking status of validations.
+      props.componentRef(this);
+    }
   }
 
   render() {
@@ -86,6 +101,8 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
             <div className={styles.inputHint}>Card Number</div>
             <Input
               placeholder="xxxx xxxx xxxx xxxx"
+              formatter={cardNumberInputFormatter}
+              parser={cardNumberInputParser}
               value={this.state.values.creditCardNumber}
               error={this.state.errors.creditCardNumber}
               onChange={(val: string) => {
@@ -112,6 +129,9 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
               placeholder="MM / YY"
               value={this.state.values.cardDate}
               error={this.state.errors.cardDate}
+              formatter={expirationDateInputFormatter}
+              parser={expirationDateInputParser}
+              inputMode="numeric"
               onChange={(val: string) => {
                 this.updateFieldForm("cardDate", val);
               }}
@@ -124,6 +144,8 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
               placeholder="xxx"
               value={this.state.values.cardCVV}
               error={this.state.errors.cardCVV}
+              parser={digitsOnlyInputParser}
+              inputMode="numeric"
               onChange={(val: string) => {
                 this.updateFieldForm("cardCVV", val);
               }}
@@ -142,7 +164,7 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
           <button className={styles.cancelButton} onClick={this.cancelClick}>
             Cancel
           </button>
-          <button className={styles.saveChanges} onClick={this.saveChanged}>
+          <button className={styles.saveChanges} onClick={this.saveChanges}>
             Save Changes
           </button>
         </div>
@@ -150,19 +172,21 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
     );
   }
 
-  saveChanged = () => {
+  saveChanges = () => {
     if (this.validateCreditCard()) {
       this.props.onSave(this.state.values);
     }
   };
 
   cancelClick = () => {
-    if (!this.state.editMode) {
-      this.setState({
-        values: DEFAULT_CREDIT_CARD_FORM_VALUES,
-      });
-    }
+    this.resetForm();
     this.props.onCancel(this.state.values.id);
+  };
+
+  resetForm = () => {
+    this.setState({
+      values: this.props.initialValues || DEFAULT_CREDIT_CARD_FORM_VALUES,
+    });
   };
 
   updateFieldForm = (fieldName: string, value: string) => {
