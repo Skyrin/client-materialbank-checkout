@@ -44,28 +44,15 @@ export default class AddressInput extends React.Component<Props, State> {
   async componentDidMount() {
     this.props.componentRef && this.props.componentRef(this);
     console.log(SmartyStreetsSDK);
-    // const credentials = new SmartyStreetsSDK.core.SharedCredentials(
-    //   process.env.REACT_APP_SMARTYSTREETS_CLIENT_KEY || "30500088655303291"
-    // );
-    // console.log('SET CREDENTIALS UP WITH', process.env.REACT_APP_SMARTYSTREETS_CLIENT_KEY);
-    // this.autocompleteClient = SmartyStreetsSDK.core.buildClient.usAutocomplete(
-    //   credentials
-    // );
-    // const response = await this.autocompleteClient.send(
-    //   new AutocompleteLookup("rd")
-    // );
-
-    // TODO: REMOVE KEY FROM CODE!
-    const url = new URL(
-      "https://us-autocomplete-pro.api.smartystreets.com/lookup"
+    const credentials = new SmartyStreetsSDK.core.SharedCredentials(
+      process.env.REACT_APP_SMARTYSTREETS_CLIENT_KEY || "30500088655303291"
     );
-    const params = {
-      key: "30500088655303291",
-      search: "rd",
-    };
-    url.search = new URLSearchParams(params).toString();
-    console.log(url.toString());
-    const response = await fetch(url.toString());
+    this.autocompleteClient = SmartyStreetsSDK.core.buildClient.usAutocomplete(
+      credentials
+    );
+    const response = await this.autocompleteClient.send(
+      new AutocompleteLookup("rd")
+    );
     console.log(response);
   }
 
