@@ -155,13 +155,13 @@ export class CartAddressInput {
   // TODO Clarify this: city, country_code, region_id are required on Backend but not present in Design.
   // TODO: Figure out zip-code resolution / address validations
   private static readonly defaults = {
-    city: "Washington",
+    city: "New York",
     company: undefined,
     country_code: "US",
     firstname: undefined,
     lastname: undefined,
     postcode: undefined,
-    region_id: 1,
+    region_id: 43,
     telephone: undefined,
     street: undefined,
   };
@@ -261,6 +261,94 @@ export const setBillingAddressOnCart = async (
     console.log("GQL RESPONSE", resp);
     // TODO: Process response
     return resp["setBillingAddressOnCart"]["cart"];
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const createTestCart = async (context: AppContextState) => {
+  const CreateEmptyCartMutation = `
+    mutation createEmptyCart {
+      createEmptyCart
+    }
+  `;
+  const AddSimpleProductsToCartMutation = `
+    mutation addSimpleProductsToCart($input: AddSimpleProductsToCartInput!) {
+      addSimpleProductsToCart(input: $input) {
+        cart {
+          ${CartFragment}
+        }
+      }
+    }
+  `;
+
+  try {
+    const createCartResponse = await graphqlRequest(
+      context,
+      CreateEmptyCartMutation
+    );
+    const cartId = createCartResponse["createEmptyCart"];
+    const addProductsResponse = await graphqlRequest(
+      context,
+      AddSimpleProductsToCartMutation,
+      {
+        input: {
+          cart_id: cartId,
+          cart_items: [{ data: { sku: "test", quantity: 2 } }],
+        },
+      }
+    );
+    return addProductsResponse["addSimpleProductsToCart"]["cart"];
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const mergeGuestCart = async (
+  context: AppContextState,
+  guestCartId: string,
+  customerCartId: string
+) => {
+  const MergeCartsMutation = `
+    mutation mergeCarts ($sourceCartId: String!, $destinationCartId: String!) {
+      mergeCarts (source_cart_id: $sourceCartId, destination_cart_id: $destinationCartId) {
+        ${CartFragment}
+      }
+    }
+  `;
+
+  try {
+    const mergedCart = await graphqlRequest(context, MergeCartsMutation, {
+      sourceCartId: guestCartId,
+      destinationCartId: customerCartId,
+    });
+    return mergedCart["mergeCarts"];
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const setPaymentMethod = async (
+  context: AppContextState,
+  input: any
+) => {
+  const SetPaymentMethodMutation = `
+    mutation setPaymentMethodOnCart($input: SetPaymentMethodOnCartInput!) {
+      setPaymentMethodOnCart(input: $input) {
+        cart {
+          ${CartFragment}
+        }
+      }
+    }
+  `;
+
+  try {
+    const setPaymentMethodResponse = await graphqlRequest(
+      context,
+      SetPaymentMethodMutation,
+      { input: input }
+    );
+    return setPaymentMethodResponse["setPaymentMethodOnCart"]["cart"];
   } catch (e) {
     console.error(e);
   }

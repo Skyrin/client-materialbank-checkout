@@ -24,6 +24,7 @@ import { isEqual, get } from "lodash-es";
 import { CreateCustomerInput, CustomerAddressInput } from "context/CustomerAPI";
 import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
+import { graphqlRequest } from "GraphqlClient";
 
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
@@ -41,6 +42,8 @@ const contactInfoSchema = yup.object().shape({
     .required("Required")
     .oneOf([yup.ref("password")], "Passwords don't match"),
 });
+
+declare var paypal: any;
 
 type Props = RouteComponentProps;
 
@@ -129,6 +132,59 @@ export class PersonalInformation extends React.Component<Props, State> {
 
   componentDidMount() {
     scrollToTop();
+
+    console.log(paypal);
+    paypal
+      .Buttons({
+        style: {
+          height: 40,
+        },
+        createOrder: async () => {
+          const CreatePaypalTokenMutation = `
+          mutation createPaypalExpressToken($input: PaypalExpressTokenInput!) {
+            createPaypalExpressToken(input: $input) {
+              token
+              paypal_urls {
+                edit
+                start
+              }
+            }
+          }
+        `;
+          const variables = {
+            input: {
+              cart_id: this.context.cart.id,
+              code: "paypal_express",
+              express_button: true,
+              urls: {
+                cancel_url: "checkout/information/paypal-cancelled",
+                return_url: "checkout/information/paypal-success",
+              },
+            },
+          };
+          const response = await graphqlRequest(
+            this.context,
+            CreatePaypalTokenMutation,
+            variables
+          );
+          console.log(response);
+          return response["createPaypalExpressToken"]["token"];
+        },
+        onApprove: async (data, actions) => {
+          console.log("DATA", data);
+          await this.context.setPaymentMethod({
+            cart_id: this.context.cart.id,
+            payment_method: {
+              code: "paypal_express",
+              paypal_express: {
+                payer_id: data.payerID,
+                token: data.orderID,
+              },
+            },
+          });
+        },
+      })
+      .render("#paypal-express");
   }
 
   shouldComponentUpdate = (nextProps: Props, nextState: State) => {
@@ -174,13 +230,14 @@ export class PersonalInformation extends React.Component<Props, State> {
         <div className={styles.section}>
           <h3 className={styles.expressCheckoutSubtitle}>Express Checkout</h3>
           <div className={styles.expressCheckoutOptions}>
-            <div className={cn(styles.expressCheckoutOption, styles.paypal)}>
+            <div id="paypal-express" className={styles.expressCheckoutOption} />
+            {/* <div id="paypal-express" className={cn(styles.expressCheckoutOption, styles.paypal)}>
               <img
                 src={paypalLogo}
                 alt="PayPal"
                 className={styles.expressCheckoutLogo}
               />
-            </div>
+            </div> */}
             <div className={cn(styles.expressCheckoutOption, styles.applePay)}>
               <img
                 src={applePayLogo}
@@ -440,6 +497,7 @@ export class PersonalInformation extends React.Component<Props, State> {
         this.state.createAccount
       );
       await this.context.createCustomer(createCustomerInput);
+      await this.context.mergeGuestCart();
     }
 
     let addressId = this.state.selectedShippingAddressId;

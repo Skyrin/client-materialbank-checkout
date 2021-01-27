@@ -116,7 +116,7 @@ export class CustomerAddressInput {
   lastname: string;
   postcode: string;
   region: {
-    region_id: string;
+    region_id: number;
   };
   telephone: string;
   street: string[];
@@ -124,13 +124,13 @@ export class CustomerAddressInput {
   // TODO Clarify this: city, country_code, region_id are required on Backend but not present in Design.
   // TODO: Figure out zip-code resolution / address validations
   private static readonly defaults = {
-    city: "Washington",
+    city: "New York",
     company: undefined,
     country_code: "US",
     firstname: undefined,
     lastname: undefined,
     postcode: undefined,
-    region_id: 1,
+    region_id: 43,
     telephone: undefined,
     street: undefined,
   };
@@ -157,6 +157,11 @@ export class CustomerAddressInput {
     if (obj?.aptNumber) {
       this.street.push(obj?.aptNumber);
     }
+
+    // TEMPORARY OVERRIDES SO THAT WE HAVE A VALID ADDRESS
+    this.city = CustomerAddressInput.defaults.city;
+    this.region.region_id = CustomerAddressInput.defaults.region_id;
+    this.postcode = "10001";
   }
 }
 

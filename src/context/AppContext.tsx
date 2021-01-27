@@ -5,6 +5,7 @@ import { CART_MOCK_DATA } from "./cartMockData";
 import { CartAddressInput } from "./CheckoutAPI";
 import { CreateCustomerInput, CustomerAddressInput } from "./CustomerAPI";
 import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
+import { AUTH_TOKEN_STORAGE_KEY } from "constants/general";
 
 /**
  * This class is used for handling the Context's internal data.
@@ -12,11 +13,13 @@ import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/Paym
  * Getters and setters should usually use deepClone (unless necessary otherwise)
  * */
 abstract class BaseAppContextState {
-  private internalCart?: CartT = CART_MOCK_DATA;
+  private internalCart?: CartT = {};
   private internalCartInfoLoading?: boolean = false;
   private internalCustomer?: CustomerT = {};
   private internalCustomerLoading?: boolean = false;
-  private internalIsLoggedIn?: boolean = !!localStorage.getItem("token");
+  private internalIsLoggedIn?: boolean = !!localStorage.getItem(
+    AUTH_TOKEN_STORAGE_KEY
+  );
   private internalSelectedPaymentOption?: PaymentOption;
 
   public get cart() {
@@ -103,6 +106,8 @@ export class AppContextState extends BaseAppContextState {
 
   async setShippingAddress(addressId: number) {}
 
+  async setPaymentMethod(input: any) {}
+
   async createCustomer(customer: CreateCustomerInput): Promise<CustomerT> {
     return Promise.resolve({});
   }
@@ -110,6 +115,10 @@ export class AppContextState extends BaseAppContextState {
   async login(email: string, password: string) {}
 
   logout() {}
+
+  async createTestCart() {}
+
+  async mergeGuestCart() {}
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);
