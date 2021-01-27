@@ -25,10 +25,10 @@ type State = {
   selectedSuggestionIndex: number;
 };
 
-const AutocompleteLookup = SmartyStreetsSDK.usAutocomplete.Lookup;
+const AutocompleteProLookup = SmartyStreetsSDK.usAutocompletePro.Lookup;
 
 export default class AddressInput extends React.Component<Props, State> {
-  autocompleteClient!: SmartyStreetsSDK.core.Client<SmartyStreetsSDK.usAutocomplete.Lookup>;
+  autocompleteClient!: SmartyStreetsSDK.core.Client<SmartyStreetsSDK.usAutocompletePro.Lookup>;
 
   constructor(props: Props) {
     super(props);
@@ -47,11 +47,11 @@ export default class AddressInput extends React.Component<Props, State> {
     const credentials = new SmartyStreetsSDK.core.SharedCredentials(
       process.env.REACT_APP_SMARTYSTREETS_CLIENT_KEY || "30500088655303291"
     );
-    this.autocompleteClient = SmartyStreetsSDK.core.buildClient.usAutocomplete(
+    this.autocompleteClient = SmartyStreetsSDK.core.buildClient.usAutocompletePro(
       credentials
     );
     const response = await this.autocompleteClient.send(
-      new AutocompleteLookup("rd")
+      new AutocompleteProLookup("rd")
     );
     console.log(response);
   }
