@@ -1,0 +1,84 @@
+@import "styles/variablesscss";
+
+.UserShipping {
+  padding: 62px 100px 162px;
+}
+
+.pageContent {
+  margin-top: $margin-medium-3;
+}
+
+.addressGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(max(400px, 25%)), 1fr));
+  grid-template-rows: auto;
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+
+  //&::after {
+  //  content: "";
+  //  display: grid;
+  //  background-color: rgb(214,232,182);
+  //  grid-template-columns: repeat(auto-fit, minmax(calc(max(400px, 25%)), 1fr));
+  //  grid-template-rows: auto;
+  //}
+}
+
+.addressCell {
+  height: 200px;
+  @include roundedContainer;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 40px;
+  column-gap: $margin-small-4;
+  row-gap: $margin-small-4;
+  padding: $margin-small-4;
+}
+
+.addressMapCell {
+  background: url("/assets/images/map_placeholder.svg") no-repeat center;
+  background-size: cover;
+}
+
+.addressNickName {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  color: $primary-color-user;
+}
+
+.addressExtraDetails {
+  @include grayText;
+  margin-top: $margin-small;
+
+  & + .addressExtraDetails {
+    margin-top: 0;
+  }
+}
+
+.makeDefault {
+  @include labelButton;
+  width: auto;
+  margin-left: auto;
+  padding: 0;
+}
+.editAddressCell {
+  @include whiteButton;
+}
+
+.mapContainer {
+  @include roundedContainer;
+  height: max-content;
+  position: relative;
+  margin-top: $margin-small-4;
+  background: url("/assets/images/map_dummy.jpg") no-repeat center center;
+}
+
+.addAddressContainer {
+  @include roundedContainer;
+  background: white;
+  display: inline-block;
+  width: 400px;
+  height: max-content;
+  margin: $margin-small-4;
+  padding: $margin-medium $margin-medium-4;
+}

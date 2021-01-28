@@ -1,0 +1,43 @@
+[
+  {
+    "id": 1,
+    "nickname": "My house",
+    "firstName": "Anne",
+    "lastName": "Soandso",
+    "addressLine1": "123 Somewhere St.",
+    "city": "Someplace",
+    "state": "MO",
+    "zipcode": "12234"
+  },
+  {
+    "id": 2,
+    "nickname": "My work",
+    "firstName": "Anne",
+    "lastName": "Soandso",
+    "addressLine1": "7788 Workplace Blvd.",
+    "addressLine2": "12th Floor",
+    "city": "Townsville",
+    "state": "MO",
+    "zipcode": "22334"
+  },
+  {
+    "id": 3,
+    "nickname": "Cousin Jean's",
+    "firstName": "Jean",
+    "lastName": "Smith",
+    "addressLine1": "3344 Streetname Rd.",
+    "city": "City",
+    "state": "MO",
+    "zipcode": "33445"
+  },
+  {
+    "id": 4,
+    "nickname": "Aunt Betsy",
+    "firstName": "Betsy",
+    "lastName": "Smith",
+    "addressLine1": "3344 Streetname Rd.",
+    "city": "City",
+    "state": "MO",
+    "zipcode": "33445"
+  }
+]

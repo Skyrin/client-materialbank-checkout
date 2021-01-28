@@ -222,6 +222,14 @@ button {
   &.bottom-vertically {
     align-items: baseline;
   }
+
+  &.center-horizontally {
+    justify-content: center;
+  }
+
+  &.full-width {
+    width: 100%;
+  }
 }
 
 .clickable {

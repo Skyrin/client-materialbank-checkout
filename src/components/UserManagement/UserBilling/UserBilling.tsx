@@ -16,7 +16,6 @@ import CreditCard, { CreditCardType } from "models/CreditCard";
 import EditCreditCardForm, {
   CreditCardFormValuesT,
 } from "components/common/Forms/EditCreditCardForm/EditCreditCardForm";
-import CreditCardForm from "components/common/Forms/CreditCardForm/CreditCardForm";
 
 type Props = RouteComponentProps;
 
