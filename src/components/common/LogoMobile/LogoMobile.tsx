@@ -25,7 +25,9 @@ function LogoMobile(props: Props) {
       <a
         href={BACK_BUTTON_URL_MAPPING[props.location.pathname]}
         className={cn(styles["back-button"], "far fa-arrow-left")}
-      />
+      >
+        {" "}
+      </a>
       <h1>Design Shop</h1>
     </div>
   );

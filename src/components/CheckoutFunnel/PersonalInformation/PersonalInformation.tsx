@@ -28,8 +28,6 @@ import { CreateCustomerInput, CustomerAddressInput } from "context/CustomerAPI";
 import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
 import { graphqlRequest } from "GraphqlClient";
-import { CartAddressInput } from "context/CheckoutAPI";
-import { getAddressId } from "utils/context";
 import { PaymentOption } from "../PaymentInformation/PaymentInformation";
 
 const contactInfoSchema = yup.object().shape({

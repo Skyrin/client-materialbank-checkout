@@ -1,6 +1,5 @@
 import { AppContextState } from "context/AppContext";
 import { graphqlRequest } from "GraphqlClient";
-import { AddressFragment } from "./CheckoutAPI";
 
 // For whatever reason, the adresses on the customer object are a bit different
 // from the cart ones. Magento...why?
