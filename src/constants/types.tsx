@@ -15,6 +15,17 @@ export type CartT = {
   applied_coupons?: CouponT;
 };
 
+export type OrderT = {
+  number?: string;
+  billing_address?: OrderAddressT;
+  shipping_address?: OrderAddressT;
+  paymentMethods?: { type: string; name: string }[];
+  total?: {
+    grand_total?: PriceT;
+    subtotal?: PriceT;
+  };
+};
+
 export type CartItemT = {
   id?: string;
   prices?: {
@@ -50,6 +61,17 @@ export type AddressT = {
   street?: string[]; // Probably [address_line_1, address_line_2]. in our case, we should probably just do [address]. TODO: clarify this
   telephone?: string;
   region?: RegionT;
+};
+
+export type OrderAddressT = {
+  city?: string;
+  company?: string;
+  firstname?: string;
+  lastname?: string;
+  postcode?: string;
+  region?: string;
+  street?: string[];
+  telephone?: string;
 };
 
 export type BilingAddressT = AddressT;

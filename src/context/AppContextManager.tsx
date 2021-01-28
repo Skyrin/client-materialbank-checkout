@@ -7,12 +7,14 @@ import {
   CartAddressInput,
   createTestCart,
   mergeGuestCart,
+  placeOrder,
   removeCouponFromCart,
   requestCustomerCartInfo,
   requestGuestCartInfo,
   setBillingAddressOnCart,
   setPaymentMethod,
   setShippingAddressOnCart,
+  setShippingMethodOnCart,
 } from "./CheckoutAPI";
 import {
   createCustomer,
@@ -26,6 +28,7 @@ import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/Paym
 import {
   AUTH_TOKEN_STORAGE_KEY,
   GUEST_CART_ID_STORAGE_KEY,
+  ORDER_ID_STORAGE_KEY,
 } from "constants/general";
 
 type Props = {
@@ -116,6 +119,8 @@ export default class AppContextManager extends React.Component<Props> {
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
       this.contextState.isLoggedIn = false; // Change directly here so we don't trigger 2 updates
       this.contextState.customer = {};
+      this.contextState.cart = {};
+      this.forceUpdate();
       const newTestCart = await this.actions.createTestCart();
       await this.actions.updateCart(newTestCart);
       this.forceUpdate();
@@ -124,6 +129,7 @@ export default class AppContextManager extends React.Component<Props> {
     createCustomer: async (customer: CreateCustomerInput) => {
       this.contextState.customerLoading = true;
       this.contextState.cartInfoLoading = true;
+      this.forceUpdate();
       await createCustomer(this.getFullContext(), customer);
       await this.actions.login(customer.email, customer.password);
       this.contextState.customerLoading = false;
@@ -195,6 +201,20 @@ export default class AppContextManager extends React.Component<Props> {
       return this.contextState.cart;
     },
 
+    setShippingMethod: async () => {
+      this.contextState.cartInfoLoading = true;
+      this.forceUpdate();
+      const cartId = this.contextState.cart.id;
+      const cartInfo = await setShippingMethodOnCart(
+        this.getFullContext(),
+        cartId
+      );
+      console.log("SET SHIPPING METHOD", cartInfo);
+      this.contextState.cartInfoLoading = false;
+      this.actions.updateCart(cartInfo);
+      return this.contextState.cart;
+    },
+
     createCustomerAddress: async (address: CustomerAddressInput) => {
       this.contextState.customerLoading = true;
       this.forceUpdate();
@@ -213,6 +233,7 @@ export default class AppContextManager extends React.Component<Props> {
 
     createTestCart: async () => {
       this.contextState.cartInfoLoading = true;
+      this.forceUpdate();
       const newCart = await createTestCart(this.getFullContext());
       localStorage.setItem(GUEST_CART_ID_STORAGE_KEY, newCart.id);
       this.contextState.cartInfoLoading = false;
@@ -222,6 +243,7 @@ export default class AppContextManager extends React.Component<Props> {
 
     mergeGuestCart: async () => {
       this.contextState.cartInfoLoading = true;
+      this.forceUpdate();
       const guestCartId = localStorage.getItem(GUEST_CART_ID_STORAGE_KEY);
       const customerCartId = this.contextState.cart.id;
       console.log("GUEST ID", guestCartId);
@@ -240,11 +262,27 @@ export default class AppContextManager extends React.Component<Props> {
 
     setPaymentMethod: async (input: any) => {
       this.contextState.cartInfoLoading = true;
+      this.forceUpdate();
       const newCart = await setPaymentMethod(this.getFullContext(), input);
       this.contextState.cartInfoLoading = false;
       this.actions.updateCart(newCart);
       return newCart;
     },
+
+    placeOrder: async () => {
+      this.contextState.cartInfoLoading = true;
+      this.forceUpdate();
+      const cartId = this.contextState.cart.id;
+      const order = await placeOrder(this.getFullContext(), cartId);
+      console.log("PLACED ORDER", order);
+      localStorage.setItem(ORDER_ID_STORAGE_KEY, order["order_number"]);
+      localStorage.removeItem(GUEST_CART_ID_STORAGE_KEY);
+      this.contextState.cartInfoLoading = false;
+      this.actions.updateCart({});
+      return order;
+    },
+
+    requestOrder: async () => {},
   };
 
   getFullContext = () => {

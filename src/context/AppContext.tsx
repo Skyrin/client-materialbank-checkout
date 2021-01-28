@@ -89,6 +89,8 @@ export class AppContextState extends BaseAppContextState {
 
   async requestCurrentCustomer() {}
 
+  async requestOrder(orderId?: string) {}
+
   async applyCouponToCart(couponCode: string) {}
 
   async removeCouponFromCart(couponCode: string) {}
@@ -106,6 +108,8 @@ export class AppContextState extends BaseAppContextState {
 
   async setShippingAddress(addressId: number) {}
 
+  async setShippingMethod() {}
+
   async setPaymentMethod(input: any) {}
 
   async createCustomer(customer: CreateCustomerInput): Promise<CustomerT> {
@@ -119,6 +123,8 @@ export class AppContextState extends BaseAppContextState {
   async createTestCart() {}
 
   async mergeGuestCart() {}
+
+  async placeOrder() {}
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);

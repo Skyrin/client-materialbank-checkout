@@ -1,5 +1,6 @@
 import { AppContextState } from "context/AppContext";
 import { graphqlRequest } from "GraphqlClient";
+import { AddressFragment } from "./CheckoutAPI";
 
 // For whatever reason, the adresses on the customer object are a bit different
 // from the cart ones. Magento...why?
@@ -16,6 +17,17 @@ const CustomerAddressFragment = `
     region_code
     region_id
   }
+`;
+
+const OrderAddressFragment = `
+  city
+  company
+  firstname
+  lastname
+  postcode
+  street
+  telephone
+  region
 `;
 
 const CustomerFragment = `
@@ -182,6 +194,49 @@ export const createCustomerAddress = async (
       input: { ...address, default_shipping: true, default_billing: true },
     });
     return resp["createCustomerAddress"];
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const requestOrder = async (
+  context: AppContextState,
+  orderNumber: string
+) => {
+  const OrdersQuery = `
+    query CustomerOrder($filter: CustomerOrdersFilterInput!) {
+      customer {
+        orders(filter: $filter){
+          items {
+            number
+            payment_methods {
+              type
+              name
+            }
+            billing_address {
+              ${OrderAddressFragment}
+            }
+            shipping_address {
+              ${OrderAddressFragment}
+            }
+            total {
+              grand_total {
+                value
+              }
+              subtotal {
+                value
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+  try {
+    const resp = await graphqlRequest(context, OrdersQuery, {
+      filter: { number: { eq: orderNumber } },
+    });
+    return resp["customer"]["orders"]["items"][0];
   } catch (e) {
     console.error(e);
   }

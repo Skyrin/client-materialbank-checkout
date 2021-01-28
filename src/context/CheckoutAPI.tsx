@@ -50,6 +50,17 @@ const CartFragment = `
   }
   shipping_addresses {
     ${AddressFragment}
+    available_shipping_methods {
+      method_code
+      carrier_code
+      amount {
+        value
+      }
+    }
+    selected_shipping_method {
+      carrier_code
+      method_code
+    }
   }
   available_payment_methods {
     code
@@ -177,7 +188,8 @@ export class CartAddressInput {
       obj?.lastname || obj?.lastName || CartAddressInput.defaults.lastname;
     this.postcode =
       obj?.postcode || obj?.zipCode || CartAddressInput.defaults.postcode;
-    this.region = obj?.region_id || CartAddressInput.defaults.region_id;
+    this.region =
+      obj?.region || obj?.region_id || CartAddressInput.defaults.region_id;
     this.telephone =
       obj?.telephone || obj?.phone || CartAddressInput.defaults.telephone;
     this.street = [obj?.address];
@@ -190,7 +202,8 @@ export class CartAddressInput {
 export const setShippingAddressOnCart = async (
   context: AppContextState,
   cartId: string,
-  addressId: number
+  addressId: number,
+  address?: CartAddressInput
 ) => {
   const query = `
     mutation ($input: SetShippingAddressesOnCartInput!) {
@@ -208,6 +221,7 @@ export const setShippingAddressOnCart = async (
         cart_id: cartId,
         shipping_addresses: [
           {
+            address: address,
             customer_address_id: addressId,
           },
         ],
@@ -349,6 +363,66 @@ export const setPaymentMethod = async (
       { input: input }
     );
     return setPaymentMethodResponse["setPaymentMethodOnCart"]["cart"];
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const placeOrder = async (context: AppContextState, cartId: string) => {
+  const PlaceOrderMutation = `
+    mutation placeOrder($input: PlaceOrderInput!) {
+      placeOrder(input: $input) {
+        order {
+          order_number
+        }
+      }
+    }
+  `;
+
+  try {
+    const placeOrderResponse = await graphqlRequest(
+      context,
+      PlaceOrderMutation,
+      { input: { cart_id: cartId } }
+    );
+    return placeOrderResponse["placeOrder"]["order"];
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const setShippingMethodOnCart = async (
+  context: AppContextState,
+  cartId: string,
+  shippingMethod: string = "flatrate"
+) => {
+  const SetShippingMethodsOnCartMutation = `
+    mutation setShippingMethodsOnCart($input: SetShippingMethodsOnCartInput!) {
+      setShippingMethodsOnCart(input: $input) {
+        cart {
+          ${CartFragment}
+        }
+      }
+    }
+  `;
+
+  try {
+    const setShippingMethodsResponse = await graphqlRequest(
+      context,
+      SetShippingMethodsOnCartMutation,
+      {
+        input: {
+          cart_id: cartId,
+          shipping_methods: [
+            {
+              method_code: shippingMethod,
+              carrier_code: shippingMethod,
+            },
+          ],
+        },
+      }
+    );
+    return setShippingMethodsResponse["setShippingMethodsOnCart"]["cart"];
   } catch (e) {
     console.error(e);
   }

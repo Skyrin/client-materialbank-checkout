@@ -11,10 +11,23 @@ import { get } from "lodash-es";
 import { PaymentOption } from "../PaymentInformation/PaymentInformation";
 import applePayLogo from "assets/images/apple_pay_logo_black.svg";
 import paypalLogo from "assets/images/paypal_logo.svg";
+import { ORDER_ID_STORAGE_KEY } from "constants/general";
+import { requestOrder } from "context/CustomerAPI";
+import { OrderT } from "constants/types";
 
-export default class OrderConfirmation extends React.Component {
+type State = {
+  loadingOrder: boolean;
+  order: OrderT;
+};
+
+export default class OrderConfirmation extends React.Component<any, State> {
   static contextType = AppContext;
   context!: AppContextState;
+
+  state = {
+    loadingOrder: true,
+    order: {},
+  };
 
   order = {
     number: 2625117283,
@@ -77,9 +90,7 @@ export default class OrderConfirmation extends React.Component {
       company: "Vaudeville Ventures",
       street: ["236 W 30th Street", "11th Floor"],
       city: "New York",
-      region: {
-        code: "NY",
-      },
+      region: "NY",
       postcode: "10001",
     },
     billingAddress: {
@@ -88,15 +99,22 @@ export default class OrderConfirmation extends React.Component {
       company: "Vaudeville Ventures",
       street: ["236 W 30th Street", "11th Floor"],
       city: "New York",
-      region: {
-        code: "NY",
-      },
+      region: "NY",
       postcode: "10001",
     },
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     scrollToTop();
+    const orderNumber = localStorage.getItem(ORDER_ID_STORAGE_KEY);
+    if (orderNumber) {
+      const order = await requestOrder(this.context, orderNumber);
+      console.log("ORDER", order);
+      this.setState({
+        order: order,
+        loadingOrder: false,
+      });
+    }
   }
 
   recommendationClick(productId: number): void {}
@@ -104,17 +122,23 @@ export default class OrderConfirmation extends React.Component {
   render() {
     const customerEmail = this.context.customer.email;
     const customerName = `${this.context.customer.firstname} ${this.context.customer.lastname}`;
-    const selectedPaymentOption = this.context.selectedPaymentOption;
+    const orderPaymentOption = get(this.state.order, "payment_methods[0]");
+    let selectedPaymentOption = this.context.selectedPaymentOption;
+    if (orderPaymentOption && orderPaymentOption.type === "paypal_express") {
+      selectedPaymentOption = PaymentOption.PayPal;
+    }
     const shippingAddress = get(
-      this.context.cart,
-      "shipping_addresses[0]",
+      this.state.order,
+      "shipping_address",
       this.customerInfo.shippingAddress
     );
     const billingAddress = get(
-      this.context.cart,
+      this.state.order,
       "billing_address",
       this.customerInfo.billingAddress
     );
+    const orderNumber = get(this.state.order, "number", this.order.number);
+    const orderAmount = get(this.state.order, "total.subtotal.value", 172);
     return (
       <div className={cn("funnel-page", styles["OrderConfirmation"])}>
         {!isOnMobile() && <Logo className={styles.logo} />}
@@ -129,7 +153,7 @@ export default class OrderConfirmation extends React.Component {
               "text-color-light font-size-md"
             )}
           >
-            Order #{this.order.number}
+            Order #{orderNumber}
           </div>
           <h2
             className={cn(
@@ -207,7 +231,7 @@ export default class OrderConfirmation extends React.Component {
               </div>
               <div className={styles["text-row"]}>
                 <span>
-                  {shippingAddress.city},&nbsp;{shippingAddress.region.code}
+                  {shippingAddress.city},&nbsp;{shippingAddress.region}
                   &nbsp;
                   {shippingAddress.postcode}
                 </span>
@@ -228,8 +252,7 @@ export default class OrderConfirmation extends React.Component {
                       ending in 1234&nbsp;-&nbsp;
                       {this.context.cart?.prices?.subtotal_including_tax
                         ?.currency || "$"}
-                      {this.context.cart?.prices?.subtotal_including_tax
-                        ?.value || "172"}
+                      {orderAmount || "172"}
                     </span>
                   </React.Fragment>
                 )}
@@ -244,8 +267,7 @@ export default class OrderConfirmation extends React.Component {
                       &nbsp;-&nbsp;
                       {this.context.cart?.prices?.subtotal_including_tax
                         ?.currency || "$"}
-                      {this.context.cart?.prices?.subtotal_including_tax
-                        ?.value || "172"}
+                      {orderAmount || "172"}
                     </span>
                   </React.Fragment>
                 )}
@@ -256,8 +278,7 @@ export default class OrderConfirmation extends React.Component {
                       &nbsp;-&nbsp;
                       {this.context.cart?.prices?.subtotal_including_tax
                         ?.currency || "$"}
-                      {this.context.cart?.prices?.subtotal_including_tax
-                        ?.value || "172"}
+                      {orderAmount || "172"}
                     </span>
                   </React.Fragment>
                 )}
@@ -277,7 +298,7 @@ export default class OrderConfirmation extends React.Component {
               </div>
               <div className={styles["text-row"]}>
                 <span>
-                  {billingAddress.city},&nbsp;{billingAddress.region.code}&nbsp;
+                  {billingAddress.city},&nbsp;{billingAddress.region}&nbsp;
                   {billingAddress.postcode}
                 </span>
               </div>
