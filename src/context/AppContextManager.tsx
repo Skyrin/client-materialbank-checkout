@@ -130,11 +130,17 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.customerLoading = true;
       this.contextState.cartInfoLoading = true;
       this.forceUpdate();
-      await createCustomer(this.getFullContext(), customer);
-      await this.actions.login(customer.email, customer.password);
-      this.contextState.customerLoading = false;
-      this.contextState.cartInfoLoading = false;
-      this.forceUpdate();
+      try {
+        await createCustomer(this.getFullContext(), customer);
+        await this.actions.login(customer.email, customer.password);
+      } catch (e) {
+        // Forward the error to the component, but hide the loaders regardless
+        throw e;
+      } finally {
+        this.contextState.customerLoading = false;
+        this.contextState.cartInfoLoading = false;
+        this.forceUpdate();
+      }
     },
 
     applyCouponToCart: async (couponCode: string) => {

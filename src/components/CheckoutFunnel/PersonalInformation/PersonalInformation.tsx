@@ -383,6 +383,10 @@ export class PersonalInformation extends React.Component<Props, State> {
               onClick={() => {
                 // Hardcoded for now, so we don't create a ton of accounts unless we want to test the register
                 this.context.login("test@example.com", "StrongPassword1");
+                this.context.login(
+                  "vlad.dolineanu+test41234@rodeapps.com",
+                  "Password1"
+                );
               }}
             >
               Log In
@@ -549,50 +553,68 @@ export class PersonalInformation extends React.Component<Props, State> {
 
   async onSubmit() {
     this.setState({ isSubmitting: true });
-    if (!this.context.isLoggedIn) {
-      const createCustomerInput = new CreateCustomerInput(
-        this.state.createAccount
-      );
-      await this.context.createCustomer(createCustomerInput);
-      await this.context.mergeGuestCart();
-    }
+    try {
+      if (!this.context.isLoggedIn) {
+        const createCustomerInput = new CreateCustomerInput(
+          this.state.createAccount
+        );
 
-    let addressId = this.state.selectedShippingAddressId;
-    if (addressId === -1) {
-      const address = await this.createCustomerAddress();
-      addressId = address.id;
-    }
-    await this.context.setShippingAddress(addressId);
+        await this.context.createCustomer(createCustomerInput);
+        await this.context.mergeGuestCart();
+      }
 
-    if (this.state.paypalExpressInfo.payer_id) {
-      // If we are going through paypal express, set the payment method as well,
-      // place the order and go to the confirmation page
+      let addressId = this.state.selectedShippingAddressId;
+      if (addressId === -1) {
+        const address = await this.createCustomerAddress();
+        addressId = address.id;
+      }
+      await this.context.setShippingAddress(addressId);
 
-      // If paypal, set the billing to be same as shipping
-      await this.context.setBillingAddress(true);
+      if (this.state.paypalExpressInfo.payer_id) {
+        // If we are going through paypal express, set the payment method as well,
+        // place the order and go to the confirmation page
 
-      await this.context.setShippingMethod();
+        // If paypal, set the billing to be same as shipping
+        await this.context.setBillingAddress(true);
 
-      const paymentMethodResponse = await this.context.setPaymentMethod({
-        cart_id: this.context.cart.id,
-        payment_method: {
-          code: "paypal_express",
-          paypal_express: {
-            payer_id: this.state.paypalExpressInfo.payer_id,
-            token: this.state.paypalExpressInfo.token,
+        await this.context.setShippingMethod();
+
+        const paymentMethodResponse = await this.context.setPaymentMethod({
+          cart_id: this.context.cart.id,
+          payment_method: {
+            code: "paypal_express",
+            paypal_express: {
+              payer_id: this.state.paypalExpressInfo.payer_id,
+              token: this.state.paypalExpressInfo.token,
+            },
           },
-        },
-      });
+        });
 
-      this.context.setSelectedPaymentOption(PaymentOption.PayPal);
-      console.log("PAYMENT METHOD", paymentMethodResponse);
+        this.context.setSelectedPaymentOption(PaymentOption.PayPal);
+        console.log("PAYMENT METHOD", paymentMethodResponse);
 
-      await this.context.placeOrder();
-      this.setState({ isSubmitting: false });
-      this.props.history.push(ORDER_CONFIRMATION_URL);
-      return;
+        await this.context.placeOrder();
+        this.setState({ isSubmitting: false });
+        this.props.history.push(ORDER_CONFIRMATION_URL);
+        return;
+      }
+    } catch (e) {
+      for (const err of e.graphqlErrors) {
+        if (
+          err.message.includes(
+            "A customer with the same email address already exists"
+          )
+        ) {
+          this.setState({
+            createAccountErrors: {
+              ...this.state.createAccountErrors,
+              email: "A user with the same email address already exists",
+            },
+          });
+        }
+      }
     }
-    // Show server errors if needed
+
     this.setState({ isSubmitting: false });
     this.props.history.push(PAYMENT_URL);
   }

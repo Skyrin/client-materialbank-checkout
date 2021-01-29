@@ -109,14 +109,11 @@ export const createCustomer = async (
     }
   `;
 
-  try {
-    const response = await graphqlRequest(context, Mutation, {
-      input: customer,
-    });
-    return response["createCustomerV2"]["customer"];
-  } catch (e) {
-    console.error(e);
-  }
+  // Don't use try-catch here, let the component catch the error and handle
+  const response = await graphqlRequest(context, Mutation, {
+    input: customer,
+  });
+  return response["createCustomerV2"]["customer"];
 };
 
 export class CustomerAddressInput {
