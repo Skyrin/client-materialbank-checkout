@@ -8,6 +8,7 @@ export default class Address {
   city: string;
   state: string;
   zipcode: string;
+  default: boolean = false;
 
   constructor(obj?: any) {
     this.id = obj?.id;
@@ -19,5 +20,6 @@ export default class Address {
     this.city = obj?.city;
     this.state = obj?.state;
     this.zipcode = obj?.zipcode;
+    this.default = obj?.default;
   }
 }

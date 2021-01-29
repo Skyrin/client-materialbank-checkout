@@ -5,6 +5,10 @@ import cn from "classnames";
 import Checkbox from "components/common/Checkbox/Checkbox";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
+import Select from "react-dropdown-select";
+import usaStates from "models/usaStates.json";
+import styled from "@emotion/styled";
+import { useState } from "react";
 
 const addAddressSchema = yup.object().shape({
   nickname: yup.string().required("Required"),
@@ -24,7 +28,7 @@ export const DEFAULT_ADDRESS_VALUES: AddressFormValuesT = {
   addressLine1: "",
   addressLine2: "",
   city: "",
-  state: "",
+  state: usaStates[0].abbreviation,
   zipcode: "",
   default: false,
 };
@@ -54,6 +58,7 @@ export type AddressFormErrorsT = {
 
 type Props = {
   initialValues?: AddressFormValuesT;
+  onSave?: (addressValues: AddressFormValuesT) => void;
 };
 
 type State = {
@@ -158,13 +163,14 @@ export default class MapAddressForm extends React.Component<Props, State> {
 
           <div className={styles.state}>
             <div className={styles.inputHint}>State</div>
-            <Input
-              placeholder="AL"
-              value={this.state.values.state}
-              error={this.state.errors.state}
-              onChange={(val: string) => {
-                this.updateFieldForm("state", val);
-              }}
+            <StyledSelect
+              options={usaStates}
+              values={[usaStates[0]]}
+              labelField="abbreviation"
+              valueField="abbreviation"
+              dropdownPosition="auto"
+              className={styles.dropDownStyle}
+              onChange={(value) => this.updateFieldForm("state", value)}
             />
           </div>
 
@@ -199,7 +205,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
           <button className={styles.cancelAddAddress}>Cancel</button>
           <button
             className={styles.addAddressButton}
-            onClick={this.validateAddress}
+            onClick={this.saveClicked}
           >
             Add Address
           </button>
@@ -221,6 +227,12 @@ export default class MapAddressForm extends React.Component<Props, State> {
     });
   };
 
+  saveClicked = () => {
+    if (this.validateAddress()) {
+      this.props.onSave(this.state.values);
+    }
+  };
+
   validateAddress = () => {
     try {
       addAddressSchema.validateSync(this.state.values, {
@@ -239,3 +251,43 @@ export default class MapAddressForm extends React.Component<Props, State> {
     }
   };
 }
+
+//sorry broly :(
+
+const StyledSelect = styled(Select)`
+  --input-height: 40px;
+  --input-border-radius: 24px;
+  position: relative;
+  font-family: "IBM Plex Sans", sans-serif;
+
+  width: 100%;
+  height: var(--input-height);
+  padding: 10px 16px;
+  border-radius: var(--input-border-radius);
+  outline: none;
+  border: 1px solid rgba(var(--primary-color-rgb), 0.1);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+  font-size: var(--font-size-md);
+  transition: border-color 0.1s linear, box-shadow 0.1s linear;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  @include mobile-media {
+    font-size: var(--font-size-sm);
+  }
+
+  &:hover {
+    border-color: rgba(var(--primary-color-rgb), 0.4);
+  }
+
+  &:focus {
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+    border-color: rgba(var(--primary-color-rgb), 0.6);
+  }
+
+  .react-dropdown-select-input {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 14px;
+  }
+`;

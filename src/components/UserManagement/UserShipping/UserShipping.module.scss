@@ -61,6 +61,15 @@
   margin-left: auto;
   padding: 0;
 }
+
+.defaultAddress {
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-sm);
+  margin-right: auto;
+  letter-spacing: 1px;
+  color: $brown-color;
+}
+
 .editAddressCell {
   @include whiteButton;
 }

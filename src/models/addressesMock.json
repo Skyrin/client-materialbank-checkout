@@ -18,7 +18,8 @@
     "addressLine2": "12th Floor",
     "city": "Townsville",
     "state": "MO",
-    "zipcode": "22334"
+    "zipcode": "22334",
+    "default": true
   },
   {
     "id": 3,

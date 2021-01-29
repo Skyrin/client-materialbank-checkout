@@ -94,7 +94,7 @@ export default class UserShipping extends React.Component<Props, State> {
           <div className={styles.addressGrid}>
             {this.state.addresses.map((address) => {
               return (
-                <div className={styles.addressCell}>
+                <div className={styles.addressCell} key={address.id}>
                   <div className={styles.addressMapCell} />
                   <div className={styles.addressInfo}>
                     <div className={styles.addressNickName}>
@@ -118,7 +118,15 @@ export default class UserShipping extends React.Component<Props, State> {
                     </div>
                   </div>
 
-                  <button className={styles.makeDefault}>Make default</button>
+                  {!address.default && (
+                    <button className={styles.makeDefault}>Make default</button>
+                  )}
+                  {address.default && (
+                    <button className={styles.defaultAddress}>
+                      DEFAULT ADDRESS
+                    </button>
+                  )}
+
                   <button className={styles.editAddressCell}>Edit</button>
                 </div>
               );
@@ -127,11 +135,43 @@ export default class UserShipping extends React.Component<Props, State> {
 
           <div className={styles.mapContainer}>
             <div className={styles.addAddressContainer}>
-              <MapAddressForm />
+              <MapAddressForm
+                onSave={(addressValues) => {
+                  this.onSaveAddress(addressValues);
+                }}
+              />
             </div>
           </div>
         </div>
       </div>
     );
   }
+
+  onSaveAddress = (addressValues: AddressFormValuesT) => {
+    const address = new Address({
+      id: Math.random(),
+      nickname: addressValues.nickname,
+      firstName: addressValues.firstName,
+      lastName: addressValues.lastName,
+      addressLine1: addressValues.addressLine1,
+      addressLine2: addressValues.addressLine2,
+      city: addressValues.city,
+      state: addressValues.state,
+      zipcode: addressValues.zipcode,
+      default: addressValues.default,
+    });
+
+    if (address.default) {
+      const newAddresses = this.state.addresses.map((address) => {
+        address.default = false;
+        return address;
+      });
+      newAddresses.push(address);
+      this.setState({
+        addresses: newAddresses,
+      });
+    }
+
+    console.log(address);
+  };
 }
