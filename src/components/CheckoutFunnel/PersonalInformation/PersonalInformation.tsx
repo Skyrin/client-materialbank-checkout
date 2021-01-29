@@ -251,40 +251,47 @@ export class PersonalInformation extends React.Component<Props, State> {
     const customer = get(order, "payer");
     const [shippingFirstName, shippingLastName] = shippingContact.split(" ");
 
-    this.setState(
-      {
-        ...this.state,
-        // Pre-fill the Create Account form with customer info
-        createAccount: {
-          ...this.state.createAccount,
-          firstname: customer.name.given_name,
-          lastname: customer.name.surname,
-          email: customer.email_address,
-        },
-        // Pre-fill shipping address form with extracted info
-        shippingAddress: {
-          ...this.state.shippingAddress,
-          firstName: shippingFirstName,
-          lastName: shippingLastName,
-          city: shippingAddress.admin_area_2,
-          region: shippingAddress.admin_area_1,
-          address: shippingAddress.address_line_1,
-          aptNumber: shippingAddress.address_line_2 || "",
-          zipCode: shippingAddress.postal_code,
-        },
-        // Save paypal tokens so we can set the payment method on submit
-        paypalExpressInfo: {
-          token: data.orderID,
-          payer_id: data.payerID,
-        },
+    // If user is logged in, save only the paypal tokens as we already have the customer info + shipping
+    this.setState({
+      // Save paypal tokens so we can set the payment method on submit
+      paypalExpressInfo: {
+        token: data.orderID,
+        payer_id: data.payerID,
       },
-      () => {
-        // Update shipping address form after setting state
-        console.log("NEW STATE", this.state);
-        this.validateContactInfo();
-        this.shippingAddressForm.updateValues(this.state.shippingAddress, true);
-      }
-    );
+    });
+
+    // If it's a guest user, pre-fill available info as well
+    if (!this.context.isLoggedIn) {
+      this.setState(
+        {
+          ...this.state,
+          // Pre-fill the Create Account form with customer info
+          createAccount: {
+            ...this.state.createAccount,
+            firstname: customer.name.given_name,
+            lastname: customer.name.surname,
+            email: customer.email_address,
+          },
+        },
+        () => {
+          // Update shipping address form after setting state
+          this.validateContactInfo();
+          this.shippingAddressForm.updateValues(
+            {
+              ...this.state.shippingAddress,
+              firstName: shippingFirstName,
+              lastName: shippingLastName,
+              city: shippingAddress.admin_area_2,
+              region: shippingAddress.admin_area_1,
+              address: shippingAddress.address_line_1,
+              aptNumber: shippingAddress.address_line_2 || "",
+              zipCode: shippingAddress.postal_code,
+            },
+            true
+          );
+        }
+      );
+    }
   };
 
   renderExpressCheckoutSection = () => {
@@ -383,10 +390,6 @@ export class PersonalInformation extends React.Component<Props, State> {
               onClick={() => {
                 // Hardcoded for now, so we don't create a ton of accounts unless we want to test the register
                 this.context.login("test@example.com", "StrongPassword1");
-                this.context.login(
-                  "vlad.dolineanu+test41234@rodeapps.com",
-                  "Password1"
-                );
               }}
             >
               Log In
@@ -598,6 +601,9 @@ export class PersonalInformation extends React.Component<Props, State> {
         this.props.history.push(ORDER_CONFIRMATION_URL);
         return;
       }
+
+      this.setState({ isSubmitting: false });
+      this.props.history.push(PAYMENT_URL);
     } catch (e) {
       for (const err of e.graphqlErrors) {
         if (
@@ -611,12 +617,14 @@ export class PersonalInformation extends React.Component<Props, State> {
               email: "A user with the same email address already exists",
             },
           });
+          return;
         }
       }
+    } finally {
+      this.setState({
+        isSubmitting: false,
+      });
     }
-
-    this.setState({ isSubmitting: false });
-    this.props.history.push(PAYMENT_URL);
   }
 
   async createCustomerAddress() {
@@ -659,6 +667,7 @@ export class PersonalInformation extends React.Component<Props, State> {
               className={cn("button large", { "margin-top": isOnMobile() })}
               onClick={() => this.onSubmit()}
               disabled={
+                this.state.isSubmitting ||
                 (!this.context.isLoggedIn &&
                   !contactInfoSchema.isValidSync(this.state.createAccount)) ||
                 (this.state.selectedShippingAddressId === -1 &&
