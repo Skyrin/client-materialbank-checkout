@@ -18,6 +18,17 @@ const CustomerAddressFragment = `
   }
 `;
 
+const OrderAddressFragment = `
+  city
+  company
+  firstname
+  lastname
+  postcode
+  street
+  telephone
+  region
+`;
+
 const CustomerFragment = `
   addresses {
     ${CustomerAddressFragment}
@@ -98,14 +109,11 @@ export const createCustomer = async (
     }
   `;
 
-  try {
-    const response = await graphqlRequest(context, Mutation, {
-      input: customer,
-    });
-    return response["createCustomerV2"]["customer"];
-  } catch (e) {
-    console.error(e);
-  }
+  // Don't use try-catch here, let the component catch the error and handle
+  const response = await graphqlRequest(context, Mutation, {
+    input: customer,
+  });
+  return response["createCustomerV2"]["customer"];
 };
 
 export class CustomerAddressInput {
@@ -116,7 +124,7 @@ export class CustomerAddressInput {
   lastname: string;
   postcode: string;
   region: {
-    region_id: string;
+    region_id: number;
   };
   telephone: string;
   street: string[];
@@ -124,13 +132,13 @@ export class CustomerAddressInput {
   // TODO Clarify this: city, country_code, region_id are required on Backend but not present in Design.
   // TODO: Figure out zip-code resolution / address validations
   private static readonly defaults = {
-    city: "Washington",
+    city: "New York",
     company: undefined,
     country_code: "US",
     firstname: undefined,
     lastname: undefined,
     postcode: undefined,
-    region_id: 1,
+    region_id: 43,
     telephone: undefined,
     street: undefined,
   };
@@ -157,6 +165,11 @@ export class CustomerAddressInput {
     if (obj?.aptNumber) {
       this.street.push(obj?.aptNumber);
     }
+
+    // TEMPORARY OVERRIDES SO THAT WE HAVE A VALID ADDRESS
+    this.city = CustomerAddressInput.defaults.city;
+    this.region.region_id = CustomerAddressInput.defaults.region_id;
+    this.postcode = "10001";
   }
 }
 
@@ -177,6 +190,49 @@ export const createCustomerAddress = async (
       input: { ...address, default_shipping: true, default_billing: true },
     });
     return resp["createCustomerAddress"];
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const requestOrder = async (
+  context: AppContextState,
+  orderNumber: string
+) => {
+  const OrdersQuery = `
+    query CustomerOrder($filter: CustomerOrdersFilterInput!) {
+      customer {
+        orders(filter: $filter){
+          items {
+            number
+            payment_methods {
+              type
+              name
+            }
+            billing_address {
+              ${OrderAddressFragment}
+            }
+            shipping_address {
+              ${OrderAddressFragment}
+            }
+            total {
+              grand_total {
+                value
+              }
+              subtotal {
+                value
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+  try {
+    const resp = await graphqlRequest(context, OrdersQuery, {
+      filter: { number: { eq: orderNumber } },
+    });
+    return resp["customer"]["orders"]["items"][0];
   } catch (e) {
     console.error(e);
   }

@@ -15,6 +15,7 @@ export type AddressFormValuesT = {
   zipCode: string;
   phone: string;
   city?: string;
+  region?: string;
 };
 
 export const DEFAULT_ADDRESS_FORM_VALUES: AddressFormValuesT = {
@@ -26,6 +27,7 @@ export const DEFAULT_ADDRESS_FORM_VALUES: AddressFormValuesT = {
   zipCode: "",
   phone: "",
   city: "",
+  region: "",
 };
 
 const DEFAULT_FORM_SCHEMA = yup.object().shape({
@@ -111,6 +113,22 @@ export default class AddressForm extends React.Component<Props, State> {
       },
       () => {
         this.props.onChange(this.state.values);
+      }
+    );
+  };
+
+  updateValues = (values: AddressFormValuesT, validate?: boolean) => {
+    this.setState(
+      {
+        values: {
+          ...this.state.values,
+          ...values,
+        },
+      },
+      () => {
+        if (validate) {
+          this.validateForm();
+        }
       }
     );
   };
