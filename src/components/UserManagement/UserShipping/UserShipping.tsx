@@ -14,7 +14,6 @@ import {
   clearAllBodyScrollLocks,
 } from "body-scroll-lock";
 import cn from "classnames";
-import { map } from "lodash-es";
 
 export const DEFAULT_ADDRESS_VALUES: AddressFormValuesT = {
   nickname: "",
@@ -177,8 +176,26 @@ export default class UserShipping extends React.Component<Props, State> {
           className={cn(styles.modalBackground, {
             [styles.visible]: this.state.editMode,
           })}
-          onClick={this.onModalBackgroundClicked}
-        ></div>
+          onClick={(event) => {
+            // @ts-ignore
+            if (event.target.id === "modalId") {
+              this.onModalBackgroundClicked();
+            }
+          }}
+        >
+          <div className={styles.modalContent}>
+            <div className={cn("far fa-times", styles.closeModal)}></div>
+            <div className={cn(styles.mapContainer, styles.inModal)}>
+              <div className={styles.addAddressContainer}>
+                <MapAddressForm
+                  onSave={(addressValues) => {
+                    this.onSaveAddress(addressValues);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -216,10 +233,7 @@ export default class UserShipping extends React.Component<Props, State> {
 
   makeDefault = (defaultAddress: Address) => {
     const newAddresses = this.state.addresses.map((address) => {
-      address.default = false;
-      if (address.id === defaultAddress.id) {
-        address.default = true;
-      }
+      address.default = address.id === defaultAddress.id;
       return address;
     });
     this.setState({

@@ -82,6 +82,11 @@
   position: relative;
   margin-top: $margin-small-4;
   background: url("/assets/images/map_dummy.jpg") no-repeat center center;
+
+  &.inModal {
+    //margin: auto $margin-huge-5;
+    margin: 0;
+  }
 }
 
 .addAddressContainer {
@@ -103,7 +108,23 @@
   background: rgba(black, 0.5);
 
   &.visible {
-    display: block;
+    display: flex;
+    flex-flow: column;
     position: fixed;
   }
+}
+
+.closeModal {
+  font-size: 20px;
+  color: white;
+  width: 19px;
+  height: 19px;
+  align-self: flex-end;
+  cursor: pointer;
+}
+
+.modalContent {
+  display: flex;
+  flex-flow: column;
+  margin: auto $margin-huge-5;
 }
