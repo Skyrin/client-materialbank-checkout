@@ -73,7 +73,7 @@ export const createCustomerAddress = async (
   const Mutation = `
     mutation ($input: CustomerAddressInput!) {
       createCustomerAddress(input: $input) {
-        
+        id
       }
     }
   `;
