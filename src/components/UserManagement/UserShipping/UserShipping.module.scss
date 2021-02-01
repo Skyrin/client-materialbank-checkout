@@ -41,6 +41,10 @@
   background-size: cover;
 }
 
+.addressInfo {
+  overflow: hidden;
+}
+
 .addressNickName {
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-md);
