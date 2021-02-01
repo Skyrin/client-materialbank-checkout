@@ -24,7 +24,10 @@ import { isOnMobile } from "utils/responsive";
 import RadioButton from "components/common/RadioButton/RadioButton";
 import { AppContext, AppContextState } from "../../../context/AppContext";
 import { isEqual, get } from "lodash-es";
-import { CreateCustomerInput, CustomerAddressInput } from "context/CustomerAPI";
+import {
+  CreateCustomerInput,
+  CustomerAddressInput,
+} from "context/CustomerAPI/models";
 import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
 import { graphqlRequest } from "GraphqlClient";
@@ -150,6 +153,7 @@ export class PersonalInformation extends React.Component<Props, State> {
     console.log(paypal);
     paypal
       .Buttons({
+        fundingSource: paypal.FUNDING.PAYPAL,
         style: {
           height: 40,
         },

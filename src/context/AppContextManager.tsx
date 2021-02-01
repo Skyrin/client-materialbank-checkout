@@ -4,7 +4,6 @@ import { AppContext, AppContextState } from "./AppContext";
 import { cloneDeep, isArray, isString, merge, mergeWith } from "lodash-es";
 import {
   applyCouponToCart,
-  CartAddressInput,
   createTestCart,
   mergeGuestCart,
   placeOrder,
@@ -15,15 +14,18 @@ import {
   setPaymentMethod,
   setShippingAddressOnCart,
   setShippingMethodOnCart,
-} from "./CheckoutAPI";
+} from "./CheckoutAPI/api";
+import { CartAddressInput } from "./CheckoutAPI/models";
 import {
   createCustomer,
-  CreateCustomerInput,
-  CustomerAddressInput,
   login,
   requestCurrentCustomer,
   createCustomerAddress,
-} from "./CustomerAPI";
+} from "./CustomerAPI/api";
+import {
+  CreateCustomerInput,
+  CustomerAddressInput,
+} from "./CustomerAPI/models";
 import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import {
   AUTH_TOKEN_STORAGE_KEY,

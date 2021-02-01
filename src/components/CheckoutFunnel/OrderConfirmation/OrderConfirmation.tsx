@@ -12,7 +12,7 @@ import { PaymentOption } from "../PaymentInformation/PaymentInformation";
 import applePayLogo from "assets/images/apple_pay_logo_black.svg";
 import paypalLogo from "assets/images/paypal_logo.svg";
 import { ORDER_ID_STORAGE_KEY } from "constants/general";
-import { requestOrder } from "context/CustomerAPI";
+import { requestOrder } from "context/CustomerAPI/api";
 import { OrderT } from "constants/types";
 
 type State = {
@@ -119,6 +119,16 @@ export default class OrderConfirmation extends React.Component<any, State> {
 
   recommendationClick(productId: number): void {}
 
+  parseAddress = (address: any) => {
+    const parsedAddress = {
+      ...address,
+    };
+    if (get(address.region, "code")) {
+      parsedAddress.region = address.region.code;
+    }
+    return parsedAddress;
+  };
+
   render() {
     const customerEmail = this.context.customer.email;
     const customerName = `${this.context.customer.firstname} ${this.context.customer.lastname}`;
@@ -127,18 +137,35 @@ export default class OrderConfirmation extends React.Component<any, State> {
     if (orderPaymentOption && orderPaymentOption.type === "paypal_express") {
       selectedPaymentOption = PaymentOption.PayPal;
     }
-    const shippingAddress = get(
-      this.state.order,
-      "shipping_address",
-      this.customerInfo.shippingAddress
+    console.log(this.context.cart);
+    const shippingAddress = this.parseAddress(
+      get(
+        this.state.order,
+        "shipping_address",
+        get(
+          this.context.cart,
+          "shipping_addresses[0]",
+          this.customerInfo.shippingAddress
+        )
+      )
     );
-    const billingAddress = get(
-      this.state.order,
-      "billing_address",
-      this.customerInfo.billingAddress
+    const billingAddress = this.parseAddress(
+      get(
+        this.state.order,
+        "billing_address",
+        get(
+          this.context.cart,
+          "billing_address",
+          this.customerInfo.billingAddress
+        )
+      )
     );
     const orderNumber = get(this.state.order, "number", this.order.number);
-    const orderAmount = get(this.state.order, "total.subtotal.value", 172);
+    const orderAmount = get(
+      this.state.order,
+      "total.subtotal.value",
+      get(this.context.cart, "prices.subtotal_including_tax.value", 172)
+    );
     return (
       <div className={cn("funnel-page", styles["OrderConfirmation"])}>
         {!isOnMobile() && <Logo className={styles.logo} />}

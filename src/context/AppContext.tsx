@@ -1,8 +1,11 @@
 import * as React from "react";
 import { AddressT, CartT, CustomerT } from "constants/types";
 import { cloneDeep } from "lodash-es";
-import { CartAddressInput } from "./CheckoutAPI";
-import { CreateCustomerInput, CustomerAddressInput } from "./CustomerAPI";
+import { CartAddressInput } from "./CheckoutAPI/models";
+import {
+  CreateCustomerInput,
+  CustomerAddressInput,
+} from "./CustomerAPI/models";
 import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import { AUTH_TOKEN_STORAGE_KEY } from "constants/general";
 
