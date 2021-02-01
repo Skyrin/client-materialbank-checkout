@@ -1,80 +1,14 @@
 import { AppContextState } from "context/AppContext";
 import { graphqlRequest } from "GraphqlClient";
 import { getAddressId } from "utils/context";
-
-export const AddressFragment = `
-  city
-  company
-  firstname
-  lastname
-  postcode
-  street
-  telephone
-  region {
-    code
-    label
-    region_id
-  }
-`;
-
-const CartFragment = `
-  id
-  email
-  prices {
-    subtotal_including_tax {
-      value
-    }
-  }
-  items {
-    id
-    prices {
-      price {
-        value
-      }
-      row_total_including_tax {
-        value
-      }
-    }
-    product {
-      id
-      sku
-      name
-      image {
-        url
-      }
-    }
-    quantity
-  }
-  billing_address {
-    ${AddressFragment}
-  }
-  shipping_addresses {
-    ${AddressFragment}
-    available_shipping_methods {
-      method_code
-      carrier_code
-      amount {
-        value
-      }
-    }
-    selected_shipping_method {
-      carrier_code
-      method_code
-    }
-  }
-  available_payment_methods {
-    code
-    title
-  }
-  selected_payment_method {
-    code
-    title
-    purchase_order_number
-  }
-  applied_coupons {
-    code
-  }
-`;
+import {
+  CartAppliedCouponsFragment,
+  CartBillingAddressFragment,
+  CartFragment,
+  CartSelectedPaymentMethod,
+  CartShippingAddressesFragment,
+} from "./fragments";
+import { CartAddressInput } from "./models";
 
 export const requestGuestCartInfo = async (
   context: AppContextState,
@@ -113,7 +47,7 @@ export const applyCouponToCart = async (
     mutation($input: ApplyCouponToCartInput!) {
       applyCouponToCart(input: $input) {
         cart {
-          ${CartFragment}
+          ${CartAppliedCouponsFragment}
         }
       }
     }
@@ -138,7 +72,7 @@ export const removeCouponFromCart = async (
     mutation($input: RemoveCouponFromCartInput!) {
       removeCouponFromCart(input: $input) {
         cart {
-          ${CartFragment}
+          ${CartAppliedCouponsFragment}
         }
       }
     }
@@ -152,53 +86,6 @@ export const removeCouponFromCart = async (
   return resp["removeCouponFromCart"]["cart"];
 };
 
-export class CartAddressInput {
-  city: string;
-  company: string;
-  country_code: string;
-  firstname: string;
-  lastname: string;
-  postcode: string;
-  region: string;
-  telephone: string;
-  street: string[];
-
-  // TODO Clarify this: city, country_code, region_id are required on Backend but not present in Design.
-  // TODO: Figure out zip-code resolution / address validations
-  private static readonly defaults = {
-    city: "New York",
-    company: undefined,
-    country_code: "US",
-    firstname: undefined,
-    lastname: undefined,
-    postcode: undefined,
-    region_id: 43,
-    telephone: undefined,
-    street: undefined,
-  };
-
-  constructor(obj?: any) {
-    this.city = obj?.city || CartAddressInput.defaults.city;
-    this.company = obj?.company || CartAddressInput.defaults.company;
-    this.country_code =
-      obj?.country_code || CartAddressInput.defaults.country_code;
-    this.firstname =
-      obj?.firstname || obj?.firstName || CartAddressInput.defaults.firstname;
-    this.lastname =
-      obj?.lastname || obj?.lastName || CartAddressInput.defaults.lastname;
-    this.postcode =
-      obj?.postcode || obj?.zipCode || CartAddressInput.defaults.postcode;
-    this.region =
-      obj?.region || obj?.region_id || CartAddressInput.defaults.region_id;
-    this.telephone =
-      obj?.telephone || obj?.phone || CartAddressInput.defaults.telephone;
-    this.street = [obj?.address];
-    if (obj?.aptNumber) {
-      this.street.push(obj?.aptNumber);
-    }
-  }
-}
-
 export const setShippingAddressOnCart = async (
   context: AppContextState,
   cartId: string,
@@ -209,7 +96,7 @@ export const setShippingAddressOnCart = async (
     mutation ($input: SetShippingAddressesOnCartInput!) {
       setShippingAddressesOnCart(input: $input) {
         cart {
-          ${CartFragment}
+          ${CartShippingAddressesFragment}
         }
       }
     }
@@ -245,7 +132,7 @@ export const setBillingAddressOnCart = async (
     mutation ($input: SetBillingAddressOnCartInput!) {
       setBillingAddressOnCart(input: $input) {
         cart {
-          ${CartFragment}
+          ${CartBillingAddressFragment}
         }
       }
     }
@@ -350,7 +237,7 @@ export const setPaymentMethod = async (
     mutation setPaymentMethodOnCart($input: SetPaymentMethodOnCartInput!) {
       setPaymentMethodOnCart(input: $input) {
         cart {
-          ${CartFragment}
+          ${CartSelectedPaymentMethod}
         }
       }
     }
@@ -400,7 +287,7 @@ export const setShippingMethodOnCart = async (
     mutation setShippingMethodsOnCart($input: SetShippingMethodsOnCartInput!) {
       setShippingMethodsOnCart(input: $input) {
         cart {
-          ${CartFragment}
+          ${CartShippingAddressesFragment}
         }
       }
     }

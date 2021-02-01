@@ -272,6 +272,7 @@ export default class AddressForm extends React.Component<Props, State> {
         <Input
           className={cn(styles.input, this.props.inputClassName)}
           placeholder="Phone Number*"
+          type="tel"
           value={this.state.values.phone}
           onChange={(val: string) => {
             this.updateField("phone", val);
