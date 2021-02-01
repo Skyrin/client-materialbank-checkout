@@ -7,12 +7,14 @@ import { SearchBar } from "components/common/SearchBar/SearchBar";
 import mockAddresses from "models/addressesMock.json";
 import styles from "./UserShipping.module.scss";
 import Address from "models/Address";
-import cn from "classnames";
-
-import Input from "components/common/Input/Input";
-import Checkbox from "components/common/Checkbox/Checkbox";
-import { extractErrors } from "utils/forms";
 import MapAddressForm from "components/common/Forms/MapAddressForm/MapAddressForm";
+import {
+  disableBodyScroll,
+  enableBodyScroll,
+  clearAllBodyScrollLocks,
+} from "body-scroll-lock";
+import cn from "classnames";
+import { map } from "lodash-es";
 
 export const DEFAULT_ADDRESS_VALUES: AddressFormValuesT = {
   nickname: "",
@@ -55,9 +57,20 @@ type State = {
   addresses: Address[];
   values: AddressFormValuesT;
   errors: AddressFormErrorsT;
+  editMode: boolean;
 };
 
 export default class UserShipping extends React.Component<Props, State> {
+  targetElement = null;
+
+  componentDidMount() {
+    this.targetElement = document.querySelector("#modalId");
+  }
+
+  componentWillUnmount() {
+    clearAllBodyScrollLocks();
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -73,76 +86,99 @@ export default class UserShipping extends React.Component<Props, State> {
         state: null,
         zipcode: null,
       },
+      editMode: false,
     };
   }
 
   render() {
     return (
-      <div className={styles.UserShipping}>
-        <UserHeader
-          title={UserPages.Shipping.name}
-          extraContent={
-            <SearchBar
-              placeholder={"Search of shipping address"}
-              onSearchChange={(value: string) => {
-                console.log(value);
-              }}
-            />
-          }
-        />
-        <div className={styles.pageContent}>
-          <div className={styles.addressGrid}>
-            {this.state.addresses.map((address) => {
-              return (
-                <div className={styles.addressCell} key={address.id}>
-                  <div className={styles.addressMapCell} />
-                  <div className={styles.addressInfo}>
-                    <div className={styles.addressNickName}>
-                      {address.nickname}
-                    </div>
-                    <div className={styles.addressExtraDetails}>
-                      {address.firstName + " " + address.lastName}
-                    </div>
-                    <div className={styles.addressExtraDetails}>
-                      {address.addressLine1}
-                    </div>
-                    <div className={styles.addressExtraDetails}>
-                      {address.addressLine2}
-                    </div>
-                    <div className={styles.addressExtraDetails}>
-                      {address.city +
-                        ", " +
-                        address.state +
-                        " " +
-                        address.zipcode}
-                    </div>
-                  </div>
-
-                  {!address.default && (
-                    <button className={styles.makeDefault}>Make default</button>
-                  )}
-                  {address.default && (
-                    <button className={styles.defaultAddress}>
-                      DEFAULT ADDRESS
-                    </button>
-                  )}
-
-                  <button className={styles.editAddressCell}>Edit</button>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className={styles.mapContainer}>
-            <div className={styles.addAddressContainer}>
-              <MapAddressForm
-                onSave={(addressValues) => {
-                  this.onSaveAddress(addressValues);
+      <div>
+        <div className={styles.UserShipping}>
+          <UserHeader
+            title={UserPages.Shipping.name}
+            extraContent={
+              <SearchBar
+                placeholder={"Search of shipping address"}
+                onSearchChange={(value: string) => {
+                  console.log(value);
                 }}
               />
+            }
+          />
+          <div className={styles.pageContent}>
+            <div className={styles.addressGrid}>
+              {this.state.addresses.map((address) => {
+                return (
+                  <div className={styles.addressCell} key={address.id}>
+                    <div className={styles.addressMapCell} />
+                    <div className={styles.addressInfo}>
+                      <div className={styles.addressNickName}>
+                        {address.nickname}
+                      </div>
+                      <div className={styles.addressExtraDetails}>
+                        {address.firstName + " " + address.lastName}
+                      </div>
+                      <div className={styles.addressExtraDetails}>
+                        {address.addressLine1}
+                      </div>
+                      <div className={styles.addressExtraDetails}>
+                        {address.addressLine2}
+                      </div>
+                      <div className={styles.addressExtraDetails}>
+                        {address.city +
+                          ", " +
+                          address.state +
+                          " " +
+                          address.zipcode}
+                      </div>
+                    </div>
+
+                    {!address.default && (
+                      <button
+                        className={styles.makeDefault}
+                        onClick={() => {
+                          this.makeDefault(address);
+                        }}
+                      >
+                        Make default
+                      </button>
+                    )}
+                    {address.default && (
+                      <button className={styles.defaultAddress}>
+                        DEFAULT ADDRESS
+                      </button>
+                    )}
+
+                    <button
+                      className={styles.editAddressCell}
+                      onClick={this.onEditClicked}
+                    >
+                      Edit
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className={styles.mapContainer}>
+              <div className={styles.addAddressContainer}>
+                <MapAddressForm
+                  onSave={(addressValues) => {
+                    this.onSaveAddress(addressValues);
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
+
+        <div
+          id={"modalId"}
+          className={cn(styles.modalBackground, {
+            [styles.visible]: this.state.editMode,
+          })}
+          onClick={this.onModalBackgroundClicked}
+        ></div>
       </div>
     );
   }
@@ -170,8 +206,46 @@ export default class UserShipping extends React.Component<Props, State> {
       this.setState({
         addresses: newAddresses,
       });
+    } else {
+      this.state.addresses.push(address);
+      this.setState({
+        addresses: this.state.addresses,
+      });
     }
+  };
 
-    console.log(address);
+  makeDefault = (defaultAddress: Address) => {
+    const newAddresses = this.state.addresses.map((address) => {
+      address.default = false;
+      if (address.id === defaultAddress.id) {
+        address.default = true;
+      }
+      return address;
+    });
+    this.setState({
+      addresses: newAddresses,
+    });
+  };
+
+  onEditClicked = () => {
+    this.setState({
+      editMode: true,
+    });
+    this.disableWindowsScroll();
+  };
+
+  onModalBackgroundClicked = () => {
+    this.setState({
+      editMode: false,
+    });
+    this.enableWindowScroll();
+  };
+
+  disableWindowsScroll = () => {
+    disableBodyScroll(this.targetElement);
+  };
+
+  enableWindowScroll = () => {
+    enableBodyScroll(this.targetElement);
   };
 }

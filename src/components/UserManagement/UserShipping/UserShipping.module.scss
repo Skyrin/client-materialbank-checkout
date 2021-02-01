@@ -2,6 +2,7 @@
 
 .UserShipping {
   padding: 62px 100px 162px;
+  overflow: hidden;
 }
 
 .pageContent {
@@ -10,7 +11,7 @@
 
 .addressGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(calc(max(400px, 25%)), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(calc(max(350px, 25%)), 1fr));
   grid-template-rows: auto;
   grid-column-gap: 20px;
   grid-row-gap: 20px;
@@ -68,6 +69,7 @@
   margin-right: auto;
   letter-spacing: 1px;
   color: $brown-color;
+  cursor: auto;
 }
 
 .editAddressCell {
@@ -90,4 +92,18 @@
   height: max-content;
   margin: $margin-small-4;
   padding: $margin-medium $margin-medium-4;
+}
+
+.modalBackground {
+  display: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(black, 0.5);
+
+  &.visible {
+    display: block;
+    position: fixed;
+  }
 }

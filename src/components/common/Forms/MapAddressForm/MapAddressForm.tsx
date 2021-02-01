@@ -230,6 +230,8 @@ export default class MapAddressForm extends React.Component<Props, State> {
   saveClicked = () => {
     if (this.validateAddress()) {
       this.props.onSave(this.state.values);
+    } else {
+      console.log(this.state.errors);
     }
   };
 
