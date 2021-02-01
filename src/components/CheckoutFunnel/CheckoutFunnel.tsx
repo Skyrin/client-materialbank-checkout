@@ -27,10 +27,6 @@ export default class CheckoutFunnel extends React.Component<Props> {
   static contextType = AppContext;
   context!: AppContextState;
 
-  componentDidMount() {
-    this.context.requestCartInfo("z4rbRA0MOXpTXZARWJQCbSO2f9rF0U68");
-  }
-
   render() {
     return (
       <React.Fragment>

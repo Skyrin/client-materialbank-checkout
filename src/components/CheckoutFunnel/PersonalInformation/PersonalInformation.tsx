@@ -5,8 +5,11 @@ import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PersonalInformation.module.scss";
 import cn from "classnames";
-import { MAIN_SHOP_URL, PAYMENT_URL } from "constants/urls";
-import paypalLogo from "assets/images/paypal_logo.svg";
+import {
+  MAIN_SHOP_URL,
+  ORDER_CONFIRMATION_URL,
+  PAYMENT_URL,
+} from "constants/urls";
 import applePayLogo from "assets/images/apple_pay_logo.svg";
 import Input from "components/common/Input/Input";
 import * as yup from "yup";
@@ -21,9 +24,14 @@ import { isOnMobile } from "utils/responsive";
 import RadioButton from "components/common/RadioButton/RadioButton";
 import { AppContext, AppContextState } from "../../../context/AppContext";
 import { isEqual, get } from "lodash-es";
-import { CreateCustomerInput, CustomerAddressInput } from "context/CustomerAPI";
+import {
+  CreateCustomerInput,
+  CustomerAddressInput,
+} from "context/CustomerAPI/models";
 import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
+import { graphqlRequest } from "GraphqlClient";
+import { PaymentOption } from "../PaymentInformation/PaymentInformation";
 
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
@@ -31,16 +39,18 @@ const contactInfoSchema = yup.object().shape({
   email: yup.string().email().required("Required"),
   password: yup
     .string()
-    .required("Required")
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
       "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character"
-    ),
+    )
+    .required("Required"),
   confirmPassword: yup
     .string()
     .required("Required")
     .oneOf([yup.ref("password")], "Passwords don't match"),
 });
+
+declare var paypal: any;
 
 type Props = RouteComponentProps;
 
@@ -61,6 +71,11 @@ type State = {
   };
   selectedShippingAddressId: number;
   shippingAddress: AddressFormValuesT;
+  paypalExpressInfo: {
+    token: string;
+    payer_id: string;
+  };
+  isSubmitting: boolean;
 };
 
 export class PersonalInformation extends React.Component<Props, State> {
@@ -90,6 +105,11 @@ export class PersonalInformation extends React.Component<Props, State> {
         ? this.getDefaultSelectedShippingAddressId(context)
         : -1,
       shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
+      paypalExpressInfo: {
+        token: "",
+        payer_id: "",
+      },
+      isSubmitting: false,
     };
   }
 
@@ -129,6 +149,18 @@ export class PersonalInformation extends React.Component<Props, State> {
 
   componentDidMount() {
     scrollToTop();
+
+    console.log(paypal);
+    paypal
+      .Buttons({
+        fundingSource: paypal.FUNDING.PAYPAL,
+        style: {
+          height: 40,
+        },
+        createOrder: this.createPaypalToken,
+        onApprove: this.handlePaypalTransactionApprove,
+      })
+      .render("#paypal-express");
   }
 
   shouldComponentUpdate = (nextProps: Props, nextState: State) => {
@@ -168,19 +200,111 @@ export class PersonalInformation extends React.Component<Props, State> {
     }
   };
 
+  createPaypalToken = async () => {
+    const CreatePaypalTokenMutation = `
+      mutation createPaypalExpressToken($input: PaypalExpressTokenInput!) {
+        createPaypalExpressToken(input: $input) {
+          token
+          paypal_urls {
+            edit
+            start
+          }
+        }
+      }
+    `;
+    const variables = {
+      input: {
+        cart_id: this.context.cart.id,
+        code: "paypal_express",
+        express_button: true,
+        urls: {
+          cancel_url: "checkout/information/paypal-cancelled",
+          return_url: "checkout/information/paypal-success",
+        },
+      },
+    };
+
+    // Request Paypal Express Token from Magento and pass it to the Paypal SDK
+    const response = await graphqlRequest(
+      this.context,
+      CreatePaypalTokenMutation,
+      variables
+    );
+    console.log(response);
+    return response["createPaypalExpressToken"]["token"];
+  };
+
+  handlePaypalTransactionApprove = async (data, actions) => {
+    console.log("DATA", data);
+    // Get order details from Paypal
+    // It contains info about the customer and the selected shipping address
+    const order = await actions.order.get(data.orderID);
+    console.log("ORDER", order);
+
+    // Extract customer + shipping address info from order
+    const shippingAddress = get(
+      order,
+      "purchase_units[0].shipping.address",
+      {}
+    );
+    const shippingContact = get(
+      order,
+      "purchase_units[0].shipping.name.full_name",
+      ""
+    );
+    const customer = get(order, "payer");
+    const [shippingFirstName, shippingLastName] = shippingContact.split(" ");
+
+    // If user is logged in, save only the paypal tokens as we already have the customer info + shipping
+    this.setState({
+      // Save paypal tokens so we can set the payment method on submit
+      paypalExpressInfo: {
+        token: data.orderID,
+        payer_id: data.payerID,
+      },
+    });
+
+    // If it's a guest user, pre-fill available info as well
+    if (!this.context.isLoggedIn) {
+      this.setState(
+        {
+          ...this.state,
+          // Pre-fill the Create Account form with customer info
+          createAccount: {
+            ...this.state.createAccount,
+            firstname: customer.name.given_name,
+            lastname: customer.name.surname,
+            email: customer.email_address,
+          },
+        },
+        () => {
+          // Update shipping address form after setting state
+          this.validateContactInfo();
+          this.shippingAddressForm.updateValues(
+            {
+              ...this.state.shippingAddress,
+              firstName: shippingFirstName,
+              lastName: shippingLastName,
+              city: shippingAddress.admin_area_2,
+              region: shippingAddress.admin_area_1,
+              address: shippingAddress.address_line_1,
+              aptNumber: shippingAddress.address_line_2 || "",
+              zipCode: shippingAddress.postal_code,
+            },
+            true
+          );
+        }
+      );
+    }
+  };
+
   renderExpressCheckoutSection = () => {
     return (
       <React.Fragment>
         <div className={styles.section}>
           <h3 className={styles.expressCheckoutSubtitle}>Express Checkout</h3>
           <div className={styles.expressCheckoutOptions}>
-            <div className={cn(styles.expressCheckoutOption, styles.paypal)}>
-              <img
-                src={paypalLogo}
-                alt="PayPal"
-                className={styles.expressCheckoutLogo}
-              />
-            </div>
+            <div id="paypal-express" className={styles.expressCheckoutOption} />
             <div className={cn(styles.expressCheckoutOption, styles.applePay)}>
               <img
                 src={applePayLogo}
@@ -248,7 +372,7 @@ export class PersonalInformation extends React.Component<Props, State> {
         </span>
         <div className={styles.userName}>{name}</div>
         <div className={styles.userEmail}>{this.context.customer?.email}</div>
-        {this.context.customerLoading && (
+        {(this.context.customerLoading || this.state.isSubmitting) && (
           <Loader
             containerClassName={styles.loaderContainer}
             loaderClassName={styles.loader}
@@ -424,7 +548,7 @@ export class PersonalInformation extends React.Component<Props, State> {
             this.shippingAddressForm = ref;
           }}
         />
-        {this.context.customerLoading && (
+        {(this.context.customerLoading || this.state.isSubmitting) && (
           <Loader
             containerClassName={styles.loaderContainer}
             loaderClassName={styles.loader}
@@ -435,21 +559,76 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   async onSubmit() {
-    if (!this.context.isLoggedIn) {
-      const createCustomerInput = new CreateCustomerInput(
-        this.state.createAccount
-      );
-      await this.context.createCustomer(createCustomerInput);
-    }
+    this.setState({ isSubmitting: true });
+    try {
+      if (!this.context.isLoggedIn) {
+        const createCustomerInput = new CreateCustomerInput(
+          this.state.createAccount
+        );
 
-    let addressId = this.state.selectedShippingAddressId;
-    if (addressId === -1) {
-      const address = await this.createCustomerAddress();
-      addressId = address.id;
+        await this.context.createCustomer(createCustomerInput);
+        await this.context.mergeGuestCart();
+      }
+
+      let addressId = this.state.selectedShippingAddressId;
+      if (addressId === -1) {
+        const address = await this.createCustomerAddress();
+        addressId = address.id;
+      }
+      await this.context.setShippingAddress(addressId);
+
+      if (this.state.paypalExpressInfo.payer_id) {
+        // If we are going through paypal express, set the payment method as well,
+        // place the order and go to the confirmation page
+
+        // If paypal, set the billing to be same as shipping
+        await this.context.setBillingAddress(true);
+
+        await this.context.setShippingMethod();
+
+        const paymentMethodResponse = await this.context.setPaymentMethod({
+          cart_id: this.context.cart.id,
+          payment_method: {
+            code: "paypal_express",
+            paypal_express: {
+              payer_id: this.state.paypalExpressInfo.payer_id,
+              token: this.state.paypalExpressInfo.token,
+            },
+          },
+        });
+
+        this.context.setSelectedPaymentOption(PaymentOption.PayPal);
+        console.log("PAYMENT METHOD", paymentMethodResponse);
+
+        await this.context.placeOrder();
+        this.setState({ isSubmitting: false });
+        this.props.history.push(ORDER_CONFIRMATION_URL);
+        return;
+      }
+
+      this.setState({ isSubmitting: false });
+      this.props.history.push(PAYMENT_URL);
+    } catch (e) {
+      for (const err of e.graphqlErrors) {
+        if (
+          err.message.includes(
+            "A customer with the same email address already exists"
+          )
+        ) {
+          this.setState({
+            createAccountErrors: {
+              ...this.state.createAccountErrors,
+              email: "A user with the same email address already exists",
+            },
+          });
+          return;
+        }
+      }
+    } finally {
+      this.setState({
+        isSubmitting: false,
+      });
     }
-    await this.context.setShippingAddress(addressId);
-    // Show server errors if needed
-    this.props.history.push(PAYMENT_URL);
   }
 
   async createCustomerAddress() {
@@ -492,6 +671,7 @@ export class PersonalInformation extends React.Component<Props, State> {
               className={cn("button large", { "margin-top": isOnMobile() })}
               onClick={() => this.onSubmit()}
               disabled={
+                this.state.isSubmitting ||
                 (!this.context.isLoggedIn &&
                   !contactInfoSchema.isValidSync(this.state.createAccount)) ||
                 (this.state.selectedShippingAddressId === -1 &&
@@ -499,7 +679,9 @@ export class PersonalInformation extends React.Component<Props, State> {
                   !this.shippingAddressForm.isValid())
               }
             >
-              Continue to Payment
+              {this.state.paypalExpressInfo.payer_id
+                ? "Place My Order"
+                : "Continue to Payment"}
             </button>
           </div>
         </div>

@@ -16,6 +16,7 @@ import {
   expirationDateInputParser,
 } from "components/common/Input/utils";
 import RadioButton from "components/common/RadioButton/RadioButton";
+import AddressInput from "components/common/Input/AddressInput/AddressInput";
 
 type Props = RouteComponentProps;
 
@@ -103,6 +104,11 @@ export class Cart extends React.Component<Props, State> {
               <span>OPTION_B</span>
             </div>
           </div>
+          <AddressInput
+            onAddressSelected={(addr, info) => {
+              console.log(addr, info);
+            }}
+          />
           <Input
             value={this.state.debugTextInput}
             onChange={(val: string) => this.setState({ debugTextInput: val })}

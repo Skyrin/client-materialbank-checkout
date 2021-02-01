@@ -1,3 +1,4 @@
+import { AUTH_TOKEN_STORAGE_KEY } from "constants/general";
 import { AppContextState } from "context/AppContext";
 
 // Although I don't really like this approach, passing the context allows us to log the user out in case
@@ -13,7 +14,7 @@ export const graphqlRequest = async (
     process.env.REACT_APP_GRAPHQL_URL ||
     (isDev ? "/graphql" : "https://dev.design.shop/graphql");
 
-  const authToken = localStorage.getItem("token");
+  const authToken = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
   const headers: any = {
     "Content-Type": "application/json",
   };
@@ -49,7 +50,7 @@ export const graphqlRequest = async (
     ) {
       // TEMP: This is a very quick way to deal with tokens expiring.
       // TODO: Improve this.
-      context.logout();
+      await context.logout();
       window.location.reload();
       return;
     }

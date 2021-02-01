@@ -7,6 +7,10 @@ import CheckoutFunnel from "components/CheckoutFunnel/CheckoutFunnel";
 import UserManagement from "components/UserManagement/UserManagement";
 import { isOnMobile } from "utils/responsive";
 import { AppContext, AppContextState } from "context/AppContext";
+import {
+  AUTH_TOKEN_STORAGE_KEY,
+  GUEST_CART_ID_STORAGE_KEY,
+} from "constants/general";
 
 class App extends React.Component {
   static contextType = AppContext;
@@ -24,9 +28,19 @@ class App extends React.Component {
 
   async componentDidMount() {
     window.addEventListener("resize", this.resizeHandler);
-    if (localStorage.getItem("token")) {
+    if (localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)) {
       await this.context.requestCurrentCustomer();
       await this.context.requestCartInfo();
+    } else {
+      // TODO: Update this
+      const storageGuestCartId = localStorage.getItem(
+        GUEST_CART_ID_STORAGE_KEY
+      );
+      if (storageGuestCartId) {
+        await this.context.requestCartInfo(storageGuestCartId);
+      } else {
+        await this.context.createTestCart();
+      }
     }
   }
 
