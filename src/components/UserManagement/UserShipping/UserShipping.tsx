@@ -56,11 +56,12 @@ type State = {
   addresses: Address[];
   values: AddressFormValuesT;
   errors: AddressFormErrorsT;
-  editMode: boolean;
+  editingAddress: Address;
 };
 
 export default class UserShipping extends React.Component<Props, State> {
   targetElement = null;
+  addAddressForm?: MapAddressForm;
 
   componentDidMount() {
     this.targetElement = document.querySelector("#modalId");
@@ -85,7 +86,7 @@ export default class UserShipping extends React.Component<Props, State> {
         state: null,
         zipcode: null,
       },
-      editMode: false,
+      editingAddress: null,
     };
   }
 
@@ -150,7 +151,9 @@ export default class UserShipping extends React.Component<Props, State> {
 
                     <button
                       className={styles.editAddressCell}
-                      onClick={this.onEditClicked}
+                      onClick={() => {
+                        this.onEditClicked(address);
+                      }}
                     >
                       Edit
                     </button>
@@ -162,8 +165,11 @@ export default class UserShipping extends React.Component<Props, State> {
             <div className={styles.mapContainer}>
               <div className={styles.addAddressContainer}>
                 <MapAddressForm
+                  componentRef={(ref) => {
+                    this.addAddressForm = ref;
+                  }}
                   onSave={(addressValues) => {
-                    this.onSaveAddress(addressValues);
+                    this.onSaveAddress(addressValues, null);
                   }}
                 />
               </div>
@@ -174,7 +180,7 @@ export default class UserShipping extends React.Component<Props, State> {
         <div
           id={"modalId"}
           className={cn(styles.modalBackground, {
-            [styles.visible]: this.state.editMode,
+            [styles.visible]: this.state.editingAddress,
           })}
           onClick={(event) => {
             // @ts-ignore
@@ -184,14 +190,22 @@ export default class UserShipping extends React.Component<Props, State> {
           }}
         >
           <div className={styles.modalContent}>
-            <div className={cn("far fa-times", styles.closeModal)}></div>
+            <div
+              className={cn("far fa-times", styles.closeModal)}
+              onClick={() => {
+                this.onModalBackgroundClicked();
+              }}
+            />
             <div className={cn(styles.mapContainer, styles.inModal)}>
               <div className={styles.addAddressContainer}>
-                <MapAddressForm
-                  onSave={(addressValues) => {
-                    this.onSaveAddress(addressValues);
-                  }}
-                />
+                {this.state.editingAddress && (
+                  <MapAddressForm
+                    editAddress={this.state.editingAddress}
+                    onSave={(addressValues, addressId) => {
+                      this.onSaveAddress(addressValues, addressId);
+                    }}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -200,9 +214,9 @@ export default class UserShipping extends React.Component<Props, State> {
     );
   }
 
-  onSaveAddress = (addressValues: AddressFormValuesT) => {
-    const address = new Address({
-      id: Math.random(),
+  onSaveAddress = (addressValues: AddressFormValuesT, addressId: string) => {
+    const newAddress = new Address({
+      id: addressId || Math.random(),
       nickname: addressValues.nickname,
       firstName: addressValues.firstName,
       lastName: addressValues.lastName,
@@ -214,21 +228,46 @@ export default class UserShipping extends React.Component<Props, State> {
       default: addressValues.default,
     });
 
-    if (address.default) {
+    if (newAddress.default) {
       const newAddresses = this.state.addresses.map((address) => {
         address.default = false;
+
+        if (address.id === addressId) {
+          address = newAddress;
+        }
+
         return address;
       });
-      newAddresses.push(address);
+
+      if (!addressId) {
+        newAddresses.push(newAddress);
+      }
       this.setState({
         addresses: newAddresses,
       });
     } else {
-      this.state.addresses.push(address);
-      this.setState({
-        addresses: this.state.addresses,
-      });
+      if (!addressId) {
+        this.state.addresses.push(newAddress);
+        this.setState({
+          addresses: this.state.addresses,
+        });
+      } else {
+        this.setState({
+          addresses: this.state.addresses.map((address) => {
+            if (address.id === addressId) {
+              address = newAddress;
+            }
+            return address;
+          }),
+        });
+      }
     }
+
+    this.setState({
+      editingAddress: null,
+    });
+    this.enableWindowScroll();
+    this.addAddressForm.resetForm();
   };
 
   makeDefault = (defaultAddress: Address) => {
@@ -241,16 +280,16 @@ export default class UserShipping extends React.Component<Props, State> {
     });
   };
 
-  onEditClicked = () => {
+  onEditClicked = (address: Address) => {
     this.setState({
-      editMode: true,
+      editingAddress: address,
     });
     this.disableWindowsScroll();
   };
 
   onModalBackgroundClicked = () => {
     this.setState({
-      editMode: false,
+      editingAddress: null,
     });
     this.enableWindowScroll();
   };

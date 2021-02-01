@@ -8,7 +8,7 @@ import { extractErrors } from "utils/forms";
 import Select from "react-dropdown-select";
 import usaStates from "models/usaStates.json";
 import styled from "@emotion/styled";
-import { useState } from "react";
+import Address from "models/Address";
 
 const addAddressSchema = yup.object().shape({
   nickname: yup.string().required("Required"),
@@ -57,20 +57,40 @@ export type AddressFormErrorsT = {
 };
 
 type Props = {
+  editAddress?: Address;
   initialValues?: AddressFormValuesT;
-  onSave?: (addressValues: AddressFormValuesT) => void;
+  componentRef?: (ref: MapAddressForm) => void;
+  onSave?: (addressValues: AddressFormValuesT, addressId?: string) => void;
 };
 
 type State = {
   values: AddressFormValuesT;
   errors: AddressFormErrorsT;
+  editMode: boolean;
 };
 
 export default class MapAddressForm extends React.Component<Props, State> {
   constructor(props) {
     super(props);
+    let initialValues: AddressFormValuesT = DEFAULT_ADDRESS_VALUES;
+
+    if (props.editAddress) {
+      initialValues = {
+        nickname: props.editAddress.nickname,
+        firstName: props.editAddress.firstName,
+        lastName: props.editAddress.lastName,
+        addressLine1: props.editAddress.addressLine1,
+        addressLine2: props.editAddress.addressLine2,
+        city: props.editAddress.city,
+        state: props.editAddress.state,
+        zipcode: props.editAddress.state,
+        default: props.editAddress.default,
+      };
+    }
+
     this.state = {
-      values: props.initialValues || DEFAULT_ADDRESS_VALUES,
+      values: initialValues,
+      editMode: !!this.props.initialValues,
       errors: {
         nickname: null,
         firstName: null,
@@ -82,12 +102,19 @@ export default class MapAddressForm extends React.Component<Props, State> {
         zipcode: null,
       },
     };
+
+    if (props.componentRef) {
+      props.componentRef(this);
+    }
   }
 
   render() {
     return (
       <div>
-        <div className={styles.title}>Add a New Address</div>
+        <div className={styles.title}>
+          {this.props.editAddress && "Edit Address"}
+          {!this.props.editAddress && "Add a New Address"}
+        </div>
         <div className={styles.addressForm}>
           <div className={styles.nickname}>
             <div className={styles.inputHint}>Nickname</div>
@@ -207,7 +234,8 @@ export default class MapAddressForm extends React.Component<Props, State> {
             className={styles.addAddressButton}
             onClick={this.saveClicked}
           >
-            Add Address
+            {this.props.editAddress && "Save"}
+            {!this.props.editAddress && "Add Address"}
           </button>
         </div>
       </div>
@@ -229,7 +257,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
 
   saveClicked = () => {
     if (this.validateAddress()) {
-      this.props.onSave(this.state.values);
+      this.props.onSave(this.state.values, this.props?.editAddress?.id);
     } else {
       console.log(this.state.errors);
     }
@@ -251,6 +279,12 @@ export default class MapAddressForm extends React.Component<Props, State> {
       });
       return false;
     }
+  };
+
+  resetForm = () => {
+    this.setState({
+      values: DEFAULT_ADDRESS_VALUES,
+    });
   };
 }
 
