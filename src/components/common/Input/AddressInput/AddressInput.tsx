@@ -14,7 +14,7 @@ type Props = {
 
 type Suggestion = {
   text: string;
-  id: string;
+  extra: any;
 };
 
 type State = {
@@ -50,10 +50,6 @@ export default class AddressInput extends React.Component<Props, State> {
     this.autocompleteClient = SmartyStreetsSDK.core.buildClient.usAutocompletePro(
       credentials
     );
-    const response = await this.autocompleteClient.send(
-      new AutocompleteProLookup("rd")
-    );
-    console.log(response);
   }
 
   handleChange = (newVal: string) => {
@@ -162,23 +158,21 @@ export default class AddressInput extends React.Component<Props, State> {
     }
   };
 
-  fetchSuggestions = () => {
+  fetchSuggestions = async () => {
     const input = this.state.inputValue;
     if (!input) {
       return;
     }
 
     console.log("SHOULD FETCH", input);
-    const suggestions = [
-      {
-        text: "Suggestion 1",
-        id: "1234",
-      },
-      {
-        text: "Suggestion 2",
-        id: "2345",
-      },
-    ];
+    const response = await this.autocompleteClient.send(
+      new AutocompleteProLookup(input)
+    );
+    console.log("RESPONSE", response);
+    const suggestions = response.result.map((res) => ({
+      text: `${res.streetLine} ${res.secondary}, ${res.city} ${res.state}`,
+      extra: res,
+    }));
     this.setState({
       suggestions: suggestions,
     });
@@ -207,7 +201,7 @@ export default class AddressInput extends React.Component<Props, State> {
           <div className={styles.suggestions}>
             {this.state.suggestions.map((s, index) => (
               <div
-                key={s.id}
+                key={s.text}
                 className={cn(styles.suggestion, {
                   [styles.selected]:
                     index === this.state.selectedSuggestionIndex,
