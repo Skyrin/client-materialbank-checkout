@@ -92,12 +92,15 @@ export default class AddressInput extends React.Component<Props, State> {
     if (index >= 0 && index < this.state.suggestions.length) {
       const selectedAddress = this.state.suggestions[index];
       this.setState({
-        inputValue: selectedAddress.text,
+        inputValue: selectedAddress.extra.streetLine,
         selectedSuggestionIndex: -1,
         suggestions: [],
-        initialValue: selectedAddress.text,
+        initialValue: selectedAddress.extra.streetLine,
       });
-      this.props.onAddressSelected(selectedAddress.text, {});
+      this.props.onAddressSelected(
+        selectedAddress.extra.streetLine,
+        selectedAddress.extra
+      );
       window.removeEventListener("keydown", this.handleKeyDown);
     }
   };
@@ -170,7 +173,7 @@ export default class AddressInput extends React.Component<Props, State> {
     );
     console.log("RESPONSE", response);
     const suggestions = response.result.map((res) => ({
-      text: `${res.streetLine} ${res.secondary}, ${res.city} ${res.state}`,
+      text: `${res.streetLine} ${res.secondary}, ${res.city}, ${res.state}`,
       extra: res,
     }));
     this.setState({
