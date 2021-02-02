@@ -201,6 +201,7 @@ export default class UserShipping extends React.Component<Props, State> {
                 {this.state.editingAddress && (
                   <MapAddressForm
                     editAddress={this.state.editingAddress}
+                    onCancelEdit={this.cancelEditAddress}
                     onSave={(addressValues, addressId) => {
                       this.onSaveAddress(addressValues, addressId);
                     }}
@@ -263,10 +264,7 @@ export default class UserShipping extends React.Component<Props, State> {
       }
     }
 
-    this.setState({
-      editingAddress: null,
-    });
-    this.enableWindowScroll();
+    this.closeModal();
     this.addAddressForm.resetForm();
   };
 
@@ -288,10 +286,18 @@ export default class UserShipping extends React.Component<Props, State> {
   };
 
   onModalBackgroundClicked = () => {
+    this.closeModal();
+  };
+
+  closeModal = () => {
     this.setState({
       editingAddress: null,
     });
     this.enableWindowScroll();
+  };
+
+  cancelEditAddress = () => {
+    this.closeModal();
   };
 
   disableWindowsScroll = () => {

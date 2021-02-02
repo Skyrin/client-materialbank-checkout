@@ -15,7 +15,6 @@ const addAddressSchema = yup.object().shape({
   firstName: yup.string().required("Required"),
   lastName: yup.string().required("Required"),
   addressLine1: yup.string().required("Required"),
-  addressLine2: yup.string().required("Required"),
   city: yup.string().required("Required"),
   state: yup.string().required("Required"),
   zipcode: yup.string().required("Required"),
@@ -60,6 +59,7 @@ type Props = {
   editAddress?: Address;
   initialValues?: AddressFormValuesT;
   componentRef?: (ref: MapAddressForm) => void;
+  onCancelEdit?: () => void;
   onSave?: (addressValues: AddressFormValuesT, addressId?: string) => void;
 };
 
@@ -83,7 +83,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
         addressLine2: props.editAddress.addressLine2,
         city: props.editAddress.city,
         state: props.editAddress.state,
-        zipcode: props.editAddress.state,
+        zipcode: props.editAddress.zipcode,
         default: props.editAddress.default,
       };
     }
@@ -192,12 +192,17 @@ export default class MapAddressForm extends React.Component<Props, State> {
             <div className={styles.inputHint}>State</div>
             <StyledSelect
               options={usaStates}
-              values={[usaStates[0]]}
+              values={usaStates.filter((state) => {
+                return state.abbreviation === this.state.values.state;
+              })}
               labelField="abbreviation"
               valueField="abbreviation"
               dropdownPosition="auto"
               className={styles.dropDownStyle}
-              onChange={(value) => this.updateFieldForm("state", value)}
+              onChange={(value) => {
+                // @ts-ignore
+                this.updateFieldForm("state", value[0].abbreviation);
+              }}
             />
           </div>
 
@@ -229,7 +234,12 @@ export default class MapAddressForm extends React.Component<Props, State> {
           </div>
         </div>
         <div className="row full-width center-vertically center-horizontally margin-top">
-          <button className={styles.cancelAddAddress}>Cancel</button>
+          <button
+            className={styles.cancelAddAddress}
+            onClick={this.cancelClicked}
+          >
+            Cancel
+          </button>
           <button
             className={styles.addAddressButton}
             onClick={this.saveClicked}
@@ -256,10 +266,16 @@ export default class MapAddressForm extends React.Component<Props, State> {
   };
 
   saveClicked = () => {
+    console.log(this.state.values);
     if (this.validateAddress()) {
       this.props.onSave(this.state.values, this.props?.editAddress?.id);
-    } else {
-      console.log(this.state.errors);
+    }
+  };
+
+  cancelClicked = () => {
+    this.resetForm();
+    if (this.props.editAddress) {
+      this.props.onCancelEdit();
     }
   };
 
@@ -271,6 +287,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
       return true;
     } catch (e) {
       const errors = extractErrors(e);
+      console.log(errors);
       this.setState({
         errors: {
           ...this.state.errors,
