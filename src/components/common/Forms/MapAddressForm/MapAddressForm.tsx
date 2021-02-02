@@ -266,7 +266,6 @@ export default class MapAddressForm extends React.Component<Props, State> {
   };
 
   saveClicked = () => {
-    console.log(this.state.values);
     if (this.validateAddress()) {
       this.props.onSave(this.state.values, this.props?.editAddress?.id);
     }
@@ -287,7 +286,6 @@ export default class MapAddressForm extends React.Component<Props, State> {
       return true;
     } catch (e) {
       const errors = extractErrors(e);
-      console.log(errors);
       this.setState({
         errors: {
           ...this.state.errors,
