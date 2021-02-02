@@ -84,6 +84,22 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
+@mixin labelButton {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  color: $primary-color-user;
+  transition: color 0.15s $ease-in-out;
+  padding: $margin-small-3;
+
+  &:hover {
+    color: lighten($primary-color-user, 30%);
+  }
+
+  &:active {
+    color: lighten($primary-color-user, 50%);
+  }
+}
+
 @mixin grayText {
   color: $primary-color-60-user;
   font-size: var(--font-size-md);

@@ -1,0 +1,82 @@
+@import "styles/variablesscss";
+
+.title {
+  color: $primary-color-user;
+  font-size: var(--font-size-xxl);
+  font-weight: var(--font-weight-medium);
+}
+
+.addressForm {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: auto;
+  row-gap: $margin-small-3;
+  column-gap: $margin-small-2;
+  grid-template-areas:
+    "nickname nickname"
+    "firstName lastName"
+    "address1 address1"
+    "address2 address2"
+    "city city"
+    "state zipcode"
+    "defaultAddress defaultAddress";
+
+  .nickname {
+    grid-area: nickname;
+    margin-top: $margin-small-3;
+  }
+
+  .firstName {
+    grid-area: firstName;
+  }
+
+  .lastName {
+    grid-area: lastName;
+  }
+
+  .address1 {
+    grid-area: address1;
+  }
+
+  .address2 {
+    grid-area: address2;
+  }
+
+  .city {
+    grid-area: city;
+  }
+
+  .state {
+    grid-area: state;
+  }
+
+  .zipcode {
+    grid-area: zipcode;
+  }
+
+  .defaultAddress {
+    grid-area: defaultAddress;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: $primary-color-user;
+
+    .defaultAddressHint {
+      margin-left: $margin-small-2;
+    }
+  }
+
+  .inputHint {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: $primary-color-user;
+    margin-bottom: $margin-small;
+  }
+}
+
+.cancelAddAddress {
+  @include labelButton;
+}
+
+.addAddressButton {
+  @include blackButton;
+}
