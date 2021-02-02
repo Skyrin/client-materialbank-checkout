@@ -7,7 +7,7 @@ import {
   USER_SHIPPING_URL,
 } from "constants/urls";
 import * as React from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Link, Redirect, Route, Switch } from "react-router-dom";
 import UserAccount from "./UserAccount/UserAccount";
 import UserBilling from "./UserBilling/UserBilling";
 import styles from "./UserManagement.module.scss";
@@ -18,6 +18,9 @@ export default function UserManagement() {
   return (
     <React.Fragment>
       <div className={styles.pageContent}>
+        <Link className={styles.pageHeader} to="/">
+          design.shop
+        </Link>
         <div className={styles.pageWrapper}>
           <Switch>
             <Redirect

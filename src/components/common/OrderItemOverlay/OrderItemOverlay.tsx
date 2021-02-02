@@ -22,9 +22,12 @@ export function OrderItemOverlay(props: Props) {
           <div className={cn(styles["title"], "font-weight-medium")}>
             Where to buy {item.brand} {item.model} in {item.color}
           </div>
-          <div className={cn(styles["price"], "font-size-sm")}>
-            {item.currency}
-            {item.pricePerArea} / {item.areaMeasurementUnit}
+          <div className="row center-vertically margin-top-half">
+            <div className={styles.priceIndicator}>$$$$$</div>
+            <div className={cn(styles["price"], "font-size-sm")}>
+              {item.currency}
+              {item.pricePerArea} / {item.areaMeasurementUnit}
+            </div>
           </div>
         </div>
       </div>
@@ -56,7 +59,9 @@ export function OrderItemOverlay(props: Props) {
           onClick={props.addToCart(item)}
         >
           <div>
-            <i className="far fa-cart-arrow-down" />
+            <i
+              className={cn("far", "fa-cart-arrow-down", styles.addCartIcon)}
+            />
             <span className={cn(styles["button-text"])}>
               Add sample to cart
             </span>

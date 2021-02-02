@@ -69,7 +69,7 @@ export class HistoryOrder extends React.Component<Props, State> {
           <div className={cn(styles["right-container"], styles["container"])}>
             <a href={order.helpUrl}>Get help with this order</a>
             <div className={cn(styles["light-text"], styles["order-number"])}>
-              {order.orderNumber}
+              Order {order.orderNumber}
             </div>
           </div>
         </div>

@@ -1,3 +1,5 @@
+@import "styles/variablesscss";
+
 .OrderItemOverlay {
   background-color: white;
   padding: 40px 0;
@@ -41,8 +43,15 @@
     padding-top: 5px;
   }
 
+  .priceIndicator {
+    background: $warm-gray-color;
+    border-radius: 20px;
+    font-size: var(--font-size-sm);
+    padding: $margin-small $margin-small-2;
+  }
+
   .price {
-    margin-top: var(--vertical-spacing-half);
+    margin-left: $margin-small-2;
   }
 }
 
@@ -105,7 +114,8 @@
   padding: 0 var(--horizontal-spacing-normal);
   width: 240px;
   margin-top: var(--vertical-spacing-half);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
 
   &:hover {
     background-color: rgba(var(--primary-color-rgb), 0.05);
@@ -117,5 +127,12 @@
 
   .button-text {
     margin-left: var(--vertical-spacing-quarter);
+    font-size: var(--font-size-sm);
+    margin-bottom: $margin-small;
+  }
+
+  .addCartIcon {
+    font-size: var(--font-size-sm);
+    margin-bottom: $margin-small;
   }
 }

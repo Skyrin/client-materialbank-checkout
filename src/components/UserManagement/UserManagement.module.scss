@@ -1,7 +1,18 @@
+@import "styles/variablesscss";
 .pageContent {
   display: flex;
   flex-grow: 1;
+  flex-direction: column;
   font-family: "IBM Plex Sans", sans-serif;
+
+  .pageHeader {
+    border-bottom: 1px solid $primary-color-user;
+    padding: $margin-small-4 $margin-huge-5 $margin-small-4;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-xxl);
+    color: $primary-color-user;
+    text-decoration: none;
+  }
 
   .pageWrapper {
     flex-grow: 1;
