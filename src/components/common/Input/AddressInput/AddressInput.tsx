@@ -36,7 +36,10 @@ const EMPTY_ADDRESS = {
 };
 
 export default class AddressInput extends React.Component<Props, State> {
-  autocompleteClient!: SmartyStreetsSDK.core.Client<SmartyStreetsSDK.usAutocompletePro.Lookup>;
+  autocompleteClient!: SmartyStreetsSDK.core.Client<
+    SmartyStreetsSDK.usAutocompletePro.Lookup,
+    SmartyStreetsSDK.usAutocompletePro.Lookup
+  >;
 
   constructor(props: Props) {
     super(props);

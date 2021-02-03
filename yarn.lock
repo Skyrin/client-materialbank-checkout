@@ -1908,9 +1908,9 @@
   integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
 
 "@types/node@*":
-  version "14.14.13"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.13.tgz#9e425079799322113ae8477297ae6ef51b8e0cdf"
-  integrity sha512-vbxr0VZ8exFMMAjCW8rJwaya0dMCDyYW2ZRdTyjtrCvJoENMpdUHOT/eTzvgyA5ZnqRZ/sI0NwqAxNHKYokLJQ==
+  version "14.14.22"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.22.tgz#0d29f382472c4ccf3bd96ff0ce47daf5b7b84b18"
+  integrity sha512-g+f/qj/cNcqKkc3tFqlXOYjrmZA+jNBiDzbP3kH+B+otKFqAdPgVTGP1IeKRdMml/aE69as5S4FqtxAbl+LaMw==
 
 "@types/node@^12.0.0":
   version "12.19.9"
@@ -2008,9 +2008,9 @@
     "@types/node" "*"
 
 "@types/smartystreets-javascript-sdk@^1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@types/smartystreets-javascript-sdk/-/smartystreets-javascript-sdk-1.5.3.tgz#28555fbfbec1fb7f394fe08b63d5ae2f63b8c2e4"
-  integrity sha512-JUTnnj+RO1efcm9AmkhJ+E20ixh3IBdr80sTb1f0EOtlD96e0TeHwdXOiUs77btEptB/GJKIj4k0B8bgeR1ilQ==
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@types/smartystreets-javascript-sdk/-/smartystreets-javascript-sdk-1.6.0.tgz#6704417ea4616c664c3e8de2a2a807807aeb4f1e"
+  integrity sha512-6i6tZVJwcdfBMwWfWRc+GNGCY6MV6PoWYVbpuV4oT92KPTP3TdZCnUB1YFY/Qv0C4sAVFOoLIn+WGqJ5b7W/Bg==
   dependencies:
     "@types/express" "*"
 
