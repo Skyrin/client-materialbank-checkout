@@ -393,7 +393,7 @@ export class PersonalInformation extends React.Component<Props, State> {
               className={styles.loginLink}
               onClick={() => {
                 // Hardcoded for now, so we don't create a ton of accounts unless we want to test the register
-                this.context.login("test@example.com", "StrongPassword1");
+                this.context.login("test@materialbank.com", "Password1");
               }}
             >
               Log In
