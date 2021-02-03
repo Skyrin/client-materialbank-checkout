@@ -1,3 +1,5 @@
+import { REGION_IDS } from "constants/regions";
+
 export class CustomerAddressInput {
   city: string;
   company: string;
@@ -6,7 +8,8 @@ export class CustomerAddressInput {
   lastname: string;
   postcode: string;
   region: {
-    region_id: number;
+    region_code?: string;
+    region_id?: number;
   };
   telephone: string;
   street: string[];
@@ -21,6 +24,7 @@ export class CustomerAddressInput {
     lastname: undefined,
     postcode: undefined,
     region_id: 43,
+    region_code: "NY",
     telephone: undefined,
     street: undefined,
   };
@@ -39,7 +43,10 @@ export class CustomerAddressInput {
     this.postcode =
       obj?.postcode || obj?.zipCode || CustomerAddressInput.defaults.postcode;
     this.region = {
-      region_id: obj?.region_id || CustomerAddressInput.defaults.region_id,
+      region_id: obj?.region
+        ? REGION_IDS[obj?.region]
+        : CustomerAddressInput.defaults.region_id,
+      region_code: obj?.region || CustomerAddressInput.defaults.region_code,
     };
     this.telephone =
       obj?.telephone || obj?.phone || CustomerAddressInput.defaults.telephone;
@@ -49,9 +56,11 @@ export class CustomerAddressInput {
     }
 
     // TEMPORARY OVERRIDES SO THAT WE HAVE A VALID ADDRESS
-    this.city = CustomerAddressInput.defaults.city;
-    this.region.region_id = CustomerAddressInput.defaults.region_id;
-    this.postcode = "10001";
+    if (!obj?.region) {
+      this.city = CustomerAddressInput.defaults.city;
+      this.region.region_id = CustomerAddressInput.defaults.region_id;
+      this.postcode = "10001";
+    }
   }
 }
 

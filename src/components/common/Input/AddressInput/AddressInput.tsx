@@ -9,7 +9,8 @@ type Props = {
   initialValue?: string;
   placeholder?: string;
   componentRef?: Function;
-  onAddressSelected?: (addressText: string, addressInfo: any) => void;
+  onAddressSelected?: (addressInfo: any) => void;
+  className?: string;
 };
 
 type Suggestion = {
@@ -27,6 +28,13 @@ type State = {
 
 const AutocompleteProLookup = SmartyStreetsSDK.usAutocompletePro.Lookup;
 
+const EMPTY_ADDRESS = {
+  address: "",
+  city: "",
+  region: "",
+  zipCode: "",
+};
+
 export default class AddressInput extends React.Component<Props, State> {
   autocompleteClient!: SmartyStreetsSDK.core.Client<SmartyStreetsSDK.usAutocompletePro.Lookup>;
 
@@ -43,7 +51,6 @@ export default class AddressInput extends React.Component<Props, State> {
 
   async componentDidMount() {
     this.props.componentRef && this.props.componentRef(this);
-    console.log(SmartyStreetsSDK);
     const credentials = new SmartyStreetsSDK.core.SharedCredentials(
       process.env.REACT_APP_SMARTYSTREETS_CLIENT_KEY || "30500088655303291"
     );
@@ -60,7 +67,7 @@ export default class AddressInput extends React.Component<Props, State> {
     });
     if (!newVal) {
       // Allow the user to clear the address
-      this.props.onAddressSelected("", {});
+      this.props.onAddressSelected(EMPTY_ADDRESS);
     }
     this.debouncedFetchSuggestions();
   };
@@ -88,6 +95,15 @@ export default class AddressInput extends React.Component<Props, State> {
     }
   };
 
+  translateExtraInfo = (extra: any) => {
+    return {
+      address: extra.streetLine,
+      city: extra.city,
+      region: extra.state,
+      zipCode: extra.zipcode,
+    };
+  };
+
   confirmSelection = (index: number) => {
     if (index >= 0 && index < this.state.suggestions.length) {
       const selectedAddress = this.state.suggestions[index];
@@ -98,8 +114,7 @@ export default class AddressInput extends React.Component<Props, State> {
         initialValue: selectedAddress.extra.streetLine,
       });
       this.props.onAddressSelected(
-        selectedAddress.extra.streetLine,
-        selectedAddress.extra
+        this.translateExtraInfo(selectedAddress.extra)
       );
       window.removeEventListener("keydown", this.handleKeyDown);
     }
@@ -188,7 +203,7 @@ export default class AddressInput extends React.Component<Props, State> {
 
   render() {
     return (
-      <div className={styles.addressInputWrapper}>
+      <div className={cn(styles.addressInputWrapper, this.props.className)}>
         <Input
           className={cn(styles.input, {
             [styles.hasSuggestions]: this.state.suggestions.length > 0,

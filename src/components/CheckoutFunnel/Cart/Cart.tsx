@@ -16,7 +16,7 @@ import {
   expirationDateInputParser,
 } from "components/common/Input/utils";
 import RadioButton from "components/common/RadioButton/RadioButton";
-import AddressInput from "components/common/Input/AddressInput/AddressInput";
+import AddressForm from "components/common/Forms/AddressForm/AddressForm";
 
 type Props = RouteComponentProps;
 
@@ -104,9 +104,10 @@ export class Cart extends React.Component<Props, State> {
               <span>OPTION_B</span>
             </div>
           </div>
-          <AddressInput
-            onAddressSelected={(addr, info) => {
-              console.log(addr, info);
+          <AddressForm
+            withAutocomplete
+            onChange={(addr) => {
+              console.log("ADDRESS CHANGED", addr);
             }}
           />
           <Input

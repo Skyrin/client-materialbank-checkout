@@ -609,19 +609,22 @@ export class PersonalInformation extends React.Component<Props, State> {
       this.setState({ isSubmitting: false });
       this.props.history.push(PAYMENT_URL);
     } catch (e) {
-      for (const err of e.graphqlErrors) {
-        if (
-          err.message.includes(
-            "A customer with the same email address already exists"
-          )
-        ) {
-          this.setState({
-            createAccountErrors: {
-              ...this.state.createAccountErrors,
-              email: "A user with the same email address already exists",
-            },
-          });
-          return;
+      console.log("CAUGHT HERE");
+      if (e.graphqlErrors) {
+        for (const err of e.graphqlErrors) {
+          if (
+            err.message.includes(
+              "A customer with the same email address already exists"
+            )
+          ) {
+            this.setState({
+              createAccountErrors: {
+                ...this.state.createAccountErrors,
+                email: "A user with the same email address already exists",
+              },
+            });
+            return;
+          }
         }
       }
     } finally {
