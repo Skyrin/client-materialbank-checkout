@@ -63,13 +63,17 @@ export class HistoryOrder extends React.Component<Props, State> {
               className={cn(styles["status-dot"], styles[statusClassName])}
             />
             <div className={cn(styles["status-text"])}>{order.status}</div>
-            <a href={order.trackingUrl}>Track package</a>
+            <a className={styles.label} href={order.trackingUrl}>
+              Track package
+            </a>
           </div>
 
           <div className={cn(styles["right-container"], styles["container"])}>
-            <a href={order.helpUrl}>Get help with this order</a>
+            <a className={styles.label} href={order.helpUrl}>
+              Get help with this order
+            </a>
             <div className={cn(styles["light-text"], styles["order-number"])}>
-              {order.orderNumber}
+              Order {order.orderNumber}
             </div>
           </div>
         </div>
