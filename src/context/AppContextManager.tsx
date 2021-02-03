@@ -226,12 +226,17 @@ export default class AppContextManager extends React.Component<Props> {
     createCustomerAddress: async (address: CustomerAddressInput) => {
       this.contextState.customerLoading = true;
       this.forceUpdate();
-      const createdAddress = await createCustomerAddress(
-        this.getFullContext(),
-        address
-      );
-      await this.actions.requestCurrentCustomer();
-      return createdAddress;
+      try {
+        const createdAddress = await createCustomerAddress(
+          this.getFullContext(),
+          address
+        );
+        return createdAddress;
+      } catch (e) {
+        throw e;
+      } finally {
+        await this.actions.requestCurrentCustomer();
+      }
     },
 
     setSelectedPaymentOption: (newValue: PaymentOption) => {

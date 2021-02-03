@@ -5,6 +5,7 @@ import { extractErrors } from "utils/forms";
 import * as yup from "yup";
 import styles from "./AddressForm.module.scss";
 import cn from "classnames";
+import AddressInput from "components/common/Input/AddressInput/AddressInput";
 
 export type AddressFormValuesT = {
   firstName: string;
@@ -61,6 +62,7 @@ type Props = {
   listClassName?: string;
   inputClassName?: string;
   visible?: boolean;
+  withAutocomplete?: boolean;
 };
 
 type State = {
@@ -225,18 +227,28 @@ export default class AddressForm extends React.Component<Props, State> {
             gridTemplateColumns: "6.5fr 3.5fr",
           }}
         >
-          <Input
-            className={cn(styles.input, this.props.inputClassName)}
-            placeholder="Address*"
-            value={this.state.values.address}
-            onChange={(val: string) => {
-              this.updateField("address", val);
-            }}
-            onBlur={() => {
-              this.validateField("address");
-            }}
-            error={this.state.errors.address}
-          />
+          {this.props.withAutocomplete ? (
+            <AddressInput
+              className={cn(styles.input, this.props.inputClassName)}
+              placeholder="Address*"
+              onAddressSelected={(addressInfo) => {
+                this.updateValues(addressInfo);
+              }}
+            />
+          ) : (
+            <Input
+              className={cn(styles.input, this.props.inputClassName)}
+              placeholder="Address*"
+              value={this.state.values.address}
+              onChange={(val: string) => {
+                this.updateField("address", val);
+              }}
+              onBlur={() => {
+                this.validateField("address");
+              }}
+              error={this.state.errors.address}
+            />
+          )}
           <Input
             className={cn(styles.input, this.props.inputClassName)}
             placeholder="Apt # / Suite"
@@ -266,7 +278,9 @@ export default class AddressForm extends React.Component<Props, State> {
             inputMode="numeric"
           />
           <span className={styles.zipCodeDescription}>
-            Enter Zip Code for City & State
+            {this.state.values.city
+              ? `${this.state.values.city}, ${this.state.values.region}`
+              : "Enter Zip Code for City & State"}
           </span>
         </div>
         <Input
