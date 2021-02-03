@@ -230,6 +230,7 @@ export default class AddressForm extends React.Component<Props, State> {
           {this.props.withAutocomplete ? (
             <AddressInput
               className={cn(styles.input, this.props.inputClassName)}
+              placeholder="Address*"
               onAddressSelected={(addressInfo) => {
                 this.updateValues(addressInfo);
               }}

@@ -609,7 +609,6 @@ export class PersonalInformation extends React.Component<Props, State> {
       this.setState({ isSubmitting: false });
       this.props.history.push(PAYMENT_URL);
     } catch (e) {
-      console.log("CAUGHT HERE");
       if (e.graphqlErrors) {
         for (const err of e.graphqlErrors) {
           if (
