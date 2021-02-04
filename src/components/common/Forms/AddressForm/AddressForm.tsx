@@ -78,6 +78,8 @@ export default class AddressForm extends React.Component<Props, State> {
     visible: true,
   };
 
+  addressInputRef: AddressInput;
+
   constructor(props: Props) {
     super(props);
 
@@ -133,6 +135,11 @@ export default class AddressForm extends React.Component<Props, State> {
         }
       }
     );
+    if (values.address && this.props.withAutocomplete && this.addressInputRef) {
+      // Since the AddressInput is an uncontrolled component, we need to force-update
+      // the displayed address in case we receive it from the outside (i.e. Paypal)
+      this.addressInputRef.updateValue(values.address);
+    }
   };
 
   processErrors = (e: any) => {
@@ -229,6 +236,9 @@ export default class AddressForm extends React.Component<Props, State> {
         >
           {this.props.withAutocomplete ? (
             <AddressInput
+              componentRef={(input) => {
+                this.addressInputRef = input;
+              }}
               className={cn(styles.input, this.props.inputClassName)}
               placeholder="Address*"
               onAddressSelected={(addressInfo) => {

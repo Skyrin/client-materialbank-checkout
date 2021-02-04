@@ -77,7 +77,7 @@ export default class AddressInput extends React.Component<Props, State> {
 
   // To be used from the outside through componentRef
   updateValue = (newVal: string) => {
-    console.log("UPDATE VALUE", newVal);
+    this.setState({ inputValue: newVal });
   };
 
   selectSuggestion = (index: number) => {
