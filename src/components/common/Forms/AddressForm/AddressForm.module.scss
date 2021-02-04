@@ -15,6 +15,7 @@
     max-height: 500px;
     opacity: 1;
     margin-top: var(--vertical-spacing-half);
+    overflow: visible;
 
     @include mobile-media {
       margin-top: $margin-small-3;

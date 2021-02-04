@@ -186,9 +186,9 @@ export default class AddressInput extends React.Component<Props, State> {
     }
 
     console.log("SHOULD FETCH", input);
-    const response = await this.autocompleteClient.send(
-      new AutocompleteProLookup(input)
-    );
+    const lookup = new AutocompleteProLookup(input);
+    lookup.maxResults = 5;
+    const response = await this.autocompleteClient.send(lookup);
     console.log("RESPONSE", response);
     const suggestions = response.result.map((res) => ({
       text: `${res.streetLine} ${res.secondary}, ${res.city}, ${res.state}`,
