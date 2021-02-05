@@ -31,6 +31,14 @@ class App extends React.Component {
     if (localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)) {
       await this.context.requestCurrentCustomer();
       await this.context.requestCartInfo();
+
+      // TODO: Remove this once the storefront will have support for logged-in customers
+      const storageGuestCartId = localStorage.getItem(
+        GUEST_CART_ID_STORAGE_KEY
+      );
+      if (storageGuestCartId) {
+        await this.context.mergeGuestCart();
+      }
     } else {
       const storageGuestCartId = localStorage.getItem(
         GUEST_CART_ID_STORAGE_KEY

@@ -123,9 +123,6 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.customer = {};
       this.contextState.cart = {};
       this.forceUpdate();
-      const newTestCart = await this.actions.createTestCart();
-      await this.actions.updateCart(newTestCart);
-      this.forceUpdate();
     },
 
     createCustomer: async (customer: CreateCustomerInput) => {
