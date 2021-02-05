@@ -116,6 +116,11 @@ export default class AppContextManager extends React.Component<Props> {
       }
     },
 
+    openLoginModal: (shouldOpen: boolean) => {
+      this.contextState.setInternalLoginModalOpen(shouldOpen);
+      this.forceUpdate();
+    },
+
     logout: async () => {
       // TODO: Figure out what else we might need to do here
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
