@@ -11,7 +11,6 @@ import {
   expirationDateInputFormatter,
   expirationDateInputParser,
 } from "components/common/Input/utils";
-import CreditCardForm from "components/common/Forms/CreditCardForm/CreditCardForm";
 
 const editCreditCardSchema = yup.object().shape({
   creditCardNumber: yup.string().required("Required"),
