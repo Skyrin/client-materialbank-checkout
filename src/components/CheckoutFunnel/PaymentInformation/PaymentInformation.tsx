@@ -7,6 +7,7 @@ import styles from "./PaymentInformation.module.scss";
 import cn from "classnames";
 import {
   CART_URL,
+  goToStorefront,
   ORDER_CONFIRMATION_URL,
   PERSONAL_INFORMATION_URL,
 } from "constants/urls";
@@ -451,13 +452,15 @@ export class PaymentInformation extends React.Component<Props, State> {
             </button>
           )}
 
-          <Link
-            to={CART_URL}
+          <div
             className={cn("link-button", { "margin-top": isOnMobile() })}
+            onClick={() => {
+              goToStorefront(CART_URL);
+            }}
           >
             <i className="far fa-long-arrow-left" />
             Return to cart
-          </Link>
+          </div>
 
           {!isOnMobile() && (
             <button

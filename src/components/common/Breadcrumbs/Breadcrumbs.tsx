@@ -8,6 +8,7 @@ import {
 import styles from "./Breadcrumbs.module.scss";
 import cn from "classnames";
 import { findIndex } from "lodash-es";
+import { CART_URL, goToStorefront } from "constants/urls";
 
 type StepT = {
   url: string;
@@ -43,6 +44,14 @@ export function Breadcrumbs(props: Props) {
             exact
             tabIndex={index >= activeIndex ? -1 : 0}
             activeClassName={styles.active}
+            onClick={(e) => {
+              if (step.url === CART_URL) {
+                e.preventDefault();
+                e.stopPropagation();
+                // In order to go to the cart page, we want to make the browser refresh the storefront
+                goToStorefront(CART_URL);
+              }
+            }}
           >
             {step.name}
           </NavLink>
