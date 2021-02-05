@@ -3,7 +3,8 @@ export const USER_MANAGEMENT_URL = "/user";
 export const MAIN_SHOP_URL = "/"; // Note: This won't work locally
 
 // Checkout funnel URLs
-export const CART_URL = `${CHECKOUT_FUNNEL_URL}/cart`;
+export const CART_URL = `/cart`;
+export const CHECKOUT_DEBUG_URL = `${CHECKOUT_FUNNEL_URL}/debug`; // Used as a debug page
 export const PERSONAL_INFORMATION_URL = `${CHECKOUT_FUNNEL_URL}/information`;
 export const PAYMENT_URL = `${CHECKOUT_FUNNEL_URL}/payment`;
 export const ORDER_CONFIRMATION_URL = `${CHECKOUT_FUNNEL_URL}/confirmation`;

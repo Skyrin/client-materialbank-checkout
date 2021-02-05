@@ -45,6 +45,7 @@ export default class UserBilling extends React.Component<Props, State> {
                   <div className={styles.paymentRow}>
                     <img
                       src={this.getCreditCardIcon(paymentMethod)}
+                      alt=""
                       className={styles.creditCardIcon}
                     />
                     <div className={styles.creditCardNumber}>
@@ -212,11 +213,12 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   makeDefault(index: number) {
-    const paymentMethods = this.state.paymentMethods;
+    let paymentMethods = this.state.paymentMethods;
 
-    paymentMethods.map((paymentMethod) => {
-      paymentMethod.isDefault = false;
-    });
+    paymentMethods = paymentMethods.map((paymentMethod) => ({
+      ...paymentMethod,
+      isDefault: false,
+    }));
     paymentMethods[index].isDefault = true;
     this.setState({
       paymentMethods: paymentMethods,
