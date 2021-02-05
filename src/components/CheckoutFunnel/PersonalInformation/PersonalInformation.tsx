@@ -2,10 +2,15 @@ import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import Logo from "components/common/Logo/Logo";
 import { BREADCRUMBS_STEPS } from "constants/general";
 import * as React from "react";
-import { Link, RouteComponentProps, withRouter } from "react-router-dom";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PersonalInformation.module.scss";
 import cn from "classnames";
-import { CART_URL, ORDER_CONFIRMATION_URL, PAYMENT_URL } from "constants/urls";
+import {
+  CART_URL,
+  goToStorefront,
+  ORDER_CONFIRMATION_URL,
+  PAYMENT_URL,
+} from "constants/urls";
 import applePayLogo from "assets/images/apple_pay_logo.svg";
 import Input from "components/common/Input/Input";
 import * as yup from "yup";
@@ -659,13 +664,15 @@ export class PersonalInformation extends React.Component<Props, State> {
           {isOnMobile() && <div className={cn("horizontal-divider")} />}
 
           <div className={styles.navigationContainer}>
-            <Link
-              to={CART_URL}
+            <div
               className={cn("link-button", { "margin-top": isOnMobile() })}
+              onClick={() => {
+                goToStorefront(CART_URL);
+              }}
             >
               <i className="far fa-long-arrow-left" />
               Return to cart
-            </Link>
+            </div>
             <button
               className={cn("button large", { "margin-top": isOnMobile() })}
               onClick={() => this.onSubmit()}
