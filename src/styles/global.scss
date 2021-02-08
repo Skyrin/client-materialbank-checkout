@@ -196,6 +196,7 @@ button {
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-medium);
   transition: color 0.05s linear;
+  cursor: pointer;
 
   @include mobile-media {
     font-size: var(--font-size-md);

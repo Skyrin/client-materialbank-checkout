@@ -1,6 +1,6 @@
 import Footer from "components/common/Footer/Footer";
 import {
-  CART_URL,
+  CHECKOUT_DEBUG_URL,
   CHECKOUT_FUNNEL_URL,
   ORDER_CONFIRMATION_URL,
   PAYMENT_URL,
@@ -40,7 +40,7 @@ export default class CheckoutFunnel extends React.Component<Props> {
                 from={CHECKOUT_FUNNEL_URL}
                 to={PERSONAL_INFORMATION_URL}
               />
-              <Route path={CART_URL} component={Cart} />
+              <Route path={CHECKOUT_DEBUG_URL} component={Cart} />
               <Route
                 path={PERSONAL_INFORMATION_URL}
                 component={PersonalInformation}
