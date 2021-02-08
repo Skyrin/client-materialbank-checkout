@@ -28,7 +28,7 @@ import AddressForm, {
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
 import PromoCode from "components/common/PromoCode/PromoCode";
-import { AppContext, AppContextState } from "context/AppContext";
+import { AppContext, AppContextState } from "../../../context/AppContext";
 import { CartAddressInput } from "context/CheckoutAPI/models";
 import visaCardIcon from "assets/images/visa-card.png";
 import { isEqual, get } from "lodash-es";
