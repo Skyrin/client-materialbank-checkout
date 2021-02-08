@@ -113,6 +113,8 @@ export default class AppContextManager extends React.Component<Props> {
         const customer = await this.actions.requestCurrentCustomer();
         await this.actions.requestCartInfo();
         return customer;
+      } else {
+        console.log("error ");
       }
     },
 

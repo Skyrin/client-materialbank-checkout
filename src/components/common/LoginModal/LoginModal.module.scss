@@ -33,6 +33,7 @@ $element-width: 375px;
 }
 
 .modalBox {
+  position: relative;
   overflow: hidden;
   width: 500px;
   height: auto;
@@ -52,8 +53,8 @@ $element-width: 375px;
   height: 24px;
   border-radius: 12px;
   margin-left: auto;
-  margin-top: $margin-small;
-  margin-right: $margin-small;
+  margin-top: $margin-small-2;
+  margin-right: $margin-small-2;
   cursor: pointer;
   transition: background-color 0.15s $ease-in-out;
 
@@ -193,4 +194,40 @@ $element-width: 375px;
 .register {
   @include blueLabelButton;
   margin-left: $margin-small;
+}
+
+.loaderContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(white, 0.7);
+
+  .loader {
+    font-size: 40px;
+  }
+}
+
+.loginAlert {
+  position: relative;
+  width: 100%;
+  background-color: $red-color-warning-background;
+  border: 1px solid $red-color-warning-border;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: $margin-small-2;
+  color: $red-color;
+  padding: $margin-small-2 $margin-small;
+  font-size: var(--font-size-md);
+
+  .errorIcon {
+    width: 16px;
+    height: 16px;
+    color: $red-color;
+    position: absolute;
+    left: $margin-small-2;
+  }
 }

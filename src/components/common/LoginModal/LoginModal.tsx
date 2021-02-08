@@ -6,6 +6,20 @@ import { AppContext, AppContextState } from "context/AppContext";
 import Input from "components/common/Input/Input";
 import { RouteComponentProps } from "react-router-dom";
 import Checkbox from "components/common/Checkbox/Checkbox";
+import { extractErrors } from "utils/forms";
+import * as yup from "yup";
+import Loader from "components/common/Loader/Loader";
+
+const loginSchema = yup.object().shape({
+  email: yup.string().email("Email must be valid.").required("Required"),
+  password: yup
+    .string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character."
+    )
+    .required("Required"),
+});
 
 type State = {
   login: {
@@ -13,6 +27,9 @@ type State = {
     password: string;
   };
   rememberMe: boolean;
+  showPassword: boolean;
+  isLoading: boolean;
+  loggingNetworkError: boolean;
   loginErrors: {
     email: string | null;
     password: string | null;
@@ -35,6 +52,9 @@ export class LoginModal extends React.Component<any, State> {
         password: "",
       },
       rememberMe: false,
+      showPassword: false,
+      isLoading: false,
+      loggingNetworkError: false,
       loginErrors: {
         email: null,
         password: null,
@@ -56,7 +76,6 @@ export class LoginModal extends React.Component<any, State> {
   };
 
   closeLoginModal = () => {
-    console.log("closing login modal");
     this.context.openLoginModal(false);
   };
 
@@ -81,7 +100,7 @@ export class LoginModal extends React.Component<any, State> {
         }}
       >
         <div id={"loginContentId"} className={styles.modalBox}>
-          <div className={styles.closeButton} />
+          <div className={styles.closeButton} onClick={this.closeLoginModal} />
           <div className={styles.modalContent}>
             <div className={styles.title}>Sign In</div>
 
@@ -106,6 +125,19 @@ export class LoginModal extends React.Component<any, State> {
               <div className="horizontal-divider" />
             </div>
 
+            {this.state.loggingNetworkError && (
+              <div className={styles.loginAlert}>
+                <i
+                  className={cn(
+                    "fas",
+                    "fa-exclamation-triangle",
+                    styles.errorIcon
+                  )}
+                />
+                We can't find an account with this email address.
+              </div>
+            )}
+
             <Input
               className={styles.inputField}
               placeholder="Email"
@@ -118,7 +150,7 @@ export class LoginModal extends React.Component<any, State> {
             <Input
               className={styles.inputField}
               placeholder="Password"
-              type="password"
+              type={this.state.showPassword ? undefined : "password"}
               value={this.state.login.password}
               onChange={(val: string) => {
                 this.updateField("password", val);
@@ -135,10 +167,18 @@ export class LoginModal extends React.Component<any, State> {
                 <div className={styles.rememberMeHint}>Remember me</div>
               </div>
 
-              <div className={styles.showPassword}>Show password</div>
+              <div
+                className={styles.showPassword}
+                onClick={this.showPasswordClick}
+              >
+                {!this.state.showPassword && "Show password"}
+                {this.state.showPassword && "Hide password"}
+              </div>
             </div>
 
-            <button className={styles.signInButton}>Sign In</button>
+            <button className={styles.signInButton} onClick={this.signInClick}>
+              Sign In
+            </button>
             <button className={styles.forgotPassword}>Forgot Password?</button>
             <div className="horizontal-divider margin-top" />
             <div className="row center-horizontally margin-top">
@@ -146,6 +186,13 @@ export class LoginModal extends React.Component<any, State> {
               <button className={styles.register}>Register</button>
             </div>
           </div>
+
+          {this.state.isLoading && (
+            <Loader
+              containerClassName={styles.loaderContainer}
+              loaderClassName={styles.loader}
+            />
+          )}
         </div>
       </div>
     );
@@ -162,6 +209,55 @@ export class LoginModal extends React.Component<any, State> {
         [fieldName]: null,
       },
     });
+  };
+
+  signInClick = () => {
+    this.setState({
+      loggingNetworkError: false,
+    });
+    if (this.validateLoginForm()) {
+      this.setState({
+        isLoading: true,
+      });
+      this.context
+        .login(this.state.login.email, this.state.login.password)
+        .then(() => {
+          this.setState({
+            isLoading: false,
+          });
+          this.closeLoginModal();
+        })
+        .catch(() => {
+          this.setState({
+            isLoading: false,
+            loggingNetworkError: true,
+          });
+        });
+    }
+  };
+
+  showPasswordClick = () => {
+    this.setState({
+      showPassword: !this.state.showPassword,
+    });
+  };
+
+  validateLoginForm = () => {
+    try {
+      loginSchema.validateSync(this.state.login, {
+        abortEarly: false,
+      });
+      return true;
+    } catch (e) {
+      const errors = extractErrors(e);
+      this.setState({
+        loginErrors: {
+          ...this.state.loginErrors,
+          ...errors,
+        },
+      });
+      return false;
+    }
   };
 
   rememberMeClick = () => {
