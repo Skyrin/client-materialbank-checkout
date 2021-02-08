@@ -2,12 +2,11 @@ import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import Logo from "components/common/Logo/Logo";
 import { BREADCRUMBS_STEPS } from "constants/general";
 import * as React from "react";
-import { RouteComponentProps, withRouter } from "react-router-dom";
+import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PersonalInformation.module.scss";
 import cn from "classnames";
 import {
-  CART_URL,
-  goToStorefront,
+  MAIN_SHOP_URL,
   ORDER_CONFIRMATION_URL,
   PAYMENT_URL,
 } from "constants/urls";
@@ -395,7 +394,6 @@ export class PersonalInformation extends React.Component<Props, State> {
               onClick={() => {
                 // Hardcoded for now, so we don't create a ton of accounts unless we want to test the register
                 // this.context.login("test@example.com", "StrongPassword1");
-
                 this.context.openLoginModal(true);
               }}
             >
@@ -538,7 +536,6 @@ export class PersonalInformation extends React.Component<Props, State> {
           </div>
         )}
         <AddressForm
-          withAutocomplete
           visible={
             this.state.selectedShippingAddressId === -1 ||
             !this.context.isLoggedIn
@@ -613,21 +610,19 @@ export class PersonalInformation extends React.Component<Props, State> {
       this.setState({ isSubmitting: false });
       this.props.history.push(PAYMENT_URL);
     } catch (e) {
-      if (e.graphqlErrors) {
-        for (const err of e.graphqlErrors) {
-          if (
-            err.message.includes(
-              "A customer with the same email address already exists"
-            )
-          ) {
-            this.setState({
-              createAccountErrors: {
-                ...this.state.createAccountErrors,
-                email: "A user with the same email address already exists",
-              },
-            });
-            return;
-          }
+      for (const err of e.graphqlErrors) {
+        if (
+          err.message.includes(
+            "A customer with the same email address already exists"
+          )
+        ) {
+          this.setState({
+            createAccountErrors: {
+              ...this.state.createAccountErrors,
+              email: "A user with the same email address already exists",
+            },
+          });
+          return;
         }
       }
     } finally {
@@ -666,15 +661,13 @@ export class PersonalInformation extends React.Component<Props, State> {
           {isOnMobile() && <div className={cn("horizontal-divider")} />}
 
           <div className={styles.navigationContainer}>
-            <div
+            <Link
+              to={MAIN_SHOP_URL} // TODO: Update this to CART_URL
               className={cn("link-button", { "margin-top": isOnMobile() })}
-              onClick={() => {
-                goToStorefront(CART_URL);
-              }}
             >
               <i className="far fa-long-arrow-left" />
               Return to cart
-            </div>
+            </Link>
             <button
               className={cn("button large", { "margin-top": isOnMobile() })}
               onClick={() => this.onSubmit()}
