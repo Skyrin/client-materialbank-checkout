@@ -11,6 +11,15 @@ import { extractErrors } from "utils/forms";
 import * as yup from "yup";
 import styles from "./CreditCardForm.module.scss";
 import cn from "classnames";
+import {
+  Stripe,
+  StripeElements,
+  StripeCardNumberElement,
+  StripeCardExpiryElement,
+  StripeCardCvcElement,
+  loadStripe,
+} from "@stripe/stripe-js";
+import { isOnMobile } from "utils/responsive";
 
 export type CreditCardFormValuesT = {
   creditCardNumber: string;
@@ -51,14 +60,24 @@ type Props = {
   listClassName?: string;
   inputClassName?: string;
   visible?: boolean;
+  useStripe?: boolean;
 };
 
 type State = {
   values: CreditCardFormValuesT;
   errors: CreditCardFormErrorsT;
+  stripeNumberComplete: boolean;
+  stripeExpiryComplete: boolean;
+  stripeCVCComplete: boolean;
 };
 
 export default class CreditCardForm extends React.Component<Props, State> {
+  stripe: Stripe;
+  elements: StripeElements;
+  cardNumber: StripeCardNumberElement;
+  cardExpiry: StripeCardExpiryElement;
+  cardCVC: StripeCardCvcElement;
+
   constructor(props: Props) {
     super(props);
 
@@ -70,12 +89,76 @@ export default class CreditCardForm extends React.Component<Props, State> {
         cardDate: null,
         cardCVV: null,
       },
+      stripeNumberComplete: false,
+      stripeExpiryComplete: false,
+      stripeCVCComplete: false,
     };
 
     if (props.componentRef) {
       // Can be used to call functions from outside the component.
       // i.e. triggering a full validation, or checking status of validations.
       props.componentRef(this);
+    }
+  }
+
+  async componentDidMount() {
+    if (this.props.useStripe) {
+      this.stripe = await loadStripe(
+        "pk_test_51I1F3fCnVrIUZxgWfN53yuaDE2trsJ1rFx7g1Nj44m3SMaCdKPuK1q7fm2IaBMnk0pB2lJsy4q0b2EP1NgiUcUaS00wwKh2Q54"
+      );
+      this.elements = this.stripe.elements({
+        fonts: [
+          {
+            cssSrc:
+              "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap",
+          },
+        ],
+      });
+
+      const defaultStyle = {
+        fontSize: isOnMobile() ? "12px" : "14px",
+        fontSmoothing: "antialiased",
+        lineHeight: isOnMobile() ? "1.5" : undefined,
+      };
+
+      this.cardNumber = this.elements.create("cardNumber", {
+        classes: {
+          base: cn(styles.cardNumberArea, styles.input),
+          invalid: styles.hasError,
+        },
+        style: { base: defaultStyle },
+        placeholder: "Card Number",
+        showIcon: true,
+      });
+      this.cardNumber.mount("#stripe-card-number");
+      this.cardExpiry = this.elements.create("cardExpiry", {
+        classes: {
+          base: cn(styles.expirationArea, styles.input),
+          invalid: styles.hasError,
+        },
+        style: { base: defaultStyle },
+        placeholder: "Expiration (MM/YR)",
+      });
+      this.cardExpiry.mount("#stripe-card-expiration");
+      this.cardCVC = this.elements.create("cardCvc", {
+        classes: {
+          base: cn(styles.cvvArea, styles.input),
+          invalid: styles.hasError,
+        },
+        style: { base: defaultStyle },
+        placeholder: "CVV",
+      });
+      this.cardCVC.mount("#stripe-card-cvc");
+
+      this.cardNumber.on("change", (e) => {
+        this.setState({ stripeNumberComplete: e.complete });
+      });
+      this.cardExpiry.on("change", (e) => {
+        this.setState({ stripeExpiryComplete: e.complete });
+      });
+      this.cardCVC.on("change", (e) => {
+        this.setState({ stripeCVCComplete: e.complete });
+      });
     }
   }
 
@@ -109,6 +192,10 @@ export default class CreditCardForm extends React.Component<Props, State> {
 
   validateForm = () => {
     try {
+      if (this.props.useStripe) {
+        this.validateField("creditCardName");
+        return;
+      }
       const schema = this.getSchema();
       schema.validateSync(this.state.values, {
         abortEarly: false,
@@ -124,6 +211,17 @@ export default class CreditCardForm extends React.Component<Props, State> {
 
   isValid = () => {
     const schema = this.getSchema();
+    if (this.props.useStripe) {
+      const nameOnCard = yup
+        .reach(schema, "creditCardName", undefined, undefined)
+        .isValidSync(this.state.values.creditCardName);
+      return (
+        nameOnCard &&
+        this.state.stripeNumberComplete &&
+        this.state.stripeExpiryComplete &&
+        this.state.stripeCVCComplete
+      );
+    }
     return schema.isValidSync(this.state.values);
   };
 
@@ -138,7 +236,48 @@ export default class CreditCardForm extends React.Component<Props, State> {
     }
   };
 
+  createStripeToken = async () => {
+    const { token, error } = await this.stripe.createToken(this.cardNumber, {
+      name: this.state.values.creditCardName,
+      address_country: "US",
+    });
+    console.log(token);
+    console.log(error);
+    return token;
+  };
+
+  renderStripe = () => {
+    return (
+      <div
+        id="stripe-card"
+        className={cn(styles.creditCardArea, this.props.listClassName, {
+          [styles.visible]: this.props.visible === true,
+        })}
+      >
+        <div id="stripe-card-number" />
+        <div id="stripe-card-expiration" />
+        <div id="stripe-card-cvc" />
+        <Input
+          className={styles.cardNameArea}
+          value={this.state.values.creditCardName}
+          onChange={(val: string) => {
+            this.updateField("creditCardName", val);
+          }}
+          onBlur={() => {
+            this.validateField("creditCardName");
+          }}
+          error={this.state.errors.creditCardName}
+          placeholder="Name On Card"
+        />
+      </div>
+    );
+  };
+
   render() {
+    if (this.props.useStripe) {
+      return this.renderStripe();
+    }
+
     return (
       <div
         className={cn(styles.creditCardArea, this.props.listClassName, {

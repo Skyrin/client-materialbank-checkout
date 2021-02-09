@@ -11,6 +11,7 @@ import {
   AUTH_TOKEN_STORAGE_KEY,
   GUEST_CART_ID_STORAGE_KEY,
 } from "constants/general";
+import "@stripe/stripe-js"; // Import Stripe.js at startup
 
 class App extends React.Component {
   static contextType = AppContext;

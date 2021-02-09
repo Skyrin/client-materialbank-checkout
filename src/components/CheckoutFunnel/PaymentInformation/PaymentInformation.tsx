@@ -34,6 +34,7 @@ import visaCardIcon from "assets/images/visa-card.png";
 import { isEqual, get } from "lodash-es";
 import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
+import { RESTRequest } from "RestClient";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -113,9 +114,36 @@ export class PaymentInformation extends React.Component<Props, State> {
 
   async onSubmit() {
     await this.setBillingAddress();
-    // TODO: handle contact
+    await this.context.setShippingMethod();
     // TODO: handle payment
     // TODO: handle checkout before redirect to confirmation page
+    if (this.state.paymentOption === PaymentOption.CreditCard) {
+      const tokenResponse = await this.creditCardForm.createStripeToken();
+      const token = tokenResponse.id;
+      console.log("GOT TOKEN", token);
+
+      const response = await RESTRequest(
+        "POST",
+        "carts/mine/set-payment-information",
+        {
+          paymentMethod: {
+            method: "stripe_payments",
+            additional_data: {
+              cc_save: false,
+              cc_stripejs_token: token,
+            },
+          },
+        }
+      );
+      const respBody = await response.json();
+      console.log("RESPONSE", response);
+      console.log("RESP BODY", respBody);
+      if (response.ok && respBody) {
+        await this.context.placeOrder();
+        this.props.history.push(ORDER_CONFIRMATION_URL);
+      }
+    }
+    return;
     this.props.history.push(ORDER_CONFIRMATION_URL);
   }
 
@@ -250,6 +278,7 @@ export class PaymentInformation extends React.Component<Props, State> {
           </div>
 
           <CreditCardForm
+            useStripe
             visible={this.state.paymentOption === PaymentOption.CreditCard}
             onChange={(newValues: CreditCardFormValuesT) => {
               this.setState({
@@ -306,6 +335,12 @@ export class PaymentInformation extends React.Component<Props, State> {
               className={styles.paymentLogoIcon}
             />
           </div>
+          {this.state.paymentOption === PaymentOption.PayPal && (
+            <div className={styles.optionText}>
+              After clicking "Place My Order", you will be redirected to PayPal
+              to complete your purchase securely.
+            </div>
+          )}
         </div>
         {this.context.customerLoading && (
           <Loader

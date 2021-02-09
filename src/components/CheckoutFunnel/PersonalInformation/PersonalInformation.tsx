@@ -536,7 +536,7 @@ export class PersonalInformation extends React.Component<Props, State> {
           </div>
         )}
         <AddressForm
-          withAutocomplete
+          // withAutocomplete
           visible={
             this.state.selectedShippingAddressId === -1 ||
             !this.context.isLoggedIn
