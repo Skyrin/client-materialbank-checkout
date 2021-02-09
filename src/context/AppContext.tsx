@@ -54,7 +54,7 @@ abstract class BaseAppContextState {
     this.internalLoginModalOpen = newValue;
   }
 
-  public isInternalLoginModelOpen() {
+  public isLoginModalOpen() {
     return this.internalLoginModalOpen;
   }
 

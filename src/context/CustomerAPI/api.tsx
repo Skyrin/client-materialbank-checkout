@@ -41,7 +41,7 @@ export const login = async (
     });
     return loginResponse["generateCustomerToken"]["token"];
   } catch (error) {
-    throw new ClientError(error, [], error);
+    throw new ClientError(error, error.graphqlErrors, error);
   }
 };
 

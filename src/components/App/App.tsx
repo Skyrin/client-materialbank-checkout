@@ -64,7 +64,7 @@ class App extends React.Component {
             <Route path={USER_MANAGEMENT_URL} component={UserManagement} />
           </Switch>
         </div>
-        {this.context.isInternalLoginModelOpen() && <LoginModal />}
+        {this.context.isLoginModalOpen() && <LoginModal />}
         {/* Hidden icons that should make the browser pre-load the webfonts for fas(FontAwesome Solid) and far(FontAwesome Regular) */}
         <i className={cn("fas fa-star", styles.hiddenIcon)} />
         <i className={cn("far fa-star", styles.hiddenIcon)} />

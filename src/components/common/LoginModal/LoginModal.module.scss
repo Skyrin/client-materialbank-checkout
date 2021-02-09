@@ -218,9 +218,10 @@ $element-width: 375px;
   flex-flow: row;
   align-items: center;
   justify-content: center;
+  text-align: center;
   border-radius: $margin-small-2;
   color: $red-color;
-  padding: $margin-small-2 $margin-small;
+  padding: $margin-small-2 $margin-small-5;
   font-size: var(--font-size-md);
 
   .errorIcon {

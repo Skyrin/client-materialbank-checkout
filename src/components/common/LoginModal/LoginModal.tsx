@@ -9,6 +9,7 @@ import Checkbox from "components/common/Checkbox/Checkbox";
 import { extractErrors } from "utils/forms";
 import * as yup from "yup";
 import Loader from "components/common/Loader/Loader";
+import { ClientError } from "GraphqlClient";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Email must be valid.").required("Required"),
@@ -29,7 +30,7 @@ type State = {
   rememberMe: boolean;
   showPassword: boolean;
   isLoading: boolean;
-  loggingNetworkError: boolean;
+  loggingNetworkError: string;
   loginErrors: {
     email: string | null;
     password: string | null;
@@ -54,7 +55,7 @@ export class LoginModal extends React.Component<any, State> {
       rememberMe: false,
       showPassword: false,
       isLoading: false,
-      loggingNetworkError: false,
+      loggingNetworkError: "",
       loginErrors: {
         email: null,
         password: null,
@@ -134,7 +135,7 @@ export class LoginModal extends React.Component<any, State> {
                     styles.errorIcon
                   )}
                 />
-                We can't find an account with this email address.
+                {this.state.loggingNetworkError}
               </div>
             )}
 
@@ -213,7 +214,7 @@ export class LoginModal extends React.Component<any, State> {
 
   signInClick = () => {
     this.setState({
-      loggingNetworkError: false,
+      loggingNetworkError: "",
     });
     if (this.validateLoginForm()) {
       this.setState({
@@ -227,10 +228,13 @@ export class LoginModal extends React.Component<any, State> {
           });
           this.closeLoginModal();
         })
-        .catch(() => {
+        .catch((error: ClientError) => {
+          let errorMessage = error.graphqlErrors[0]?.message
+            ? error.graphqlErrors[0].message
+            : error.message;
           this.setState({
             isLoading: false,
-            loggingNetworkError: true,
+            loggingNetworkError: errorMessage,
           });
         });
     }
