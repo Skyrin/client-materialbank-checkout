@@ -11,6 +11,7 @@ import {
   AUTH_TOKEN_STORAGE_KEY,
   GUEST_CART_ID_STORAGE_KEY,
 } from "constants/general";
+import { LoginModal } from "components/common/LoginModal/LoginModal";
 
 class App extends React.Component {
   static contextType = AppContext;
@@ -63,6 +64,7 @@ class App extends React.Component {
             <Route path={USER_MANAGEMENT_URL} component={UserManagement} />
           </Switch>
         </div>
+        {this.context.isLoginModalOpen() && <LoginModal />}
         {/* Hidden icons that should make the browser pre-load the webfonts for fas(FontAwesome Solid) and far(FontAwesome Regular) */}
         <i className={cn("fas fa-star", styles.hiddenIcon)} />
         <i className={cn("far fa-star", styles.hiddenIcon)} />

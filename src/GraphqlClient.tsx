@@ -35,6 +35,7 @@ export const graphqlRequest = async (
       body: requestBody,
     });
   } catch (error) {
+    console.error("Logging error:" + error);
     throw new ClientError(getErrorMessage([], error), [], error);
   }
 
@@ -54,6 +55,8 @@ export const graphqlRequest = async (
       window.location.reload();
       return;
     }
+    console.error(parsedResponse.errors);
+
     throw new ClientError(
       getErrorMessage(parsedResponse.errors),
       parsedResponse.errors,

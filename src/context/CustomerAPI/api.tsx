@@ -1,5 +1,5 @@
 import { AppContextState } from "context/AppContext";
-import { graphqlRequest } from "GraphqlClient";
+import { ClientError, graphqlRequest } from "GraphqlClient";
 import { CustomerFragment, OrderAddressFragment } from "./fragments";
 import { CreateCustomerInput, CustomerAddressInput } from "./models";
 
@@ -40,8 +40,8 @@ export const login = async (
       password: password,
     });
     return loginResponse["generateCustomerToken"]["token"];
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
   }
 };
 
