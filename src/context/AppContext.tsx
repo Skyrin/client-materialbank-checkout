@@ -14,6 +14,13 @@ import { AUTH_TOKEN_STORAGE_KEY } from "constants/general";
  * All properties must be private and accessible ONLY through getters/setters
  * Getters and setters should usually use deepClone (unless necessary otherwise)
  * */
+export enum Modals {
+  Login = "login",
+  RegisterOptions = "register-options",
+  RegisterEmail = "register-email",
+  None = "none",
+}
+
 abstract class BaseAppContextState {
   private internalCart?: CartT = {};
   private internalCartInfoLoading?: boolean = false;
@@ -24,7 +31,7 @@ abstract class BaseAppContextState {
   );
   private internalSelectedPaymentOption?: PaymentOption;
 
-  private internalLoginModalOpen?: boolean = false;
+  private modal?: Modals = Modals.None;
 
   public get cart() {
     return cloneDeep(this.internalCart);
@@ -50,12 +57,12 @@ abstract class BaseAppContextState {
     this.internalIsLoggedIn = newValue;
   }
 
-  public setInternalLoginModalOpen(newValue: boolean) {
-    this.internalLoginModalOpen = newValue;
+  public setModalOpen(newValue: Modals) {
+    this.modal = newValue;
   }
 
-  public isLoginModalOpen() {
-    return this.internalLoginModalOpen;
+  public getModalOpen() {
+    return this.modal;
   }
 
   public get customer() {
@@ -132,7 +139,7 @@ export class AppContextState extends BaseAppContextState {
 
   logout() {}
 
-  openLoginModal(shouldOpen: boolean) {}
+  openModal(modal: Modals) {}
 
   async createTestCart() {}
 

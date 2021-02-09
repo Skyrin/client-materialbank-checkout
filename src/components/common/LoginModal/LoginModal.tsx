@@ -2,7 +2,7 @@ import styles from "./LoginModal.module.scss";
 import React from "react";
 import cn from "classnames";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
-import { AppContext, AppContextState } from "context/AppContext";
+import { AppContext, AppContextState, Modals } from "context/AppContext";
 import Input from "components/common/Input/Input";
 import { RouteComponentProps } from "react-router-dom";
 import Checkbox from "components/common/Checkbox/Checkbox";
@@ -77,7 +77,7 @@ export class LoginModal extends React.Component<any, State> {
   };
 
   closeLoginModal = () => {
-    this.context.openLoginModal(false);
+    this.context.openModal(Modals.None);
   };
 
   enableWindowScroll = () => {
@@ -184,7 +184,9 @@ export class LoginModal extends React.Component<any, State> {
             <div className="horizontal-divider margin-top" />
             <div className="row center-horizontally margin-top">
               <div className={styles.registerHint}>Don't have an account?</div>
-              <button className={styles.register}>Register</button>
+              <button className={styles.register} onClick={this.registerClick}>
+                Register
+              </button>
             </div>
           </div>
 
@@ -244,6 +246,10 @@ export class LoginModal extends React.Component<any, State> {
     this.setState({
       showPassword: !this.state.showPassword,
     });
+  };
+
+  registerClick = () => {
+    this.context.openModal(Modals.RegisterOptions);
   };
 
   validateLoginForm = () => {
