@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Close</title>
+    <defs>
+        <path d="M5.1277704,-2.07168062e-16 L487.87223,2.07168062e-16 C489.655267,-1.2037061e-16 490.30184,0.185651222 490.953691,0.534265408 C491.605543,0.882879593 492.11712,1.39445674 492.465735,2.04630859 C492.814349,2.69816044 493,3.34473292 493,5.1277704 L493,574.87223 C493,576.655267 492.814349,577.30184 492.465735,577.953691 C492.11712,578.605543 491.605543,579.11712 490.953691,579.465735 C490.30184,579.814349 489.655267,580 487.87223,580 L5.1277704,580 C3.34473292,580 2.69816044,579.814349 2.04630859,579.465735 C1.39445674,579.11712 0.882879593,578.605543 0.534265408,577.953691 C0.185651222,577.30184 8.02470732e-17,576.655267 -1.38112041e-16,574.87223 L1.38112041e-16,5.1277704 C-8.02470732e-17,3.34473292 0.185651222,2.69816044 0.534265408,2.04630859 C0.882879593,1.39445674 1.39445674,0.882879593 2.04630859,0.534265408 C2.69816044,0.185651222 3.34473292,1.2037061e-16 5.1277704,-2.07168062e-16 Z" id="path-1"></path>
+        <filter x="-13.0%" y="-5.5%" width="126.0%" height="122.1%" filterUnits="objectBoundingBox" id="filter-3">
+            <feMorphology radius="8" operator="erode" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="0" dy="32" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="24" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.12 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Sign-In-/-Register-Dec-16" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="500:-Sign-In" transform="translate(-932.000000, -230.000000)">
+            <rect fill="#E6E6E6" x="0" y="0" width="1440" height="1024"></rect>
+            <g id="HOME" transform="translate(-1.000000, 0.000000)">
+                <g id="hero-background" transform="translate(0.000000, 59.000000)">
+                    <g id="Group" transform="translate(1.000000, 1.000000)" fill-rule="nonzero">
+                        <g id="Container/Sharp">
+                            <polygon id="Color" fill="#363648" opacity="0.100000001" points="0 0 1440 0 1440 460 0 460"></polygon>
+                            <polygon id="State" points="0 0 1440 0 1440 460 0 460"></polygon>
+                        </g>
+                    </g>
+                    <line x1="0.5" y1="0.426062847" x2="1441.5" y2="460.573937" id="Line" stroke-opacity="0.1" stroke="#000000" stroke-linecap="square"></line>
+                    <line x1="0.5" y1="0.426062847" x2="1441.5" y2="460.573937" id="Line" stroke-opacity="0.1" stroke="#000000" stroke-linecap="square" transform="translate(721.000000, 230.500000) scale(-1, 1) translate(-721.000000, -230.500000) "></line>
+                </g>
+                <rect id="SCRIM" fill-opacity="0.7" fill="#000000" x="1" y="0" width="1440" height="1024"></rect>
+            </g>
+            <g id="sign-in" transform="translate(473.000000, 220.000000)">
+                <g id="Box">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g fill-rule="nonzero">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-1"></use>
+                        <use fill="#FFFFFF" xlink:href="#path-1"></use>
+                    </g>
+                </g>
+                <g id="Group" transform="translate(459.000000, 10.000000)" fill-rule="nonzero">
+                    <g id="Close">
+                        <g id="Shape">
+                            <rect id="Shadow" x="0" y="0" width="24" height="24" rx="12"></rect>
+                            <path d="M12,0 C18.627417,-1.21743675e-15 24,5.372583 24,12 C24,18.627417 18.627417,24 12,24 C5.372583,24 8.11624501e-16,18.627417 0,12 C-8.11624501e-16,5.372583 5.372583,1.21743675e-15 12,0 Z" id="Color" fill="#363648" opacity="0.100000001"></path>
+                            <path d="M12,0 C18.627417,-1.21743675e-15 24,5.372583 24,12 C24,18.627417 18.627417,24 12,24 C5.372583,24 8.11624501e-16,18.627417 0,12 C-8.11624501e-16,5.372583 5.372583,1.21743675e-15 12,0 Z" id="State"></path>
+                        </g>
+                        <g id="Icon" transform="translate(4.000000, 4.000000)" fill="#363648">
+                            <path d="M13.1079524,2.89204762 C12.803,2.58709524 12.3455714,2.58709524 12.040619,2.89204762 L8,6.93266667 L3.95938095,2.89204762 C3.65442857,2.58709524 3.197,2.58709524 2.89204762,2.89204762 C2.58709524,3.197 2.58709524,3.65442857 2.89204762,3.95938095 L6.93266667,8 L2.89204762,12.040619 C2.58709524,12.3455714 2.58709524,12.803 2.89204762,13.1079524 C3.04452381,13.2604286 3.197,13.3366667 3.42571429,13.3366667 C3.65442857,13.3366667 3.80690476,13.2604286 3.95938095,13.1079524 L8,9.06733333 L12.040619,13.1079524 C12.1930952,13.2604286 12.4218095,13.3366667 12.5742857,13.3366667 C12.7267619,13.3366667 12.9554762,13.2604286 13.1079524,13.1079524 C13.4129048,12.803 13.4129048,12.3455714 13.1079524,12.040619 L9.06733333,8 L13.1079524,3.95938095 C13.4129048,3.65442857 13.4129048,3.197 13.1079524,2.89204762 Z" id="16px_e-remove"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

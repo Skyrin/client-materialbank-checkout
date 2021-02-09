@@ -24,6 +24,8 @@ abstract class BaseAppContextState {
   );
   private internalSelectedPaymentOption?: PaymentOption;
 
+  private internalLoginModalOpen?: boolean = false;
+
   public get cart() {
     return cloneDeep(this.internalCart);
   }
@@ -46,6 +48,14 @@ abstract class BaseAppContextState {
 
   public set isLoggedIn(newValue: boolean) {
     this.internalIsLoggedIn = newValue;
+  }
+
+  public setInternalLoginModalOpen(newValue: boolean) {
+    this.internalLoginModalOpen = newValue;
+  }
+
+  public isLoginModalOpen() {
+    return this.internalLoginModalOpen;
   }
 
   public get customer() {
@@ -121,6 +131,8 @@ export class AppContextState extends BaseAppContextState {
   async login(email: string, password: string) {}
 
   logout() {}
+
+  openLoginModal(shouldOpen: boolean) {}
 
   async createTestCart() {}
 

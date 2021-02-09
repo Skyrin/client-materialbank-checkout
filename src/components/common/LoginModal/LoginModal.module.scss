@@ -1,0 +1,234 @@
+@import "styles/variablesscss";
+
+$button-background: #eaeaec;
+$element-width: 375px;
+
+@mixin blueLabelButton {
+  @include labelButton;
+  color: $blue-color;
+  padding: 0;
+
+  &:hover {
+    color: lighten($blue-color, 10%);
+  }
+
+  &:active {
+    color: lighten($blue-color, 20%);
+  }
+}
+
+.modalBackground {
+  display: flex;
+  flex-flow: column;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(black, 0.5);
+  z-index: 1001;
+  font-family: "Roboto", sans-serif;
+}
+
+.modalBox {
+  position: relative;
+  overflow: hidden;
+  width: 500px;
+  height: auto;
+  background: white;
+  border-radius: 4px;
+}
+
+.modalContent {
+  padding: 0 $margin-large-2 $margin-large-2;
+  display: flex;
+  flex-flow: column;
+}
+
+.closeButton {
+  background: url("/assets/images/close_icon.svg") no-repeat;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  margin-left: auto;
+  margin-top: $margin-small-2;
+  margin-right: $margin-small-2;
+  cursor: pointer;
+  transition: background-color 0.15s $ease-in-out;
+
+  &:hover {
+    background: radial-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      url("/assets/images/close_icon.svg");
+  }
+
+  &:active {
+    background: radial-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+      url("/assets/images/close_icon.svg");
+  }
+}
+
+.title {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xxl);
+  color: var(--primary-color);
+  align-self: center;
+  margin-bottom: $margin-small-3;
+}
+
+.signInWithButton {
+  position: relative;
+  height: 40px;
+  width: 100%;
+  border: 1px solid var(--primary-color);
+  border-radius: 20px;
+  background: $button-background;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  margin-top: $margin-small-2;
+  transition: background-color 0.15s $ease-in-out;
+
+  &:hover {
+    background: darken($button-background, 10%);
+  }
+
+  &:active {
+    background: darken($button-background, 20%);
+  }
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  color: var(--primary-color);
+  position: absolute;
+  left: $margin-small-3;
+  margin-top: $margin-small;
+}
+
+.orSeparator {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr auto 1fr;
+  column-gap: $margin-small-2;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  color: var(--primary-color);
+  margin-top: $margin-small-2;
+}
+
+.inputField {
+  width: 100%;
+  margin-top: $margin-small-2;
+}
+
+.rememberShowPass {
+  display: flex;
+  flex-flow: row;
+  width: 100%;
+  margin-top: $margin-small-3;
+}
+
+.rememberMeRow {
+  display: flex;
+  flex-flow: row;
+  align-self: center;
+  cursor: pointer;
+}
+
+.rememberMeHint {
+  margin-left: $margin-small;
+  font-size: var(--font-size-md);
+  color: var(--primary-color);
+}
+
+.showPassword {
+  margin-left: auto;
+  color: $blue-color;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: color 0.15s $ease-in-out;
+
+  &:hover {
+    color: lighten($blue-color, 10%);
+  }
+  &:active {
+    color: lighten($blue-color, 20%);
+  }
+}
+
+.signInButton {
+  @include blackButton;
+  width: 100%;
+  margin-top: $margin-small-3;
+  background-color: $blue-button-color;
+
+  &:hover,
+  &:focus {
+    background-color: lighten($blue-button-color, 5%);
+  }
+
+  &:active {
+    background-color: lighten($blue-button-color, 10%);
+  }
+}
+
+.forgotPassword {
+  @include blueLabelButton;
+  margin-top: $margin-small-3;
+}
+
+.registerHint {
+  font-size: var(--font-size-md);
+  color: var(--primary-color);
+}
+
+.register {
+  @include blueLabelButton;
+  margin-left: $margin-small;
+}
+
+.loaderContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(white, 0.7);
+
+  .loader {
+    font-size: 40px;
+  }
+}
+
+.loginAlert {
+  position: relative;
+  width: 100%;
+  background-color: $red-color-warning-background;
+  border: 1px solid $red-color-warning-border;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: $margin-small-2;
+  color: $red-color;
+  padding: $margin-small-2 $margin-small-5;
+  font-size: var(--font-size-md);
+
+  .errorIcon {
+    width: 16px;
+    height: 16px;
+    color: $red-color;
+    position: absolute;
+    left: $margin-small-2;
+  }
+}
