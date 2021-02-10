@@ -3,6 +3,7 @@ import styles from "components/common/Forms/ResetPasswordForm/ResetPasswordForm.
 import Input from "components/common/Input/Input";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
+import { PASSWORD_REGEX } from "constants/general";
 
 const resetPasswordSchema = yup.object().shape({
   currentPassword: yup.string().required("Required"),
@@ -10,7 +11,7 @@ const resetPasswordSchema = yup.object().shape({
     .string()
     .required("Required")
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      PASSWORD_REGEX,
       "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character"
     ),
   confirmNewPassword: yup

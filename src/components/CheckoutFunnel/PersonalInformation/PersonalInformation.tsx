@@ -1,6 +1,6 @@
 import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import Logo from "components/common/Logo/Logo";
-import { BREADCRUMBS_STEPS } from "constants/general";
+import { BREADCRUMBS_STEPS, PASSWORD_REGEX } from "constants/general";
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PersonalInformation.module.scss";
@@ -41,7 +41,7 @@ const contactInfoSchema = yup.object().shape({
   password: yup
     .string()
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      PASSWORD_REGEX,
       "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character"
     )
     .required("Required"),
