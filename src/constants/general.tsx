@@ -9,3 +9,5 @@ export const BREADCRUMBS_STEPS = [
 export const AUTH_TOKEN_STORAGE_KEY = "token";
 export const GUEST_CART_ID_STORAGE_KEY = "cartId";
 export const ORDER_ID_STORAGE_KEY = "order_id";
+
+export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/;

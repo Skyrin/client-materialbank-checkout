@@ -10,13 +10,14 @@ import { extractErrors } from "utils/forms";
 import * as yup from "yup";
 import Loader from "components/common/Loader/Loader";
 import { ClientError } from "GraphqlClient";
+import { PASSWORD_REGEX } from "constants/general";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Email must be valid.").required("Required"),
   password: yup
     .string()
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/,
+      PASSWORD_REGEX,
       "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character."
     )
     .required("Required"),
