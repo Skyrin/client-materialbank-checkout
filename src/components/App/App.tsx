@@ -13,6 +13,7 @@ import {
 } from "constants/general";
 import { LoginModal } from "components/common/LoginModal/LoginModal";
 import { RegisterOptionsModal } from "components/common/RegisterModal/RegisterOptionsModal";
+import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterMailModal";
 
 class App extends React.Component {
   static contextType = AppContext;
@@ -65,10 +66,15 @@ class App extends React.Component {
             <Route path={USER_MANAGEMENT_URL} component={UserManagement} />
           </Switch>
         </div>
+
         {this.context.getModalOpen() === Modals.Login && <LoginModal />}
         {this.context.getModalOpen() === Modals.RegisterOptions && (
           <RegisterOptionsModal />
         )}
+        {this.context.getModalOpen() === Modals.RegisterEmail && (
+          <RegisterMailModal />
+        )}
+
         {/* Hidden icons that should make the browser pre-load the webfonts for fas(FontAwesome Solid) and far(FontAwesome Regular) */}
         <i className={cn("fas fa-star", styles.hiddenIcon)} />
         <i className={cn("far fa-star", styles.hiddenIcon)} />

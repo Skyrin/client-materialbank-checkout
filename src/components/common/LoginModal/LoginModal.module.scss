@@ -3,20 +3,6 @@
 $button-background: #eaeaec;
 $element-width: 375px;
 
-@mixin blueLabelButton {
-  @include labelButton;
-  color: $blue-color;
-  padding: 0;
-
-  &:hover {
-    color: lighten($blue-color, 10%);
-  }
-
-  &:active {
-    color: lighten($blue-color, 20%);
-  }
-}
-
 .modalBackground {
   display: flex;
   flex-flow: column;
@@ -92,7 +78,7 @@ $element-width: 375px;
   cursor: pointer;
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-md);
-  margin-top: $margin-small-2;
+  margin-top: $margin-small-3;
   transition: background-color 0.15s $ease-in-out;
 
   &:hover {

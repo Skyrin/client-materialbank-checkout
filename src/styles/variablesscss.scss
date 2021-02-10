@@ -105,6 +105,20 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
+@mixin blueLabelButton {
+  @include labelButton;
+  color: $blue-color;
+  padding: 0;
+
+  &:hover {
+    color: lighten($blue-color, 10%);
+  }
+
+  &:active {
+    color: lighten($blue-color, 20%);
+  }
+}
+
 @mixin grayText {
   color: $primary-color-60-user;
   font-size: var(--font-size-md);
