@@ -26,7 +26,7 @@ $button-background: #eaeaec;
 }
 
 .modalContent {
-  padding: 0 $margin-large-2 $margin-small-5;
+  padding: 0 $margin-large-2 $margin-medium-4;
   display: flex;
   flex-flow: column;
 }
@@ -64,4 +64,30 @@ $button-background: #eaeaec;
 .inputField {
   width: 100%;
   margin-top: $margin-small-2;
+}
+
+.acceptTermsHint {
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-md);
+  margin-left: $margin-small-2;
+
+  .inlineLink {
+    color: $blue-color;
+  }
+}
+
+.registerButton {
+  @include blackButton;
+  width: 100%;
+  margin-top: $margin-small-5;
+  background-color: $blue-button-color;
+
+  &:hover,
+  &:focus {
+    background-color: lighten($blue-button-color, 5%);
+  }
+
+  &:active {
+    background-color: lighten($blue-button-color, 10%);
+  }
 }
