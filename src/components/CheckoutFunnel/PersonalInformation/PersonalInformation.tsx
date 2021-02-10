@@ -33,6 +33,7 @@ import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
 import { graphqlRequest } from "GraphqlClient";
 import { PaymentOption } from "../PaymentInformation/PaymentInformation";
+import { createPaypalTokenForCart } from "context/CheckoutAPI/api";
 
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
@@ -41,7 +42,7 @@ const contactInfoSchema = yup.object().shape({
   password: yup
     .string()
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/,
       "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character"
     )
     .required("Required"),
@@ -202,37 +203,13 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   createPaypalToken = async () => {
-    const CreatePaypalTokenMutation = `
-      mutation createPaypalExpressToken($input: PaypalExpressTokenInput!) {
-        createPaypalExpressToken(input: $input) {
-          token
-          paypal_urls {
-            edit
-            start
-          }
-        }
-      }
-    `;
-    const variables = {
-      input: {
-        cart_id: this.context.cart.id,
-        code: "paypal_express",
-        express_button: true,
-        urls: {
-          cancel_url: "checkout/information/paypal-cancelled",
-          return_url: "checkout/information/paypal-success",
-        },
-      },
-    };
-
-    // Request Paypal Express Token from Magento and pass it to the Paypal SDK
-    const response = await graphqlRequest(
+    const response = await createPaypalTokenForCart(
       this.context,
-      CreatePaypalTokenMutation,
-      variables
+      this.context.cart.id,
+      true
     );
     console.log(response);
-    return response["createPaypalExpressToken"]["token"];
+    return response["token"];
   };
 
   handlePaypalTransactionApprove = async (data, actions) => {

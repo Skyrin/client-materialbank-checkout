@@ -35,6 +35,7 @@ import { isEqual, get } from "lodash-es";
 import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
 import { RESTRequest } from "RestClient";
+import { createPaypalTokenForCart } from "context/CheckoutAPI/api";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -295,11 +296,16 @@ export class PaymentInformation extends React.Component<Props, State> {
         <div className={styles.paddingContainer}>
           <div
             className="row center-vertically clickable"
-            onClick={() => {
+            onClick={async () => {
               this.setState({
                 paymentOption: PaymentOption.PayPal,
               });
               this.context.setSelectedPaymentOption(PaymentOption.PayPal);
+              const paypalTokenResponse = await createPaypalTokenForCart(
+                this.context,
+                this.context.cart.id
+              );
+              console.log(paypalTokenResponse);
             }}
           >
             <RadioButton
@@ -313,6 +319,12 @@ export class PaymentInformation extends React.Component<Props, State> {
               className={styles.paymentLogoIcon}
             />
           </div>
+          {this.state.paymentOption === PaymentOption.PayPal && (
+            <div className={cn(styles.optionText, "small-text")}>
+              After clicking "Place My Order", you will be redirected to PayPal
+              to complete your purchase securely.
+            </div>
+          )}
         </div>
         <div className={styles.paddingContainer}>
           <div
@@ -335,12 +347,6 @@ export class PaymentInformation extends React.Component<Props, State> {
               className={styles.paymentLogoIcon}
             />
           </div>
-          {this.state.paymentOption === PaymentOption.PayPal && (
-            <div className={styles.optionText}>
-              After clicking "Place My Order", you will be redirected to PayPal
-              to complete your purchase securely.
-            </div>
-          )}
         </div>
         {this.context.customerLoading && (
           <Loader

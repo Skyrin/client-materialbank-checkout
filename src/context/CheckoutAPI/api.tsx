@@ -314,3 +314,46 @@ export const setShippingMethodOnCart = async (
     console.error(e);
   }
 };
+
+export const createPaypalTokenForCart = async (
+  context: AppContextState,
+  cartId: string,
+  expressButton?: boolean
+) => {
+  const CreatePaypalTokenMutation = `
+      mutation createPaypalExpressToken($input: PaypalExpressTokenInput!) {
+        createPaypalExpressToken(input: $input) {
+          token
+          paypal_urls {
+            edit
+            start
+          }
+        }
+      }
+    `;
+
+  const variables = {
+    input: {
+      cart_id: cartId,
+      code: "paypal_express",
+      express_button: expressButton,
+      urls: {
+        cancel_url: "checkout/payment/paypal-cancelled",
+        return_url: "checkout/payment/paypal-success",
+      },
+    },
+  };
+
+  try {
+    // Request Paypal Express Token from Magento and pass it to the Paypal SDK
+    const response = await graphqlRequest(
+      context,
+      CreatePaypalTokenMutation,
+      variables
+    );
+    return response["createPaypalExpressToken"];
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
