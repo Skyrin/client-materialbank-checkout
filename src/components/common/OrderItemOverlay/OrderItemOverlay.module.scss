@@ -1,9 +1,14 @@
 @import "styles/variablesscss";
+@import "styles/mixins";
+@import "styles/global";
 
 .OrderItemOverlay {
   background-color: white;
   padding: 40px 0;
   max-width: 560px;
+  @include mobile-media {
+    padding: 0;
+  }
 }
 
 .x-button {
@@ -12,6 +17,9 @@
   right: 10px;
   top: 10px;
   font-size: 20px;
+  @include mobile-media {
+    display: none;
+  }
 }
 
 .header {
@@ -19,6 +27,10 @@
   align-items: center;
   padding-right: 70px;
   padding-left: 55px;
+  @include mobile-media {
+    padding: $margin-small-4;
+    border-bottom: 1px solid rgba(363648, 0, 0, 0.1);
+  }
 
   .image {
     height: 85px;
@@ -41,6 +53,9 @@
   .title-price {
     flex: 1;
     padding-top: 5px;
+    @include mobile-media {
+      font-size: 11px;
+    }
   }
 
   .priceIndicator {
@@ -48,15 +63,24 @@
     border-radius: 20px;
     font-size: var(--font-size-sm);
     padding: $margin-small $margin-small-2;
+    @include mobile-media {
+      display: none;
+    }
   }
 
   .price {
     margin-left: $margin-small-2;
+    @include mobile-media {
+      margin-left: 0;
+    }
   }
 }
 
 .shops {
   margin-top: var(--vertical-spacing-normal);
+  @include mobile-media {
+    margin-top: 0;
+  }
 }
 
 .shop {
@@ -71,6 +95,11 @@
   cursor: pointer;
   text-decoration: none;
   width: 100%;
+  @include mobile-media {
+    padding: 0 $margin-small-4;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(363648, 0, 0, 0.1);
+  }
 
   .address {
     margin-top: var(--vertical-spacing-quarter);
@@ -82,6 +111,9 @@
     right: 55px;
     transform: translateY(-50%);
     font-size: var(--font-size-sm);
+    @include mobile-media {
+      display: none;
+    }
   }
 
   &:last-of-type {
@@ -102,6 +134,11 @@
   flex-flow: column;
   align-items: center;
   margin-top: 40px;
+  @include mobile-media {
+    margin: 0;
+    padding: $margin-small-4 0;
+    border-top: 1px solid rgba(363648, 0, 0, 0.1);
+  }
 }
 
 .add-to-cart-button {
@@ -116,6 +153,9 @@
   margin-top: var(--vertical-spacing-half);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-medium);
+  @include mobile-media {
+    justify-content: center;
+  }
 
   &:hover {
     background-color: rgba(var(--primary-color-rgb), 0.05);
@@ -134,5 +174,13 @@
   .addCartIcon {
     font-size: var(--font-size-sm);
     margin-bottom: $margin-small;
+    @include mobile-media {
+      display: none;
+    }
+  }
+  .addCartPrice {
+    @include mobile-media {
+      display: none;
+    }
   }
 }
