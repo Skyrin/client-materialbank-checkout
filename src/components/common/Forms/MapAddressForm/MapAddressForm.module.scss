@@ -1,4 +1,5 @@
 @import "styles/variablesscss";
+@import "styles/mixins";
 
 .title {
   color: $primary-color-user;
@@ -20,7 +21,10 @@
     "city city"
     "state zipcode"
     "defaultAddress defaultAddress";
-
+  @include mobile-media {
+    display: flex;
+    flex-direction: column;
+  }
   .nickname {
     grid-area: nickname;
     margin-top: $margin-small-3;
@@ -59,9 +63,15 @@
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-medium);
     color: $primary-color-user;
+    @include mobile-media {
+      margin-left: 5px;
+    }
 
     .defaultAddressHint {
       margin-left: $margin-small-2;
+      @include mobile-media {
+        margin-top: 10px;
+      }
     }
   }
 
@@ -70,6 +80,12 @@
     font-weight: var(--font-weight-medium);
     color: $primary-color-user;
     margin-bottom: $margin-small;
+  }
+}
+
+.addAddressButtons {
+  @include mobile-media {
+    justify-content: space-between !important;
   }
 }
 

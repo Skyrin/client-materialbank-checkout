@@ -14,6 +14,7 @@ import {
   clearAllBodyScrollLocks,
 } from "body-scroll-lock";
 import cn from "classnames";
+import { isOnMobile } from "../../../utils/responsive";
 
 export const DEFAULT_ADDRESS_VALUES: AddressFormValuesT = {
   nickname: "",
@@ -90,6 +91,10 @@ export default class UserShipping extends React.Component<Props, State> {
     };
   }
 
+  renderMobileMap = () => {
+    return <div className={styles.map}></div>;
+  };
+
   render() {
     return (
       <div>
@@ -161,7 +166,6 @@ export default class UserShipping extends React.Component<Props, State> {
                 );
               })}
             </div>
-
             <div className={styles.mapContainer}>
               <div className={styles.addAddressContainer}>
                 <MapAddressForm
@@ -174,6 +178,7 @@ export default class UserShipping extends React.Component<Props, State> {
                 />
               </div>
             </div>
+            {isOnMobile() && this.renderMobileMap()}
           </div>
         </div>
 
