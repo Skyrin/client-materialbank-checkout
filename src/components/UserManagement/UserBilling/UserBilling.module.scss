@@ -1,4 +1,7 @@
 @import "styles/variablesscss";
+@import "styles/mixins";
+@import "styles/global";
+@import "styles/variables.scss";
 
 .UserBilling {
   padding: 62px 100px 162px;
@@ -13,18 +16,37 @@
     padding: calc(var(--vertical-spacing-normal) * 2)
       calc(var(--vertical-spacing-normal) * 2) 50px;
   }
+  @include mobile-media {
+    padding: 0;
+  }
 
   .pageContent {
     margin-top: $margin-medium-3;
+    @include mobile-media {
+      padding: 0 $margin-small-4;
+      border-top: 1px solid $color-user-border;
+      margin-top: 0;
+    }
   }
 
-  .paymentCell {
+  div.paymentCell {
     @include roundedContainer;
+    @include mobile-media {
+      border-top: 1px solid $color-user-border;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+    }
     height: auto;
     width: 100%;
 
     & + .paymentCell {
       margin-top: $margin-small-4;
+
+      @include mobile-media {
+        margin-top: 0;
+      }
     }
   }
 
@@ -35,6 +57,61 @@
     grid-template-rows: auto;
     align-items: center;
     padding: 0 $margin-medium;
+
+    &.isMobile {
+      display: none;
+      @include mobile-media {
+        display: flex;
+        flex-direction: column;
+        padding: 10px 0;
+        height: auto;
+      }
+    }
+
+    &.isDesktop {
+      @include mobile-media {
+        display: none;
+      }
+    }
+
+    .creditCardDetails {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      justify-content: flex-start;
+
+      img {
+        margin-right: $margin-medium;
+      }
+    }
+
+    .creditCardEdit {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-top: 14px;
+    }
+
+    .creditCardInfo {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      text-align: center;
+
+      div:first-child {
+        margin-bottom: 14px;
+      }
+
+      div {
+        font-size: 12px;
+      }
+
+      .creditCardNumber {
+        margin-left: 0;
+      }
+    }
   }
 
   .makeDefault {
@@ -103,6 +180,12 @@
   .addCreditCardContainer {
     margin-top: $margin-small-4;
     @include roundedContainer;
+    @include mobile-media {
+      border: none;
+    }
+    @include mobile-media {
+      margin-top: $margin-medium;
+    }
   }
 
   .example-enter {

@@ -16,6 +16,8 @@ import CreditCard, { CreditCardType } from "models/CreditCard";
 import EditCreditCardForm, {
   CreditCardFormValuesT,
 } from "components/common/Forms/EditCreditCardForm/EditCreditCardForm";
+import LogoMobile from "../../common/LogoMobile/LogoMobile";
+import { isOnMobile } from "../../../utils/responsive";
 
 type Props = RouteComponentProps;
 
@@ -36,13 +38,15 @@ export default class UserBilling extends React.Component<Props, State> {
   render() {
     return (
       <div className={styles.UserBilling}>
+        {isOnMobile() && <LogoMobile />}
+
         <UserHeader title={UserPages.Billing.name} />
         <div className={styles.pageContent}>
           {this.state.paymentMethods.map(
             (paymentMethod: PaymentMethod, index) => {
               return (
                 <div key={paymentMethod.id} className={styles.paymentCell}>
-                  <div className={styles.paymentRow}>
+                  <div className={cn(styles.isDesktop, styles.paymentRow)}>
                     <img
                       src={this.getCreditCardIcon(paymentMethod)}
                       alt=""
@@ -86,9 +90,60 @@ export default class UserBilling extends React.Component<Props, State> {
                       />
                     </button>
                   </div>
-                  {paymentMethod.isOpen && (
-                    <div className="horizontal-divider" />
-                  )}
+                  <div className={cn(styles.isMobile, styles.paymentRow)}>
+                    <div className={styles.creditCardDetails}>
+                      <img
+                        src={this.getCreditCardIcon(paymentMethod)}
+                        alt=""
+                        className={styles.creditCardIcon}
+                      />
+                      <div className={styles.creditCardInfo}>
+                        <div className={styles.creditCardNumber}>
+                          {paymentMethod.creditCard.getObfuscatedNumber()}
+                        </div>
+                        <div className={styles.fullName}>
+                          {paymentMethod.creditCard.name}
+                        </div>
+                      </div>
+                    </div>
+                    <div className={styles.creditCardEdit}>
+                      {!paymentMethod.isDefault && (
+                        <div
+                          className={styles.makeDefault}
+                          onClick={() => {
+                            this.makeDefault(index);
+                          }}
+                        >
+                          Make Default
+                        </div>
+                      )}
+                      {paymentMethod.isDefault && (
+                        <div className={styles.defaultPayment}>
+                          DEFAULT PAYMENT METHOD
+                        </div>
+                      )}
+                      <button
+                        className={cn(styles.editButton, {
+                          [styles.editMode]: paymentMethod.isOpen,
+                        })}
+                        onClick={() => {
+                          this.editPayment(index);
+                        }}
+                      >
+                        Edit
+                        <i
+                          className={cn("far fa-angle-up", styles.chevron, {
+                            [styles.chevronUp]: paymentMethod.isOpen,
+                            [styles.chevronDown]: !paymentMethod.isOpen,
+                          })}
+                        />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/*  {paymentMethod.isOpen && (*/}
+                  {/*  <div className="horizontal-divider" />*/}
+                  {/*)}*/}
 
                   {/*{paymentMethod.isOpen && (*/}
                   <EditCreditCardForm

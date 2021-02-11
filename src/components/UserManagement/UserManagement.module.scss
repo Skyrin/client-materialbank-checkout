@@ -1,4 +1,7 @@
 @import "styles/variablesscss";
+@import "styles/mixins";
+@import "styles/global";
+@import "styles/variables.scss";
 .pageContent {
   display: flex;
   flex-grow: 1;
@@ -12,6 +15,9 @@
     font-size: var(--font-size-xxl);
     color: $primary-color-user;
     text-decoration: none;
+    @include mobile-media {
+      display: none;
+    }
   }
 
   .pageWrapper {

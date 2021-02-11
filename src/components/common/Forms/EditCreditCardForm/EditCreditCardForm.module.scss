@@ -1,4 +1,7 @@
 @import "styles/variablesscss";
+@import "styles/mixins";
+@import "styles/global";
+@import "styles/variables.scss";
 
 .EditCreditCardForm {
   height: auto;
@@ -20,6 +23,11 @@
     opacity: 1;
     max-height: 600px;
     padding: $margin-medium;
+    @include mobile-media {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
   }
 
   .title {
@@ -39,6 +47,13 @@
     grid-template-areas:
       "card-number card-number card-number"
       "card-name card-expiration card-cvv";
+    @include mobile-media {
+      display: flex;
+      flex-direction: column;
+      margin-top: $margin-small-4;
+      margin-bottom: margin-medium;
+      row-gap: 15px;
+    }
 
     .cardNumber {
       grid-area: card-number;
@@ -68,6 +83,30 @@
     grid-area: buttons;
     display: flex;
     margin-top: $margin-medium;
+    @include mobile-media {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-top: $margin-small-4;
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      margin-top: 0;
+    }
+
+    .formButtonsEdit {
+      @include mobile-media {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .deleteButton {
+      margin-bottom: $margin-small-4;
+    }
   }
 
   .saveChanges {
@@ -81,6 +120,9 @@
     transition: color 0.15s $ease-in-out;
     padding: $margin-small-3;
     margin-left: auto;
+    @include mobile-media {
+      margin: 0;
+    }
 
     &:hover {
       color: lighten($primary-color-user, 30%);
