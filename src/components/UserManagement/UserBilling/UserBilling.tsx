@@ -35,6 +35,104 @@ export default class UserBilling extends React.Component<Props, State> {
     };
   }
 
+  renderMobilePaymentRow(paymentMethod, index) {
+    return (
+      <div className={styles.paymentRow}>
+        <div className={styles.creditCardDetails}>
+          <img
+            src={this.getCreditCardIcon(paymentMethod)}
+            alt=""
+            className={styles.creditCardIcon}
+          />
+          <div className={styles.creditCardInfo}>
+            <div className={styles.creditCardNumber}>
+              {paymentMethod.creditCard.getObfuscatedNumber()}
+            </div>
+            <div className={styles.fullName}>
+              {paymentMethod.creditCard.name}
+            </div>
+          </div>
+        </div>
+        <div className={styles.creditCardEdit}>
+          {!paymentMethod.isDefault && (
+            <div
+              className={styles.makeDefault}
+              onClick={() => {
+                this.makeDefault(index);
+              }}
+            >
+              Make Default
+            </div>
+          )}
+          {paymentMethod.isDefault && (
+            <div className={styles.defaultPayment}>DEFAULT PAYMENT METHOD</div>
+          )}
+          <button
+            className={cn(styles.editButton, {
+              [styles.editMode]: paymentMethod.isOpen,
+            })}
+            onClick={() => {
+              this.editPayment(index);
+            }}
+          >
+            Edit
+            <i
+              className={cn("far fa-angle-up", styles.chevron, {
+                [styles.chevronUp]: paymentMethod.isOpen,
+                [styles.chevronDown]: !paymentMethod.isOpen,
+              })}
+            />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  renderDesktopPaymentRow(paymentMethod, index) {
+    return (
+      <div className={styles.paymentRow}>
+        <img
+          src={this.getCreditCardIcon(paymentMethod)}
+          alt=""
+          className={styles.creditCardIcon}
+        />
+        <div className={styles.creditCardNumber}>
+          {paymentMethod.creditCard.getObfuscatedNumber()}
+        </div>
+        <div className={styles.fullName}>{paymentMethod.creditCard.name}</div>
+        {!paymentMethod.isDefault && (
+          <div
+            className={styles.makeDefault}
+            onClick={() => {
+              this.makeDefault(index);
+            }}
+          >
+            Make Default
+          </div>
+        )}
+        {paymentMethod.isDefault && (
+          <div className={styles.defaultPayment}>DEFAULT PAYMENT METHOD</div>
+        )}
+        <button
+          className={cn(styles.editButton, {
+            [styles.editMode]: paymentMethod.isOpen,
+          })}
+          onClick={() => {
+            this.editPayment(index);
+          }}
+        >
+          Edit
+          <i
+            className={cn("far fa-angle-up", styles.chevron, {
+              [styles.chevronUp]: paymentMethod.isOpen,
+              [styles.chevronDown]: !paymentMethod.isOpen,
+            })}
+          />
+        </button>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className={styles.UserBilling}>
@@ -46,101 +144,10 @@ export default class UserBilling extends React.Component<Props, State> {
             (paymentMethod: PaymentMethod, index) => {
               return (
                 <div key={paymentMethod.id} className={styles.paymentCell}>
-                  <div className={cn(styles.isDesktop, styles.paymentRow)}>
-                    <img
-                      src={this.getCreditCardIcon(paymentMethod)}
-                      alt=""
-                      className={styles.creditCardIcon}
-                    />
-                    <div className={styles.creditCardNumber}>
-                      {paymentMethod.creditCard.getObfuscatedNumber()}
-                    </div>
-                    <div className={styles.fullName}>
-                      {paymentMethod.creditCard.name}
-                    </div>
-                    {!paymentMethod.isDefault && (
-                      <div
-                        className={styles.makeDefault}
-                        onClick={() => {
-                          this.makeDefault(index);
-                        }}
-                      >
-                        Make Default
-                      </div>
-                    )}
-                    {paymentMethod.isDefault && (
-                      <div className={styles.defaultPayment}>
-                        DEFAULT PAYMENT METHOD
-                      </div>
-                    )}
-                    <button
-                      className={cn(styles.editButton, {
-                        [styles.editMode]: paymentMethod.isOpen,
-                      })}
-                      onClick={() => {
-                        this.editPayment(index);
-                      }}
-                    >
-                      Edit
-                      <i
-                        className={cn("far fa-angle-up", styles.chevron, {
-                          [styles.chevronUp]: paymentMethod.isOpen,
-                          [styles.chevronDown]: !paymentMethod.isOpen,
-                        })}
-                      />
-                    </button>
-                  </div>
-                  <div className={cn(styles.isMobile, styles.paymentRow)}>
-                    <div className={styles.creditCardDetails}>
-                      <img
-                        src={this.getCreditCardIcon(paymentMethod)}
-                        alt=""
-                        className={styles.creditCardIcon}
-                      />
-                      <div className={styles.creditCardInfo}>
-                        <div className={styles.creditCardNumber}>
-                          {paymentMethod.creditCard.getObfuscatedNumber()}
-                        </div>
-                        <div className={styles.fullName}>
-                          {paymentMethod.creditCard.name}
-                        </div>
-                      </div>
-                    </div>
-                    <div className={styles.creditCardEdit}>
-                      {!paymentMethod.isDefault && (
-                        <div
-                          className={styles.makeDefault}
-                          onClick={() => {
-                            this.makeDefault(index);
-                          }}
-                        >
-                          Make Default
-                        </div>
-                      )}
-                      {paymentMethod.isDefault && (
-                        <div className={styles.defaultPayment}>
-                          DEFAULT PAYMENT METHOD
-                        </div>
-                      )}
-                      <button
-                        className={cn(styles.editButton, {
-                          [styles.editMode]: paymentMethod.isOpen,
-                        })}
-                        onClick={() => {
-                          this.editPayment(index);
-                        }}
-                      >
-                        Edit
-                        <i
-                          className={cn("far fa-angle-up", styles.chevron, {
-                            [styles.chevronUp]: paymentMethod.isOpen,
-                            [styles.chevronDown]: !paymentMethod.isOpen,
-                          })}
-                        />
-                      </button>
-                    </div>
-                  </div>
-
+                  {isOnMobile() &&
+                    this.renderMobilePaymentRow(paymentMethod, index)}
+                  {!isOnMobile() &&
+                    this.renderDesktopPaymentRow(paymentMethod, index)}
                   {/*  {paymentMethod.isOpen && (*/}
                   {/*  <div className="horizontal-divider" />*/}
                   {/*)}*/}

@@ -1,7 +1,6 @@
 @import "styles/variablesscss";
 @import "styles/mixins";
-@import "styles/global";
-@import "styles/variables.scss";
+//@import "styles/global";
 
 .UserBilling {
   padding: 62px 100px 162px;
@@ -23,7 +22,7 @@
   .pageContent {
     margin-top: $margin-medium-3;
     @include mobile-media {
-      padding: 0 $margin-small-4;
+      padding: 0 $margin-small-4 $margin-small-4 $margin-small-4;
       border-top: 1px solid $color-user-border;
       margin-top: 0;
     }
@@ -57,21 +56,11 @@
     grid-template-rows: auto;
     align-items: center;
     padding: 0 $margin-medium;
-
-    &.isMobile {
-      display: none;
-      @include mobile-media {
-        display: flex;
-        flex-direction: column;
-        padding: 10px 0;
-        height: auto;
-      }
-    }
-
-    &.isDesktop {
-      @include mobile-media {
-        display: none;
-      }
+    @include mobile-media {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 0;
+      height: auto;
     }
 
     .creditCardDetails {
@@ -182,8 +171,6 @@
     @include roundedContainer;
     @include mobile-media {
       border: none;
-    }
-    @include mobile-media {
       margin-top: $margin-medium;
     }
   }

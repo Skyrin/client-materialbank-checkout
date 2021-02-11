@@ -1,7 +1,5 @@
 @import "styles/variablesscss";
 @import "styles/mixins";
-@import "styles/global";
-@import "styles/variables.scss";
 
 .EditCreditCardForm {
   height: auto;
@@ -88,10 +86,10 @@
       justify-content: space-between;
       align-items: center;
       width: 100%;
-      margin-top: $margin-small-4;
       display: flex;
       flex-wrap: wrap;
       flex-direction: row;
+      margin-bottom: 10px;
       margin-top: 0;
     }
 
@@ -105,7 +103,10 @@
     }
 
     .deleteButton {
-      margin-bottom: $margin-small-4;
+      @include mobile-media {
+        padding: 0;
+        margin: $margin-medium 0;
+      }
     }
   }
 
