@@ -31,8 +31,9 @@ import {
 } from "context/CustomerAPI/models";
 import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
-import { graphqlRequest } from "GraphqlClient";
 import { PaymentOption } from "../PaymentInformation/PaymentInformation";
+import { createPaypalTokenForCart } from "context/CheckoutAPI/api";
+import ButtonLoader from "components/common/ButtonLoader/ButtonLoader";
 
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
@@ -202,37 +203,13 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   createPaypalToken = async () => {
-    const CreatePaypalTokenMutation = `
-      mutation createPaypalExpressToken($input: PaypalExpressTokenInput!) {
-        createPaypalExpressToken(input: $input) {
-          token
-          paypal_urls {
-            edit
-            start
-          }
-        }
-      }
-    `;
-    const variables = {
-      input: {
-        cart_id: this.context.cart.id,
-        code: "paypal_express",
-        express_button: true,
-        urls: {
-          cancel_url: "checkout/information/paypal-cancelled",
-          return_url: "checkout/information/paypal-success",
-        },
-      },
-    };
-
-    // Request Paypal Express Token from Magento and pass it to the Paypal SDK
-    const response = await graphqlRequest(
+    const response = await createPaypalTokenForCart(
       this.context,
-      CreatePaypalTokenMutation,
-      variables
+      this.context.cart.id,
+      true
     );
     console.log(response);
-    return response["createPaypalExpressToken"]["token"];
+    return response["token"];
   };
 
   handlePaypalTransactionApprove = async (data, actions) => {
@@ -265,8 +242,12 @@ export class PersonalInformation extends React.Component<Props, State> {
       },
     });
 
-    // If it's a guest user, pre-fill available info as well
-    if (!this.context.isLoggedIn) {
+    if (
+      this.context.isLoggedIn &&
+      this.state.selectedShippingAddressId !== -1
+    ) {
+      return this.placeOrderWithPaypal();
+    } else {
       this.setState(
         {
           ...this.state,
@@ -373,7 +354,7 @@ export class PersonalInformation extends React.Component<Props, State> {
         </span>
         <div className={styles.userName}>{name}</div>
         <div className={styles.userEmail}>{this.context.customer?.email}</div>
-        {(this.context.customerLoading || this.state.isSubmitting) && (
+        {this.context.customerLoading && (
           <Loader
             containerClassName={styles.loaderContainer}
             loaderClassName={styles.loader}
@@ -552,7 +533,7 @@ export class PersonalInformation extends React.Component<Props, State> {
             this.shippingAddressForm = ref;
           }}
         />
-        {(this.context.customerLoading || this.state.isSubmitting) && (
+        {this.context.customerLoading && (
           <Loader
             containerClassName={styles.loaderContainer}
             loaderClassName={styles.loader}
@@ -560,6 +541,34 @@ export class PersonalInformation extends React.Component<Props, State> {
         )}
       </div>
     );
+  };
+
+  placeOrderWithPaypal = async () => {
+    // If paypal, set the billing to be same as shipping
+    this.setState({
+      isSubmitting: true,
+    });
+    await this.context.setBillingAddress(true);
+    await this.context.setShippingMethod();
+
+    const paymentMethodResponse = await this.context.setPaymentMethod({
+      cart_id: this.context.cart.id,
+      payment_method: {
+        code: "paypal_express",
+        paypal_express: {
+          payer_id: this.state.paypalExpressInfo.payer_id,
+          token: this.state.paypalExpressInfo.token,
+        },
+      },
+    });
+
+    this.context.setSelectedPaymentOption(PaymentOption.PayPal);
+    console.log("PAYMENT METHOD", paymentMethodResponse);
+
+    await this.context.placeOrder();
+    this.setState({ isSubmitting: false });
+    this.props.history.push(ORDER_CONFIRMATION_URL);
+    return;
   };
 
   async onSubmit() {
@@ -571,7 +580,6 @@ export class PersonalInformation extends React.Component<Props, State> {
         );
 
         await this.context.createCustomer(createCustomerInput);
-        await this.context.mergeGuestCart();
       }
 
       let addressId = this.state.selectedShippingAddressId;
@@ -580,33 +588,13 @@ export class PersonalInformation extends React.Component<Props, State> {
         addressId = address.id;
       }
       await this.context.setShippingAddress(addressId);
+      await this.context.setShippingMethod();
 
       if (this.state.paypalExpressInfo.payer_id) {
         // If we are going through paypal express, set the payment method as well,
         // place the order and go to the confirmation page
 
-        // If paypal, set the billing to be same as shipping
-        await this.context.setBillingAddress(true);
-
-        await this.context.setShippingMethod();
-
-        const paymentMethodResponse = await this.context.setPaymentMethod({
-          cart_id: this.context.cart.id,
-          payment_method: {
-            code: "paypal_express",
-            paypal_express: {
-              payer_id: this.state.paypalExpressInfo.payer_id,
-              token: this.state.paypalExpressInfo.token,
-            },
-          },
-        });
-
-        this.context.setSelectedPaymentOption(PaymentOption.PayPal);
-        console.log("PAYMENT METHOD", paymentMethodResponse);
-
-        await this.context.placeOrder();
-        this.setState({ isSubmitting: false });
-        this.props.history.push(ORDER_CONFIRMATION_URL);
+        await this.placeOrderWithPaypal();
         return;
       }
 
@@ -676,7 +664,10 @@ export class PersonalInformation extends React.Component<Props, State> {
               Return to cart
             </div>
             <button
-              className={cn("button large", { "margin-top": isOnMobile() })}
+              className={cn("button large", {
+                "margin-top": isOnMobile(),
+                hasLoader: this.state.isSubmitting,
+              })}
               onClick={() => this.onSubmit()}
               disabled={
                 this.state.isSubmitting ||
@@ -690,6 +681,7 @@ export class PersonalInformation extends React.Component<Props, State> {
               {this.state.paypalExpressInfo.payer_id
                 ? "Place My Order"
                 : "Continue to Payment"}
+              {this.state.isSubmitting && <ButtonLoader />}
             </button>
           </div>
         </div>

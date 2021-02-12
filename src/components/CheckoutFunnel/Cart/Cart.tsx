@@ -15,6 +15,7 @@ import {
 } from "components/common/Input/utils";
 import RadioButton from "components/common/RadioButton/RadioButton";
 import AddressForm from "components/common/Forms/AddressForm/AddressForm";
+import CreditCardForm from "components/common/Forms/CreditCardForm/CreditCardForm";
 
 type Props = RouteComponentProps;
 
@@ -35,6 +36,8 @@ type State = {
 export class Cart extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
+
+  cardRef: CreditCardForm;
 
   state = {
     products: [],
@@ -134,6 +137,22 @@ export class Cart extends React.Component<Props, State> {
             />
             <span>OPTION_B</span>
           </div>
+          <CreditCardForm
+            useStripe
+            componentRef={(ref) => {
+              this.cardRef = ref;
+            }}
+            onChange={(vals) => {
+              console.log(vals);
+            }}
+            visible
+          />
+          <CreditCardForm
+            onChange={(vals) => {
+              console.log(vals);
+            }}
+            visible
+          />
           <AddressForm
             withAutocomplete
             onChange={(addr) => {
