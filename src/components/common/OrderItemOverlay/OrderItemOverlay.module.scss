@@ -1,6 +1,5 @@
 @import "styles/variablesscss";
 @import "styles/mixins";
-@import "styles/global";
 
 .OrderItemOverlay {
   background-color: white;
@@ -29,7 +28,6 @@
   padding-left: 55px;
   @include mobile-media {
     padding: $margin-small-4;
-    border-bottom: 1px solid rgba(363648, 0, 0, 0.1);
   }
 
   .image {
@@ -96,9 +94,9 @@
   text-decoration: none;
   width: 100%;
   @include mobile-media {
+    @include roundedContainer;
     padding: 0 $margin-small-4;
     font-size: 12px;
-    border-bottom: 1px solid rgba(363648, 0, 0, 0.1);
   }
 
   .address {
@@ -135,9 +133,9 @@
   align-items: center;
   margin-top: 40px;
   @include mobile-media {
+    @include roundedContainer;
     margin: 0;
     padding: $margin-small-4 0;
-    border-top: 1px solid rgba(363648, 0, 0, 0.1);
   }
 }
 
@@ -178,6 +176,7 @@
       display: none;
     }
   }
+
   .addCartPrice {
     @include mobile-media {
       display: none;
