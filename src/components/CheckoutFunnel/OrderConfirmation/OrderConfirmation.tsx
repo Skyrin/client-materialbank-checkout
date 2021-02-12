@@ -11,8 +11,11 @@ import { get } from "lodash-es";
 import { PaymentOption } from "../PaymentInformation/PaymentInformation";
 import applePayLogo from "assets/images/apple_pay_logo_black.svg";
 import paypalLogo from "assets/images/paypal_logo.svg";
-import { ORDER_ID_STORAGE_KEY } from "constants/general";
-import { requestOrder } from "context/CustomerAPI/api";
+import {
+  ORDER_ID_STORAGE_KEY,
+  ORDER_NUMBER_STORAGE_KEY,
+} from "constants/general";
+import { requestCustomerOrders, requestOrder } from "context/CustomerAPI/api";
 import { OrderT } from "constants/types";
 
 type State = {
@@ -106,7 +109,16 @@ export default class OrderConfirmation extends React.Component<any, State> {
 
   async componentDidMount() {
     scrollToTop();
-    const orderNumber = localStorage.getItem(ORDER_ID_STORAGE_KEY);
+    // This is so ridiculous...
+    // The graphql placeOrder mutation returns an order number
+    // But the REST call that we need to use for Stripe returns an order id
+    // Then...
+    // There is no way of retrieving the order directly by id
+    // So we need to get the entire list and find it ourselves
+
+    const orderNumber = localStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
+    const orderId = localStorage.getItem(ORDER_ID_STORAGE_KEY);
+    await this.context.requestCartInfo();
     if (orderNumber) {
       const order = await requestOrder(this.context, orderNumber);
       console.log("ORDER", order);
@@ -115,6 +127,20 @@ export default class OrderConfirmation extends React.Component<any, State> {
         loadingOrder: false,
       });
     }
+    if (orderId) {
+      const orders = await requestCustomerOrders(this.context);
+      const foundOrder = orders.items.find(
+        (order) => orderId === atob(order.id)
+      );
+      if (foundOrder) {
+        this.setState({
+          order: foundOrder,
+          loadingOrder: false,
+        });
+      }
+    }
+    localStorage.removeItem(ORDER_NUMBER_STORAGE_KEY);
+    localStorage.removeItem(ORDER_ID_STORAGE_KEY);
   }
 
   recommendationClick(productId: number): void {}
@@ -123,7 +149,7 @@ export default class OrderConfirmation extends React.Component<any, State> {
     const parsedAddress = {
       ...address,
     };
-    if (get(address.region, "code")) {
+    if (get(address, "region.code")) {
       parsedAddress.region = address.region.code;
     }
     return parsedAddress;
@@ -137,7 +163,10 @@ export default class OrderConfirmation extends React.Component<any, State> {
     if (orderPaymentOption && orderPaymentOption.type === "paypal_express") {
       selectedPaymentOption = PaymentOption.PayPal;
     }
-    console.log(this.context.cart);
+    if (orderPaymentOption && orderPaymentOption.type === "stripe_payments") {
+      selectedPaymentOption = PaymentOption.CreditCard;
+    }
+    console.log(this.state.order);
     const shippingAddress = this.parseAddress(
       get(
         this.state.order,
@@ -276,7 +305,7 @@ export default class OrderConfirmation extends React.Component<any, State> {
                   <React.Fragment>
                     <div className={styles["card-img"]} />
                     <span>
-                      ending in 1234&nbsp;-&nbsp;
+                      Credit Card&nbsp;-&nbsp;
                       {this.context.cart?.prices?.subtotal_including_tax
                         ?.currency || "$"}
                       {orderAmount || "172"}

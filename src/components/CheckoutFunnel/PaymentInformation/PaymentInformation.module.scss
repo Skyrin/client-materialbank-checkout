@@ -136,4 +136,11 @@
       font-size: 40px;
     }
   }
+
+  .optionText {
+    margin-top: $margin-small-3;
+    margin-left: calc(
+      var(--horizontal-spacing-normal) + var(--horizontal-spacing-half)
+    );
+  }
 }

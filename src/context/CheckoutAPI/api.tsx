@@ -9,6 +9,7 @@ import {
   CartShippingAddressesFragment,
 } from "./fragments";
 import { CartAddressInput } from "./models";
+import { get } from "lodash-es";
 
 export const requestGuestCartInfo = async (
   context: AppContextState,
@@ -146,7 +147,6 @@ export const setBillingAddressOnCart = async (
           context,
           context.cart.shipping_addresses[0]
         ),
-        same_as_shipping: true,
       };
     } else {
       billingAddressInput = {
@@ -188,7 +188,10 @@ export const createTestCart = async (context: AppContextState) => {
       context,
       CreateEmptyCartMutation
     );
-    const cartId = createCartResponse["createEmptyCart"];
+    let cartId = get(context.cart, "id");
+    if (!cartId) {
+      cartId = createCartResponse["createEmptyCart"];
+    }
     const addProductsResponse = await graphqlRequest(
       context,
       AddSimpleProductsToCartMutation,
@@ -312,5 +315,48 @@ export const setShippingMethodOnCart = async (
     return setShippingMethodsResponse["setShippingMethodsOnCart"]["cart"];
   } catch (e) {
     console.error(e);
+  }
+};
+
+export const createPaypalTokenForCart = async (
+  context: AppContextState,
+  cartId: string,
+  expressButton?: boolean
+) => {
+  const CreatePaypalTokenMutation = `
+      mutation createPaypalExpressToken($input: PaypalExpressTokenInput!) {
+        createPaypalExpressToken(input: $input) {
+          token
+          paypal_urls {
+            edit
+            start
+          }
+        }
+      }
+    `;
+
+  const variables = {
+    input: {
+      cart_id: cartId,
+      code: "paypal_express",
+      express_button: expressButton,
+      urls: {
+        cancel_url: "checkout/payment/paypal-cancelled",
+        return_url: "checkout/payment/paypal-success",
+      },
+    },
+  };
+
+  try {
+    // Request Paypal Express Token from Magento and pass it to the Paypal SDK
+    const response = await graphqlRequest(
+      context,
+      CreatePaypalTokenMutation,
+      variables
+    );
+    return response["createPaypalExpressToken"];
+  } catch (e) {
+    console.error(e);
+    throw e;
   }
 };

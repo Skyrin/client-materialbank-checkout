@@ -10,6 +10,7 @@
   grid-template-rows: auto;
   column-gap: var(--horizontal-spacing-normal);
   row-gap: var(--horizontal-spacing-normal);
+  grid-template-columns: 2fr 1fr 1fr;
   grid-template-areas:
     "card-number expiration cvv"
     "card-name card-name card-name";
@@ -48,5 +49,40 @@
 
   .cardNameArea {
     grid-area: card-name;
+  }
+
+  .input {
+    --input-height: 40px;
+    --input-border-radius: 24px;
+    position: relative;
+    width: 100%;
+    height: var(--input-height);
+    padding: 10px 16px;
+    border-radius: var(--input-border-radius);
+    outline: none;
+    border: 1px solid rgba(var(--primary-color-rgb), 0.1);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+    font-size: var(--font-size-md);
+    transition: border-color 0.1s linear, box-shadow 0.1s linear;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    &.hasError {
+      border-color: red;
+    }
+
+    @include mobile-media {
+      font-size: var(--font-size-sm);
+    }
+
+    &:hover {
+      border-color: rgba(var(--primary-color-rgb), 0.4);
+    }
+
+    &:focus {
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+      border-color: rgba(var(--primary-color-rgb), 0.6);
+    }
   }
 }
