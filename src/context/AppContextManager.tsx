@@ -30,7 +30,7 @@ import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/Paym
 import {
   AUTH_TOKEN_STORAGE_KEY,
   GUEST_CART_ID_STORAGE_KEY,
-  ORDER_ID_STORAGE_KEY,
+  ORDER_NUMBER_STORAGE_KEY,
 } from "constants/general";
 
 type Props = {
@@ -263,6 +263,12 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
       const guestCartId = localStorage.getItem(GUEST_CART_ID_STORAGE_KEY);
       const customerCartId = this.contextState.cart.id;
+      if (guestCartId === customerCartId) {
+        this.contextState.cartInfoLoading = false;
+        localStorage.removeItem(GUEST_CART_ID_STORAGE_KEY);
+        this.forceUpdate();
+        return this.contextState.cart;
+      }
       console.log("GUEST ID", guestCartId);
       console.log("CUSTOMER CART ID", customerCartId);
       const newCart = await mergeGuestCart(
@@ -292,7 +298,7 @@ export default class AppContextManager extends React.Component<Props> {
       const cartId = this.contextState.cart.id;
       const order = await placeOrder(this.getFullContext(), cartId);
       console.log("PLACED ORDER", order);
-      localStorage.setItem(ORDER_ID_STORAGE_KEY, order["order_number"]);
+      localStorage.setItem(ORDER_NUMBER_STORAGE_KEY, order["order_number"]);
       localStorage.removeItem(GUEST_CART_ID_STORAGE_KEY);
       this.contextState.cartInfoLoading = false;
       this.actions.updateCart({});

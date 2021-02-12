@@ -131,3 +131,46 @@ export const requestOrder = async (
     console.error(e);
   }
 };
+
+export const requestCustomerOrders = async (context: AppContextState) => {
+  const OrdersQuery = `
+    query CustomerOrder {
+      customer {
+        orders {
+          items {
+            id
+            number
+            payment_methods {
+              type
+              name
+              additional_data {
+                name
+                value
+              }
+            }
+            billing_address {
+              ${OrderAddressFragment}
+            }
+            shipping_address {
+              ${OrderAddressFragment}
+            }
+            total {
+              grand_total {
+                value
+              }
+              subtotal {
+                value
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+  try {
+    const resp = await graphqlRequest(context, OrdersQuery);
+    return resp["customer"]["orders"];
+  } catch (e) {
+    console.error(e);
+  }
+};

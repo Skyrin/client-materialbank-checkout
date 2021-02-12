@@ -9,6 +9,7 @@ import {
   CartShippingAddressesFragment,
 } from "./fragments";
 import { CartAddressInput } from "./models";
+import { get } from "lodash-es";
 
 export const requestGuestCartInfo = async (
   context: AppContextState,
@@ -146,7 +147,6 @@ export const setBillingAddressOnCart = async (
           context,
           context.cart.shipping_addresses[0]
         ),
-        same_as_shipping: true,
       };
     } else {
       billingAddressInput = {
@@ -188,7 +188,10 @@ export const createTestCart = async (context: AppContextState) => {
       context,
       CreateEmptyCartMutation
     );
-    const cartId = createCartResponse["createEmptyCart"];
+    let cartId = get(context.cart, "id");
+    if (!cartId) {
+      cartId = createCartResponse["createEmptyCart"];
+    }
     const addProductsResponse = await graphqlRequest(
       context,
       AddSimpleProductsToCartMutation,

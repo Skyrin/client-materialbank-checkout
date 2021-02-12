@@ -236,14 +236,17 @@ export default class CreditCardForm extends React.Component<Props, State> {
     }
   };
 
-  createStripeToken = async () => {
-    const { token, error } = await this.stripe.createToken(this.cardNumber, {
-      name: this.state.values.creditCardName,
-      address_country: "US",
+  createStripePaymentMethod = async () => {
+    const { paymentMethod, error } = await this.stripe.createPaymentMethod({
+      type: "card",
+      card: this.cardNumber,
+      billing_details: {
+        name: this.state.values.creditCardName,
+      },
     });
-    console.log(token);
+    console.log(paymentMethod);
     console.log(error);
-    return token;
+    return paymentMethod;
   };
 
   renderStripe = () => {

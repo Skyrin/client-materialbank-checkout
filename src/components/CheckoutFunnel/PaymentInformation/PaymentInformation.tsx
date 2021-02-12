@@ -1,6 +1,6 @@
 import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import Logo from "components/common/Logo/Logo";
-import { BREADCRUMBS_STEPS } from "constants/general";
+import { BREADCRUMBS_STEPS, ORDER_ID_STORAGE_KEY } from "constants/general";
 import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PaymentInformation.module.scss";
@@ -116,21 +116,20 @@ export class PaymentInformation extends React.Component<Props, State> {
   async onSubmit() {
     await this.setBillingAddress();
     await this.context.setShippingMethod();
-    // TODO: handle payment
-    // TODO: handle checkout before redirect to confirmation page
+
     if (this.state.paymentOption === PaymentOption.CreditCard) {
-      const tokenResponse = await this.creditCardForm.createStripeToken();
-      const token = tokenResponse.id;
+      const paymentMethodResponse = await this.creditCardForm.createStripePaymentMethod();
+      const token = paymentMethodResponse.id;
       console.log("GOT TOKEN", token);
 
       const response = await RESTRequest(
         "POST",
-        "carts/mine/set-payment-information",
+        "carts/mine/payment-information",
         {
           paymentMethod: {
             method: "stripe_payments",
             additional_data: {
-              cc_save: false,
+              cc_save: true,
               cc_stripejs_token: token,
             },
           },
@@ -140,8 +139,9 @@ export class PaymentInformation extends React.Component<Props, State> {
       console.log("RESPONSE", response);
       console.log("RESP BODY", respBody);
       if (response.ok && respBody) {
-        await this.context.placeOrder();
+        localStorage.setItem(ORDER_ID_STORAGE_KEY, respBody);
         this.props.history.push(ORDER_CONFIRMATION_URL);
+        return;
       }
     }
     return;
@@ -319,12 +319,13 @@ export class PaymentInformation extends React.Component<Props, State> {
               className={styles.paymentLogoIcon}
             />
           </div>
-          {this.state.paymentOption === PaymentOption.PayPal && (
+          {/* TODO: Enable this once we figure out what we're going to do with paypal */}
+          {/* {this.state.paymentOption === PaymentOption.PayPal && (
             <div className={cn(styles.optionText, "small-text")}>
               After clicking "Place My Order", you will be redirected to PayPal
               to complete your purchase securely.
             </div>
-          )}
+          )} */}
         </div>
         <div className={styles.paddingContainer}>
           <div
@@ -403,6 +404,7 @@ export class PaymentInformation extends React.Component<Props, State> {
         </div>
 
         <AddressForm
+          withAutocomplete
           visible={this.state.addressOption === AddressOption.BillingAddress}
           onChange={(newValues: AddressFormValuesT) => {
             this.setState({
