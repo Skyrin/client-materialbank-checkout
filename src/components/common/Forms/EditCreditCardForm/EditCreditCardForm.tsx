@@ -160,12 +160,14 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
               DELETE THIS CARD
             </button>
           )}
-          <button className={styles.cancelButton} onClick={this.cancelClick}>
-            Cancel
-          </button>
-          <button className={styles.saveChanges} onClick={this.saveChanges}>
-            Save Changes
-          </button>
+          <div className={styles.formButtonsEdit}>
+            <button className={styles.cancelButton} onClick={this.cancelClick}>
+              Cancel
+            </button>
+            <button className={styles.saveChanges} onClick={this.saveChanges}>
+              Save Changes
+            </button>
+          </div>
         </div>
       </div>
     );
