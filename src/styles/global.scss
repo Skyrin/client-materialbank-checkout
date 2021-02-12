@@ -138,6 +138,7 @@ h4 {
   font-size: var(--button-medium-font-size);
   font-weight: var(--button-font-weight);
   padding: 0 80px;
+  position: relative;
   outline: none;
   cursor: pointer;
   text-decoration: none;
@@ -178,6 +179,10 @@ h4 {
     pointer-events: none;
     background-color: var(--button-disabled-background-color);
     color: var(--button-disabled-color);
+  }
+
+  &.hasLoader {
+    color: transparent;
   }
 }
 

@@ -36,6 +36,7 @@ import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
 import { RESTRequest } from "RestClient";
 import { createPaypalTokenForCart } from "context/CheckoutAPI/api";
+import ButtonLoader from "components/common/ButtonLoader/ButtonLoader";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -57,6 +58,7 @@ type State = {
   creditCardInfo: CreditCardFormValuesT;
   billingAddress: AddressFormValuesT;
   rememberMeCheck: boolean;
+  isSubmitting: boolean;
 };
 
 export class PaymentInformation extends React.Component<Props, State> {
@@ -80,6 +82,7 @@ export class PaymentInformation extends React.Component<Props, State> {
       creditCardInfo: DEFAULT_CREDIT_CARD_FORM_VALUES,
       billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
       rememberMeCheck: true,
+      isSubmitting: false,
     };
   }
 
@@ -114,6 +117,9 @@ export class PaymentInformation extends React.Component<Props, State> {
   };
 
   async onSubmit() {
+    this.setState({
+      isSubmitting: true,
+    });
     await this.setBillingAddress();
     await this.context.setShippingMethod();
 
@@ -141,6 +147,9 @@ export class PaymentInformation extends React.Component<Props, State> {
       if (response.ok && respBody) {
         localStorage.setItem(ORDER_ID_STORAGE_KEY, respBody);
         this.props.history.push(ORDER_CONFIRMATION_URL);
+        return;
+      } else {
+        console.error(respBody);
         return;
       }
     }
@@ -419,6 +428,9 @@ export class PaymentInformation extends React.Component<Props, State> {
   };
 
   submitButtonIsDisabled = () => {
+    if (this.state.isSubmitting) {
+      return true;
+    }
     if (
       this.state.paymentOption === PaymentOption.CreditCard &&
       (!this.creditCardForm || !this.creditCardForm.isValid())
@@ -486,11 +498,14 @@ export class PaymentInformation extends React.Component<Props, State> {
         <div className={cn("margin-top-big", styles.navigationContainer)}>
           {isOnMobile() && (
             <button
-              className="button large"
+              className={cn("button large", {
+                hasLoader: this.state.isSubmitting,
+              })}
               onClick={() => this.onSubmit()}
               disabled={this.submitButtonIsDisabled()}
             >
               Place My Order
+              {this.state.isSubmitting && <ButtonLoader />}
             </button>
           )}
 
@@ -506,11 +521,14 @@ export class PaymentInformation extends React.Component<Props, State> {
 
           {!isOnMobile() && (
             <button
-              className="button large"
+              className={cn("button large", {
+                hasLoader: this.state.isSubmitting,
+              })}
               onClick={() => this.onSubmit()}
               disabled={this.submitButtonIsDisabled()}
             >
               Place My Order
+              {this.state.isSubmitting && <ButtonLoader />}
             </button>
           )}
         </div>
