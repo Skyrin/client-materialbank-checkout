@@ -144,7 +144,6 @@ export class PaymentInformation extends React.Component<Props, State> {
         return;
       }
     }
-    return;
     this.props.history.push(ORDER_CONFIRMATION_URL);
   }
 
