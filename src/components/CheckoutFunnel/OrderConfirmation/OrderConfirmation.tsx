@@ -118,6 +118,7 @@ export default class OrderConfirmation extends React.Component<any, State> {
 
     const orderNumber = localStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
     const orderId = localStorage.getItem(ORDER_ID_STORAGE_KEY);
+    await this.context.requestCartInfo();
     if (orderNumber) {
       const order = await requestOrder(this.context, orderNumber);
       console.log("ORDER", order);
