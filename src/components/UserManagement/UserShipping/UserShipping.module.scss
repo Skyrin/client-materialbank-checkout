@@ -11,6 +11,9 @@
 
 .pageContent {
   margin-top: $margin-medium-3;
+  @include mobile-media {
+    margin-top: 0;
+  }
 }
 
 .addressGrid {
