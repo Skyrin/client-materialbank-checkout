@@ -81,16 +81,16 @@
     grid-area: buttons;
     display: flex;
     margin-top: $margin-medium;
+    justify-content: space-between;
     @include mobile-media {
       display: flex;
-      justify-content: space-between;
       align-items: center;
       width: 100%;
       display: flex;
       flex-wrap: wrap;
       flex-direction: row;
       margin-bottom: 10px;
-      margin-top: 0;
+      margin-top: $margin-small-4;
     }
 
     .formButtonsEdit {
