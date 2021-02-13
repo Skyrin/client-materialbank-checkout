@@ -6,23 +6,44 @@ import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Input from "components/common/Input/Input";
 import { RouteComponentProps } from "react-router-dom";
 import Checkbox from "components/common/Checkbox/Checkbox";
+import {
+  PasswordCheckService,
+  PasswordCheckStrength,
+} from "components/common/PasswordCheckService/PasswordCheckService";
+import { extractErrors } from "utils/forms";
+import * as yup from "yup";
 
 const REGISTER_EMAIL_CONTENT_ID = "registerContentId";
 
-type State = {
-  acceptTerms: boolean;
+const registerSchema = yup.object().shape({
+  firstName: yup.string().required("Required"),
+  lastName: yup.string().required("Required"),
+  email: yup.string().email("Email must be valid.").required("Required"),
+  acceptTerms: yup.bool().oneOf([true], "Field must be checked"),
+  password: yup
+    .string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character."
+    )
+    .required("Required"),
+});
 
+type State = {
   register: {
     firstName: string;
     lastName: string;
     email: string;
     password: string;
+    acceptTerms: boolean;
   };
+  passwordStrength: PasswordCheckStrength;
   registerErrors: {
     firstName: string | null;
     lastName: string | null;
     email: string | null;
     password: string | null;
+    acceptTerms: string | null;
   };
 };
 
@@ -42,14 +63,16 @@ export class RegisterMailModal extends React.Component<any, State> {
         lastName: "",
         email: "",
         password: "",
+        acceptTerms: false,
       },
+      passwordStrength: PasswordCheckStrength.None,
       registerErrors: {
         firstName: null,
         lastName: null,
         email: null,
         password: null,
+        acceptTerms: null,
       },
-      acceptTerms: false,
     };
   }
 
@@ -76,6 +99,46 @@ export class RegisterMailModal extends React.Component<any, State> {
 
   disableWindowsScroll = () => {
     disableBodyScroll(this.modalTarget);
+  };
+
+  renderPasswordCheck = () => {
+    return (
+      <div className={styles.passwordCheckContainer}>
+        {new Array(8).fill(0).map((_, index) => (
+          <div
+            className={cn(
+              styles.passwordStep,
+              {
+                [styles.red]:
+                  index < 2 &&
+                  this.state.passwordStrength === PasswordCheckStrength.Short,
+              },
+              {
+                [styles.orange]:
+                  index < 4 &&
+                  this.state.passwordStrength === PasswordCheckStrength.Common,
+              },
+              {
+                [styles.lightOrange]:
+                  index < 6 &&
+                  this.state.passwordStrength === PasswordCheckStrength.Weak,
+              },
+              {
+                [styles.green]:
+                  index < 7 &&
+                  this.state.passwordStrength === PasswordCheckStrength.Ok,
+              },
+              {
+                [styles.blue]:
+                  index <= 8 &&
+                  this.state.passwordStrength === PasswordCheckStrength.Strong,
+              }
+            )}
+            key={index}
+          />
+        ))}
+      </div>
+    );
   };
 
   render() {
@@ -126,16 +189,20 @@ export class RegisterMailModal extends React.Component<any, State> {
               className={styles.inputField}
               placeholder="Password"
               value={this.state.register.password}
+              type="password"
               onChange={(val: string) => {
-                this.updateField("password", val);
+                // this.updateField("password", val);
+                this.passwordFieldUpdated(val);
               }}
               error={this.state.registerErrors.password}
             />
 
+            {this.renderPasswordCheck()}
+
             <div className="row center-vertically center-horizontally margin-top-big">
               <Checkbox
                 black={true}
-                value={this.state.acceptTerms}
+                value={this.state.register.acceptTerms}
                 onChange={(value) => {
                   this.acceptTermsChange(value);
                 }}
@@ -152,6 +219,12 @@ export class RegisterMailModal extends React.Component<any, State> {
               </div>
             </div>
 
+            {this.state.registerErrors.acceptTerms && (
+              <div className={styles.acceptTermsError}>
+                Required to accept Terms of Service
+              </div>
+            )}
+
             <button
               className={styles.registerButton}
               onClick={this.registerClick}
@@ -166,11 +239,29 @@ export class RegisterMailModal extends React.Component<any, State> {
 
   acceptTermsChange = (value: boolean) => {
     this.setState({
-      acceptTerms: value,
+      register: {
+        ...this.state.register,
+        acceptTerms: value,
+      },
+      registerErrors: {
+        ...this.state.registerErrors,
+        acceptTerms: null,
+      },
     });
   };
 
-  registerClick = () => {};
+  registerClick = () => {
+    this.validateRegisterForm();
+  };
+
+  passwordFieldUpdated = (values: string) => {
+    const passwordChecker = new PasswordCheckService();
+    console.log(passwordChecker.checkPasswordStrength(values));
+    this.setState({
+      passwordStrength: passwordChecker.checkPasswordStrength(values),
+    });
+    this.updateField("password", values);
+  };
 
   updateField = (fieldName: string, value: string) => {
     this.setState({
@@ -183,5 +274,23 @@ export class RegisterMailModal extends React.Component<any, State> {
         [fieldName]: null,
       },
     });
+  };
+
+  validateRegisterForm = () => {
+    try {
+      registerSchema.validateSync(this.state.register, {
+        abortEarly: false,
+      });
+      return true;
+    } catch (e) {
+      const errors = extractErrors(e);
+      this.setState({
+        registerErrors: {
+          ...this.state.registerErrors,
+          ...errors,
+        },
+      });
+      return false;
+    }
   };
 }
