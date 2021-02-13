@@ -18,6 +18,7 @@ export enum Modals {
   Login = "login",
   RegisterOptions = "register-options",
   RegisterEmail = "register-email",
+  AccountExists = "account-exists",
   None = "none",
 }
 

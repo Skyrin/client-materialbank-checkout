@@ -18,7 +18,7 @@ import { ClientError } from "GraphqlClient";
 
 const REGISTER_EMAIL_CONTENT_ID = "registerContentId";
 const ACCOUNT_ALREADY_EXISTS =
-  "A customer with the same email address already exists in an associated website";
+  "A customer with the same email address already exists in an associated website.";
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("Required"),
@@ -200,7 +200,6 @@ export class RegisterMailModal extends React.Component<any, State> {
               value={this.state.register.password}
               type="password"
               onChange={(val: string) => {
-                // this.updateField("password", val);
                 this.passwordFieldUpdated(val);
               }}
               error={this.state.registerErrors.password}
@@ -306,6 +305,7 @@ export class RegisterMailModal extends React.Component<any, State> {
 
           //TODO: Find a better way to check
           if (error.graphqlErrors[0]?.message === ACCOUNT_ALREADY_EXISTS) {
+            this.context.openModal(Modals.AccountExists);
           } else {
             let errorMessage = error.graphqlErrors[0]?.message
               ? error.graphqlErrors[0].message

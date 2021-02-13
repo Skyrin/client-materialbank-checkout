@@ -15,6 +15,7 @@ import "@stripe/stripe-js"; // Import Stripe.js at startup
 import { LoginModal } from "components/common/LoginModal/LoginModal";
 import { RegisterOptionsModal } from "components/common/RegisterModal/RegisterOptionsModal";
 import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterMailModal";
+import { AccountExistsModal } from "components/common/AccountExistsModal/AccountExistsModal";
 
 class App extends React.Component {
   static contextType = AppContext;
@@ -74,6 +75,9 @@ class App extends React.Component {
         )}
         {this.context.getModalOpen() === Modals.RegisterEmail && (
           <RegisterMailModal />
+        )}
+        {this.context.getModalOpen() === Modals.AccountExists && (
+          <AccountExistsModal />
         )}
 
         {/* Hidden icons that should make the browser pre-load the webfonts for fas(FontAwesome Solid) and far(FontAwesome Regular) */}

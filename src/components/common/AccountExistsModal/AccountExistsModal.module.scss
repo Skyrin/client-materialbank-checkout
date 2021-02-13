@@ -1,0 +1,61 @@
+@import "styles/variablesscss";
+
+.modalBackground {
+  display: flex;
+  flex-flow: column;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(black, 0.5);
+  z-index: 1001;
+  font-family: "Roboto", sans-serif;
+}
+
+.modalBox {
+  position: relative;
+  overflow: hidden;
+  width: 500px;
+  height: auto;
+  background: white;
+  border-radius: 4px;
+}
+
+.modalContent {
+  padding: 0 $margin-large-2 $margin-medium-4;
+  display: flex;
+  flex-flow: column;
+}
+
+.closeButton {
+  background: url("/assets/images/close_icon.svg") no-repeat;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  margin-left: auto;
+  margin-top: $margin-small-2;
+  margin-right: $margin-small-2;
+  cursor: pointer;
+  transition: background-color 0.15s $ease-in-out;
+
+  &:hover {
+    background: radial-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      url("/assets/images/close_icon.svg");
+  }
+
+  &:active {
+    background: radial-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+      url("/assets/images/close_icon.svg");
+  }
+}
+
+.title {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xxl);
+  color: var(--primary-color);
+  align-self: center;
+  margin-bottom: $margin-small-3;
+}
