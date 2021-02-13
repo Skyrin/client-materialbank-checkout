@@ -12,8 +12,13 @@ import {
 } from "components/common/PasswordCheckService/PasswordCheckService";
 import { extractErrors } from "utils/forms";
 import * as yup from "yup";
+import { PASSWORD_REGEX } from "constants/general";
+import Loader from "components/common/Loader/Loader";
+import { ClientError } from "GraphqlClient";
 
 const REGISTER_EMAIL_CONTENT_ID = "registerContentId";
+const ACCOUNT_ALREADY_EXISTS =
+  "A customer with the same email address already exists in an associated website";
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("Required"),
@@ -23,7 +28,7 @@ const registerSchema = yup.object().shape({
   password: yup
     .string()
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      PASSWORD_REGEX,
       "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character."
     )
     .required("Required"),
@@ -38,6 +43,7 @@ type State = {
     acceptTerms: boolean;
   };
   passwordStrength: PasswordCheckStrength;
+  registerRequestError: string;
   registerErrors: {
     firstName: string | null;
     lastName: string | null;
@@ -45,6 +51,7 @@ type State = {
     password: string | null;
     acceptTerms: string | null;
   };
+  isLoading: boolean;
 };
 
 type Props = RouteComponentProps;
@@ -65,6 +72,7 @@ export class RegisterMailModal extends React.Component<any, State> {
         password: "",
         acceptTerms: false,
       },
+      registerRequestError: "",
       passwordStrength: PasswordCheckStrength.None,
       registerErrors: {
         firstName: null,
@@ -73,6 +81,7 @@ export class RegisterMailModal extends React.Component<any, State> {
         password: null,
         acceptTerms: null,
       },
+      isLoading: false,
     };
   }
 
@@ -225,6 +234,19 @@ export class RegisterMailModal extends React.Component<any, State> {
               </div>
             )}
 
+            {this.state.registerRequestError && (
+              <div className={styles.registerAlert}>
+                <i
+                  className={cn(
+                    "fas",
+                    "fa-exclamation-triangle",
+                    styles.errorIcon
+                  )}
+                />
+                {this.state.registerRequestError}
+              </div>
+            )}
+
             <button
               className={styles.registerButton}
               onClick={this.registerClick}
@@ -232,6 +254,13 @@ export class RegisterMailModal extends React.Component<any, State> {
               Register
             </button>
           </div>
+
+          {this.state.isLoading && (
+            <Loader
+              containerClassName={styles.loaderContainer}
+              loaderClassName={styles.loader}
+            />
+          )}
         </div>
       </div>
     );
@@ -251,7 +280,42 @@ export class RegisterMailModal extends React.Component<any, State> {
   };
 
   registerClick = () => {
-    this.validateRegisterForm();
+    if (this.validateRegisterForm()) {
+      this.setState({
+        isLoading: true,
+      });
+
+      this.context
+        .createCustomer({
+          email: this.state.register.email,
+          firstname: this.state.register.firstName,
+          lastname: this.state.register.lastName,
+          password: this.state.register.password,
+        })
+        .then(() => {
+          this.setState({
+            isLoading: false,
+          });
+          this.closeModal();
+        })
+        .catch((error: ClientError) => {
+          console.log(error);
+          this.setState({
+            isLoading: false,
+          });
+
+          //TODO: Find a better way to check
+          if (error.graphqlErrors[0]?.message === ACCOUNT_ALREADY_EXISTS) {
+          } else {
+            let errorMessage = error.graphqlErrors[0]?.message
+              ? error.graphqlErrors[0].message
+              : error.message;
+            this.setState({
+              registerRequestError: errorMessage,
+            });
+          }
+        });
+    }
   };
 
   passwordFieldUpdated = (values: string) => {
