@@ -1,6 +1,6 @@
 import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import Logo from "components/common/Logo/Logo";
-import { BREADCRUMBS_STEPS } from "constants/general";
+import { BREADCRUMBS_STEPS, ORDER_ID_STORAGE_KEY } from "constants/general";
 import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PaymentInformation.module.scss";
@@ -34,6 +34,9 @@ import visaCardIcon from "assets/images/visa-card.png";
 import { isEqual, get } from "lodash-es";
 import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
+import { RESTRequest } from "RestClient";
+import { createPaypalTokenForCart } from "context/CheckoutAPI/api";
+import ButtonLoader from "components/common/ButtonLoader/ButtonLoader";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -55,6 +58,7 @@ type State = {
   creditCardInfo: CreditCardFormValuesT;
   billingAddress: AddressFormValuesT;
   rememberMeCheck: boolean;
+  isSubmitting: boolean;
 };
 
 export class PaymentInformation extends React.Component<Props, State> {
@@ -78,6 +82,7 @@ export class PaymentInformation extends React.Component<Props, State> {
       creditCardInfo: DEFAULT_CREDIT_CARD_FORM_VALUES,
       billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
       rememberMeCheck: true,
+      isSubmitting: false,
     };
   }
 
@@ -112,10 +117,42 @@ export class PaymentInformation extends React.Component<Props, State> {
   };
 
   async onSubmit() {
+    this.setState({
+      isSubmitting: true,
+    });
     await this.setBillingAddress();
-    // TODO: handle contact
-    // TODO: handle payment
-    // TODO: handle checkout before redirect to confirmation page
+    await this.context.setShippingMethod();
+
+    if (this.state.paymentOption === PaymentOption.CreditCard) {
+      const paymentMethodResponse = await this.creditCardForm.createStripePaymentMethod();
+      const token = paymentMethodResponse.id;
+      console.log("GOT TOKEN", token);
+
+      const response = await RESTRequest(
+        "POST",
+        "carts/mine/payment-information",
+        {
+          paymentMethod: {
+            method: "stripe_payments",
+            additional_data: {
+              cc_save: true,
+              cc_stripejs_token: token,
+            },
+          },
+        }
+      );
+      const respBody = await response.json();
+      console.log("RESPONSE", response);
+      console.log("RESP BODY", respBody);
+      if (response.ok && respBody) {
+        localStorage.setItem(ORDER_ID_STORAGE_KEY, respBody);
+        this.props.history.push(ORDER_CONFIRMATION_URL);
+        return;
+      } else {
+        console.error(respBody);
+        return;
+      }
+    }
     this.props.history.push(ORDER_CONFIRMATION_URL);
   }
 
@@ -250,6 +287,7 @@ export class PaymentInformation extends React.Component<Props, State> {
           </div>
 
           <CreditCardForm
+            useStripe
             visible={this.state.paymentOption === PaymentOption.CreditCard}
             onChange={(newValues: CreditCardFormValuesT) => {
               this.setState({
@@ -266,11 +304,16 @@ export class PaymentInformation extends React.Component<Props, State> {
         <div className={styles.paddingContainer}>
           <div
             className="row center-vertically clickable"
-            onClick={() => {
+            onClick={async () => {
               this.setState({
                 paymentOption: PaymentOption.PayPal,
               });
               this.context.setSelectedPaymentOption(PaymentOption.PayPal);
+              const paypalTokenResponse = await createPaypalTokenForCart(
+                this.context,
+                this.context.cart.id
+              );
+              console.log(paypalTokenResponse);
             }}
           >
             <RadioButton
@@ -284,6 +327,13 @@ export class PaymentInformation extends React.Component<Props, State> {
               className={styles.paymentLogoIcon}
             />
           </div>
+          {/* TODO: Enable this once we figure out what we're going to do with paypal */}
+          {/* {this.state.paymentOption === PaymentOption.PayPal && (
+            <div className={cn(styles.optionText, "small-text")}>
+              After clicking "Place My Order", you will be redirected to PayPal
+              to complete your purchase securely.
+            </div>
+          )} */}
         </div>
         <div className={styles.paddingContainer}>
           <div
@@ -362,6 +412,7 @@ export class PaymentInformation extends React.Component<Props, State> {
         </div>
 
         <AddressForm
+          withAutocomplete
           visible={this.state.addressOption === AddressOption.BillingAddress}
           onChange={(newValues: AddressFormValuesT) => {
             this.setState({
@@ -377,6 +428,9 @@ export class PaymentInformation extends React.Component<Props, State> {
   };
 
   submitButtonIsDisabled = () => {
+    if (this.state.isSubmitting) {
+      return true;
+    }
     if (
       this.state.paymentOption === PaymentOption.CreditCard &&
       (!this.creditCardForm || !this.creditCardForm.isValid())
@@ -444,11 +498,14 @@ export class PaymentInformation extends React.Component<Props, State> {
         <div className={cn("margin-top-big", styles.navigationContainer)}>
           {isOnMobile() && (
             <button
-              className="button large"
+              className={cn("button large", {
+                hasLoader: this.state.isSubmitting,
+              })}
               onClick={() => this.onSubmit()}
               disabled={this.submitButtonIsDisabled()}
             >
               Place My Order
+              {this.state.isSubmitting && <ButtonLoader />}
             </button>
           )}
 
@@ -464,11 +521,14 @@ export class PaymentInformation extends React.Component<Props, State> {
 
           {!isOnMobile() && (
             <button
-              className="button large"
+              className={cn("button large", {
+                hasLoader: this.state.isSubmitting,
+              })}
               onClick={() => this.onSubmit()}
               disabled={this.submitButtonIsDisabled()}
             >
               Place My Order
+              {this.state.isSubmitting && <ButtonLoader />}
             </button>
           )}
         </div>

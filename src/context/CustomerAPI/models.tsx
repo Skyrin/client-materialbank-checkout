@@ -1,4 +1,4 @@
-import { REGION_IDS } from "constants/regions";
+import { REGIONS } from "constants/regions";
 
 export class CustomerAddressInput {
   city: string;
@@ -44,7 +44,7 @@ export class CustomerAddressInput {
       obj?.postcode || obj?.zipCode || CustomerAddressInput.defaults.postcode;
     this.region = {
       region_id: obj?.region
-        ? REGION_IDS[obj?.region]
+        ? REGIONS[obj?.region].id
         : CustomerAddressInput.defaults.region_id,
       region_code: obj?.region || CustomerAddressInput.defaults.region_code,
     };

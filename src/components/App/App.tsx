@@ -11,6 +11,7 @@ import {
   AUTH_TOKEN_STORAGE_KEY,
   GUEST_CART_ID_STORAGE_KEY,
 } from "constants/general";
+import "@stripe/stripe-js"; // Import Stripe.js at startup
 import { LoginModal } from "components/common/LoginModal/LoginModal";
 import { RegisterOptionsModal } from "components/common/RegisterModal/RegisterOptionsModal";
 import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterMailModal";
