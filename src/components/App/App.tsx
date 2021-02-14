@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./App.module.scss";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import { CHECKOUT_FUNNEL_URL, USER_MANAGEMENT_URL } from "constants/urls";
 import cn from "classnames";
 import CheckoutFunnel from "components/CheckoutFunnel/CheckoutFunnel";
@@ -16,11 +16,25 @@ import { LoginModal } from "components/common/LoginModal/LoginModal";
 import { RegisterOptionsModal } from "components/common/RegisterModal/RegisterOptionsModal";
 import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterMailModal";
 import { AccountExistsModal } from "components/common/AccountExistsModal/AccountExistsModal";
+import { CreateCustomerInput } from "context/CustomerAPI/models";
 
-class App extends React.Component {
+type State = {
+  createCustomerInput: CreateCustomerInput;
+};
+
+type Props = RouteComponentProps;
+
+class App extends React.Component<any, State> {
   static contextType = AppContext;
   context!: AppContextState;
   oldIsOnMobile = isOnMobile();
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      createCustomerInput: null,
+    };
+  }
 
   resizeHandler = () => {
     // If isOnMobile toggles, force a re-render of the app
@@ -74,10 +88,16 @@ class App extends React.Component {
           <RegisterOptionsModal />
         )}
         {this.context.getModalOpen() === Modals.RegisterEmail && (
-          <RegisterMailModal />
+          <RegisterMailModal
+            onAccountExistsError={(value) => {
+              this.createCustomerAlreadyExists(value);
+            }}
+          />
         )}
         {this.context.getModalOpen() === Modals.AccountExists && (
-          <AccountExistsModal />
+          <AccountExistsModal
+            createCustomerInput={this.state.createCustomerInput}
+          />
         )}
 
         {/* Hidden icons that should make the browser pre-load the webfonts for fas(FontAwesome Solid) and far(FontAwesome Regular) */}
@@ -87,6 +107,14 @@ class App extends React.Component {
       </React.Fragment>
     );
   }
+
+  createCustomerAlreadyExists = (createCustomerInput: CreateCustomerInput) => {
+    this.context.openModal(Modals.None);
+    this.setState({
+      createCustomerInput: createCustomerInput,
+    });
+    this.context.openModal(Modals.AccountExists);
+  };
 }
 
 export default App;

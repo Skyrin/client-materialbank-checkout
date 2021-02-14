@@ -15,6 +15,7 @@ import * as yup from "yup";
 import { PASSWORD_REGEX } from "constants/general";
 import Loader from "components/common/Loader/Loader";
 import { ClientError } from "GraphqlClient";
+import { CreateCustomerInput } from "context/CustomerAPI/models";
 
 const REGISTER_EMAIL_CONTENT_ID = "registerContentId";
 const ACCOUNT_ALREADY_EXISTS =
@@ -54,9 +55,11 @@ type State = {
   isLoading: boolean;
 };
 
-type Props = RouteComponentProps;
+type Props = {
+  onAccountExistsError: (createCustomerInput: CreateCustomerInput) => void;
+};
 
-export class RegisterMailModal extends React.Component<any, State> {
+export class RegisterMailModal extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
@@ -305,7 +308,12 @@ export class RegisterMailModal extends React.Component<any, State> {
 
           //TODO: Find a better way to check
           if (error.graphqlErrors[0]?.message === ACCOUNT_ALREADY_EXISTS) {
-            this.context.openModal(Modals.AccountExists);
+            this.props.onAccountExistsError({
+              email: this.state.register.email,
+              firstname: this.state.register.firstName,
+              lastname: this.state.register.lastName,
+              password: this.state.register.password,
+            });
           } else {
             let errorMessage = error.graphqlErrors[0]?.message
               ? error.graphqlErrors[0].message
