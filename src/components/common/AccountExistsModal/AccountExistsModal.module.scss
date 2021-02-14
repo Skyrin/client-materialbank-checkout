@@ -28,6 +28,7 @@
   padding: 0 $margin-large-2 $margin-medium-4;
   display: flex;
   flex-flow: column;
+  align-items: center;
 }
 
 .closeButton {
@@ -58,4 +59,55 @@
   color: var(--primary-color);
   align-self: center;
   margin-bottom: $margin-small-3;
+}
+
+.subtitle {
+  color: var(--text-color-slight);
+  font-size: var(--font-size-md);
+  text-align: center;
+}
+
+.userAvatar {
+  width: 60px;
+  height: 60px;
+  background: url("/assets/images/user_avatar.svg") no-repeat;
+  margin-top: $margin-small-5;
+}
+
+.userName {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  color: var(--primary-color);
+  margin-top: $margin-small-2;
+}
+
+.userEmail {
+  color: var(--text-color-slight);
+  font-size: var(--font-size-md);
+}
+
+.inputField {
+  width: 100%;
+  margin-top: $margin-small-4;
+}
+
+.signInButton {
+  @include blackButton;
+  width: 100%;
+  margin-top: $margin-small-3;
+  background-color: $blue-button-color;
+
+  &:hover,
+  &:focus {
+    background-color: lighten($blue-button-color, 5%);
+  }
+
+  &:active {
+    background-color: lighten($blue-button-color, 10%);
+  }
+}
+
+.forgotPassword {
+  @include blueLabelButton;
+  margin-top: $margin-small-3;
 }
