@@ -1,4 +1,6 @@
 @import "styles/variablesscss";
+@import "styles/mixins";
+
 $button-background: #eaeaec;
 
 .modalBackground {
@@ -18,17 +20,29 @@ $button-background: #eaeaec;
 
 .modalBox {
   position: relative;
-  overflow: hidden;
+  overflow: auto;
   width: 500px;
   height: auto;
   background: white;
   border-radius: 4px;
+
+  @include mobile-media {
+    position: absolute;
+    left: $margin-small-4;
+    right: $margin-small-4;
+    width: auto;
+    max-height: 95%;
+  }
 }
 
 .modalContent {
   padding: 0 $margin-large-2 $margin-medium-4;
   display: flex;
   flex-flow: column;
+
+  @include mobile-media {
+    padding: 0 $margin-small-5 $margin-small-5;
+  }
 }
 
 .closeButton {
@@ -58,6 +72,7 @@ $button-background: #eaeaec;
   font-size: var(--font-size-xxl);
   color: var(--primary-color);
   align-self: center;
+  text-align: center;
   margin-bottom: $margin-small-3;
 }
 

@@ -39,6 +39,9 @@ $button-background: #eaeaec;
   padding: 0 $margin-large-2 $margin-small-5;
   display: flex;
   flex-flow: column;
+  @include mobile-media {
+    padding: 0 $margin-small-5 $margin-small-5;
+  }
 }
 
 .closeButton {
@@ -93,10 +96,6 @@ $button-background: #eaeaec;
   font-size: var(--font-size-md);
   margin-top: $margin-small-3;
   transition: background-color 0.15s $ease-in-out;
-
-  @include mobile-media {
-    margin-top: $margin-small-2;
-  }
 
   &:hover {
     background: darken($button-background, 10%);

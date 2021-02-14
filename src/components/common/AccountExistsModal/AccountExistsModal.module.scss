@@ -1,4 +1,5 @@
 @import "styles/variablesscss";
+@import "styles/mixins";
 
 .modalBackground {
   display: flex;
@@ -17,18 +18,29 @@
 
 .modalBox {
   position: relative;
-  overflow: hidden;
+  overflow: auto;
   width: 500px;
   height: auto;
   background: white;
   border-radius: 4px;
-}
 
+  @include mobile-media {
+    position: absolute;
+    left: $margin-small-4;
+    right: $margin-small-4;
+    width: auto;
+    max-height: 95%;
+  }
+}
 .modalContent {
   padding: 0 $margin-large-2 $margin-medium-4;
   display: flex;
   flex-flow: column;
   align-items: center;
+
+  @include mobile-media {
+    padding: 0 $margin-small-5 $margin-small-5;
+  }
 }
 
 .closeButton {
@@ -141,11 +153,18 @@
   margin-top: $margin-small-3;
   font-size: var(--font-size-md);
 
+  @include mobile-media {
+    margin-top: $margin-small-3;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+  }
+
   .errorIcon {
     width: 16px;
-    height: 16px;
+    height: auto;
     color: $red-color;
     position: absolute;
+    text-align: center;
     left: $margin-small-2;
   }
 }
