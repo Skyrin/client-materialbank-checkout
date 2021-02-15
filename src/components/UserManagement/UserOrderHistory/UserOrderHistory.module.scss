@@ -1,9 +1,14 @@
+@import "styles/mixins";
+
 .UserOrderHistory {
   padding: 62px 100px 162px;
 
-  @media (max-width: 970px) {
-    padding: calc(var(--vertical-spacing-normal) * 2)
-      calc(var(--vertical-spacing-normal) * 2) 50px;
+  //@media (max-width: 970px) {
+  //  padding: calc(var(--vertical-spacing-normal) * 2)
+  //    calc(var(--vertical-spacing-normal) * 2) 50px;
+  //}
+  @include mobile-media {
+    padding: 0;
   }
 }
 
@@ -16,6 +21,11 @@
   font-size: var(--font-size-sm);
   margin: 80px auto 0;
   font-weight: var(--font-weight-medium);
+  @include mobile-media {
+    height: 40px;
+    width: 100%;
+    margin: $margin-small-4 0 $margin-medium 0;
+  }
 
   &:hover,
   &:focus {

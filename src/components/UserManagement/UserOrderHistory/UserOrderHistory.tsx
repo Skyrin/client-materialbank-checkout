@@ -11,6 +11,8 @@ import { DateTime } from "luxon";
 import { OrderItemOverlay } from "components/common/OrderItemOverlay/OrderItemOverlay";
 import { Item } from "components/common/HistoryOrderItem/HistoryOrderItem";
 import { Modal } from "components/common/Modal/Modal";
+import { isOnMobile } from "../../../utils/responsive";
+import LogoMobile from "../../common/LogoMobile/LogoMobile";
 
 interface Props extends RouteComponentProps {}
 
@@ -340,6 +342,8 @@ export default class UserOrderHistory extends React.Component<Props, any> {
   render() {
     return (
       <div className={cn(styles["UserOrderHistory"])}>
+        {isOnMobile() && <LogoMobile />}
+
         <UserHeader
           title={UserPages.OrderHistory.name}
           extraContent={
