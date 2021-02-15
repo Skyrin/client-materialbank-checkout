@@ -8,6 +8,8 @@ import imagePlaceholder from "assets/images/profile_placeholder.png";
 import cn from "classnames";
 import ResetPasswordForm from "components/common/Forms/ResetPasswordForm/ResetPasswordForm";
 import UpdateProfileForm from "components/common/Forms/UpdateProfileForm/UpdateProfileForm";
+import { isOnMobile } from "../../../utils/responsive";
+import LogoMobile from "../../common/LogoMobile/LogoMobile";
 
 type Props = RouteComponentProps;
 
@@ -32,7 +34,9 @@ export default class UserAccount extends React.Component<Props, State> {
 
   renderResetPasswordSection = () => {
     return (
-      <div className={cn(styles.section, styles.fitContent)}>
+      <div
+        className={cn(styles.section, styles.fitContent, styles.resetSection)}
+      >
         <div className={styles.sectionHeader}>Reset Password</div>
         <ResetPasswordForm />
       </div>
@@ -41,7 +45,7 @@ export default class UserAccount extends React.Component<Props, State> {
 
   renderProfileInfo = () => {
     return (
-      <div className={styles.section}>
+      <div className={cn(styles.section, styles.updateProfileInfo)}>
         <div className={styles.sectionHeader}>Update profile Info</div>
 
         <div className="row center-vertically margin-top-big">
@@ -61,14 +65,19 @@ export default class UserAccount extends React.Component<Props, State> {
             accept={"image/*"}
             onChange={this.onFileSelected}
           />
-          <button className={styles.editImageButton}>
-            <label className={styles.uploadLabel} htmlFor={"cameraUpload"}>
-              Upload new photo
-            </label>
-          </button>
-          <button className={styles.editImageButton} onClick={this.removePhoto}>
-            Remove photo
-          </button>
+          <div className={styles.editPhoto}>
+            <button className={styles.editImageButton}>
+              <label className={styles.uploadLabel} htmlFor={"cameraUpload"}>
+                Upload new photo
+              </label>
+            </button>
+            <button
+              className={styles.editImageButton}
+              onClick={this.removePhoto}
+            >
+              Remove photo
+            </button>
+          </div>
         </div>
 
         <div className="horizontal-divider margin-top" />
@@ -77,11 +86,21 @@ export default class UserAccount extends React.Component<Props, State> {
             this.updateProfileForm = ref;
           }}
         />
-        <div className="horizontal-divider margin-top-big" />
+        <div
+          className={cn(
+            "horizontal-divider margin-top-big",
+            styles.horizontalDividerLinked
+          )}
+        />
         {this.renderLinkedAccountSection()}
         {this.renderDeleteAccount()}
 
-        <div className="row center-vertically margin-top-big">
+        <div
+          className={cn(
+            "row center-vertically margin-top-big",
+            styles.formEditButtons
+          )}
+        >
           <button className={styles.cancelButton}>Cancel</button>
           <button
             className={styles.saveChangesButton}
@@ -98,14 +117,16 @@ export default class UserAccount extends React.Component<Props, State> {
 
   renderLinkedAccountSection = () => {
     return (
-      <div className="margin-top-big">
+      <div className={cn("margin-top-big", styles.linkedAccounts)}>
         <div className={styles.subSectionHeader}>Linked Accounts</div>
         <div className={styles.description}>
           We use this to let you sign in and to populate your profile
           information. Only one account may be linked at a time.
         </div>
         <div className={styles.linkedAccountsGrid}>
-          <div className="row center-vertically">
+          <div
+            className={cn("row center-vertically", styles.linkedAccountOption)}
+          >
             <i
               className={cn(
                 "fab",
@@ -118,7 +139,9 @@ export default class UserAccount extends React.Component<Props, State> {
           <button className={styles.connectAccountButton} onClick={() => {}}>
             Connect
           </button>
-          <div className="row center-vertically">
+          <div
+            className={cn("row center-vertically", styles.linkedAccountOption)}
+          >
             <i
               className={cn(
                 "fab",
@@ -160,6 +183,7 @@ export default class UserAccount extends React.Component<Props, State> {
   render() {
     return (
       <div className={styles.UserAccount}>
+        {isOnMobile() && <LogoMobile />}
         <UserHeader title={UserPages.Account.name} />
         <div className={styles.pageContent}>
           {this.renderProfileInfo()}
