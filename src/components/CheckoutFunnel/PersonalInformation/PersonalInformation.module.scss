@@ -97,6 +97,15 @@
         }
       }
 
+      &.googlePay {
+        background-color: #000;
+        color: #fff;
+
+        &:hover {
+          background-color: lighten(#000, 10%);
+        }
+      }
+
       .expressCheckoutLogo {
         height: 18px;
       }
