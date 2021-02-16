@@ -1,9 +1,6 @@
 @import "styles/variablesscss";
 @import "styles/mixins";
 
-$button-background: #eaeaec;
-$element-width: 375px;
-
 .modalBackground {
   display: flex;
   flex-flow: column;
@@ -35,11 +32,11 @@ $element-width: 375px;
     max-height: 95%;
   }
 }
-
 .modalContent {
-  padding: 0 $margin-large-2 $margin-large-2;
+  padding: 0 $margin-large-2 $margin-medium-4;
   display: flex;
   flex-flow: column;
+  align-items: center;
 
   @include mobile-media {
     padding: 0 $margin-small-5 $margin-small-5;
@@ -74,118 +71,36 @@ $element-width: 375px;
   color: var(--primary-color);
   align-self: center;
   margin-bottom: $margin-small-3;
-
-  @include mobile-media {
-    margin-bottom: $margin-small-2;
-  }
 }
 
-.signInWithButton {
-  position: relative;
-  height: 40px;
-  width: 100%;
-  border: 1px solid var(--primary-color);
-  border-radius: 20px;
-  background: $button-background;
-  display: flex;
-  flex-flow: row;
-  align-items: center;
-  justify-content: center;
-  align-self: center;
-  cursor: pointer;
+.subtitle {
+  color: var(--text-color-slight);
+  font-size: var(--font-size-md);
+  text-align: center;
+}
+
+.userAvatar {
+  width: 60px;
+  height: 60px;
+  background: url("/assets/images/user_avatar.svg") no-repeat;
+  margin-top: $margin-small-5;
+}
+
+.userName {
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-md);
-  margin-top: $margin-small-2;
-  transition: background-color 0.15s $ease-in-out;
-
-  &:hover {
-    background: darken($button-background, 10%);
-  }
-
-  &:active {
-    background: darken($button-background, 20%);
-  }
-}
-
-.icon {
-  width: 20px;
-  height: 20px;
-  color: var(--primary-color);
-  position: absolute;
-  left: $margin-small-3;
-  margin-top: $margin-small;
-}
-
-.orSeparator {
-  display: grid;
-  width: 100%;
-  grid-template-columns: 1fr auto 1fr;
-  column-gap: $margin-small-2;
-  align-items: center;
-  font-size: var(--font-size-sm);
   color: var(--primary-color);
   margin-top: $margin-small-2;
+}
 
-  @include mobile-media {
-    margin-top: $margin-small-3;
-  }
+.userEmail {
+  color: var(--text-color-slight);
+  font-size: var(--font-size-md);
 }
 
 .inputField {
   width: 100%;
-  margin-top: $margin-small-2;
-
-  @include mobile-media {
-    margin-top: $margin-small-3;
-  }
-
-  & + .inputField {
-    margin-top: $margin-small-2;
-  }
-}
-
-.rememberShowPass {
-  display: flex;
-  flex-flow: row;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  margin-top: $margin-small-3;
-}
-
-.rememberMeRow {
-  display: flex;
-  flex-flow: row;
-  align-self: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.rememberMeHint {
-  margin-left: $margin-small;
-  font-size: var(--font-size-md);
-  color: var(--primary-color);
-
-  @include mobile-media {
-    font-size: var(--font-size-sm);
-    margin-top: 2px;
-  }
-}
-
-.showPassword {
-  margin-left: auto;
-  color: $blue-color;
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: color 0.15s $ease-in-out;
-
-  &:hover {
-    color: lighten($blue-color, 10%);
-  }
-  &:active {
-    color: lighten($blue-color, 20%);
-  }
+  margin-top: $margin-small-4;
 }
 
 .signInButton {
@@ -207,16 +122,6 @@ $element-width: 375px;
 .forgotPassword {
   @include blueLabelButton;
   margin-top: $margin-small-3;
-}
-
-.registerHint {
-  font-size: var(--font-size-md);
-  color: var(--primary-color);
-}
-
-.register {
-  @include blueLabelButton;
-  margin-left: $margin-small;
 }
 
 .loaderContainer {
@@ -245,6 +150,7 @@ $element-width: 375px;
   border-radius: $margin-small-2;
   color: $red-color;
   padding: $margin-small-2 $margin-small-5;
+  margin-top: $margin-small-3;
   font-size: var(--font-size-md);
 
   @include mobile-media {

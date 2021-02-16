@@ -23,8 +23,12 @@ import AddressForm, {
 import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
 import RadioButton from "components/common/RadioButton/RadioButton";
-import { AppContext, AppContextState } from "../../../context/AppContext";
-import { isEqual, get } from "lodash-es";
+import {
+  AppContext,
+  AppContextState,
+  Modals,
+} from "../../../context/AppContext";
+import { get, isEqual } from "lodash-es";
 import {
   CreateCustomerInput,
   CustomerAddressInput,
@@ -377,7 +381,7 @@ export class PersonalInformation extends React.Component<Props, State> {
                 // Hardcoded for now, so we don't create a ton of accounts unless we want to test the register
                 // this.context.login("test@example.com", "StrongPassword1");
 
-                this.context.openLoginModal(true);
+                this.context.openModal(Modals.Login);
               }}
             >
               Log In
