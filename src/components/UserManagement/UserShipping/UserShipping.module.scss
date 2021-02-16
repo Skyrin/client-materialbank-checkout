@@ -154,6 +154,7 @@
     margin: 0;
     padding: $margin-medium $margin-small-4;
     border: none;
+    border-radius: 0;
   }
 }
 
@@ -179,10 +180,16 @@
   height: 19px;
   align-self: flex-end;
   cursor: pointer;
+  @include mobile-media {
+    visibility: hidden;
+  }
 }
 
 .modalContent {
   display: flex;
   flex-flow: column;
   margin: auto $margin-huge-5;
+  @include mobile-media {
+    margin: 0 $margin-small-4;
+  }
 }

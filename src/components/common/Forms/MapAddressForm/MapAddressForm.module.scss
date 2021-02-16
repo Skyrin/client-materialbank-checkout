@@ -65,13 +65,11 @@
     color: $primary-color-user;
     @include mobile-media {
       margin-left: 5px;
+      margin-top: 10px;
     }
 
     .defaultAddressHint {
       margin-left: $margin-small-2;
-      @include mobile-media {
-        margin-top: 10px;
-      }
     }
   }
 
