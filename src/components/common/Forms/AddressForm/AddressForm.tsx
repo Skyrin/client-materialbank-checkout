@@ -133,6 +133,7 @@ export default class AddressForm extends React.Component<Props, State> {
         if (validate) {
           this.validateForm();
         }
+        this.props.onChange(this.state.values);
       }
     );
     if (values.address && this.props.withAutocomplete && this.addressInputRef) {

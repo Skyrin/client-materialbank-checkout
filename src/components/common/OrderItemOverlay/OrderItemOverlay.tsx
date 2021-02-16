@@ -66,8 +66,10 @@ export function OrderItemOverlay(props: Props) {
               Add sample to cart
             </span>
           </div>
-          {item.currency}
-          {item.pricePerSample}
+          <span className={styles.addCartPrice}>
+            {item.currency}
+            {item.pricePerSample}
+          </span>
         </button>
       </div>
     </div>

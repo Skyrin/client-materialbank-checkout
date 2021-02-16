@@ -7,6 +7,10 @@ $primary-color-80-user: rgba($primary-color-user, 0.8);
 
 $brown-color: #745a32;
 $red-color: #d8232a;
+$orange-color: #f99140;
+$orange-light-color: #f5be81;
+$green-color: #61c38f;
+
 $red-color-warning-background: #ffecea;
 $red-color-warning-border: #feb9b1;
 
@@ -102,6 +106,20 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
   &:active {
     color: lighten($primary-color-user, 50%);
+  }
+}
+
+@mixin blueLabelButton {
+  @include labelButton;
+  color: $blue-color;
+  padding: 0;
+
+  &:hover {
+    color: lighten($blue-color, 10%);
+  }
+
+  &:active {
+    color: lighten($blue-color, 20%);
   }
 }
 

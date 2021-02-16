@@ -13,6 +13,7 @@ import {
 } from "constants/urls";
 import applePayLogo from "assets/images/apple_pay_logo_black.svg";
 import payPalLogo from "assets/images/paypal_logo.svg";
+import googlePayLogo from "assets/images/google_pay_logo.svg";
 
 import CreditCardForm, {
   CreditCardFormValuesT,
@@ -37,6 +38,12 @@ import Loader from "components/common/Loader/Loader";
 import { RESTRequest } from "RestClient";
 import { createPaypalTokenForCart } from "context/CheckoutAPI/api";
 import ButtonLoader from "components/common/ButtonLoader/ButtonLoader";
+import {
+  loadStripe,
+  Stripe,
+  PaymentRequest,
+  PaymentRequestPaymentMethodEvent,
+} from "@stripe/stripe-js";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -48,6 +55,7 @@ export enum PaymentOption {
   CreditCard = "credit-card",
   PayPal = "pay-pal",
   ApplePay = "apple-pay",
+  GooglePay = "google-pay",
 }
 
 type Props = RouteComponentProps;
@@ -59,12 +67,20 @@ type State = {
   billingAddress: AddressFormValuesT;
   rememberMeCheck: boolean;
   isSubmitting: boolean;
+  applePayPossible: boolean;
+  googlePayPossible: boolean;
+  stripePaymentMethod: any;
+  paypalStartUrl: string;
 };
 
 export class PaymentInformation extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
   oldContext!: AppContextState;
+
+  stripe: Stripe;
+  applePayPaymentRequest: PaymentRequest;
+  googlePayPaymentRequest: PaymentRequest;
 
   constructor(props: Props, context: AppContextState) {
     super(props, context);
@@ -83,14 +99,65 @@ export class PaymentInformation extends React.Component<Props, State> {
       billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
       rememberMeCheck: true,
       isSubmitting: false,
+      applePayPossible: false,
+      googlePayPossible: false,
+      stripePaymentMethod: null,
+      paypalStartUrl: "",
     };
   }
 
   creditCardForm?: CreditCardForm;
   billingAddressForm?: AddressForm;
 
-  componentDidMount() {
+  async componentDidMount() {
     scrollToTop();
+    this.stripe = await loadStripe(
+      "pk_test_51I1F3fCnVrIUZxgWfN53yuaDE2trsJ1rFx7g1Nj44m3SMaCdKPuK1q7fm2IaBMnk0pB2lJsy4q0b2EP1NgiUcUaS00wwKh2Q54"
+    );
+    const paymentRequestOptions = {
+      country: "US",
+      currency: "usd",
+      total: {
+        label: "Total",
+        amount:
+          (this.context.cart.prices?.subtotal_including_tax?.value || 10) * 100, // ??????? Is it in cents?
+      },
+      requestPayerName: true,
+      requestPayerEmail: true,
+      requestPayerPhone: true,
+    };
+    this.applePayPaymentRequest = this.stripe.paymentRequest({
+      ...paymentRequestOptions,
+      wallets: ["applePay"],
+    });
+    this.googlePayPaymentRequest = this.stripe.paymentRequest({
+      ...paymentRequestOptions,
+      wallets: ["googlePay", "browserCard"],
+    });
+    const applePayPossible = !!(await this.applePayPaymentRequest.canMakePayment());
+    const googlePayPossible = !!(await this.googlePayPaymentRequest.canMakePayment());
+
+    if (applePayPossible) {
+      this.applePayPaymentRequest.on(
+        "paymentmethod",
+        this.handleStripePaymentMethod
+      );
+    }
+
+    if (googlePayPossible) {
+      this.googlePayPaymentRequest.on(
+        "paymentmethod",
+        this.handleStripePaymentMethod
+      );
+    }
+
+    console.log("APPLE POSSIBLE", applePayPossible);
+    console.log("GOOGLE POSSIBLE", googlePayPossible);
+
+    this.setState({
+      applePayPossible: applePayPossible,
+      googlePayPossible: googlePayPossible,
+    });
   }
 
   shouldComponentUpdate = (nextProps: Props, nextState: State) => {
@@ -116,6 +183,51 @@ export class PaymentInformation extends React.Component<Props, State> {
     }
   };
 
+  handleStripePaymentMethod = async (
+    event: PaymentRequestPaymentMethodEvent
+  ) => {
+    console.log(event);
+    const { complete, ...restOfEvent } = event;
+    const paymentMethod = restOfEvent.paymentMethod;
+
+    const resp = await this.setPaymentMethodAndPlaceOrder(
+      paymentMethod.id,
+      false
+    );
+
+    if (resp) {
+      localStorage.setItem(ORDER_ID_STORAGE_KEY, resp);
+      event.complete("success");
+      this.props.history.push(ORDER_CONFIRMATION_URL);
+    } else {
+      event.complete("fail");
+    }
+  };
+
+  setPaymentMethodAndPlaceOrder = async (
+    stripeToken: string,
+    saveCard?: boolean = false
+  ) => {
+    const response = await RESTRequest(
+      "POST",
+      "carts/mine/payment-information",
+      {
+        paymentMethod: {
+          method: "stripe_payments",
+          additional_data: {
+            cc_save: saveCard,
+            cc_stripejs_token: stripeToken,
+          },
+        },
+      }
+    );
+    const respBody = await response.json();
+    if (response.ok && respBody) {
+      return respBody;
+    }
+    return null;
+  };
+
   async onSubmit() {
     this.setState({
       isSubmitting: true,
@@ -128,28 +240,25 @@ export class PaymentInformation extends React.Component<Props, State> {
       const token = paymentMethodResponse.id;
       console.log("GOT TOKEN", token);
 
-      const response = await RESTRequest(
-        "POST",
-        "carts/mine/payment-information",
-        {
-          paymentMethod: {
-            method: "stripe_payments",
-            additional_data: {
-              cc_save: true,
-              cc_stripejs_token: token,
-            },
-          },
-        }
-      );
-      const respBody = await response.json();
-      console.log("RESPONSE", response);
-      console.log("RESP BODY", respBody);
-      if (response.ok && respBody) {
-        localStorage.setItem(ORDER_ID_STORAGE_KEY, respBody);
+      const resp = await this.setPaymentMethodAndPlaceOrder(token, true);
+
+      if (resp) {
+        localStorage.setItem(ORDER_ID_STORAGE_KEY, resp);
         this.props.history.push(ORDER_CONFIRMATION_URL);
         return;
       } else {
-        console.error(respBody);
+        return;
+      }
+    }
+
+    if (this.state.paymentOption === PaymentOption.GooglePay) {
+      this.googlePayPaymentRequest.show();
+      return;
+    }
+
+    if (this.state.paymentOption === PaymentOption.PayPal) {
+      if (this.state.paypalStartUrl) {
+        window.location.href = this.state.paypalStartUrl;
         return;
       }
     }
@@ -314,6 +423,9 @@ export class PaymentInformation extends React.Component<Props, State> {
                 this.context.cart.id
               );
               console.log(paypalTokenResponse);
+              this.setState({
+                paypalStartUrl: paypalTokenResponse.paypal_urls.start,
+              });
             }}
           >
             <RadioButton
@@ -327,36 +439,61 @@ export class PaymentInformation extends React.Component<Props, State> {
               className={styles.paymentLogoIcon}
             />
           </div>
-          {/* TODO: Enable this once we figure out what we're going to do with paypal */}
-          {/* {this.state.paymentOption === PaymentOption.PayPal && (
+          {this.state.paymentOption === PaymentOption.PayPal && (
             <div className={cn(styles.optionText, "small-text")}>
               After clicking "Place My Order", you will be redirected to PayPal
               to complete your purchase securely.
             </div>
-          )} */}
+          )}
         </div>
-        <div className={styles.paddingContainer}>
-          <div
-            className="row center-vertically clickable"
-            onClick={() => {
-              this.setState({
-                paymentOption: PaymentOption.ApplePay,
-              });
-              this.context.setSelectedPaymentOption(PaymentOption.ApplePay);
-            }}
-          >
-            <RadioButton
-              className={styles.radioButton}
-              value={this.state.paymentOption}
-              option={PaymentOption.ApplePay}
-            />
-            <img
-              src={applePayLogo}
-              alt="Apple Pay"
-              className={styles.paymentLogoIcon}
-            />
+        {this.state.applePayPossible && (
+          <div className={styles.paddingContainer}>
+            <div
+              className="row center-vertically clickable"
+              onClick={() => {
+                this.setState({
+                  paymentOption: PaymentOption.ApplePay,
+                });
+                this.context.setSelectedPaymentOption(PaymentOption.ApplePay);
+              }}
+            >
+              <RadioButton
+                className={styles.radioButton}
+                value={this.state.paymentOption}
+                option={PaymentOption.ApplePay}
+              />
+              <img
+                src={applePayLogo}
+                alt="Apple Pay"
+                className={styles.paymentLogoIcon}
+              />
+            </div>
           </div>
-        </div>
+        )}
+        {this.state.googlePayPossible && (
+          <div className={styles.paddingContainer}>
+            <div
+              className="row center-vertically clickable"
+              onClick={() => {
+                this.setState({
+                  paymentOption: PaymentOption.GooglePay,
+                });
+                this.context.setSelectedPaymentOption(PaymentOption.GooglePay);
+              }}
+            >
+              <RadioButton
+                className={styles.radioButton}
+                value={this.state.paymentOption}
+                option={PaymentOption.GooglePay}
+              />
+              <img
+                src={googlePayLogo}
+                alt="Google Pay"
+                className={styles.paymentLogoIcon}
+              />
+            </div>
+          </div>
+        )}
         {this.context.customerLoading && (
           <Loader
             containerClassName={styles.loaderContainer}
@@ -439,6 +576,11 @@ export class PaymentInformation extends React.Component<Props, State> {
     if (
       this.state.addressOption === AddressOption.BillingAddress &&
       !this.billingAddressForm.isValid()
+    )
+      return true;
+    if (
+      this.state.paymentOption === PaymentOption.PayPal &&
+      !this.state.paypalStartUrl
     )
       return true;
     return false;

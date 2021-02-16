@@ -1,3 +1,4 @@
+@import "styles/mixins";
 .Modal {
   position: fixed;
   width: 100vw;
@@ -7,6 +8,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  @include mobile-media {
+    width: 100%;
+  }
 }
 
 .background {
