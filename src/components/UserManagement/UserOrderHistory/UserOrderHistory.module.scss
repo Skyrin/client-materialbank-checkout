@@ -23,8 +23,8 @@
   font-weight: var(--font-weight-medium);
   @include mobile-media {
     height: 40px;
-    width: 100%;
-    margin: $margin-small-4 0 $margin-medium 0;
+    width: calc(100% - 40px);
+    margin: $margin-small-4 auto $margin-medium auto;
   }
 
   &:hover,
