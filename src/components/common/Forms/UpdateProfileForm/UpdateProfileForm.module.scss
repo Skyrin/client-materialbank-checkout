@@ -1,32 +1,50 @@
 @import "styles/variablesscss";
-
+@import "styles/mixins";
 .updateProfileForm {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: $margin-small-4;
   row-gap: $margin-small;
   grid-template-rows: auto;
+  @include mobile-media {
+    grid-template-columns: 1fr;
+    margin-top: 10px;
+    row-gap: 0;
+  }
 }
 
 .profileInputLayout {
   margin-top: $margin-medium-3;
+  @include mobile-media {
+    margin-top: 10px;
+  }
 }
 
 .mobileHint {
   @include grayText;
   margin-left: auto;
+  @include mobile-media {
+    font-size: 10px;
+  }
 }
 
 .optInHint {
   color: $primary-color-60-user;
   font-size: var(--font-size-md);
   margin-left: $margin-small-3;
+  @include mobile-media {
+    font-size: 12px;
+    margin-top: -5px;
+  }
 }
 
 .inputHint {
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);
   margin-bottom: $margin-small;
+  @include mobile-media {
+    font-size: 12px;
+  }
 }
 
 .description {
