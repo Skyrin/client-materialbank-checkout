@@ -1,6 +1,10 @@
 import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import Logo from "components/common/Logo/Logo";
-import { BREADCRUMBS_STEPS, PASSWORD_REGEX } from "constants/general";
+import {
+  BREADCRUMBS_STEPS,
+  ORDER_ID_STORAGE_KEY,
+  PASSWORD_REGEX,
+} from "constants/general";
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PersonalInformation.module.scss";
@@ -12,6 +16,7 @@ import {
   PAYMENT_URL,
 } from "constants/urls";
 import applePayLogo from "assets/images/apple_pay_logo.svg";
+import googlePayLogo from "assets/images/google_pay_logo_white.svg";
 import Input from "components/common/Input/Input";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
@@ -33,11 +38,14 @@ import {
   CreateCustomerInput,
   CustomerAddressInput,
 } from "context/CustomerAPI/models";
-import { scrollToTop } from "utils/general";
+import { parsePhoneNumber, scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
 import { PaymentOption } from "../PaymentInformation/PaymentInformation";
 import { createPaypalTokenForCart } from "context/CheckoutAPI/api";
 import ButtonLoader from "components/common/ButtonLoader/ButtonLoader";
+import { loadStripe, PaymentRequest, Stripe } from "@stripe/stripe-js";
+import { RESTRequest } from "RestClient";
+import { getAddressId } from "utils/context";
 
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
@@ -82,12 +90,19 @@ type State = {
     payer_id: string;
   };
   isSubmitting: boolean;
+  googlePayPossible: boolean;
+  applePayPossible: boolean;
+  stripePaymentMethodId: string;
 };
 
 export class PersonalInformation extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
   oldContext!: AppContextState;
+
+  stripe: Stripe;
+  applePayPaymentRequest: PaymentRequest;
+  googlePayPaymentRequest: PaymentRequest;
 
   constructor(props: Props, context: AppContextState) {
     super(props, context);
@@ -116,6 +131,9 @@ export class PersonalInformation extends React.Component<Props, State> {
         payer_id: "",
       },
       isSubmitting: false,
+      googlePayPossible: false,
+      applePayPossible: false,
+      stripePaymentMethodId: "",
     };
   }
 
@@ -167,7 +185,128 @@ export class PersonalInformation extends React.Component<Props, State> {
         onApprove: this.handlePaypalTransactionApprove,
       })
       .render("#paypal-express");
+
+    this.initStripe();
   }
+
+  initStripe = async () => {
+    // If we don't have cart data, retry stripe after 0.5s
+    if (!this.context.cart.prices?.subtotal_including_tax?.value) {
+      window.setTimeout(this.initStripe, 500);
+      return;
+    }
+
+    this.stripe = await loadStripe(
+      "pk_test_51I1F3fCnVrIUZxgWfN53yuaDE2trsJ1rFx7g1Nj44m3SMaCdKPuK1q7fm2IaBMnk0pB2lJsy4q0b2EP1NgiUcUaS00wwKh2Q54"
+    );
+    const paymentRequestOptions = {
+      country: "US",
+      currency: "usd",
+      total: {
+        label: "Total",
+        amount:
+          (this.context.cart.prices?.subtotal_including_tax?.value || 10) * 100, // ??????? Is it in cents?
+      },
+      requestPayerName: true,
+      requestPayerEmail: true,
+      requestPayerPhone: true,
+      requestShipping: true,
+      shippingOptions: [
+        {
+          id: "fedex",
+          label: "FedEx Priority Overnight",
+          amount: 0,
+        },
+      ],
+    };
+    this.applePayPaymentRequest = this.stripe.paymentRequest({
+      ...paymentRequestOptions,
+      wallets: ["applePay"],
+    });
+    this.googlePayPaymentRequest = this.stripe.paymentRequest({
+      ...paymentRequestOptions,
+      wallets: ["googlePay", "browserCard"],
+    });
+    const applePayPossible = !!(await this.applePayPaymentRequest.canMakePayment());
+    const googlePayPossible = !!(await this.googlePayPaymentRequest.canMakePayment());
+
+    if (applePayPossible) {
+      this.applePayPaymentRequest.on(
+        "paymentmethod",
+        this.handleStripePaymentMethod
+      );
+    }
+
+    if (googlePayPossible) {
+      this.googlePayPaymentRequest.on(
+        "paymentmethod",
+        this.handleStripePaymentMethod
+      );
+    }
+
+    console.log("APPLE POSSIBLE", applePayPossible);
+    console.log("GOOGLE POSSIBLE", googlePayPossible);
+
+    this.setState({
+      applePayPossible: applePayPossible,
+      googlePayPossible: googlePayPossible,
+    });
+  };
+
+  handleStripePaymentMethod = async (
+    event: PaymentRequestPaymentMethodEvent
+  ) => {
+    const { complete, ...restOfEvent } = event;
+    const paymentMethod = restOfEvent.paymentMethod;
+    console.log("GOT EVENT", event);
+
+    const [firstName, lastName] = (restOfEvent.payerName || "").split(" ");
+    this.setState(
+      {
+        stripePaymentMethodId: paymentMethod.id,
+        createAccount: {
+          firstname: firstName,
+          lastname: lastName,
+          email: restOfEvent.payerEmail,
+        },
+      },
+      async () => {
+        const [shippingFirstName, shippingLastName] = (
+          restOfEvent.shippingAddress?.recipient || ""
+        ).split(" ");
+        this.validateContactInfo();
+
+        const addressFields = {
+          firstName: shippingFirstName || "",
+          lastName: shippingLastName || "",
+          city: restOfEvent.shippingAddress?.city || "",
+          region: restOfEvent.shippingAddress?.region || "",
+          address: (restOfEvent.shippingAddress?.addressLine || [])[0] || "",
+          aptNumber: (restOfEvent.shippingAddress?.addressLine || [])[1] || "",
+          zipCode: restOfEvent.shippingAddress?.postalCode || "",
+          phone: parsePhoneNumber(restOfEvent.shippingAddress?.phone || ""),
+        };
+
+        if (this.context.isLoggedIn) {
+          // Found shipping address on customer, no need to create it again
+          const addressId = getAddressId(this.context, addressFields);
+          if (addressId !== -1) {
+            await this.context.setShippingAddress(addressId);
+          } else {
+            const newAddress = await this.createCustomerAddress(addressFields);
+            await this.context.setShippingAddress(newAddress.id);
+          }
+          complete("success");
+          await this.placeOrderWithStripe();
+          return;
+        } else {
+          this.shippingAddressForm.updateValues(addressFields, true);
+        }
+
+        complete("success");
+      }
+    );
+  };
 
   shouldComponentUpdate = (nextProps: Props, nextState: State) => {
     this.oldContext = this.context;
@@ -285,19 +424,53 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   renderExpressCheckoutSection = () => {
+    const columns = [
+      true,
+      this.state.applePayPossible,
+      this.state.googlePayPossible,
+    ]
+      .filter((e) => e)
+      .map((e) => "1fr");
+    const templateColumns = isOnMobile() ? "auto" : `${columns.join(" ")}`;
     return (
       <React.Fragment>
         <div className={styles.section}>
           <h3 className={styles.expressCheckoutSubtitle}>Express Checkout</h3>
-          <div className={styles.expressCheckoutOptions}>
+          <div
+            className={styles.expressCheckoutOptions}
+            style={{
+              gridTemplateColumns: templateColumns,
+            }}
+          >
             <div id="paypal-express" className={styles.expressCheckoutOption} />
-            <div className={cn(styles.expressCheckoutOption, styles.applePay)}>
-              <img
-                src={applePayLogo}
-                alt="Apple Pay"
-                className={styles.expressCheckoutLogo}
-              />
-            </div>
+            {this.state.applePayPossible && (
+              <div
+                className={cn(styles.expressCheckoutOption, styles.applePay)}
+                onClick={() => {
+                  this.applePayPaymentRequest.show();
+                }}
+              >
+                <img
+                  src={applePayLogo}
+                  alt="Apple Pay"
+                  className={styles.expressCheckoutLogo}
+                />
+              </div>
+            )}
+            {this.state.googlePayPossible && (
+              <div
+                className={cn(styles.expressCheckoutOption, styles.googlePay)}
+                onClick={() => {
+                  this.googlePayPaymentRequest.show();
+                }}
+              >
+                <img
+                  src={googlePayLogo}
+                  alt="Google Pay"
+                  className={styles.expressCheckoutLogo}
+                />
+              </div>
+            )}
           </div>
         </div>
         <div className={styles.expressCheckoutFootnote}>
@@ -575,6 +748,34 @@ export class PersonalInformation extends React.Component<Props, State> {
     return;
   };
 
+  placeOrderWithStripe = async () => {
+    this.setState({
+      isSubmitting: true,
+    });
+    await this.context.setBillingAddress(true);
+    await this.context.setShippingMethod();
+
+    const response = await RESTRequest(
+      "POST",
+      "carts/mine/payment-information",
+      {
+        paymentMethod: {
+          method: "stripe_payments",
+          additional_data: {
+            cc_save: false,
+            cc_stripejs_token: this.state.stripePaymentMethodId,
+          },
+        },
+      }
+    );
+    const respBody = await response.json();
+    if (response.ok && respBody) {
+      localStorage.setItem(ORDER_ID_STORAGE_KEY, respBody);
+      this.props.history.push(ORDER_CONFIRMATION_URL);
+      return;
+    }
+  };
+
   async onSubmit() {
     this.setState({ isSubmitting: true });
     try {
@@ -599,6 +800,11 @@ export class PersonalInformation extends React.Component<Props, State> {
         // place the order and go to the confirmation page
 
         await this.placeOrderWithPaypal();
+        return;
+      }
+
+      if (this.state.stripePaymentMethodId) {
+        await this.placeOrderWithStripe();
         return;
       }
 
@@ -629,8 +835,10 @@ export class PersonalInformation extends React.Component<Props, State> {
     }
   }
 
-  async createCustomerAddress() {
-    const addressInput = new CustomerAddressInput(this.state.shippingAddress);
+  async createCustomerAddress(addressFields?: any) {
+    const addressInput = new CustomerAddressInput(
+      addressFields || this.state.shippingAddress
+    );
     return await this.context.createCustomerAddress(addressInput);
   }
 
