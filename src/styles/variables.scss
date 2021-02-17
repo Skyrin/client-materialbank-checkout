@@ -22,6 +22,7 @@
 
   --color-separator: rgba(var(--primary-color-rgb), 0.1);
 
+  --color-grey: #fcfaf8;
   // Font colors
   --text-color-xlight: rgba(var(--primary-color-rgb), 0.4);
   --text-color-slight: rgba(var(--primary-color-rgb), 0.6);
@@ -54,6 +55,9 @@
   --spacing-big: 30px;
 
   // Buttons
+  --button-collection-background-color: var(--color-grey);
+  --button-collection-color: black;
+
   --button-background-color: var(--primary-color);
   --button-disabled-background-color: #fff;
   --button-hover-background-color-lightness: 1.2;

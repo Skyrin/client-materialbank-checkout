@@ -19,6 +19,8 @@ import { isOnMobile } from "../../utils/responsive";
 import LogoMobile from "../common/LogoMobile/LogoMobile";
 import Collections from "./Collections/Collections";
 import Palettes from "./Palettes/Palettes";
+import CollectionsToolbar from "./common/Toolbar/CollectionsToolbar";
+import ExploreTags from "./common/ExploreTags/ExploreTags";
 
 type Props = RouteComponentProps;
 
@@ -32,12 +34,7 @@ export default class CollectionsAndPalettes extends React.Component<Props> {
         <div className={styles.pageContent}>
           {isOnMobile() && <LogoMobile />}
           <div className={styles.pageWrapper}>
-            <Link to={COLLECTIONS_URL}>
-              <h1>Collections</h1>
-            </Link>
-            <Link to={PALETTES_URL}>
-              <h1>Pallete</h1>
-            </Link>
+            <CollectionsToolbar title={"Your collections & palettes"} />
             <Switch>
               <Redirect
                 exact
@@ -47,6 +44,7 @@ export default class CollectionsAndPalettes extends React.Component<Props> {
               <Route path={COLLECTIONS_URL} component={Collections} />
               <Route path={PALETTES_URL} component={Palettes} />
             </Switch>
+            <ExploreTags />
           </div>
         </div>
       </React.Fragment>
