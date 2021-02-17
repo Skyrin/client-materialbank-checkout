@@ -26,6 +26,8 @@ abstract class BaseAppContextState {
 
   private internalLoginModalOpen?: boolean = false;
 
+  private internalOrdersLoading?: boolean = false;
+
   public get cart() {
     return cloneDeep(this.internalCart);
   }
@@ -80,6 +82,14 @@ abstract class BaseAppContextState {
 
   public set selectedPaymentOption(newValue: PaymentOption) {
     this.internalSelectedPaymentOption = newValue;
+  }
+
+  public setOrdersLoading(isLoading: boolean) {
+    this.internalOrdersLoading = isLoading;
+  }
+
+  public isOrdersLoading() {
+    return this.internalOrdersLoading;
   }
 }
 
@@ -139,6 +149,8 @@ export class AppContextState extends BaseAppContextState {
   async mergeGuestCart() {}
 
   async placeOrder() {}
+
+  async getOrders() {}
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);

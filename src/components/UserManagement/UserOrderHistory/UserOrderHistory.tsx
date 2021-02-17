@@ -11,6 +11,8 @@ import { DateTime } from "luxon";
 import { OrderItemOverlay } from "components/common/OrderItemOverlay/OrderItemOverlay";
 import { Item } from "components/common/HistoryOrderItem/HistoryOrderItem";
 import { Modal } from "components/common/Modal/Modal";
+import { AppContext, AppContextState } from "context/AppContext";
+import Loader from "components/common/Loader/Loader";
 
 interface Props extends RouteComponentProps {}
 
@@ -319,10 +321,16 @@ export default class UserOrderHistory extends React.Component<Props, any> {
   ];
   canLoadMore: boolean = true;
   modalRef: any;
+  static contextType = AppContext;
+  context!: AppContextState;
 
   constructor(props: Props) {
     super(props);
     this.modalRef = React.createRef();
+  }
+
+  componentDidMount() {
+    this.context.getOrders().then((r) => {});
   }
 
   loadMore(): void {
@@ -359,6 +367,13 @@ export default class UserOrderHistory extends React.Component<Props, any> {
             shopItem={(item) => this.openItemOverlay(item)}
           />
         ))}
+
+        {this.context.isOrdersLoading() && (
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        )}
 
         {this.canLoadMore && (
           <button
