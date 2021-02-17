@@ -49,7 +49,7 @@ export default class ResetPasswordForm extends React.Component<any, State> {
 
   render() {
     return (
-      <div>
+      <div className={styles.resetPasswordSection}>
         <div className={styles.passwordInputLayout}>
           <div className={styles.inputHint}>Current Password</div>
           <Input

@@ -10,13 +10,22 @@ export const getAddressId = (context: AppContextState, address: AddressT) => {
   // even if the cart shipping/billing address was set using customer_address_id.
 
   const customerAddresses = context.customer?.addresses || [];
+
+  const addressStreet =
+    address.street ||
+    (address.aptName ? [address.address, address.aptName] : [address.address]);
   const foundAddress = customerAddresses.find((customerAddress) => {
     if (address.city !== customerAddress.city) return false;
-    if (address.region.code !== customerAddress.region.region_code)
+    if (
+      (address.region.code || address.region) !==
+      customerAddress.region.region_code
+    )
       return false;
-    if (address.firstname !== customerAddress.firstname) return false;
-    if (address.lastname !== customerAddress.lastname) return false;
-    if (!isEqual(address.street, customerAddress.street)) return false;
+    if ((address.firstname || address.firstName) !== customerAddress.firstname)
+      return false;
+    if ((address.lastname || address.lastName) !== customerAddress.lastname)
+      return false;
+    if (!isEqual(addressStreet, customerAddress.street)) return false;
     return true;
   });
   if (foundAddress) {

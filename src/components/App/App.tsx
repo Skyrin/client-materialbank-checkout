@@ -1,23 +1,45 @@
 import React from "react";
 import styles from "./App.module.scss";
-import { Redirect, Route, Switch } from "react-router-dom";
-import { CHECKOUT_FUNNEL_URL, USER_MANAGEMENT_URL } from "constants/urls";
+import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
+import {
+  CHECKOUT_FUNNEL_URL,
+  COLLECTIONS_AND_PALETTES_URL,
+  USER_MANAGEMENT_URL,
+} from "constants/urls";
 import cn from "classnames";
 import CheckoutFunnel from "components/CheckoutFunnel/CheckoutFunnel";
 import UserManagement from "components/UserManagement/UserManagement";
 import { isOnMobile } from "utils/responsive";
-import { AppContext, AppContextState } from "context/AppContext";
+import { AppContext, AppContextState, Modals } from "context/AppContext";
 import {
   AUTH_TOKEN_STORAGE_KEY,
   GUEST_CART_ID_STORAGE_KEY,
 } from "constants/general";
 import "@stripe/stripe-js"; // Import Stripe.js at startup
 import { LoginModal } from "components/common/LoginModal/LoginModal";
+import { RegisterOptionsModal } from "components/common/RegisterModal/RegisterOptionsModal";
+import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterMailModal";
+import { AccountExistsModal } from "components/common/AccountExistsModal/AccountExistsModal";
+import { CreateCustomerInput } from "context/CustomerAPI/models";
+import CollectionsAndPalettes from "../CollectionsAndPalettes/CollectionsAndPalettes";
 
-class App extends React.Component {
+type State = {
+  createCustomerInput: CreateCustomerInput;
+};
+
+type Props = RouteComponentProps;
+
+class App extends React.Component<any, State> {
   static contextType = AppContext;
   context!: AppContextState;
   oldIsOnMobile = isOnMobile();
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      createCustomerInput: null,
+    };
+  }
 
   resizeHandler = () => {
     // If isOnMobile toggles, force a re-render of the app
@@ -63,9 +85,30 @@ class App extends React.Component {
             <Redirect exact from="/" to={CHECKOUT_FUNNEL_URL} />
             <Route path={CHECKOUT_FUNNEL_URL} component={CheckoutFunnel} />
             <Route path={USER_MANAGEMENT_URL} component={UserManagement} />
+            <Route
+              path={COLLECTIONS_AND_PALETTES_URL}
+              component={CollectionsAndPalettes}
+            />
           </Switch>
         </div>
-        {this.context.isLoginModalOpen() && <LoginModal />}
+
+        {this.context.getModalOpen() === Modals.Login && <LoginModal />}
+        {this.context.getModalOpen() === Modals.RegisterOptions && (
+          <RegisterOptionsModal />
+        )}
+        {this.context.getModalOpen() === Modals.RegisterEmail && (
+          <RegisterMailModal
+            onAccountExistsError={(value) => {
+              this.createCustomerAlreadyExists(value);
+            }}
+          />
+        )}
+        {this.context.getModalOpen() === Modals.AccountExists && (
+          <AccountExistsModal
+            createCustomerInput={this.state.createCustomerInput}
+          />
+        )}
+
         {/* Hidden icons that should make the browser pre-load the webfonts for fas(FontAwesome Solid) and far(FontAwesome Regular) */}
         <i className={cn("fas fa-star", styles.hiddenIcon)} />
         <i className={cn("far fa-star", styles.hiddenIcon)} />
@@ -73,6 +116,14 @@ class App extends React.Component {
       </React.Fragment>
     );
   }
+
+  createCustomerAlreadyExists = (createCustomerInput: CreateCustomerInput) => {
+    this.context.openModal(Modals.None);
+    this.setState({
+      createCustomerInput: createCustomerInput,
+    });
+    this.context.openModal(Modals.AccountExists);
+  };
 }
 
 export default App;

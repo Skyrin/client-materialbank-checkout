@@ -1,6 +1,7 @@
 export const CHECKOUT_FUNNEL_URL = "/checkout";
 export const USER_MANAGEMENT_URL = "/user";
 export const MAIN_SHOP_URL = "/"; // Note: This won't work locally
+export const COLLECTIONS_AND_PALETTES_URL = `/collections-and-palettes`;
 
 // Checkout funnel URLs
 export const CART_URL = `/cart`;
@@ -14,6 +15,13 @@ export const USER_ORDER_HISTORY_URL = `${USER_MANAGEMENT_URL}/order-history`;
 export const USER_ACCOUNT_URL = `${USER_MANAGEMENT_URL}/account`;
 export const USER_BILLING_URL = `${USER_MANAGEMENT_URL}/billing`;
 export const USER_SHIPPING_URL = `${USER_MANAGEMENT_URL}/shipping`;
+
+// Collections URLs
+export const COLLECTIONS_URL = `${COLLECTIONS_AND_PALETTES_URL}/collections`;
+export const PALETTES_URL = `${COLLECTIONS_AND_PALETTES_URL}/palettes`;
+export const COLLECTIONS_IMAGE_URL = `${COLLECTIONS_URL}/image`;
+export const COLLECTIONS_INFO_URL = `${COLLECTIONS_URL}/info`;
+export const COLLECTIONS_EDIT_URL = `${COLLECTIONS_URL}/edit`;
 
 export const goToStorefront = (path?: string) => {
   // Use this to go to the storefront in order to trigger the storefront app to reload

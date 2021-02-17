@@ -1,6 +1,6 @@
 import { CartT, CustomerT } from "constants/types";
 import * as React from "react";
-import { AppContext, AppContextState } from "./AppContext";
+import { AppContext, AppContextState, Modals } from "./AppContext";
 import { cloneDeep, isArray, isString, merge, mergeWith } from "lodash-es";
 import {
   applyCouponToCart,
@@ -130,8 +130,8 @@ export default class AppContextManager extends React.Component<Props> {
       }
     },
 
-    openLoginModal: (shouldOpen: boolean) => {
-      this.contextState.setInternalLoginModalOpen(shouldOpen);
+    openModal: (modal: Modals) => {
+      this.contextState.setModalOpen(modal);
       this.forceUpdate();
     },
 
