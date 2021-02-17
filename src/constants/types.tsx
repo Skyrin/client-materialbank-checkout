@@ -24,6 +24,12 @@ export type OrderT = {
     grand_total?: PriceT;
     subtotal?: PriceT;
   };
+  items?: OrderItemT[];
+};
+
+export type OrderItemT = {
+  product_sku: string;
+  product_name: string;
 };
 
 export type CartItemT = {
@@ -72,6 +78,7 @@ export type OrderAddressT = {
   region?: string;
   street?: string[];
   telephone?: string;
+  country_code: string;
 };
 
 export type BilingAddressT = AddressT;

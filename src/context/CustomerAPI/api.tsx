@@ -190,8 +190,22 @@ export const getCustomerOrders = async (context: AppContextState) => {
               base_grand_total {
                 value
               }
+              subtotal {
+                currency
+                value
+              }
             }
             billing_address {
+              firstname
+              lastname
+              middlename
+              city
+              country_code
+              postcode
+              region
+              street
+            }
+            shipping_address {
               firstname
               lastname
               middlename

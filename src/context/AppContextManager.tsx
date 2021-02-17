@@ -326,6 +326,7 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.setOrdersLoading(false);
       this.forceUpdate();
       console.log("GOT ORDERS", orders);
+      return orders["items"];
     },
   };
 

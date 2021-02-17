@@ -13,10 +13,16 @@ import { Item } from "components/common/HistoryOrderItem/HistoryOrderItem";
 import { Modal } from "components/common/Modal/Modal";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
+import Order from "models/api/Order";
+import { OrderT } from "constants/types";
 
 interface Props extends RouteComponentProps {}
 
-export default class UserOrderHistory extends React.Component<Props, any> {
+type State = {
+  orders: OrderT[];
+};
+
+export default class UserOrderHistory extends React.Component<Props, State> {
   // TODO: Remove this mock data when API is available
   orders = [
     {
@@ -327,10 +333,20 @@ export default class UserOrderHistory extends React.Component<Props, any> {
   constructor(props: Props) {
     super(props);
     this.modalRef = React.createRef();
+    this.state = {
+      orders: [],
+    };
   }
 
   componentDidMount() {
-    this.context.getOrders().then((r) => {});
+    this.context.getOrders().then((orders) => {
+      console.log("HERE BE DA ORDERS: " + orders);
+      console.log(orders);
+
+      this.setState({
+        orders: orders,
+      });
+    });
   }
 
   loadMore(): void {
@@ -360,11 +376,11 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           }
         />
 
-        {this.orders.map((order) => (
+        {this.state.orders.map((order) => (
           <HistoryOrder
-            key={order.orderNumber}
-            order={order}
-            shopItem={(item) => this.openItemOverlay(item)}
+            key={order.number}
+            orderT={order}
+            // shopItem={(item) => this.openItemOverlay(item)}
           />
         ))}
 

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AddressT, CartT, CustomerT } from "constants/types";
+import { AddressT, CartT, CustomerT, OrderT } from "constants/types";
 import { cloneDeep } from "lodash-es";
 import { CartAddressInput } from "./CheckoutAPI/models";
 import {
@@ -8,6 +8,7 @@ import {
 } from "./CustomerAPI/models";
 import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import { AUTH_TOKEN_STORAGE_KEY } from "constants/general";
+import Order from "models/api/Order";
 
 /**
  * This class is used for handling the Context's internal data.
@@ -158,7 +159,9 @@ export class AppContextState extends BaseAppContextState {
 
   async placeOrder() {}
 
-  async getOrders() {}
+  async getOrders(): Promise<OrderT[]> {
+    return Promise.resolve([]);
+  }
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);
