@@ -21,7 +21,7 @@ import { RegisterOptionsModal } from "components/common/RegisterModal/RegisterOp
 import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterMailModal";
 import { AccountExistsModal } from "components/common/AccountExistsModal/AccountExistsModal";
 import { CreateCustomerInput } from "context/CustomerAPI/models";
-import CollectionsAndPalettesFunnel from "../CollectionsAndPalettesFunnel/CollectionsAndPalettesFunnel";
+import CollectionsAndPalettes from "../CollectionsAndPalettes/CollectionsAndPalettes";
 
 type State = {
   createCustomerInput: CreateCustomerInput;
@@ -87,7 +87,7 @@ class App extends React.Component<any, State> {
             <Route path={USER_MANAGEMENT_URL} component={UserManagement} />
             <Route
               path={COLLECTIONS_AND_PALETTES_URL}
-              component={CollectionsAndPalettesFunnel}
+              component={CollectionsAndPalettes}
             />
           </Switch>
         </div>

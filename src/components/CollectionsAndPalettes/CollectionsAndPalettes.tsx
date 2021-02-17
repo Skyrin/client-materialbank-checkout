@@ -11,7 +11,7 @@ import {
   RouteComponentProps,
   Switch,
 } from "react-router-dom";
-import styles from "./CollectionsAndPalettesFunnel.module.scss";
+import styles from "./CollectionsAndPalettes.module.scss";
 import { AppContext, AppContextState } from "../../context/AppContext";
 import Breadcrumbs from "../common/Breadcrumbs/Breadcrumbs";
 import { BREADCRUMBS_STEPS } from "../../constants/general";
@@ -22,7 +22,7 @@ import Palettes from "./Palettes/Palettes";
 
 type Props = RouteComponentProps;
 
-export default class CollectionsAndPalettesFunnel extends React.Component<Props> {
+export default class CollectionsAndPalettes extends React.Component<Props> {
   static contextType = AppContext;
   context!: AppContextState;
 
