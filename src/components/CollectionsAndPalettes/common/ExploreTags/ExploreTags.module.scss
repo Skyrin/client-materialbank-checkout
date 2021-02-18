@@ -5,10 +5,10 @@
   display: flex;
   flex-direction: row;
   column-gap: 3px;
-  padding: $margin-small-4 0 100px 0;
+  padding: $margin-small-4 0 $margin-huge-5 0;
 }
 
 .title {
   margin-top: $margin-medium-3;
-  font-size: $font-size-xl;
+  font-size: var(--font-size-xl);
 }

@@ -41,7 +41,7 @@
 
     a {
       color: rgba(#fff, 0.8);
-      font-size: $font-size-lg;
+      font-size: var(--font-size-lg);
       padding-right: 10px;
       cursor: pointer;
       transition: color 0.5s;
@@ -51,7 +51,7 @@
       }
     }
     i {
-      font-size: $font-size-sm;
+      font-size: var(--font-size-sm);
     }
   }
 }
@@ -65,7 +65,7 @@
   i {
     color: rgba(#fff, 0.8);
     padding: 0 15px 0 15px;
-    font-size: $font-size-xl;
+    font-size: var(--font-size-xl);
     cursor: pointer;
     transition: color 0.5s;
 
