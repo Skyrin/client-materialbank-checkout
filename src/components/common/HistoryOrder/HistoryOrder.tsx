@@ -9,6 +9,7 @@ import {
 import { HistoryOrderDetails } from "components/common/HistoryOrderDetails/HistoryOrderDetails";
 import { OrderItemT, OrderT } from "constants/types";
 import moment from "moment";
+import { isOnMobile } from "../../../utils/responsive";
 
 interface Props {
   order?: {
@@ -43,6 +44,47 @@ export class HistoryOrder extends React.Component<Props, State> {
     return date.format("MMMM DD, YYYY");
   };
 
+  renderMobileOrderInfo(order, statusClassName) {
+    return (
+      <div className={cn(styles["content"], styles["header"], styles["row"])}>
+        <div
+          className={cn(
+            styles["left-container"],
+            styles["container"],
+            styles["placement-date"]
+          )}
+        >
+          <span>Order placed&nbsp;</span> {order.placeDate.monthLong}{" "}
+          {order.placeDate.day}, {order.placeDate.year}
+        </div>
+
+        <div className={cn(styles["middle-container"], styles["container"])}>
+          {/* TODO: When API available: Handle actual statuses. Also change classes in the css file */}
+          <div className={styles.containerStatus}>
+            <div
+              className={cn(styles["status-dot"], styles[statusClassName])}
+            />
+            <div className={cn(styles["status-text"])}>{order.status}</div>
+          </div>
+          <div className={cn(styles["light-text"], styles["order-number"])}>
+            Order {order.orderNumber}
+          </div>
+        </div>
+        <div className={cn(styles["right-container"], styles["container"])}>
+          <a className={styles.label} href={order.helpUrl}>
+            Get help with this order
+          </a>
+          <a
+            className={cn(styles.label, styles.trackPackage)}
+            href={order.trackingUrl}
+          >
+            Track package
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const order = this.props.orderT;
     const statusClassName =
@@ -53,39 +95,53 @@ export class HistoryOrder extends React.Component<Props, State> {
 
     return (
       <div className={cn(styles["HistoryOrder"])}>
-        <div className={cn(styles["content"], styles["header"], styles["row"])}>
+        {isOnMobile() && this.renderMobileOrderInfo(order, statusClassName)}
+        {!isOnMobile() && (
           <div
-            className={cn(
-              styles["left-container"],
-              styles["container"],
-              styles["placement-date"]
-            )}
+            className={cn(styles["content"], styles["header"], styles["row"])}
           >
-            <span>Order placed&nbsp;</span> {this.formatDate(order.order_date)}
-          </div>
-
-          <div className={cn(styles["middle-container"], styles["container"])}>
-            {/* TODO: When API available: Handle actual statuses. Also change classes in the css file */}
             <div
-              className={cn(styles["status-dot"], styles[statusClassName])}
-            />
-            <div className={cn(styles["status-text"])}>{order.status}</div>
-            <a className={styles.label} href={"order.trackingUrl"}>
-              Track package
-            </a>
-          </div>
+              className={cn(
+                styles["left-container"],
+                styles["container"],
+                styles["placement-date"]
+              )}
+            >
+              <span>Order placed&nbsp;</span>{" "}
+              {this.formatDate(order.order_date)}
+            </div>
 
-          <div className={cn(styles["right-container"], styles["container"])}>
-            <a className={styles.label} href={"order.helpUrl"}>
-              Get help with this order
-            </a>
-            <div className={cn(styles["light-text"], styles["order-number"])}>
-              Order #{order.number}
+            <div
+              className={cn(styles["middle-container"], styles["container"])}
+            >
+              {/* TODO: When API available: Handle actual statuses. Also change classes in the css file */}
+              <div
+                className={cn(styles["status-dot"], styles[statusClassName])}
+              />
+              <div className={cn(styles["status-text"])}>{order.status}</div>
+              <a className={styles.label} href={"order.trackingUrl"}>
+                Track package
+              </a>
+            </div>
+
+            <div className={cn(styles["right-container"], styles["container"])}>
+              <a className={styles.label} href={"order.helpUrl"}>
+                Get help with this order
+              </a>
+              <div className={cn(styles["light-text"], styles["order-number"])}>
+                Order #{order.number}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className={cn(styles["content"], styles["order-items"])}>
+        <div
+          className={cn(
+            styles["content"],
+            styles["order-items"],
+            styles.orderItemsContainer
+          )}
+        >
           {expanded
             ? order.items.map((item) => (
                 <HistoryOrderItem

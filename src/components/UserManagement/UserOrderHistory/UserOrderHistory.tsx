@@ -15,6 +15,8 @@ import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
 import Order from "models/api/Order";
 import { OrderT } from "constants/types";
+import { isOnMobile } from "../../../utils/responsive";
+import LogoMobile from "../../common/LogoMobile/LogoMobile";
 
 interface Props extends RouteComponentProps {}
 
@@ -364,6 +366,8 @@ export default class UserOrderHistory extends React.Component<Props, State> {
   render() {
     return (
       <div className={cn(styles["UserOrderHistory"])}>
+        {isOnMobile() && <LogoMobile />}
+
         <UserHeader
           title={UserPages.OrderHistory.name}
           extraContent={
