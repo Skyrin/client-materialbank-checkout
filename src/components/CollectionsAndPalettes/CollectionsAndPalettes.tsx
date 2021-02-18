@@ -21,6 +21,7 @@ import Collections from "./Collections/Collections";
 import Palettes from "./Palettes/Palettes";
 import CollectionsToolbar from "./common/Toolbar/CollectionsToolbar";
 import ExploreTags from "./common/ExploreTags/ExploreTags";
+import CollectionsFooter from "./common/CollectionsFooter/CollectionsFooter";
 
 type Props = RouteComponentProps;
 
@@ -46,6 +47,7 @@ export default class CollectionsAndPalettes extends React.Component<Props> {
             </Switch>
             <ExploreTags />
           </div>
+          <CollectionsFooter />
         </div>
       </React.Fragment>
     );
