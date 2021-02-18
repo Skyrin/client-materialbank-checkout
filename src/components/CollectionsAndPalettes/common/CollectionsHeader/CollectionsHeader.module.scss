@@ -1,0 +1,59 @@
+@import "styles/global";
+@import "styles/variables.scss";
+
+.Header {
+  background-color: black;
+  display: flex;
+  flex-direction: row;
+  color: white;
+  padding: $margin-small-4 100px;
+  column-gap: 40px;
+}
+
+.navLinks {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  column-gap: $margin-medium;
+
+  .navLink {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+
+    a {
+      color: rgba(#fff, 0.8);
+      font-size: 16px;
+      padding-right: 10px;
+      cursor: pointer;
+      transition: color 0.5s;
+
+      &:hover {
+        color: white;
+      }
+    }
+    i {
+      font-size: 12px;
+    }
+  }
+}
+
+.headerIcons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  i {
+    color: rgba(#fff, 0.8);
+    padding: 0 15px 0 15px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.5s;
+
+    &:hover {
+      color: white;
+    }
+  }
+}

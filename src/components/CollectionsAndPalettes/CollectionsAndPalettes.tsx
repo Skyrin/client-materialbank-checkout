@@ -21,6 +21,7 @@ import Collections from "./Collections/Collections";
 import Palettes from "./Palettes/Palettes";
 import CollectionsToolbar from "./common/Toolbar/CollectionsToolbar";
 import ExploreTags from "./common/ExploreTags/ExploreTags";
+import CollectionsHeader from "./common/CollectionsHeader/CollectionsHeader";
 
 type Props = RouteComponentProps;
 
@@ -31,9 +32,10 @@ export default class CollectionsAndPalettes extends React.Component<Props> {
   render() {
     return (
       <React.Fragment>
-        <div className={styles.pageContent}>
-          {isOnMobile() && <LogoMobile />}
-          <div className={styles.pageWrapper}>
+        {isOnMobile() && <LogoMobile />}
+        <div className={styles.pageWrapper}>
+          <CollectionsHeader />
+          <div className={styles.pageContent}>
             <CollectionsToolbar title={"Your collections & palettes"} />
             <Switch>
               <Redirect

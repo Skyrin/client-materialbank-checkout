@@ -1,0 +1,24 @@
+@import "styles/global";
+@import "styles/variables.scss";
+
+.collectionLogo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 11px;
+}
+
+svg {
+  height: 40px;
+
+  .logoPath {
+    fill: white;
+    height: 40px;
+  }
+}
+
+.logoText {
+  text-decoration: none;
+  color: white;
+  font-size: 22px;
+}

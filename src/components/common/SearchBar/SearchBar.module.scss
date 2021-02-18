@@ -37,3 +37,19 @@
     margin-left: var(--horizontal-spacing-half);
   }
 }
+
+.collectionsSearch {
+  background-color: #1b1b1b;
+  box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.5);
+  border: solid 1px rgba(255, 255, 255, 0.2);
+  color: #fcfaf8;
+  width: 530px;
+
+  i {
+    color: rgba(#fff, 0.8);
+  }
+
+  .searchInput {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
