@@ -4,10 +4,10 @@
 .footer {
   background-color: black;
   color: rgba(#fff, 0.8);
-  padding: 60px 100px 0 60px;
+  padding: $margin-large-2 $margin-huge-5 0 $margin-large-2;
   display: flex;
   flex-direction: column;
-  row-gap: 80px;
+  row-gap: $margin-huge;
 
   .footerRowInfo {
     display: grid;
@@ -32,7 +32,7 @@
       align-items: center;
 
       div {
-        font-size: 20px;
+        font-size: var(--font-size-xl);
       }
 
       h1 {
@@ -49,10 +49,10 @@
     .footerLinkColumn {
       display: flex;
       flex-direction: column;
-      font-size: 16px;
+      font-size: var(--font-size-lg);
 
       a {
-        font-size: 14px;
+        font-size: var(--font-size-md);
         padding: 10px 0;
         cursor: pointer;
         color: rgba(#fff, 0.6);
@@ -67,7 +67,7 @@
     .newsLetter {
       display: flex;
       flex-direction: column;
-      font-size: 14px;
+      font-size: var(--font-size-md);
       color: rgba(#fff, 0.6);
 
       .emailText {
@@ -76,7 +76,7 @@
 
       span {
         color: white;
-        font-size: 16px;
+        font-size: var(--font-size-lg);
       }
 
       .email {
@@ -88,8 +88,8 @@
           background-color: #2a2a2a;
           border-radius: 5px;
           box-shadow: inset 0 -1px 0 0 var(--black);
-          margin-right: 5px;
-          padding: 10px 16px;
+          margin-right: $margin-small;
+          padding: 10px $margin-small-3;
           border: none;
           color: rgba(#fff, 0.6);
 
@@ -111,10 +111,10 @@
     grid-template-columns: 50% 50%;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 8px;
+    padding-bottom: $margin-small-2;
 
     .copyRights {
-      font-size: 12px;
+      font-size: var(--font-size-sm);
       color: rgba(#fff, 0.6);
       text-align: center;
     }
@@ -125,7 +125,7 @@
       margin-left: auto;
 
       i {
-        padding: 0 8px;
+        padding: 0 $margin-small-2;
         font-size: 25px;
         color: white;
         cursor: pointer;
@@ -134,7 +134,7 @@
   }
 
   .copyRights {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
   }
 
   .footerButton {
