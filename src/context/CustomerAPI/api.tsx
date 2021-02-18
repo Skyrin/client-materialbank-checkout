@@ -181,7 +181,10 @@ export const getCustomerOrders = async (context: AppContextState) => {
       customer {
       firstname
       lastname
-        orders {
+        orders(
+        pageSize: 100
+        )
+         {
           items {
             id
             order_date

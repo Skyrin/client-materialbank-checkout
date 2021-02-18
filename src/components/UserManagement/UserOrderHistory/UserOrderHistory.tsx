@@ -13,7 +13,7 @@ import { Item } from "components/common/HistoryOrderItem/HistoryOrderItem";
 import { Modal } from "components/common/Modal/Modal";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
-import { OrderT } from "constants/types";
+import { OrderItemT, OrderT } from "constants/types";
 import { isOnMobile } from "../../../utils/responsive";
 import LogoMobile from "../../common/LogoMobile/LogoMobile";
 
@@ -343,6 +343,16 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     this.context.getOrders().then((orders) => {
       console.log("HERE BE DA ORDERS: " + orders);
       console.log(orders);
+      orders.sort((a, b) => {
+        if (
+          DateTime.fromSQL(a.order_date).valueOf() >=
+          DateTime.fromSQL(b.order_date).valueOf()
+        ) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
 
       this.setState({
         orders: orders,
@@ -354,9 +364,9 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     //  TODO: Implement functionality once we have API
   }
 
-  addItemToCart(item: Item): void {}
+  addItemToCart(item: OrderItemT): void {}
 
-  openItemOverlay(item: Item): void {
+  openItemOverlay(item: OrderItemT): void {
     this.modalRef.current.open(
       <OrderItemOverlay item={item} addToCart={this.addItemToCart} />
     );
@@ -383,7 +393,7 @@ export default class UserOrderHistory extends React.Component<Props, State> {
           <HistoryOrder
             key={order.number}
             orderT={order}
-            // shopItem={(item) => this.openItemOverlay(item)}
+            shopItem={(item) => this.openItemOverlay(item)}
           />
         ))}
 

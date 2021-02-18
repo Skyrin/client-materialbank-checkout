@@ -8,8 +8,7 @@ import {
 } from "components/common/HistoryOrderItem/HistoryOrderItem";
 import { HistoryOrderDetails } from "components/common/HistoryOrderDetails/HistoryOrderDetails";
 import { OrderItemT, OrderT } from "constants/types";
-import moment from "moment";
-import { isOnMobile } from "../../../utils/responsive";
+import { isOnMobile } from "utils/responsive";
 
 interface Props {
   order?: {
@@ -40,8 +39,8 @@ export class HistoryOrder extends React.Component<Props, State> {
   }
 
   formatDate = (stringDate: string): string => {
-    var date = moment(stringDate, "YYYY-MM-DD HH:mm:ss");
-    return date.format("MMMM DD, YYYY");
+    const dateTime = DateTime.fromSQL(stringDate);
+    return dateTime.toFormat("MMMM dd, yyyy");
   };
 
   renderMobileOrderInfo(order: OrderT, statusClassName) {
@@ -71,13 +70,10 @@ export class HistoryOrder extends React.Component<Props, State> {
           </div>
         </div>
         <div className={cn(styles["right-container"], styles["container"])}>
-          <a className={styles.label} href={"order.helpUrl"}>
+          <a className={styles.label} href={"/"}>
             Get help with this order
           </a>
-          <a
-            className={cn(styles.label, styles.trackPackage)}
-            href={"order.trackingUrl"}
-          >
+          <a className={cn(styles.label, styles.trackPackage)} href={"/"}>
             Track package
           </a>
         </div>
@@ -119,13 +115,13 @@ export class HistoryOrder extends React.Component<Props, State> {
                 className={cn(styles["status-dot"], styles[statusClassName])}
               />
               <div className={cn(styles["status-text"])}>{order.status}</div>
-              <a className={styles.label} href={"order.trackingUrl"}>
+              <a className={styles.label} href={"/"}>
                 Track package
               </a>
             </div>
 
             <div className={cn(styles["right-container"], styles["container"])}>
-              <a className={styles.label} href={"order.helpUrl"}>
+              <a className={styles.label} href={"/"}>
                 Get help with this order
               </a>
               <div className={cn(styles["light-text"], styles["order-number"])}>

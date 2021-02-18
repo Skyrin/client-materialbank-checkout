@@ -2,11 +2,13 @@ import React from "react";
 import cn from "classnames";
 import styles from "./OrderItemOverlay.module.scss";
 import { Item } from "components/common/HistoryOrderItem/HistoryOrderItem";
+import { OrderItemT } from "constants/types";
+import { parseCurrency } from "utils/general";
 
 interface Props {
-  item: Item;
+  item: OrderItemT;
   close?: () => any;
-  addToCart: (item: Item) => any;
+  addToCart: (item: OrderItemT) => any;
 }
 
 export function OrderItemOverlay(props: Props) {
@@ -20,35 +22,36 @@ export function OrderItemOverlay(props: Props) {
         <div className={cn(styles["image"])} />
         <div className={cn(styles["title-price"])}>
           <div className={cn(styles["title"], "font-weight-medium")}>
-            Where to buy {item.brand} {item.model} in {item.color}
+            Where to buy {item.product_sku} {item.product_name} in{" "}
+            {"item.color"}
           </div>
           <div className="row center-vertically margin-top-half">
             <div className={styles.priceIndicator}>$$$$$</div>
             <div className={cn(styles["price"], "font-size-sm")}>
-              {item.currency}
-              {item.pricePerArea} / {item.areaMeasurementUnit}
+              {parseCurrency(item.product_sale_price.currency)}
+              {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
             </div>
           </div>
         </div>
       </div>
       <div className={cn(styles["shops"])}>
-        {item.shops.map((shop, i) => (
-          <a
-            href={shop.link}
-            className={cn(styles["shop"])}
-            key={shop.link + i}
-          >
-            <div className={cn(styles["title"], "font-weight-medium")}>
-              {shop.name}
-            </div>
-            <div className={cn(styles["address"], "font-size-sm")}>
-              {shop.address}
-            </div>
-            <div
-              className={cn(styles["chevron"], "far fa-chevron-right")}
-            ></div>
-          </a>
-        ))}
+        {/*{item.shops.map((shop, i) => (*/}
+        {/*  <a*/}
+        {/*    href={shop.link}*/}
+        {/*    className={cn(styles["shop"])}*/}
+        {/*    key={shop.link + i}*/}
+        {/*  >*/}
+        {/*    <div className={cn(styles["title"], "font-weight-medium")}>*/}
+        {/*      {shop.name}*/}
+        {/*    </div>*/}
+        {/*    <div className={cn(styles["address"], "font-size-sm")}>*/}
+        {/*      {shop.address}*/}
+        {/*    </div>*/}
+        {/*    <div*/}
+        {/*      className={cn(styles["chevron"], "far fa-chevron-right")}*/}
+        {/*    ></div>*/}
+        {/*  </a>*/}
+        {/*))}*/}
       </div>
       <div className={cn(styles["bottom"])}>
         <div className={cn("font-size-sm", "font-text-light")}>
@@ -67,8 +70,8 @@ export function OrderItemOverlay(props: Props) {
             </span>
           </div>
           <span className={styles.addCartPrice}>
-            {item.currency}
-            {item.pricePerSample}
+            {parseCurrency(item.product_sale_price.currency)}
+            {item.product_sale_price.value}
           </span>
         </button>
       </div>
