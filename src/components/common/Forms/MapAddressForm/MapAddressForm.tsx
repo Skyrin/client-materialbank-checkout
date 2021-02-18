@@ -233,7 +233,12 @@ export default class MapAddressForm extends React.Component<Props, State> {
             </div>
           </div>
         </div>
-        <div className="row full-width center-vertically center-horizontally margin-top">
+        <div
+          className={cn(
+            "row full-width center-vertically center-horizontally margin-top",
+            styles.addAddressButtons
+          )}
+        >
           <button
             className={styles.cancelAddAddress}
             onClick={this.cancelClicked}
