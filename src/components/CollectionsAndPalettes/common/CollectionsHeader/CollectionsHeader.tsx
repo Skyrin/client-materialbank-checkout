@@ -1,13 +1,23 @@
 import * as React from "react";
 import styles from "components/CollectionsAndPalettes/common/CollectionsHeader/CollectionsHeader.module.scss";
 import { SearchBar } from "components/common/SearchBar/SearchBar";
-import CollectionsLogo from "../CollectionsLogo/CollectionsLogo";
+import Logo from "../../../common/Logo/Logo";
 
 export default class CollectionsHeader extends React.Component<any, any> {
+  renderIcons = () => {
+    return (
+      <React.Fragment>
+        <i className="far fa-heart" />
+        <i className="far fa-user-circle" />
+        <i className="far fa-shopping-cart" />
+      </React.Fragment>
+    );
+  };
+
   render() {
     return (
       <div className={styles.Header}>
-        <CollectionsLogo />
+        <Logo className={styles.headerLogo} header />
         <div className={styles.navLinks}>
           <div className={styles.navLink}>
             <a>get design samples</a>
@@ -28,11 +38,7 @@ export default class CollectionsHeader extends React.Component<any, any> {
             console.log(value);
           }}
         />
-        <div className={styles.headerIcons}>
-          <i className="far fa-heart" />
-          <i className="far fa-user-circle" />
-          <i className="far fa-shopping-cart" />
-        </div>
+        <div className={styles.headerIcons}>{this.renderIcons()}</div>
       </div>
     );
   }
