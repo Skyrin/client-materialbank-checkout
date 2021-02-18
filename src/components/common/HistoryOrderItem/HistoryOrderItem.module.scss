@@ -1,10 +1,23 @@
+@import "styles/mixins";
+
 .HistoryOrderItem {
   display: grid;
   font-size: var(--font-size-md);
   grid-template-columns: 2fr 3fr 2fr;
 
+  @include mobile-media {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid $color-user-border;
+    border-radius: 0;
+    padding-top: 10px;
+  }
+
   & + .HistoryOrderItem {
     margin-top: calc(var(--vertical-spacing-normal) * 2);
+    @include mobile-media {
+      margin-top: 10px;
+    }
   }
 }
 
@@ -32,12 +45,21 @@
     height: 100%;
     position: relative;
     padding-top: var(--vertical-spacing-quarter);
+
+    div:first-child {
+      @include mobile-media {
+        font-size: 10px;
+      }
+    }
   }
 
   .model {
     margin-top: 15px;
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-lg);
+    @include mobile-media {
+      font-size: 11px;
+    }
 
     @media (max-width: 970px) {
       margin-top: 2px;
@@ -72,12 +94,20 @@
     flex: 1;
     white-space: nowrap;
     margin-right: var(--horizontal-spacing-half);
+    @include mobile-media {
+      font-size: 10px;
+    }
   }
 
-  @media (max-width: 800px) {
-    flex-flow: column;
-    align-items: flex-start;
-    justify-content: center;
+  //@media (max-width: 800px) {
+  //  flex-flow: column;
+  //  align-items: flex-start;
+  //  justify-content: center;
+  //}
+  @include mobile-media {
+    flex-direction: row;
+    padding-left: 70px;
+    margin-top: -15px;
   }
 }
 
@@ -85,6 +115,10 @@
   display: flex;
   align-items: center;
   min-width: 190px;
+  @include mobile-media {
+    padding-left: 0;
+    margin-top: 15px;
+  }
 }
 
 .shop-button {
@@ -95,6 +129,9 @@
   font-weight: var(--font-weight-medium);
   border-radius: 40px;
   font-size: var(--font-size-lg);
+  @include mobile-media {
+    font-size: 14px;
+  }
 
   &:hover,
   &:focus {
