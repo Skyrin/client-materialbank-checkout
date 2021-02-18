@@ -44,7 +44,7 @@ export class HistoryOrder extends React.Component<Props, State> {
     return date.format("MMMM DD, YYYY");
   };
 
-  renderMobileOrderInfo(order, statusClassName) {
+  renderMobileOrderInfo(order: OrderT, statusClassName) {
     return (
       <div className={cn(styles["content"], styles["header"], styles["row"])}>
         <div
@@ -54,8 +54,8 @@ export class HistoryOrder extends React.Component<Props, State> {
             styles["placement-date"]
           )}
         >
-          <span>Order placed&nbsp;</span> {order.placeDate.monthLong}{" "}
-          {order.placeDate.day}, {order.placeDate.year}
+          <span>Order placed&nbsp;</span>
+          {this.formatDate(order.order_date)}
         </div>
 
         <div className={cn(styles["middle-container"], styles["container"])}>
@@ -67,16 +67,16 @@ export class HistoryOrder extends React.Component<Props, State> {
             <div className={cn(styles["status-text"])}>{order.status}</div>
           </div>
           <div className={cn(styles["light-text"], styles["order-number"])}>
-            Order {order.orderNumber}
+            Order #{order.number}
           </div>
         </div>
         <div className={cn(styles["right-container"], styles["container"])}>
-          <a className={styles.label} href={order.helpUrl}>
+          <a className={styles.label} href={"order.helpUrl"}>
             Get help with this order
           </a>
           <a
             className={cn(styles.label, styles.trackPackage)}
-            href={order.trackingUrl}
+            href={"order.trackingUrl"}
           >
             Track package
           </a>

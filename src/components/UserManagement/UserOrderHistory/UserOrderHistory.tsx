@@ -13,7 +13,6 @@ import { Item } from "components/common/HistoryOrderItem/HistoryOrderItem";
 import { Modal } from "components/common/Modal/Modal";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
-import Order from "models/api/Order";
 import { OrderT } from "constants/types";
 import { isOnMobile } from "../../../utils/responsive";
 import LogoMobile from "../../common/LogoMobile/LogoMobile";
