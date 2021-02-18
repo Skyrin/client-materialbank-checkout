@@ -1,7 +1,11 @@
 import React from "react";
 import styles from "./App.module.scss";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
-import { CHECKOUT_FUNNEL_URL, USER_MANAGEMENT_URL } from "constants/urls";
+import {
+  CHECKOUT_FUNNEL_URL,
+  COLLECTIONS_AND_PALETTES_URL,
+  USER_MANAGEMENT_URL,
+} from "constants/urls";
 import cn from "classnames";
 import CheckoutFunnel from "components/CheckoutFunnel/CheckoutFunnel";
 import UserManagement from "components/UserManagement/UserManagement";
@@ -17,6 +21,7 @@ import { RegisterOptionsModal } from "components/common/RegisterModal/RegisterOp
 import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterMailModal";
 import { AccountExistsModal } from "components/common/AccountExistsModal/AccountExistsModal";
 import { CreateCustomerInput } from "context/CustomerAPI/models";
+import CollectionsAndPalettes from "../CollectionsAndPalettes/CollectionsAndPalettes";
 
 type State = {
   createCustomerInput: CreateCustomerInput;
@@ -80,6 +85,10 @@ class App extends React.Component<any, State> {
             <Redirect exact from="/" to={CHECKOUT_FUNNEL_URL} />
             <Route path={CHECKOUT_FUNNEL_URL} component={CheckoutFunnel} />
             <Route path={USER_MANAGEMENT_URL} component={UserManagement} />
+            <Route
+              path={COLLECTIONS_AND_PALETTES_URL}
+              component={CollectionsAndPalettes}
+            />
           </Switch>
         </div>
 

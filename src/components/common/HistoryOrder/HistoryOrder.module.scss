@@ -6,6 +6,17 @@
   border: 1px solid var(--color-separator);
 
   margin-top: calc(var(--vertical-spacing-normal) * 3);
+  @include mobile-media {
+    border-radius: 0;
+    margin-top: 0;
+  }
+}
+
+.orderItemsContainer {
+  @include mobile-media {
+    @include roundedContainerMobile;
+    border-radius: 0;
+  }
 }
 
 .header {
@@ -19,6 +30,16 @@
 
   .middle-container {
     grid-column: 2 / span 3;
+    @include mobile-media {
+      justify-content: space-between;
+      font-size: 10px;
+    }
+  }
+
+  .containerStatus {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 
   .placement-date {
@@ -27,6 +48,9 @@
 
   .right-container {
     justify-content: space-between;
+    @include mobile-media {
+      justify-content: flex-end;
+    }
   }
 
   .container {
@@ -44,26 +68,42 @@
 .content {
   padding: var(--spacing-big)
     calc(var(--spacing-big) + var(--horizontal-spacing-normal));
+  @include mobile-media {
+    padding: $margin-small-4;
+  }
 
   & + .content {
     border-top: 1px solid var(--color-separator);
+    @include mobile-media {
+      border-top: 0;
+    }
   }
 
-  @media (max-width: 970px) {
-    padding-left: calc(var(--spacing-big));
-    padding-right: calc(var(--spacing-big));
-  }
+  //@media (max-width: 970px) {
+  //  padding-left: calc(var(--spacing-big));
+  //  padding-right: calc(var(--spacing-big));
+  //}
 }
 
 .row {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+  @include mobile-media {
+    display: flex;
+    flex-direction: column;
+    padding: $margin-small-4;
+    row-gap: $margin-small-4;
+    padding-bottom: 0;
+  }
 
   .container + .container {
     padding-left: var(--spacing-big);
 
-    @media (max-width: 970px) {
-      padding-left: var(--horizontal-spacing-normal);
+    //@media (max-width: 970px) {
+    //  padding-left: var(--horizontal-spacing-normal);
+    //}
+    @include mobile-media {
+      padding-left: 0;
     }
   }
 }
@@ -74,6 +114,9 @@
   border-radius: 10px;
   background-color: var(--color-green);
   margin-right: 5px;
+  @include mobile-media {
+    margin-right: 10px;
+  }
 
   &.status_in-transit {
     background-color: var(--color-orange);
@@ -94,6 +137,15 @@
 
 .label {
   margin-right: var(--horizontal-spacing-normal);
+  @include mobile-media {
+    font-size: 10px;
+  }
+}
+
+.trackPackage {
+  @include mobile-media {
+    margin-right: 0;
+  }
 }
 
 .order-details {
@@ -111,6 +163,12 @@
   border-radius: 0 0 calc(var(--card-border-radius-sm) - 1px)
     calc(var(--card-border-radius-sm) - 1px);
   transition: background-color 0.1s;
+  @include mobile-media {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-items: flex-end;
+  }
 
   i {
     margin-left: 5px;
@@ -150,6 +208,13 @@
     border-top-left-radius: var(--card-border-radius-sm);
     border-top-right-radius: var(--card-border-radius-sm);
     transition: transform 0.1s, background-color 0.1s;
+    @include mobile-media {
+      position: relative;
+      padding: 12px 0;
+      top: -3px;
+      left: -66px;
+      background: transparent;
+    }
   }
 }
 
