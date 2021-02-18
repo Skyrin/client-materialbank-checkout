@@ -15,8 +15,6 @@ import styles from "./CollectionsAndPalettes.module.scss";
 import { AppContext, AppContextState } from "../../context/AppContext";
 import Breadcrumbs from "../common/Breadcrumbs/Breadcrumbs";
 import { BREADCRUMBS_STEPS } from "../../constants/general";
-import { isOnMobile } from "../../utils/responsive";
-import LogoMobile from "../common/LogoMobile/LogoMobile";
 import Collections from "./Collections/Collections";
 import Palettes from "./Palettes/Palettes";
 import CollectionsToolbar from "./common/Toolbar/CollectionsToolbar";
@@ -32,7 +30,6 @@ export default class CollectionsAndPalettes extends React.Component<Props> {
   render() {
     return (
       <React.Fragment>
-        {isOnMobile() && <LogoMobile />}
         <div className={styles.pageWrapper}>
           <CollectionsHeader />
           <div className={styles.pageContent}>
