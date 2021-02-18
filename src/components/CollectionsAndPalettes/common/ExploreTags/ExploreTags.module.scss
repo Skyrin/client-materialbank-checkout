@@ -1,0 +1,14 @@
+@import "styles/global";
+@import "styles/variables.scss";
+
+.exploreButtons {
+  display: flex;
+  flex-direction: row;
+  column-gap: 3px;
+  padding: $margin-small-4 0 100px 0;
+}
+
+.title {
+  margin-top: $margin-medium-3;
+  font-size: 20px;
+}
