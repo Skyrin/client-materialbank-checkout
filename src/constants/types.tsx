@@ -17,12 +17,16 @@ export type CartT = {
 
 export type OrderT = {
   number?: string;
+  order_date?: string;
+  status?: string;
   billing_address?: OrderAddressT;
   shipping_address?: OrderAddressT;
   paymentMethods?: { type: string; name: string }[];
   total?: {
     grand_total?: PriceT;
     subtotal?: PriceT;
+    total_shipping?: PriceT;
+    total_tax: PriceT;
   };
   items?: OrderItemT[];
 };
@@ -30,6 +34,18 @@ export type OrderT = {
 export type OrderItemT = {
   product_sku: string;
   product_name: string;
+  id: string;
+  product_type: string;
+  product_sale_price: PriceT;
+  entered_options: OrderItemOptionT[];
+  quantity_invoiced: string;
+  status: string;
+  selected_options: OrderItemOptionT[];
+};
+
+export type OrderItemOptionT = {
+  label: string;
+  value: string;
 };
 
 export type CartItemT = {

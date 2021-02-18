@@ -2,6 +2,7 @@ import React from "react";
 import cn from "classnames";
 import styles from "./HistoryOrderDetails.module.scss";
 import { OrderT } from "constants/types";
+import { parseCurrency } from "utils/general";
 
 interface Props {
   details?: {
@@ -37,6 +38,7 @@ export function HistoryOrderDetails(props: Props) {
 
   const deliveryAddress = props.orderT.shipping_address;
   const billingAddress = props.orderT.billing_address;
+  const paymentDetails = props.orderT.total;
 
   return (
     <div className={cn(styles["HistoryOrderDetails"])}>
@@ -70,30 +72,31 @@ export function HistoryOrderDetails(props: Props) {
           <div className={cn(styles["row"])}>
             <span className={cn(styles["label"])}>Subtotal</span>
             <span className={cn(styles["value"])}>
-              {props.orderT.total.subtotal.currency}
+              {parseCurrency(paymentDetails.subtotal.currency)}
               {props.orderT.total.subtotal.value}
             </span>
           </div>
           <div className={cn(styles["row"])}>
             <span className={cn(styles["label"])}>Shipping</span>
             <span className={cn(styles["value"])}>
-              {"paymentDetails.shipping"
-                ? "paymentDetails.currency + paymentDetails.shipping"
+              {paymentDetails?.total_shipping?.value
+                ? parseCurrency(paymentDetails.total_shipping.currency) +
+                  paymentDetails.total_shipping.value
                 : "FREE"}
             </span>
           </div>
           <div className={cn(styles["row"])}>
             <span className={cn(styles["label"])}>Sales Tax</span>
             <span className={cn(styles["value"])}>
-              {"paymentDetails.currency"}
-              {"paymentDetails.salesTax"}
+              {parseCurrency(paymentDetails.total_tax.currency)}
+              {paymentDetails.total_tax.value}
             </span>
           </div>
           <div className={cn(styles["row"])}>
             <span className={cn(styles["label"])}>Total</span>
             <span className={cn(styles["value"])}>
-              {"paymentDetails.currency"}
-              {"paymentDetails.total"}
+              {parseCurrency(paymentDetails.grand_total.currency)}
+              {paymentDetails.grand_total.value}
             </span>
           </div>
 
@@ -102,9 +105,7 @@ export function HistoryOrderDetails(props: Props) {
             <i
               className={cn(
                 "fab",
-                "paymentDetails.cardIssuer" === "VISA"
-                  ? "fa-cc-visa"
-                  : "fa-cc-mastercard",
+                "VISA" === "VISA" ? "fa-cc-visa" : "fa-cc-mastercard",
                 styles["card-icon"]
               )}
             />

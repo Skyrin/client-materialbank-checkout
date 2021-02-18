@@ -8,6 +8,7 @@ import {
 } from "components/common/HistoryOrderItem/HistoryOrderItem";
 import { HistoryOrderDetails } from "components/common/HistoryOrderDetails/HistoryOrderDetails";
 import { OrderItemT, OrderT } from "constants/types";
+import moment from "moment";
 
 interface Props {
   order?: {
@@ -37,6 +38,11 @@ export class HistoryOrder extends React.Component<Props, State> {
     this.setState((prevState) => ({ isExpanded: !prevState.isExpanded }));
   }
 
+  formatDate = (stringDate: string): string => {
+    var date = moment(stringDate, "YYYY-MM-DD HH:mm:ss");
+    return date.format("MMMM DD, YYYY");
+  };
+
   render() {
     const order = this.props.orderT;
     const statusClassName =
@@ -55,8 +61,7 @@ export class HistoryOrder extends React.Component<Props, State> {
               styles["placement-date"]
             )}
           >
-            <span>Order placed&nbsp;</span> {"order.placeDate.monthLong"}{" "}
-            {"order.placeDate.day"}, {"order.placeDate.year"}
+            <span>Order placed&nbsp;</span> {this.formatDate(order.order_date)}
           </div>
 
           <div className={cn(styles["middle-container"], styles["container"])}>
@@ -64,7 +69,7 @@ export class HistoryOrder extends React.Component<Props, State> {
             <div
               className={cn(styles["status-dot"], styles[statusClassName])}
             />
-            <div className={cn(styles["status-text"])}>{"order.status"}</div>
+            <div className={cn(styles["status-text"])}>{order.status}</div>
             <a className={styles.label} href={"order.trackingUrl"}>
               Track package
             </a>
@@ -75,7 +80,7 @@ export class HistoryOrder extends React.Component<Props, State> {
               Get help with this order
             </a>
             <div className={cn(styles["light-text"], styles["order-number"])}>
-              Order {order.number}
+              Order #{order.number}
             </div>
           </div>
         </div>

@@ -10,3 +10,14 @@ export const parsePhoneNumber = (phoneNumber: string) => {
   }
   return phoneNumber;
 };
+
+export const parseCurrency = (stringCurrency: string) => {
+  switch (stringCurrency) {
+    case "USD":
+      return "$";
+    case "EUR":
+      return "€";
+    default:
+      return "$";
+  }
+};
