@@ -1,7 +1,12 @@
+@import "styles/mixins";
+
 .HistoryOrderDetails {
   display: flex;
   flex-wrap: wrap;
   font-size: var(--font-size-md);
+  @include mobile-media {
+    margin-top: 10px;
+  }
 }
 
 .wrap {
@@ -15,6 +20,10 @@
   padding: var(--spacing-big) 0;
   white-space: nowrap;
   min-width: 200px;
+  @include mobile-media {
+    padding: 10px 0;
+    width: 100%;
+  }
 
   &:first-of-type {
     padding-right: var(--horizontal-spacing-normal);
@@ -27,14 +36,24 @@
   font-weight: var(--font-weight-medium);
   margin-bottom: 25px;
   font-size: var(--font-size-lg);
+  @include mobile-media {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
 }
 
 .row {
   display: flex;
   justify-content: space-between;
+  @include mobile-media {
+    font-size: 12px;
+  }
 
   & + .row {
     margin-top: 15px;
+    @include mobile-media {
+      margin-top: 5px;
+    }
   }
 }
 
@@ -51,6 +70,9 @@
 .card-row {
   display: flex;
   align-items: center;
+  @include mobile-media {
+    font-size: 12px;
+  }
 }
 
 .card-icon {

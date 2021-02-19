@@ -1,0 +1,30 @@
+@import "styles/global";
+@import "styles/variables.scss";
+
+.title {
+  line-height: 28pt;
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-medium);
+  color: $primary-color-user;
+}
+
+.toolbarContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navigationButtons {
+  display: flex;
+  flex-direction: row;
+  column-gap: 3px;
+}
+
+.noOfCollections {
+  font-size: 14px;
+}
+
+a {
+  text-decoration: none;
+}

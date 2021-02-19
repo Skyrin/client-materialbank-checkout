@@ -8,6 +8,7 @@ import {
 } from "./CustomerAPI/models";
 import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import { AUTH_TOKEN_STORAGE_KEY } from "constants/general";
+import Order from "models/api/Order";
 
 /**
  * This class is used for handling the Context's internal data.
@@ -35,6 +36,8 @@ abstract class BaseAppContextState {
   private internalSelectedPaymentOption?: PaymentOption;
 
   private modal?: Modals = Modals.None;
+
+  private internalOrdersLoading?: boolean = false;
 
   public get cart() {
     return cloneDeep(this.internalCart);
@@ -107,6 +110,14 @@ abstract class BaseAppContextState {
   public set confirmedOrderLoading(newValue: boolean) {
     this.internalConfirmedOrderLoading = newValue;
   }
+
+  public setOrdersLoading(isLoading: boolean) {
+    this.internalOrdersLoading = isLoading;
+  }
+
+  public isOrdersLoading() {
+    return this.internalOrdersLoading;
+  }
 }
 
 /**
@@ -167,6 +178,10 @@ export class AppContextState extends BaseAppContextState {
   async placeOrder() {}
 
   updateConfirmedOrder(newOrder: OrderT) {}
+
+  async getOrders(): Promise<OrderT[]> {
+    return Promise.resolve([]);
+  }
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);

@@ -11,10 +11,19 @@ import { DateTime } from "luxon";
 import { OrderItemOverlay } from "components/common/OrderItemOverlay/OrderItemOverlay";
 import { Item } from "components/common/HistoryOrderItem/HistoryOrderItem";
 import { Modal } from "components/common/Modal/Modal";
+import { AppContext, AppContextState } from "context/AppContext";
+import Loader from "components/common/Loader/Loader";
+import { OrderItemT, OrderT } from "constants/types";
+import { isOnMobile } from "../../../utils/responsive";
+import LogoMobile from "../../common/LogoMobile/LogoMobile";
 
 interface Props extends RouteComponentProps {}
 
-export default class UserOrderHistory extends React.Component<Props, any> {
+type State = {
+  orders: OrderT[];
+};
+
+export default class UserOrderHistory extends React.Component<Props, State> {
   // TODO: Remove this mock data when API is available
   orders = [
     {
@@ -319,19 +328,45 @@ export default class UserOrderHistory extends React.Component<Props, any> {
   ];
   canLoadMore: boolean = true;
   modalRef: any;
+  static contextType = AppContext;
+  context!: AppContextState;
 
   constructor(props: Props) {
     super(props);
     this.modalRef = React.createRef();
+    this.state = {
+      orders: [],
+    };
+  }
+
+  componentDidMount() {
+    this.context.getOrders().then((orders) => {
+      console.log("HERE BE DA ORDERS: " + orders);
+      console.log(orders);
+      orders.sort((a, b) => {
+        if (
+          DateTime.fromSQL(a.order_date).valueOf() >=
+          DateTime.fromSQL(b.order_date).valueOf()
+        ) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+
+      this.setState({
+        orders: orders,
+      });
+    });
   }
 
   loadMore(): void {
     //  TODO: Implement functionality once we have API
   }
 
-  addItemToCart(item: Item): void {}
+  addItemToCart(item: OrderItemT): void {}
 
-  openItemOverlay(item: Item): void {
+  openItemOverlay(item: OrderItemT): void {
     this.modalRef.current.open(
       <OrderItemOverlay item={item} addToCart={this.addItemToCart} />
     );
@@ -340,6 +375,8 @@ export default class UserOrderHistory extends React.Component<Props, any> {
   render() {
     return (
       <div className={cn(styles["UserOrderHistory"])}>
+        {isOnMobile() && <LogoMobile />}
+
         <UserHeader
           title={UserPages.OrderHistory.name}
           extraContent={
@@ -352,13 +389,20 @@ export default class UserOrderHistory extends React.Component<Props, any> {
           }
         />
 
-        {this.orders.map((order) => (
+        {this.state.orders.map((order) => (
           <HistoryOrder
-            key={order.orderNumber}
-            order={order}
+            key={order.number}
+            orderT={order}
             shopItem={(item) => this.openItemOverlay(item)}
           />
         ))}
+
+        {this.context.isOrdersLoading() && (
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        )}
 
         {this.canLoadMore && (
           <button

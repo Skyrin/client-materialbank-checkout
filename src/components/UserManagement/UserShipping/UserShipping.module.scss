@@ -1,12 +1,19 @@
 @import "styles/variablesscss";
+@import "styles/mixins.scss";
 
 .UserShipping {
   padding: 62px 100px 162px;
   overflow: hidden;
+  @include mobile-media {
+    padding: 0;
+  }
 }
 
 .pageContent {
   margin-top: $margin-medium-3;
+  @include mobile-media {
+    margin-top: 0;
+  }
 }
 
 .addressGrid {
@@ -15,6 +22,12 @@
   grid-template-rows: auto;
   grid-column-gap: 20px;
   grid-row-gap: 20px;
+  @include mobile-media {
+    grid-row-gap: 10px;
+    grid-template-columns: 1fr;
+    padding: 10px $margin-small-4;
+    border-bottom: 1px solid $color-user-border;
+  }
 
   //&::after {
   //  content: "";
@@ -34,6 +47,19 @@
   column-gap: $margin-small-4;
   row-gap: $margin-small-4;
   padding: $margin-small-4;
+  @include mobile-media {
+    padding: 0;
+    padding-top: 10px;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+    border-top: 1px solid $color-user-border;
+    border-radius: 0;
+    column-gap: 10px;
+    row-gap: 10px;
+    width: 100%;
+    height: auto;
+  }
 }
 
 .addressMapCell {
@@ -65,6 +91,9 @@
   width: auto;
   margin-left: auto;
   padding: 0;
+  @include mobile-media {
+    margin-right: 8px;
+  }
 }
 
 .defaultAddress {
@@ -74,6 +103,10 @@
   letter-spacing: 1px;
   color: $brown-color;
   cursor: auto;
+  @include mobile-media {
+    margin-right: 0;
+    margin-left: auto;
+  }
 }
 
 .editAddressCell {
@@ -86,11 +119,26 @@
   position: relative;
   margin-top: $margin-small-4;
   background: url("/assets/images/map_dummy.jpg") no-repeat center center;
+  @include mobile-media {
+    background: none;
+    border: none;
+    margin-top: 0;
+  }
 
   &.inModal {
     //margin: auto $margin-huge-5;
     margin: 0;
   }
+}
+
+.map {
+  @include roundedContainer;
+  border-radius: 8px;
+  background: url("/assets/images/map_dummy.jpg") no-repeat center center;
+  height: calc(0.575 * 100vw);
+  width: 100%;
+  background-size: cover;
+  margin-bottom: $margin-medium;
 }
 
 .addAddressContainer {
@@ -101,6 +149,13 @@
   height: max-content;
   margin: $margin-small-4;
   padding: $margin-medium $margin-medium-4;
+  @include mobile-media {
+    width: 100%;
+    margin: 0;
+    padding: $margin-medium $margin-small-4;
+    border: none;
+    border-radius: 0;
+  }
 }
 
 .modalBackground {
@@ -125,10 +180,16 @@
   height: 19px;
   align-self: flex-end;
   cursor: pointer;
+  @include mobile-media {
+    visibility: hidden;
+  }
 }
 
 .modalContent {
   display: flex;
   flex-flow: column;
   margin: auto $margin-huge-5;
+  @include mobile-media {
+    margin: 0 $margin-small-4;
+  }
 }

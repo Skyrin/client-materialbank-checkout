@@ -22,6 +22,7 @@ import {
   requestCurrentCustomer,
   createCustomerAddress,
   requestCustomerOrders,
+  getCustomerOrders,
 } from "./CustomerAPI/api";
 import {
   CreateCustomerInput,
@@ -93,7 +94,11 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
       let cartInfo = {};
       if (this.contextState.isLoggedIn) {
-        cartInfo = await requestCustomerCartInfo(this.getFullContext());
+        try {
+          cartInfo = await requestCustomerCartInfo(this.getFullContext());
+        } catch (e) {
+          console.log("error ");
+        }
       } else {
         cartInfo = await requestGuestCartInfo(
           this.getFullContext(),
@@ -102,8 +107,12 @@ export default class AppContextManager extends React.Component<Props> {
       }
       console.log("GOT CART INFO", cartInfo);
       this.contextState.cartInfoLoading = false;
-      this.actions.updateCart(cartInfo);
-      return this.contextState.cart;
+      if (cartInfo) {
+        this.actions.updateCart(cartInfo);
+        return this.contextState.cart;
+      } else {
+        console.log("error ");
+      }
     },
 
     requestCurrentCustomer: async () => {
@@ -357,6 +366,16 @@ export default class AppContextManager extends React.Component<Props> {
           return this.contextState.confirmedOrder;
         }
       }
+    },
+
+    getOrders: async () => {
+      this.contextState.setOrdersLoading(true);
+      this.forceUpdate();
+      const orders = await getCustomerOrders(this.getFullContext());
+      this.contextState.setOrdersLoading(false);
+      this.forceUpdate();
+      console.log("GOT ORDERS", orders);
+      return orders["items"];
     },
   };
 
