@@ -174,3 +174,94 @@ export const requestCustomerOrders = async (context: AppContextState) => {
     console.error(e);
   }
 };
+
+export const getCustomerOrders = async (context: AppContextState) => {
+  const OrdersQuery = `
+    query {
+      customer {
+      firstname
+      lastname
+        orders(
+        pageSize: 100
+        )
+         {
+          items {
+            id
+            order_date
+            number
+            status
+            total {
+              base_grand_total {
+                value
+                currency
+              }
+              grand_total {
+                value
+                currency
+              }
+              total_shipping {
+                value
+                currency
+              }
+              total_tax {
+                value
+                currency
+              }
+              subtotal {
+                currency
+                value
+              }
+            }
+            billing_address {
+              firstname
+              lastname
+              middlename
+              city
+              country_code
+              postcode
+              region
+              street
+            }
+            shipping_address {
+              firstname
+              lastname
+              middlename
+              city
+              country_code
+              postcode
+              region
+              street
+            }
+            items {
+              product_sku
+              product_name
+              id
+              product_type
+              product_sale_price {
+                currency
+                value
+              }
+              entered_options {
+                label
+                value
+               }
+              quantity_invoiced
+              status
+              selected_options {
+                label
+                value
+              }
+             
+            }
+          }
+        }
+      }
+    }
+  `;
+  try {
+    const resp = await graphqlRequest(context, OrdersQuery);
+    return resp["customer"]["orders"];
+  } catch (e) {
+    console.error(e);
+  }
+};
