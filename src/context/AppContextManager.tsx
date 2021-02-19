@@ -21,7 +21,6 @@ import {
   login,
   requestCurrentCustomer,
   createCustomerAddress,
-  requestCustomerOrders,
   getCustomerOrders,
 } from "./CustomerAPI/api";
 import {
@@ -322,7 +321,7 @@ export default class AppContextManager extends React.Component<Props> {
       const cartId = this.contextState.cart.id;
       const order = await placeOrder(this.getFullContext(), cartId);
       console.log("PLACED ORDER", order);
-      localStorage.setItem(ORDER_NUMBER_STORAGE_KEY, order["order_number"]);
+      sessionStorage.setItem(ORDER_NUMBER_STORAGE_KEY, order["order_number"]);
       localStorage.removeItem(GUEST_CART_ID_STORAGE_KEY);
       this.contextState.cartInfoLoading = false;
       this.actions.updateCart({});
@@ -336,9 +335,8 @@ export default class AppContextManager extends React.Component<Props> {
       // Then...
       // There is no way of retrieving the order directly by id
       // So we need to get the entire list and find it ourselves
-      const orderNumber = localStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
-      const orderId = localStorage.getItem(ORDER_ID_STORAGE_KEY);
-      console.log("REQUEST FFS", orderNumber, orderId);
+      const orderNumber = sessionStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
+      const orderId = sessionStorage.getItem(ORDER_ID_STORAGE_KEY);
       if (orderNumber) {
         this.contextState.confirmedOrderLoading = true;
         this.forceUpdate();
@@ -346,23 +344,19 @@ export default class AppContextManager extends React.Component<Props> {
         console.log("GOT ORDER", order);
         this.contextState.confirmedOrderLoading = false;
         this.actions.updateConfirmedOrder(order);
-        // localStorage.removeItem(ORDER_NUMBER_STORAGE_KEY);
-        // localStorage.removeItem(ORDER_ID_STORAGE_KEY);
         return this.contextState.confirmedOrder;
       }
 
       if (orderId) {
         this.contextState.confirmedOrderLoading = true;
         this.forceUpdate();
-        const orders = await requestCustomerOrders(this.context);
+        const orders = await getCustomerOrders(this.context);
         const foundOrder = orders.items.find(
           (order) => orderId === atob(order.id)
         );
         if (foundOrder) {
           this.contextState.confirmedOrderLoading = false;
           this.actions.updateConfirmedOrder(foundOrder);
-          // localStorage.removeItem(ORDER_NUMBER_STORAGE_KEY);
-          // localStorage.removeItem(ORDER_ID_STORAGE_KEY);
           return this.contextState.confirmedOrder;
         }
       }

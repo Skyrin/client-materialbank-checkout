@@ -24,6 +24,12 @@ export const CartPricesFragment = `
 export const CartItemsFragment = `
   items {
     id
+    ... on ConfigurableCartItem {
+      configurable_options {
+        option_label
+        value_label
+      }
+    }
     prices {
       price {
         value

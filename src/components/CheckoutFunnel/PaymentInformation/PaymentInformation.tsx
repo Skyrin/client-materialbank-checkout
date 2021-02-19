@@ -196,7 +196,7 @@ export class PaymentInformation extends React.Component<Props, State> {
     );
 
     if (resp) {
-      localStorage.setItem(ORDER_ID_STORAGE_KEY, resp);
+      sessionStorage.setItem(ORDER_ID_STORAGE_KEY, resp);
       event.complete("success");
       this.props.history.push(ORDER_CONFIRMATION_URL);
     } else {
@@ -243,7 +243,7 @@ export class PaymentInformation extends React.Component<Props, State> {
       const resp = await this.setPaymentMethodAndPlaceOrder(token, true);
 
       if (resp) {
-        localStorage.setItem(ORDER_ID_STORAGE_KEY, resp);
+        sessionStorage.setItem(ORDER_ID_STORAGE_KEY, resp);
         this.props.history.push(ORDER_CONFIRMATION_URL);
         return;
       } else {

@@ -11,12 +11,6 @@ import { get } from "lodash-es";
 import { PaymentOption } from "../PaymentInformation/PaymentInformation";
 import applePayLogo from "assets/images/apple_pay_logo_black.svg";
 import paypalLogo from "assets/images/paypal_logo.svg";
-import {
-  ORDER_ID_STORAGE_KEY,
-  ORDER_NUMBER_STORAGE_KEY,
-} from "constants/general";
-import { requestCustomerOrders, requestOrder } from "context/CustomerAPI/api";
-import { OrderT } from "constants/types";
 import Loader from "components/common/Loader/Loader";
 
 type State = {
@@ -95,7 +89,10 @@ export default class OrderConfirmation extends React.Component<any, State> {
       return (
         <div className={cn("funnel-page", styles["OrderConfirmation"])}>
           {!isOnMobile() && <Logo className={styles.logo} />}
-          <Loader />
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
         </div>
       );
     }

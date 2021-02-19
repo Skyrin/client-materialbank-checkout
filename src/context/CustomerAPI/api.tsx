@@ -132,58 +132,6 @@ export const requestOrder = async (
   }
 };
 
-export const requestCustomerOrders = async (context: AppContextState) => {
-  const OrdersQuery = `
-    query CustomerOrder {
-      customer {
-        orders(pageSize: 100) {
-          items {
-            id
-            number
-            payment_methods {
-              type
-              name
-              additional_data {
-                name
-                value
-              }
-            }
-            billing_address {
-              ${OrderAddressFragment}
-            }
-            shipping_address {
-              ${OrderAddressFragment}
-            }
-            items {
-              id
-              product_name
-              product_sku
-              product_sale_price {
-                value
-              }
-              quantity_ordered
-            }
-            total {
-              grand_total {
-                value
-              }
-              subtotal {
-                value
-              }
-            }
-          }
-        }
-      }
-    }
-  `;
-  try {
-    const resp = await graphqlRequest(context, OrdersQuery);
-    return resp["customer"]["orders"];
-  } catch (e) {
-    console.error(e);
-  }
-};
-
 export const getCustomerOrders = async (context: AppContextState) => {
   const OrdersQuery = `
     query {

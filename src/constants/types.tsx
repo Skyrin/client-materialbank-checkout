@@ -57,6 +57,7 @@ export type CartItemT = {
   };
   product?: ProductT;
   quantity?: number;
+  color?: string;
 };
 
 export type PriceT = {

@@ -8,7 +8,6 @@ import {
 } from "./CustomerAPI/models";
 import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import { AUTH_TOKEN_STORAGE_KEY } from "constants/general";
-import Order from "models/api/Order";
 
 /**
  * This class is used for handling the Context's internal data.
