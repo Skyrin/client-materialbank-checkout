@@ -169,6 +169,14 @@ export const getCustomerOrders = async (context: AppContextState) => {
                 value
               }
             }
+            payment_methods {	
+              type	
+              name	
+              additional_data {	
+                name	
+                value	
+              }	
+            }
             billing_address {
               firstname
               lastname
