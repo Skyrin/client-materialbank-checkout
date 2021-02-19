@@ -132,35 +132,91 @@ export const requestOrder = async (
   }
 };
 
-export const requestCustomerOrders = async (context: AppContextState) => {
+export const getCustomerOrders = async (context: AppContextState) => {
   const OrdersQuery = `
-    query CustomerOrder {
+    query {
       customer {
-        orders {
+      firstname
+      lastname
+        orders(
+        pageSize: 100
+        )
+         {
           items {
             id
+            order_date
             number
-            payment_methods {
-              type
-              name
-              additional_data {
-                name
-                value
-              }
-            }
-            billing_address {
-              ${OrderAddressFragment}
-            }
-            shipping_address {
-              ${OrderAddressFragment}
-            }
+            status
             total {
+              base_grand_total {
+                value
+                currency
+              }
               grand_total {
                 value
+                currency
+              }
+              total_shipping {
+                value
+                currency
+              }
+              total_tax {
+                value
+                currency
               }
               subtotal {
+                currency
                 value
               }
+            }
+            payment_methods {	
+              type	
+              name	
+              additional_data {	
+                name	
+                value	
+              }	
+            }
+            billing_address {
+              firstname
+              lastname
+              middlename
+              city
+              country_code
+              postcode
+              region
+              street
+            }
+            shipping_address {
+              firstname
+              lastname
+              middlename
+              city
+              country_code
+              postcode
+              region
+              street
+            }
+            items {
+              product_sku
+              product_name
+              id
+              product_type
+              product_sale_price {
+                currency
+                value
+              }
+              entered_options {
+                label
+                value
+               }
+              quantity_invoiced
+              status
+              selected_options {
+                label
+                value
+              }
+             
             }
           }
         }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AddressT, CartT, CustomerT } from "constants/types";
+import { AddressT, CartT, CustomerT, OrderT } from "constants/types";
 import { cloneDeep } from "lodash-es";
 import { CartAddressInput } from "./CheckoutAPI/models";
 import {
@@ -27,12 +27,16 @@ abstract class BaseAppContextState {
   private internalCartInfoLoading?: boolean = false;
   private internalCustomer?: CustomerT = {};
   private internalCustomerLoading?: boolean = false;
+  private internalConfirmedOrder?: OrderT = {};
+  private internalConfirmedOrderLoading: boolean = false;
   private internalIsLoggedIn?: boolean = !!localStorage.getItem(
     AUTH_TOKEN_STORAGE_KEY
   );
   private internalSelectedPaymentOption?: PaymentOption;
 
   private modal?: Modals = Modals.None;
+
+  private internalOrdersLoading?: boolean = false;
 
   public get cart() {
     return cloneDeep(this.internalCart);
@@ -89,6 +93,30 @@ abstract class BaseAppContextState {
   public set selectedPaymentOption(newValue: PaymentOption) {
     this.internalSelectedPaymentOption = newValue;
   }
+
+  public get confirmedOrder() {
+    return cloneDeep(this.internalConfirmedOrder);
+  }
+
+  public set confirmedOrder(newOrder: OrderT) {
+    this.internalConfirmedOrder = cloneDeep(newOrder);
+  }
+
+  public get confirmedOrderLoading() {
+    return !!this.internalConfirmedOrderLoading;
+  }
+
+  public set confirmedOrderLoading(newValue: boolean) {
+    this.internalConfirmedOrderLoading = newValue;
+  }
+
+  public setOrdersLoading(isLoading: boolean) {
+    this.internalOrdersLoading = isLoading;
+  }
+
+  public isOrdersLoading() {
+    return this.internalOrdersLoading;
+  }
 }
 
 /**
@@ -109,7 +137,7 @@ export class AppContextState extends BaseAppContextState {
 
   async requestCurrentCustomer() {}
 
-  async requestOrder(orderId?: string) {}
+  async requestConfirmedOrder() {}
 
   async applyCouponToCart(couponCode: string) {}
 
@@ -147,6 +175,12 @@ export class AppContextState extends BaseAppContextState {
   async mergeGuestCart() {}
 
   async placeOrder() {}
+
+  updateConfirmedOrder(newOrder: OrderT) {}
+
+  async getOrders(): Promise<OrderT[]> {
+    return Promise.resolve([]);
+  }
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);

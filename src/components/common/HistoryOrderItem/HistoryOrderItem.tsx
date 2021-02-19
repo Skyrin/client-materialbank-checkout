@@ -1,10 +1,13 @@
 import React from "react";
 import cn from "classnames";
 import styles from "./HistoryOrderItem.module.scss";
+import { OrderItemT } from "constants/types";
+import { parseCurrency } from "utils/general";
 
 interface Props {
-  item: Item;
+  item?: Item;
   onClick?: (...params: any) => any;
+  itemT: OrderItemT;
 }
 
 export interface Item {
@@ -21,7 +24,7 @@ export interface Item {
 }
 
 export function HistoryOrderItem(props: Props) {
-  const item = props.item;
+  const item = props.itemT;
   return (
     <div className={cn(styles["HistoryOrderItem"])}>
       <div className={cn(styles["left-container"])}>
@@ -30,10 +33,10 @@ export function HistoryOrderItem(props: Props) {
           <div
             className={cn(styles["brand"], "font-size-sm", "text-color-xlight")}
           >
-            {item.brand}
+            {item.product_sku}
           </div>
           <div className={cn(styles["model"], "font-weight-medium")}>
-            {item.model}
+            {item.product_name}
           </div>
         </div>
       </div>
@@ -42,19 +45,19 @@ export function HistoryOrderItem(props: Props) {
         <div
           className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
         >
-          {item.color}
+          {"item.color"}
         </div>
         <div
           className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
         >
-          {item.currency}
-          {item.pricePerArea} / {item.areaMeasurementUnit}
+          {parseCurrency(item.product_sale_price.currency)}
+          {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
         </div>
         <div
           className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
         >
-          {item.currency}
-          {item.pricePerSample} / sample
+          {parseCurrency(item.product_sale_price.currency)}
+          {item.product_sale_price.value} / sample
         </div>
       </div>
 
@@ -63,7 +66,7 @@ export function HistoryOrderItem(props: Props) {
           className={cn(styles["shop-button"], "font-weight-medium")}
           onClick={props.onClick}
         >
-          Shop this flooring ({item.shops.length})
+          Shop this flooring ({"item.shops.length"})
         </button>
       </div>
     </div>

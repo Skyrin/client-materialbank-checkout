@@ -21,6 +21,7 @@ import {
   login,
   requestCurrentCustomer,
   createCustomerAddress,
+  getCustomerOrders,
 } from "./CustomerAPI/api";
 import {
   CreateCustomerInput,
@@ -30,6 +31,7 @@ import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/Paym
 import {
   AUTH_TOKEN_STORAGE_KEY,
   GUEST_CART_ID_STORAGE_KEY,
+  ORDER_ID_STORAGE_KEY,
   ORDER_NUMBER_STORAGE_KEY,
 } from "constants/general";
 
@@ -71,6 +73,16 @@ export default class AppContextManager extends React.Component<Props> {
       return this.contextState.customer;
     },
 
+    updateConfirmedOrder: (newOrder: OrderT) => {
+      this.contextState.confirmedOrder = mergeWith(
+        this.contextState.confirmedOrder,
+        newOrder,
+        fieldCustomizer
+      );
+      this.forceUpdate();
+      return this.contextState.confirmedOrder;
+    },
+
     setLoggedIn: (newValue: boolean) => {
       this.contextState.isLoggedIn = newValue;
       this.forceUpdate();
@@ -81,7 +93,11 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
       let cartInfo = {};
       if (this.contextState.isLoggedIn) {
-        cartInfo = await requestCustomerCartInfo(this.getFullContext());
+        try {
+          cartInfo = await requestCustomerCartInfo(this.getFullContext());
+        } catch (e) {
+          console.log("error ");
+        }
       } else {
         cartInfo = await requestGuestCartInfo(
           this.getFullContext(),
@@ -90,8 +106,12 @@ export default class AppContextManager extends React.Component<Props> {
       }
       console.log("GOT CART INFO", cartInfo);
       this.contextState.cartInfoLoading = false;
-      this.actions.updateCart(cartInfo);
-      return this.contextState.cart;
+      if (cartInfo) {
+        this.actions.updateCart(cartInfo);
+        return this.contextState.cart;
+      } else {
+        console.log("error ");
+      }
     },
 
     requestCurrentCustomer: async () => {
@@ -301,14 +321,56 @@ export default class AppContextManager extends React.Component<Props> {
       const cartId = this.contextState.cart.id;
       const order = await placeOrder(this.getFullContext(), cartId);
       console.log("PLACED ORDER", order);
-      localStorage.setItem(ORDER_NUMBER_STORAGE_KEY, order["order_number"]);
+      sessionStorage.setItem(ORDER_NUMBER_STORAGE_KEY, order["order_number"]);
       localStorage.removeItem(GUEST_CART_ID_STORAGE_KEY);
       this.contextState.cartInfoLoading = false;
       this.actions.updateCart({});
       return order;
     },
 
-    requestOrder: async () => {},
+    requestConfirmedOrder: async () => {
+      // This is so ridiculous...
+      // The graphql placeOrder mutation returns an order number
+      // But the REST call that we need to use for Stripe returns an order id
+      // Then...
+      // There is no way of retrieving the order directly by id
+      // So we need to get the entire list and find it ourselves
+      const orderNumber = sessionStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
+      const orderId = sessionStorage.getItem(ORDER_ID_STORAGE_KEY);
+      if (orderNumber) {
+        this.contextState.confirmedOrderLoading = true;
+        this.forceUpdate();
+        const order = await requestOrder(this.context, orderNumber);
+        console.log("GOT ORDER", order);
+        this.contextState.confirmedOrderLoading = false;
+        this.actions.updateConfirmedOrder(order);
+        return this.contextState.confirmedOrder;
+      }
+
+      if (orderId) {
+        this.contextState.confirmedOrderLoading = true;
+        this.forceUpdate();
+        const orders = await getCustomerOrders(this.context);
+        const foundOrder = orders.items.find(
+          (order) => orderId === atob(order.id)
+        );
+        if (foundOrder) {
+          this.contextState.confirmedOrderLoading = false;
+          this.actions.updateConfirmedOrder(foundOrder);
+          return this.contextState.confirmedOrder;
+        }
+      }
+    },
+
+    getOrders: async () => {
+      this.contextState.setOrdersLoading(true);
+      this.forceUpdate();
+      const orders = await getCustomerOrders(this.getFullContext());
+      this.contextState.setOrdersLoading(false);
+      this.forceUpdate();
+      console.log("GOT ORDERS", orders);
+      return orders["items"];
+    },
   };
 
   getFullContext = () => {
