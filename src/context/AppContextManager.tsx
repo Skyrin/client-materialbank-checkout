@@ -21,6 +21,7 @@ import {
   login,
   requestCurrentCustomer,
   createCustomerAddress,
+  requestCustomerOrders,
 } from "./CustomerAPI/api";
 import {
   CreateCustomerInput,
@@ -30,6 +31,7 @@ import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/Paym
 import {
   AUTH_TOKEN_STORAGE_KEY,
   GUEST_CART_ID_STORAGE_KEY,
+  ORDER_ID_STORAGE_KEY,
   ORDER_NUMBER_STORAGE_KEY,
 } from "constants/general";
 
@@ -69,6 +71,16 @@ export default class AppContextManager extends React.Component<Props> {
       );
       this.forceUpdate();
       return this.contextState.customer;
+    },
+
+    updateConfirmedOrder: (newOrder: OrderT) => {
+      this.contextState.confirmedOrder = mergeWith(
+        this.contextState.confirmedOrder,
+        newOrder,
+        fieldCustomizer
+      );
+      this.forceUpdate();
+      return this.contextState.confirmedOrder;
     },
 
     setLoggedIn: (newValue: boolean) => {
@@ -308,7 +320,44 @@ export default class AppContextManager extends React.Component<Props> {
       return order;
     },
 
-    requestOrder: async () => {},
+    requestConfirmedOrder: async () => {
+      // This is so ridiculous...
+      // The graphql placeOrder mutation returns an order number
+      // But the REST call that we need to use for Stripe returns an order id
+      // Then...
+      // There is no way of retrieving the order directly by id
+      // So we need to get the entire list and find it ourselves
+      const orderNumber = localStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
+      const orderId = localStorage.getItem(ORDER_ID_STORAGE_KEY);
+      console.log("REQUEST FFS", orderNumber, orderId);
+      if (orderNumber) {
+        this.contextState.confirmedOrderLoading = true;
+        this.forceUpdate();
+        const order = await requestOrder(this.context, orderNumber);
+        console.log("GOT ORDER", order);
+        this.contextState.confirmedOrderLoading = false;
+        this.actions.updateConfirmedOrder(order);
+        // localStorage.removeItem(ORDER_NUMBER_STORAGE_KEY);
+        // localStorage.removeItem(ORDER_ID_STORAGE_KEY);
+        return this.contextState.confirmedOrder;
+      }
+
+      if (orderId) {
+        this.contextState.confirmedOrderLoading = true;
+        this.forceUpdate();
+        const orders = await requestCustomerOrders(this.context);
+        const foundOrder = orders.items.find(
+          (order) => orderId === atob(order.id)
+        );
+        if (foundOrder) {
+          this.contextState.confirmedOrderLoading = false;
+          this.actions.updateConfirmedOrder(foundOrder);
+          // localStorage.removeItem(ORDER_NUMBER_STORAGE_KEY);
+          // localStorage.removeItem(ORDER_ID_STORAGE_KEY);
+          return this.contextState.confirmedOrder;
+        }
+      }
+    },
   };
 
   getFullContext = () => {

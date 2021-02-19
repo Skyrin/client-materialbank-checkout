@@ -136,7 +136,7 @@ export const requestCustomerOrders = async (context: AppContextState) => {
   const OrdersQuery = `
     query CustomerOrder {
       customer {
-        orders {
+        orders(pageSize: 100) {
           items {
             id
             number
@@ -153,6 +153,15 @@ export const requestCustomerOrders = async (context: AppContextState) => {
             }
             shipping_address {
               ${OrderAddressFragment}
+            }
+            items {
+              id
+              product_name
+              product_sku
+              product_sale_price {
+                value
+              }
+              quantity_ordered
             }
             total {
               grand_total {

@@ -116,12 +116,16 @@ class OrderSummary extends React.Component<Props, State> {
 
   render() {
     const cart = this.context.cart;
-    const cartItems = cart?.items || [];
+    const confirmedOrder = this.context.confirmedOrder;
 
     const isOnConfirmationPage = !!matchPath(this.props.location.pathname, {
       path: ORDER_CONFIRMATION_URL,
       exact: true,
     });
+
+    const items = isOnConfirmationPage
+      ? confirmedOrder?.items || []
+      : cart?.items || [];
 
     return (
       <div
@@ -134,7 +138,7 @@ class OrderSummary extends React.Component<Props, State> {
 
         <div className={styles.orderSummaryContainer}>
           <div className={styles.itemsContainer}>
-            {cartItems.map((ci: CartItemT) => (
+            {items.map((ci: CartItemT) => (
               <CartItem key={ci.id} cartItem={ci} />
             ))}
           </div>
