@@ -7,7 +7,8 @@
   flex-direction: row;
   color: white;
   padding: $margin-small-4 $margin-huge-5;
-  column-gap: $margin-medium-3;
+  column-gap: $margin-medium;
+  justify-content: space-between;
 }
 
 .headerLogo {
