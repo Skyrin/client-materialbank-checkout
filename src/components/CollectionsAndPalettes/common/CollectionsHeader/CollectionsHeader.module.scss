@@ -9,15 +9,18 @@
   padding: $margin-small-4 $margin-huge-5;
   column-gap: $margin-medium-3;
 }
+
 .headerLogo {
   h1 {
     font-size: 26px;
     color: white;
   }
+
   div {
     display: flex;
     align-items: center;
     margin-right: 0 !important;
+
     svg {
       height: 40px;
 
@@ -27,6 +30,7 @@
     }
   }
 }
+
 .navLinks {
   display: flex;
   flex-direction: row;
@@ -37,19 +41,20 @@
   .navLink {
     display: flex;
     flex-direction: row;
-    align-items: baseline;
+    align-items: center;
 
     a {
       color: rgba(#fff, 0.8);
       font-size: var(--font-size-lg);
       padding-right: 10px;
       cursor: pointer;
-      transition: color 0.5s;
+      transition: color 0.2s;
 
       &:hover {
         color: white;
       }
     }
+
     i {
       font-size: var(--font-size-sm);
     }
@@ -67,7 +72,15 @@
     padding: 0 15px 0 15px;
     font-size: var(--font-size-xl);
     cursor: pointer;
-    transition: color 0.5s;
+    transition: color 0.2s;
+
+    &:first-of-type {
+      padding-left: 0;
+    }
+
+    &:last-of-type {
+      padding-right: 0;
+    }
 
     &:hover {
       color: white;
