@@ -7,6 +7,14 @@ type Props = {
 };
 
 export default function CartItem(props: Props) {
+  let color;
+  const options = props.cartItem.configurable_options || [];
+  for (const opt of options) {
+    if (opt.option_label === "Configurable Color") {
+      color = opt.value_label;
+      break;
+    }
+  }
   return (
     <div className={styles.CartItem}>
       <div className={styles.itemInfo}>
@@ -16,11 +24,11 @@ export default function CartItem(props: Props) {
           src={props.cartItem.product?.image?.url}
         />
         <div className={styles.infoContainer}>
-          <span className={styles.lightText}>Walls & Co.</span>
+          <span className={styles.lightText}>cartItem.brand</span>
           <span className={styles.boldText}>
             {props.cartItem.product?.name}
           </span>
-          <span className={styles.lightText}>Oatmeal</span>
+          {color && <span className={styles.lightText}>{color}</span>}
         </div>
       </div>
       <div className={styles.priceContainer}>

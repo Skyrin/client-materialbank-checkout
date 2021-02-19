@@ -8,7 +8,6 @@ import {
 } from "./CustomerAPI/models";
 import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import { AUTH_TOKEN_STORAGE_KEY } from "constants/general";
-import Order from "models/api/Order";
 
 /**
  * This class is used for handling the Context's internal data.
@@ -28,6 +27,8 @@ abstract class BaseAppContextState {
   private internalCartInfoLoading?: boolean = false;
   private internalCustomer?: CustomerT = {};
   private internalCustomerLoading?: boolean = false;
+  private internalConfirmedOrder?: OrderT = {};
+  private internalConfirmedOrderLoading: boolean = false;
   private internalIsLoggedIn?: boolean = !!localStorage.getItem(
     AUTH_TOKEN_STORAGE_KEY
   );
@@ -93,6 +94,22 @@ abstract class BaseAppContextState {
     this.internalSelectedPaymentOption = newValue;
   }
 
+  public get confirmedOrder() {
+    return cloneDeep(this.internalConfirmedOrder);
+  }
+
+  public set confirmedOrder(newOrder: OrderT) {
+    this.internalConfirmedOrder = cloneDeep(newOrder);
+  }
+
+  public get confirmedOrderLoading() {
+    return !!this.internalConfirmedOrderLoading;
+  }
+
+  public set confirmedOrderLoading(newValue: boolean) {
+    this.internalConfirmedOrderLoading = newValue;
+  }
+
   public setOrdersLoading(isLoading: boolean) {
     this.internalOrdersLoading = isLoading;
   }
@@ -120,7 +137,7 @@ export class AppContextState extends BaseAppContextState {
 
   async requestCurrentCustomer() {}
 
-  async requestOrder(orderId?: string) {}
+  async requestConfirmedOrder() {}
 
   async applyCouponToCart(couponCode: string) {}
 
@@ -158,6 +175,8 @@ export class AppContextState extends BaseAppContextState {
   async mergeGuestCart() {}
 
   async placeOrder() {}
+
+  updateConfirmedOrder(newOrder: OrderT) {}
 
   async getOrders(): Promise<OrderT[]> {
     return Promise.resolve([]);

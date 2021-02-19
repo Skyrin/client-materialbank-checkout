@@ -11,16 +11,10 @@ import { get } from "lodash-es";
 import { PaymentOption } from "../PaymentInformation/PaymentInformation";
 import applePayLogo from "assets/images/apple_pay_logo_black.svg";
 import paypalLogo from "assets/images/paypal_logo.svg";
-import {
-  ORDER_ID_STORAGE_KEY,
-  ORDER_NUMBER_STORAGE_KEY,
-} from "constants/general";
-import { requestCustomerOrders, requestOrder } from "context/CustomerAPI/api";
-import { OrderT } from "constants/types";
+import Loader from "components/common/Loader/Loader";
 
 type State = {
   loadingOrder: boolean;
-  order: OrderT;
 };
 
 export default class OrderConfirmation extends React.Component<any, State> {
@@ -29,11 +23,6 @@ export default class OrderConfirmation extends React.Component<any, State> {
 
   state = {
     loadingOrder: true,
-    order: {},
-  };
-
-  order = {
-    number: 2625117283,
   };
 
   // TODO: Create a class/type for this info once we have API docs
@@ -77,70 +66,9 @@ export default class OrderConfirmation extends React.Component<any, State> {
     },
   ];
 
-  // TODO: Create a class/type for this info once we have API docs
-  customerInfo = {
-    customerEmail: "johndoe@gmail.com",
-    customerName: "John Doe",
-    paymentInfo: {
-      cardIssuer: "VISA",
-      cardNumber: "1234",
-      amount: 178.72,
-      currency: "$",
-    },
-    shippingAddress: {
-      firstname: "John",
-      lastname: "Doe",
-      company: "Vaudeville Ventures",
-      street: ["236 W 30th Street", "11th Floor"],
-      city: "New York",
-      region: "NY",
-      postcode: "10001",
-    },
-    billingAddress: {
-      firstname: "John",
-      lastname: "Doe",
-      company: "Vaudeville Ventures",
-      street: ["236 W 30th Street", "11th Floor"],
-      city: "New York",
-      region: "NY",
-      postcode: "10001",
-    },
-  };
-
   async componentDidMount() {
     scrollToTop();
-    // This is so ridiculous...
-    // The graphql placeOrder mutation returns an order number
-    // But the REST call that we need to use for Stripe returns an order id
-    // Then...
-    // There is no way of retrieving the order directly by id
-    // So we need to get the entire list and find it ourselves
-
-    const orderNumber = localStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
-    const orderId = localStorage.getItem(ORDER_ID_STORAGE_KEY);
-    await this.context.requestCartInfo();
-    if (orderNumber) {
-      const order = await requestOrder(this.context, orderNumber);
-      console.log("ORDER", order);
-      this.setState({
-        order: order,
-        loadingOrder: false,
-      });
-    }
-    if (orderId) {
-      const orders = await requestCustomerOrders(this.context);
-      const foundOrder = orders.items.find(
-        (order) => orderId === atob(order.id)
-      );
-      if (foundOrder) {
-        this.setState({
-          order: foundOrder,
-          loadingOrder: false,
-        });
-      }
-    }
-    localStorage.removeItem(ORDER_NUMBER_STORAGE_KEY);
-    localStorage.removeItem(ORDER_ID_STORAGE_KEY);
+    await this.context.requestConfirmedOrder();
   }
 
   recommendationClick(productId: number): void {}
@@ -156,9 +84,24 @@ export default class OrderConfirmation extends React.Component<any, State> {
   };
 
   render() {
+    console.log(this.context.confirmedOrderLoading);
+    if (this.context.confirmedOrderLoading) {
+      return (
+        <div className={cn("funnel-page", styles["OrderConfirmation"])}>
+          {!isOnMobile() && <Logo className={styles.logo} />}
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        </div>
+      );
+    }
     const customerEmail = this.context.customer.email;
     const customerName = `${this.context.customer.firstname} ${this.context.customer.lastname}`;
-    const orderPaymentOption = get(this.state.order, "payment_methods[0]");
+    const orderPaymentOption = get(
+      this.context.confirmedOrder,
+      "payment_methods[0]"
+    );
     let selectedPaymentOption = this.context.selectedPaymentOption;
     if (orderPaymentOption && orderPaymentOption.type === "paypal_express") {
       selectedPaymentOption = PaymentOption.PayPal;
@@ -166,32 +109,24 @@ export default class OrderConfirmation extends React.Component<any, State> {
     if (orderPaymentOption && orderPaymentOption.type === "stripe_payments") {
       selectedPaymentOption = PaymentOption.CreditCard;
     }
-    console.log(this.state.order);
+    console.log(this.context.confirmedOrder);
     const shippingAddress = this.parseAddress(
       get(
-        this.state.order,
+        this.context.confirmedOrder,
         "shipping_address",
-        get(
-          this.context.cart,
-          "shipping_addresses[0]",
-          this.customerInfo.shippingAddress
-        )
+        get(this.context.cart, "shipping_addresses[0]")
       )
     );
     const billingAddress = this.parseAddress(
       get(
-        this.state.order,
+        this.context.confirmedOrder,
         "billing_address",
-        get(
-          this.context.cart,
-          "billing_address",
-          this.customerInfo.billingAddress
-        )
+        get(this.context.cart, "billing_address")
       )
     );
-    const orderNumber = get(this.state.order, "number", this.order.number);
+    const orderNumber = get(this.context.confirmedOrder, "number", "");
     const orderAmount = get(
-      this.state.order,
+      this.context.confirmedOrder,
       "total.subtotal.value",
       get(this.context.cart, "prices.subtotal_including_tax.value", 172)
     );
@@ -283,7 +218,9 @@ export default class OrderConfirmation extends React.Component<any, State> {
                 <span>{shippingAddress.company}</span>
               </div>
               <div className={styles["text-row"]}>
-                <span>{shippingAddress.street.join(" ")}</span>
+                <span>
+                  {shippingAddress.street && shippingAddress.street.join(" ")}
+                </span>
               </div>
               <div className={styles["text-row"]}>
                 <span>
@@ -350,7 +287,9 @@ export default class OrderConfirmation extends React.Component<any, State> {
                 <span>{billingAddress.company}</span>
               </div>
               <div className={styles["text-row"]}>
-                <span>{billingAddress.street.join(" ")}</span>
+                <span>
+                  {billingAddress.street && billingAddress.street.join(" ")}
+                </span>
               </div>
               <div className={styles["text-row"]}>
                 <span>

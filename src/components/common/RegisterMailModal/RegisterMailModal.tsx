@@ -4,7 +4,6 @@ import cn from "classnames";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Input from "components/common/Input/Input";
-import { RouteComponentProps } from "react-router-dom";
 import Checkbox from "components/common/Checkbox/Checkbox";
 import {
   PasswordCheckService,

@@ -770,7 +770,7 @@ export class PersonalInformation extends React.Component<Props, State> {
     );
     const respBody = await response.json();
     if (response.ok && respBody) {
-      localStorage.setItem(ORDER_ID_STORAGE_KEY, respBody);
+      sessionStorage.setItem(ORDER_ID_STORAGE_KEY, respBody);
       this.props.history.push(ORDER_CONFIRMATION_URL);
       return;
     }

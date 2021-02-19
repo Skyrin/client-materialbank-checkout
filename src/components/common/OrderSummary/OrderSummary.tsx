@@ -1,4 +1,3 @@
-import { CartItemT } from "constants/types";
 import * as React from "react";
 import CartItem from "./CartItem/CartItem";
 import styles from "./OrderSummary.module.scss";
@@ -10,6 +9,7 @@ import PromoCode from "../PromoCode/PromoCode";
 import Loader from "../Loader/Loader";
 import { RouteComponentProps, withRouter, matchPath } from "react-router-dom";
 import { ORDER_CONFIRMATION_URL } from "constants/urls";
+import OrderItem from "./OrderItem/OrderItem";
 
 type Props = RouteComponentProps & {
   className?: string;
@@ -28,6 +28,11 @@ class OrderSummary extends React.Component<Props, State> {
 
   renderSummaryHeader = () => {
     const cart = this.context.cart;
+    const confirmedOrder = this.context.confirmedOrder;
+
+    const total = this.isOnConfirmationPage()
+      ? confirmedOrder?.total?.subtotal?.value || 0
+      : cart?.prices?.subtotal_including_tax?.value || 0;
 
     return (
       <div
@@ -46,9 +51,7 @@ class OrderSummary extends React.Component<Props, State> {
             })}
           />
         </div>
-        <span className={styles.total}>{`$${
-          cart?.prices?.subtotal_including_tax?.value || 0
-        }`}</span>
+        <span className={styles.total}>{`$${total}`}</span>
       </div>
     );
   };
@@ -99,12 +102,17 @@ class OrderSummary extends React.Component<Props, State> {
 
   renderPricesSection = () => {
     const cart = this.context.cart;
+    const confirmedOrder = this.context.confirmedOrder;
+
+    const subtotal = this.isOnConfirmationPage()
+      ? confirmedOrder?.total?.subtotal?.value || 0
+      : cart?.prices?.subtotal_including_tax?.value || 0;
 
     return (
       <div className={styles.pricesContainer}>
         <div className={styles.priceLine}>
           <span>Subtotal</span>
-          <span>{`$${cart?.prices?.subtotal_including_tax?.value || 0}`}</span>
+          <span>{`$${subtotal}`}</span>
         </div>
         <div className={styles.priceLine}>
           <span>Shipping</span>
@@ -114,14 +122,24 @@ class OrderSummary extends React.Component<Props, State> {
     );
   };
 
-  render() {
-    const cart = this.context.cart;
-    const cartItems = cart?.items || [];
-
-    const isOnConfirmationPage = !!matchPath(this.props.location.pathname, {
+  isOnConfirmationPage = () => {
+    return !!matchPath(this.props.location.pathname, {
       path: ORDER_CONFIRMATION_URL,
       exact: true,
     });
+  };
+
+  render() {
+    const cart = this.context.cart;
+    const confirmedOrder = this.context.confirmedOrder;
+
+    const items = this.isOnConfirmationPage()
+      ? confirmedOrder?.items || []
+      : cart?.items || [];
+
+    const total = this.isOnConfirmationPage()
+      ? confirmedOrder?.total?.subtotal?.value || 0
+      : cart?.prices?.subtotal_including_tax?.value || 0;
 
     return (
       <div
@@ -134,23 +152,28 @@ class OrderSummary extends React.Component<Props, State> {
 
         <div className={styles.orderSummaryContainer}>
           <div className={styles.itemsContainer}>
-            {cartItems.map((ci: CartItemT) => (
-              <CartItem key={ci.id} cartItem={ci} />
+            {items.map((item: any) => (
+              <React.Fragment key={item.id}>
+                {this.isOnConfirmationPage() ? (
+                  <OrderItem orderItem={item} />
+                ) : (
+                  <CartItem cartItem={item} />
+                )}
+              </React.Fragment>
             ))}
           </div>
           {!isOnMobile() &&
-            (isOnConfirmationPage
+            (this.isOnConfirmationPage()
               ? this.renderAddedGiftsSection()
               : this.renderGiftSection())}
           {this.renderPricesSection()}
           <div className={styles.totalContainer}>
             <span>Total</span>
-            <span>{`$${
-              cart?.prices?.subtotal_including_tax?.value || 0
-            }`}</span>
+            <span>{`$${total}`}</span>
           </div>
 
-          {this.context.cartInfoLoading && (
+          {(this.context.cartInfoLoading ||
+            this.context.confirmedOrderLoading) && (
             <Loader
               containerClassName={styles.loaderContainer}
               loaderClassName={styles.loader}

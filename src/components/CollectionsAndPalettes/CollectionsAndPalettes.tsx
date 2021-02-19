@@ -4,17 +4,9 @@ import {
   COLLECTIONS_AND_PALETTES_URL,
 } from "constants/urls";
 import * as React from "react";
-import {
-  Link,
-  Redirect,
-  Route,
-  RouteComponentProps,
-  Switch,
-} from "react-router-dom";
+import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./CollectionsAndPalettes.module.scss";
 import { AppContext, AppContextState } from "../../context/AppContext";
-import Breadcrumbs from "../common/Breadcrumbs/Breadcrumbs";
-import { BREADCRUMBS_STEPS } from "../../constants/general";
 import { isOnMobile } from "../../utils/responsive";
 import LogoMobile from "../common/LogoMobile/LogoMobile";
 import Collections from "./Collections/Collections";
