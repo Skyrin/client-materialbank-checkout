@@ -8,7 +8,7 @@ import imagePlaceholder from "assets/images/profile_placeholder.png";
 import cn from "classnames";
 import ResetPasswordForm from "components/common/Forms/ResetPasswordForm/ResetPasswordForm";
 import UpdateProfileForm from "components/common/Forms/UpdateProfileForm/UpdateProfileForm";
-import { isOnMobile } from "../../../utils/responsive";
+import { isOnMobile } from "utils/responsive";
 import LogoMobile from "../../common/LogoMobile/LogoMobile";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
@@ -233,9 +233,14 @@ export default class UserAccount extends React.Component<Props, State> {
       const customerInput = new UpdateCustomerInput({
         firstname: this.updateProfileForm.state.updateProfile.firstName,
         lastname: this.updateProfileForm.state.updateProfile.lastName,
-        email: this.updateProfileForm.state.updateProfile.email,
         is_subscribed: this.updateProfileForm.state.optIn,
       });
+
+      if (this.updateProfileForm.state.isEmailChanged) {
+        customerInput.email = this.updateProfileForm.state.updateProfile.email;
+        customerInput.password = this.updateProfileForm.state.updateProfile.password;
+      }
+
       this.context.updateCustomerV2(customerInput).then((value) => {
         console.log("UPDATED CUSTOMER");
         console.log(value);

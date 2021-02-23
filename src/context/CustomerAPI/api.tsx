@@ -79,8 +79,8 @@ export const updateCustomerV2 = async (
   customer: UpdateCustomerInput
 ) => {
   const Mutation = `
-    mutation($input: UpdateCustomerInput!) {
-      updateCustomerV2(input: $input) {
+    mutation($input: CustomerInput!) {
+      updateCustomer(input: $input) {
         customer {
           ${UpdateCustomerFragment}
         }
