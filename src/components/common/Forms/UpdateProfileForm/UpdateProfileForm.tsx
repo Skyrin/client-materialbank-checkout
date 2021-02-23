@@ -4,6 +4,7 @@ import Input from "components/common/Input/Input";
 import Checkbox from "components/common/Checkbox/Checkbox";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
+import { CustomerT } from "constants/types";
 
 const updateProfileSchema = yup.object().shape({
   firstName: yup.string().required("Required"),
@@ -167,6 +168,7 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
       updateProfileSchema.validateSync(this.state.updateProfile, {
         abortEarly: false,
       });
+      return true;
     } catch (e) {
       const errors = extractErrors(e);
       this.setState({
@@ -175,6 +177,19 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
           ...errors,
         },
       });
+      return false;
     }
+  };
+
+  newCustomerValues = (customerT: CustomerT) => {
+    this.setState({
+      updateProfile: {
+        firstName: customerT?.firstname,
+        lastName: customerT?.lastname,
+        email: customerT?.email,
+        mobile: customerT?.mobile || "",
+      },
+      optIn: customerT.is_subscribed,
+    });
   };
 }

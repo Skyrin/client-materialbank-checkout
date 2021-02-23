@@ -34,4 +34,12 @@ export const CustomerFragment = `
   firstname
   lastname
   default_shipping
+  is_subscribed
+`;
+
+export const UpdateCustomerFragment = `
+  email
+  firstname
+  lastname
+  is_subscribed
 `;

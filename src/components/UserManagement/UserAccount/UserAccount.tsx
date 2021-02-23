@@ -10,6 +10,9 @@ import ResetPasswordForm from "components/common/Forms/ResetPasswordForm/ResetPa
 import UpdateProfileForm from "components/common/Forms/UpdateProfileForm/UpdateProfileForm";
 import { isOnMobile } from "../../../utils/responsive";
 import LogoMobile from "../../common/LogoMobile/LogoMobile";
+import { AppContext, AppContextState } from "context/AppContext";
+import Loader from "components/common/Loader/Loader";
+import { UpdateCustomerInput } from "context/CustomerAPI/models";
 
 type Props = RouteComponentProps;
 
@@ -25,11 +28,20 @@ export default class UserAccount extends React.Component<Props, State> {
   };
 
   updateProfileForm?: UpdateProfileForm;
+  static contextType = AppContext;
+  context!: AppContextState;
 
   constructor(props) {
     super(props);
     this.onFileSelected = this.onFileSelected.bind(this);
     this.removePhoto = this.removePhoto.bind(this);
+  }
+
+  componentDidMount() {
+    this.context.requestCurrentCustomer().then((value) => {
+      console.log(value);
+      this.updateProfileForm.newCustomerValues(value);
+    });
   }
 
   renderResetPasswordSection = () => {
@@ -105,7 +117,7 @@ export default class UserAccount extends React.Component<Props, State> {
           <button
             className={styles.saveChangesButton}
             onClick={() => {
-              this.updateProfileForm.validateContactInfo();
+              this.onSaveChangesClick();
             }}
           >
             Save Changes
@@ -189,6 +201,13 @@ export default class UserAccount extends React.Component<Props, State> {
           {this.renderProfileInfo()}
           {this.renderResetPasswordSection()}
         </div>
+
+        {this.context.customerLoading && (
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        )}
       </div>
     );
   }
@@ -208,4 +227,19 @@ export default class UserAccount extends React.Component<Props, State> {
       profileImageUrl: null,
     });
   }
+
+  onSaveChangesClick = () => {
+    if (this.updateProfileForm.validateContactInfo()) {
+      const customerInput = new UpdateCustomerInput({
+        firstname: this.updateProfileForm.state.updateProfile.firstName,
+        lastname: this.updateProfileForm.state.updateProfile.lastName,
+        email: this.updateProfileForm.state.updateProfile.email,
+        is_subscribed: this.updateProfileForm.state.optIn,
+      });
+      this.context.updateCustomerV2(customerInput).then((value) => {
+        console.log("UPDATED CUSTOMER");
+        console.log(value);
+      });
+    }
+  };
 }

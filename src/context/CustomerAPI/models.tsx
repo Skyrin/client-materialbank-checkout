@@ -77,3 +77,17 @@ export class CreateCustomerInput {
     this.password = obj?.password;
   }
 }
+
+export class UpdateCustomerInput {
+  firstname: string;
+  lastname: string;
+  email: string;
+  is_subscribed: string;
+
+  constructor(obj?: any) {
+    this.firstname = obj?.firstname;
+    this.lastname = obj?.lastname;
+    this.email = obj?.email;
+    this.is_subscribed = obj?.is_subscribed;
+  }
+}

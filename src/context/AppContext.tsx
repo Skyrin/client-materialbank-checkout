@@ -5,10 +5,10 @@ import { CartAddressInput } from "./CheckoutAPI/models";
 import {
   CreateCustomerInput,
   CustomerAddressInput,
+  UpdateCustomerInput,
 } from "./CustomerAPI/models";
 import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import { AUTH_TOKEN_STORAGE_KEY } from "constants/general";
-import Order from "models/api/Order";
 
 /**
  * This class is used for handling the Context's internal data.
@@ -118,7 +118,9 @@ export class AppContextState extends BaseAppContextState {
 
   async requestCartInfo(cartId?: string) {}
 
-  async requestCurrentCustomer() {}
+  async requestCurrentCustomer(): Promise<CustomerT> {
+    return Promise.resolve({});
+  }
 
   async requestOrder(orderId?: string) {}
 
@@ -162,6 +164,8 @@ export class AppContextState extends BaseAppContextState {
   async getOrders(): Promise<OrderT[]> {
     return Promise.resolve([]);
   }
+
+  async updateCustomerV2(customer: UpdateCustomerInput) {}
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);

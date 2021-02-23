@@ -140,4 +140,6 @@ export type CustomerT = {
   email?: string;
   addresses?: AddressT[];
   default_shipping?: string;
+  is_subscribed?: boolean;
+  mobile?: string;
 };

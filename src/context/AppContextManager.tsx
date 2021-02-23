@@ -22,10 +22,12 @@ import {
   requestCurrentCustomer,
   createCustomerAddress,
   getCustomerOrders,
+  updateCustomerV2,
 } from "./CustomerAPI/api";
 import {
   CreateCustomerInput,
   CustomerAddressInput,
+  UpdateCustomerInput,
 } from "./CustomerAPI/models";
 import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import {
@@ -157,6 +159,19 @@ export default class AppContextManager extends React.Component<Props> {
       } finally {
         this.contextState.customerLoading = false;
         this.contextState.cartInfoLoading = false;
+        this.forceUpdate();
+      }
+    },
+
+    updateCustomerV2: async (customer: UpdateCustomerInput) => {
+      this.contextState.customerLoading = true;
+      this.forceUpdate();
+      try {
+        await updateCustomerV2(this.getFullContext(), customer);
+      } catch (e) {
+        throw e;
+      } finally {
+        this.contextState.customerLoading = false;
         this.forceUpdate();
       }
     },

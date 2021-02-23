@@ -1,7 +1,15 @@
 import { AppContextState } from "context/AppContext";
 import { ClientError, graphqlRequest } from "GraphqlClient";
-import { CustomerFragment, OrderAddressFragment } from "./fragments";
-import { CreateCustomerInput, CustomerAddressInput } from "./models";
+import {
+  CustomerFragment,
+  OrderAddressFragment,
+  UpdateCustomerFragment,
+} from "./fragments";
+import {
+  CreateCustomerInput,
+  CustomerAddressInput,
+  UpdateCustomerInput,
+} from "./models";
 
 export const requestCurrentCustomer = async (context: AppContextState) => {
   const CustomerQuery = `
@@ -64,6 +72,27 @@ export const createCustomer = async (
     input: customer,
   });
   return response["createCustomerV2"]["customer"];
+};
+
+export const updateCustomerV2 = async (
+  context: AppContextState,
+  customer: UpdateCustomerInput
+) => {
+  const Mutation = `
+    mutation($input: UpdateCustomerInput!) {
+      updateCustomerV2(input: $input) {
+        customer {
+          ${UpdateCustomerFragment}
+        }
+      }
+    }
+  `;
+
+  const response = await graphqlRequest(context, Mutation, {
+    input: customer,
+  });
+
+  return response;
 };
 
 export const createCustomerAddress = async (
