@@ -159,10 +159,101 @@ h4 {
       background-color: var(--button-collection-background-color);
       box-shadow: inset 0 -1px 0 0 rgba(1, 1, 1, 0.1);
       border: none;
+    }
 
-      &.active {
-        background-color: black;
-        color: white;
+    &.active {
+      background-color: black;
+      color: white;
+      font-size: 14px;
+      transition: font-size 0.5s;
+      z-index: 99;
+
+      &.animated-right {
+        animation: button-animation-right linear 0.3s;
+      }
+
+      &.animated-left {
+        animation: button-animation-left linear 0.3s;
+      }
+
+      &.animated-2steps-right {
+        animation: button-animation-2steps-right linear 0.3s;
+      }
+
+      &.animated-2steps-left {
+        animation: button-animation-2steps-left linear 0.3s;
+      }
+    }
+
+    @keyframes button-animation-right {
+      0% {
+        left: -90px;
+      }
+      25% {
+        left: -67.5px;
+      }
+      50% {
+        left: -45px;
+      }
+      75% {
+        left: -22.5px;
+      }
+      100% {
+        left: 0px;
+      }
+    }
+
+    @keyframes button-animation-left {
+      0% {
+        left: 90px;
+      }
+      25% {
+        left: 67.5px;
+      }
+      50% {
+        left: 45px;
+      }
+      75% {
+        left: 22.5px;
+      }
+      100% {
+        left: 0px;
+      }
+    }
+
+    @keyframes button-animation-2steps-right {
+      0% {
+        left: -180px;
+      }
+      25% {
+        left: -135px;
+      }
+      50% {
+        left: -90px;
+      }
+      75% {
+        left: -45px;
+      }
+      100% {
+        left: 0px;
+      }
+    }
+
+    @keyframes button-animation-2steps-left {
+      0% {
+        left: 180px;
+      }
+      25% {
+        left: 135px;
+      }
+      50% {
+        left: 90px;
+      }
+      75% {
+        left: 45px;
+      }
+      100% {
+        left: 0px;
       }
     }
   }

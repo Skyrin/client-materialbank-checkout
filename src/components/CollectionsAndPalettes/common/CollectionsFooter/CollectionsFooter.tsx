@@ -38,7 +38,6 @@ export default class CollectionsFooter extends React.Component<any, State> {
   };
 
   render() {
-    console.log(this.state.email);
     return (
       <div className={styles.footer}>
         <div className={styles.footerRowInfo}>

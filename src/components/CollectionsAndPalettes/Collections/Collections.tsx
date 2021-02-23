@@ -1,29 +1,62 @@
 import * as React from "react";
 import { Link, Redirect, Route, Switch } from "react-router-dom";
-import {
-  COLLECTIONS_EDIT_URL,
-  COLLECTIONS_IMAGE_URL,
-  COLLECTIONS_INFO_URL,
-  COLLECTIONS_URL,
-} from "../../../constants/urls";
-import CollectionsImage from "./CollectionsImage/CollectionsImage";
-import CollectionsInfo from "./CollectionsInfo/CollectionsInfo";
-import CollectionsEdit from "./CollectionsEdit/CollectionsEdit";
+import { COLLECTIONS_URL } from "../../../constants/urls";
+import CollectionsToolbar from "../common/Toolbar/CollectionsToolbar";
+import styles from "components/CollectionsAndPalettes/Collections/Collections.module.scss";
+import face1 from "../../../assets/images/face1.jpeg";
+import face2 from "../../../assets/images/face2.jpg";
+import letter1 from "../../../assets/images/letter1.png";
 
 export default class Collections extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mode: "image",
+    };
+    this.toggleMode = this.toggleMode.bind(this);
+  }
+
+  toggleMode(mode) {
+    this.setState({ mode: mode });
+  }
+
   render() {
     return (
       <React.Fragment>
-        <h1>collections</h1>
         <Switch>
-          <Redirect exact from={COLLECTIONS_URL} to={COLLECTIONS_IMAGE_URL} />
-          <Route path={COLLECTIONS_IMAGE_URL} component={CollectionsImage} />
-          <Route path={COLLECTIONS_INFO_URL} component={CollectionsInfo} />
-          <Route path={COLLECTIONS_EDIT_URL} component={CollectionsEdit} />
+          <Redirect
+            exact
+            from={COLLECTIONS_URL}
+            to={COLLECTIONS_URL + `/${this.state.mode}`}
+          />
         </Switch>
-        <Link to={COLLECTIONS_IMAGE_URL}>Image</Link>
-        <Link to={COLLECTIONS_INFO_URL}>Info</Link>
-        <Link to={COLLECTIONS_EDIT_URL}>Edit</Link>
+        <React.Fragment>
+          <div className={styles.collectionToolbar}>
+            <CollectionsToolbar
+              title={"Rustic Kitchens"}
+              isCollection
+              buttons={[
+                "everything",
+                "palettes",
+                "materials",
+                "rooms",
+                "your uploads",
+                "price",
+              ]}
+              contributors={[
+                face1,
+                face2,
+                letter1,
+                face1,
+                face2,
+                letter1,
+                face1,
+              ]}
+              activeButton={this.state.mode}
+              toggleMode={this.toggleMode}
+            />
+          </div>
+        </React.Fragment>
       </React.Fragment>
     );
   }
