@@ -6,11 +6,13 @@ import cn from "classnames";
 interface Props {
   title: string;
   buttons: any;
-  activeButton?: any;
+  activeButtonMode?: any;
+  activeButtonDisplay?: any;
   isCollection?: boolean;
   dropdown?: any;
   contributors: any;
   toggleMode?: any;
+  toggleDisplay?: any;
 }
 
 const maxNoContributors = 4;
@@ -117,7 +119,12 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
         <div className="horizontal-divider-collections"></div>
         <div className={styles.toolbarContent}>
           <div className={styles.navigationButtons}>
-            <RoundButton buttons={this.props.buttons} background={"grey"} />
+            <RoundButton
+              activeDisplay={this.props.activeButtonDisplay}
+              buttons={this.props.buttons}
+              toggleDisplay={this.props.toggleDisplay}
+              background={"grey"}
+            />
           </div>
           <div className={styles.toolbarSwitch}>
             <div className={styles.noOfCollections}>4 Collections</div>
@@ -125,7 +132,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
               <div className={styles.navSwitch}>
                 <RoundButton
                   buttons={["image", "info", "edit"]}
-                  active={this.props.activeButton}
+                  activeMode={this.props.activeButtonMode}
                   hasAnimation
                   iconClass={[
                     "fas fa-file-image",

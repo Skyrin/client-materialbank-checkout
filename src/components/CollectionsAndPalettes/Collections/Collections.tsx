@@ -12,14 +12,18 @@ export default class Collections extends React.Component<any, any> {
     super(props);
     this.state = {
       mode: "image",
+      display: "everything",
     };
     this.toggleMode = this.toggleMode.bind(this);
+    this.toggleDisplay = this.toggleDisplay.bind(this);
   }
 
   toggleMode(mode) {
     this.setState({ mode: mode });
   }
-
+  toggleDisplay(display) {
+    this.setState({ display: display });
+  }
   render() {
     return (
       <React.Fragment>
@@ -27,7 +31,7 @@ export default class Collections extends React.Component<any, any> {
           <Redirect
             exact
             from={COLLECTIONS_URL}
-            to={COLLECTIONS_URL + `/${this.state.mode}`}
+            to={COLLECTIONS_URL + `/${this.state.mode}/${this.state.display}`}
           />
         </Switch>
         <React.Fragment>
@@ -52,8 +56,10 @@ export default class Collections extends React.Component<any, any> {
                 letter1,
                 face1,
               ]}
-              activeButton={this.state.mode}
+              activeButtonMode={this.state.mode}
+              activeButtonDisplay={this.state.display}
               toggleMode={this.toggleMode}
+              toggleDisplay={this.toggleDisplay}
             />
           </div>
         </React.Fragment>
