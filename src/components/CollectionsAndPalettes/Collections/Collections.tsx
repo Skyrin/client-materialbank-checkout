@@ -75,7 +75,8 @@ export default class Collections extends React.Component<any, State> {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "33% 33% 33%",
+            gridTemplateColumns: "repeat(4,1fr)",
+            columnGap: "20px",
             width: "100%",
           }}
         >
