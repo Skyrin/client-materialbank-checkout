@@ -6,6 +6,9 @@ import * as yup from "yup";
 import styles from "./AddressForm.module.scss";
 import cn from "classnames";
 import AddressInput from "components/common/Input/AddressInput/AddressInput";
+import SmartyStreetsSDK from "smartystreets-javascript-sdk";
+import { debounce } from "lodash-es";
+import { ZIPCODE_REGEX } from "constants/general";
 
 export type AddressFormValuesT = {
   firstName: string;
@@ -37,10 +40,7 @@ const DEFAULT_FORM_SCHEMA = yup.object().shape({
   company: yup.string(),
   address: yup.string().required("Required"),
   aptNumber: yup.string(),
-  zipCode: yup
-    .string()
-    .matches(/[0-9]+/, "Digits Only")
-    .required(),
+  zipCode: yup.string().matches(ZIPCODE_REGEX, "Should be 5 digits").required(),
   phone: yup.string().required("Required"),
 });
 
@@ -70,8 +70,7 @@ type State = {
   errors: AddressFormErrorsT;
 };
 
-// TODO: Find a way to update the AddressForm from the parent asynchronously  (not in the constructor)
-//       Why: When we get data from the backend after the form has initialised
+const ZipcodeLookup = SmartyStreetsSDK.usZipcode.Lookup;
 
 export default class AddressForm extends React.Component<Props, State> {
   static defaultProps = {
@@ -79,6 +78,11 @@ export default class AddressForm extends React.Component<Props, State> {
   };
 
   addressInputRef: AddressInput;
+
+  zipcodeClient!: SmartyStreetsSDK.core.Client<
+    SmartyStreetsSDK.usZipcode.Lookup,
+    SmartyStreetsSDK.usZipcode.Lookup
+  >;
 
   constructor(props: Props) {
     super(props);
@@ -102,6 +106,30 @@ export default class AddressForm extends React.Component<Props, State> {
       props.componentRef(this);
     }
   }
+
+  async componentDidMount() {
+    const credentials = new SmartyStreetsSDK.core.SharedCredentials(
+      process.env.REACT_APP_SMARTYSTREETS_CLIENT_KEY || "30500088655303291"
+    );
+    this.zipcodeClient = SmartyStreetsSDK.core.buildClient.usZipcode(
+      credentials
+    );
+  }
+
+  fetchZipcodeDetails = async () => {
+    const input = this.state.values.zipCode;
+    if (!input || !input.match(ZIPCODE_REGEX)) {
+      return;
+    }
+
+    console.log("ZIPCODE FETCH");
+    const lookup = new ZipcodeLookup();
+    lookup.zipCode = input;
+    const response = await this.zipcodeClient.send(lookup);
+    console.log("ZIPCODE RESPONSE", response);
+  };
+
+  debouncedFetchZipcodeDetails = debounce(this.fetchZipcodeDetails, 400);
 
   updateField = (fieldName: string, value: string) => {
     this.setState(
@@ -280,6 +308,7 @@ export default class AddressForm extends React.Component<Props, State> {
             value={this.state.values.zipCode}
             onChange={(val: string) => {
               this.updateField("zipCode", val);
+              this.debouncedFetchZipcodeDetails();
             }}
             onBlur={() => {
               this.validateField("zipCode");
