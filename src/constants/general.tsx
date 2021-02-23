@@ -12,3 +12,4 @@ export const ORDER_NUMBER_STORAGE_KEY = "orderNumber";
 export const ORDER_ID_STORAGE_KEY = "orderId";
 
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/;
+export const ZIPCODE_REGEX = /^\d{5}$/;
