@@ -1,3 +1,8 @@
+@import "styles/variables.scss";
+.pageContent {
+  padding: $margin-huge $margin-huge-5 117px $margin-huge-5;
+}
+
 * {
   font-family: "IBM Plex Sans", sans-serif;
   font-weight: 500;
