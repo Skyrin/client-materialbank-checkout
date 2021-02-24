@@ -1,6 +1,7 @@
 import * as React from "react";
 import styles from "components/CollectionsAndPalettes/common/Toolbar/CollectionsToolbar.module.scss";
 import RoundButton from "../RoundButton/RoundButton";
+import ModeButton from "../ModeButton/ModeButton";
 import cn from "classnames";
 
 interface Props {
@@ -9,8 +10,7 @@ interface Props {
   activeButtonMode?: any;
   activeButtonDisplay?: any;
   isCollection?: boolean;
-  dropdown?: any;
-  contributors: any;
+  contributors?: any;
   toggleMode?: any;
   toggleDisplay?: any;
 }
@@ -26,14 +26,17 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
       isOpened: false,
     };
     this.wrapperRef = React.createRef();
-    this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
-  handleClickOutside(evt: any) {
-    if (this.wrapperRef && !this.wrapperRef.current.contains(evt.target)) {
+  handleClickOutside = (evt: any) => {
+    if (
+      this.props.isCollection &&
+      this.wrapperRef &&
+      !this.wrapperRef.current.contains(evt.target)
+    ) {
       this.setState({ isOpened: false });
     }
-  }
+  };
 
   renderCollectionsEditDropdown = () => {
     return (
@@ -82,10 +85,20 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
               )}
             </div>
           )}
+          <a>
+            <i className="fas fa-share"></i>
+          </a>
         </React.Fragment>
       );
     } else {
-      return <a>Share this collection</a>;
+      return (
+        <React.Fragment>
+          <a>Share this collection</a>
+          <a>
+            <i className="fas fa-share"></i>
+          </a>
+        </React.Fragment>
+      );
     }
   };
 
@@ -110,36 +123,35 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
             </a>
           </div>
           <div className={styles.contributors}>
-            {this.renderCollectionContributors()}
-            <a>
-              <i className="fas fa-share"></i>
-            </a>
+            {this.props.contributors && this.renderCollectionContributors()}
           </div>
         </div>
         <div className="horizontal-divider-toolbar"></div>
         <div className={styles.toolbarContent}>
           <div className={styles.navigationButtons}>
             <RoundButton
-              activeDisplay={this.props.activeButtonDisplay}
               buttons={this.props.buttons}
-              toggleDisplay={this.props.toggleDisplay}
-              background={"grey"}
+              selectedButton={this.props.activeButtonDisplay}
+              onButtonSelected={this.props.toggleDisplay}
+              buttonClassName={"grey"}
+              activeButtonClassName={"active"}
             />
           </div>
+
           <div className={styles.toolbarSwitch}>
-            <div className={styles.noOfCollections}>4 Collections</div>
+            <div className={styles.noOfCollections}>{} Collections</div>
             {this.props.isCollection && (
               <div className={styles.navSwitch}>
-                <RoundButton
+                <ModeButton
                   buttons={["image", "info", "edit"]}
-                  activeMode={this.props.activeButtonMode}
-                  hasAnimation
+                  selectedButton={this.props.activeButtonMode}
+                  activeButtonClassName={"active"}
                   iconClass={[
                     "fas fa-file-image",
                     "fal fa-file-alt",
                     "fad fa-pencil",
                   ]}
-                  toggleMode={this.props.toggleMode}
+                  onButtonSelected={this.props.toggleMode}
                 />
               </div>
             )}

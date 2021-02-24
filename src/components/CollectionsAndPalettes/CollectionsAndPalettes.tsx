@@ -6,24 +6,45 @@ import {
 import * as React from "react";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./CollectionsAndPalettes.module.scss";
-import Breadcrumbs from "../common/Breadcrumbs/Breadcrumbs";
-import { BREADCRUMBS_STEPS } from "../../constants/general";
 import Collections from "./Collections/Collections";
 import Palettes from "./Palettes/Palettes";
 import CollectionsToolbar from "./common/Toolbar/CollectionsToolbar";
-import ExploreTags from "./common/ExploreTags/ExploreTags";
 import CollectionsHeader from "./common/CollectionsHeader/CollectionsHeader";
 import CollectionsFooter from "./common/CollectionsFooter/CollectionsFooter";
 
 type Props = RouteComponentProps;
 
-export default class CollectionsAndPalettes extends React.Component<Props> {
+interface State {
+  display: string;
+}
+
+export default class CollectionsAndPalettes extends React.Component<
+  Props,
+  State
+> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      display: "collections",
+    };
+  }
+
+  toggleDisplay = (display) => {
+    this.setState({ display: display });
+  };
+
   render() {
     return (
       <React.Fragment>
         <div className={styles.pageWrapper}>
           <CollectionsHeader />
           <div className={styles.pageContent}>
+            <CollectionsToolbar
+              title={"Your Collections & Palettes"}
+              buttons={["collections", "palettes"]}
+              activeButtonDisplay={this.state.display}
+              toggleDisplay={this.toggleDisplay}
+            />
             <Switch>
               <Redirect
                 exact
@@ -31,20 +52,9 @@ export default class CollectionsAndPalettes extends React.Component<Props> {
                 to={COLLECTIONS_URL}
               />
               <Route path={COLLECTIONS_URL} component={Collections} />
+              <p>ANA ARE MER</p>
               <Route path={PALETTES_URL} component={Palettes} />
             </Switch>
-            <ExploreTags
-              buttons={[
-                "farmhouse",
-                "kitchen",
-                "farmsink",
-                "tile backsplash",
-                "wood-look flooring",
-                "white cabinetry",
-                "tile flooring",
-                "cozy color scheme",
-              ]}
-            />
           </div>
           <CollectionsFooter />
         </div>

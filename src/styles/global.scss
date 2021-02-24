@@ -143,7 +143,7 @@ h4 {
   cursor: pointer;
   text-decoration: none;
   transition: background-color 0.05s linear, border-color 0.05s linear;
-
+  user-select: none;
   @include mobile-media {
     width: 100%;
   }
@@ -154,6 +154,16 @@ h4 {
     background-color: transparent;
     border: 1px solid rgba(1, 1, 1, 0.6);
     color: var(--button-collection-color);
+
+    &.mode {
+      width: 90px;
+      border: none;
+      color: #615c58;
+
+      &:hover {
+        color: white;
+      }
+    }
 
     &.grey {
       background-color: var(--button-collection-background-color);
@@ -167,94 +177,6 @@ h4 {
       font-size: 14px;
       transition: font-size 0.5s;
       z-index: 99;
-
-      &.animated-right {
-        animation: button-animation-right linear 0.3s;
-      }
-
-      &.animated-left {
-        animation: button-animation-left linear 0.3s;
-      }
-
-      &.animated-2steps-right {
-        animation: button-animation-2steps-right linear 0.3s;
-      }
-
-      &.animated-2steps-left {
-        animation: button-animation-2steps-left linear 0.3s;
-      }
-    }
-
-    @keyframes button-animation-right {
-      0% {
-        left: -90px;
-      }
-      25% {
-        left: -67.5px;
-      }
-      50% {
-        left: -45px;
-      }
-      75% {
-        left: -22.5px;
-      }
-      100% {
-        left: 0px;
-      }
-    }
-
-    @keyframes button-animation-left {
-      0% {
-        left: 90px;
-      }
-      25% {
-        left: 67.5px;
-      }
-      50% {
-        left: 45px;
-      }
-      75% {
-        left: 22.5px;
-      }
-      100% {
-        left: 0px;
-      }
-    }
-
-    @keyframes button-animation-2steps-right {
-      0% {
-        left: -180px;
-      }
-      25% {
-        left: -135px;
-      }
-      50% {
-        left: -90px;
-      }
-      75% {
-        left: -45px;
-      }
-      100% {
-        left: 0px;
-      }
-    }
-
-    @keyframes button-animation-2steps-left {
-      0% {
-        left: 180px;
-      }
-      25% {
-        left: 135px;
-      }
-      50% {
-        left: 90px;
-      }
-      75% {
-        left: 45px;
-      }
-      100% {
-        left: 0px;
-      }
     }
   }
 
@@ -439,13 +361,19 @@ button {
 $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
 .masonry-container {
-  columns: 4 200px;
+  column-count: 4;
   column-gap: 20px;
   width: 100%;
 
-  img {
+  .masonry-item {
+    display: inline-block;
     width: 100%;
-    border-radius: 5px;
-    transition: all 0.25s ease-in-out;
+    height: 100%;
+
+    img {
+      width: 100%;
+      border-radius: 5px;
+      transition: all 0.25s ease-in-out;
+    }
   }
 }
