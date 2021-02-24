@@ -72,14 +72,7 @@ export default class Collections extends React.Component<any, State> {
         <Link to={COLLECTIONS_INFO_URL}>Info</Link>
         <Link to={COLLECTIONS_EDIT_URL}>Edit</Link>
         {/*for demo purposes*/}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4,1fr)",
-            columnGap: "20px",
-            width: "100%",
-          }}
-        >
+        <div className="masonry-container">
           {this.state.card.map((item: any, index: number) => {
             return <ItemCard mode={"image"} item={this.state.card[index]} />;
           })}

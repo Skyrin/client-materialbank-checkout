@@ -25,7 +25,7 @@ export default class ItemCard extends React.Component<Props, any> {
         {this.props.item.type === "sample" && this.renderSampleImage()}
         {this.props.item.type !== "sample" && (
           <React.Fragment>
-            <div className={styles.imageContainer}>
+            <div className={cn(styles.imageContainer)}>
               <img src={this.props.item.imagePath} />
             </div>
           </React.Fragment>
@@ -120,7 +120,7 @@ export default class ItemCard extends React.Component<Props, any> {
   render() {
     return (
       <React.Fragment>
-        <div className={styles.itemCard}>
+        <div className={cn(styles.itemCard)}>
           {this.renderSwitch(this.props.mode)}
         </div>
       </React.Fragment>
