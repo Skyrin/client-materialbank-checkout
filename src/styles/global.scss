@@ -429,3 +429,15 @@ button {
 }
 
 $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+.masonry-container {
+  columns: 4 200px;
+  column-gap: 20px;
+  width: 100%;
+
+  img {
+    width: 100%;
+    border-radius: 5px;
+    transition: all 0.25s ease-in-out;
+  }
+}
