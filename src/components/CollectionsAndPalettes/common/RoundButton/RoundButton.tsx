@@ -11,6 +11,7 @@ import {
 
 interface Props {
   buttons: any;
+  explore?: boolean;
   activeMode?: string;
   activeDisplay?: string;
   background?: string;
@@ -110,6 +111,16 @@ export default class RoundButton extends React.Component<Props, any> {
       </Link>
     );
   }
+  renderExploreButtons(index, button, buttonStyling) {
+    return (
+      <div
+        className={cn("button collection", buttonStyling[button])}
+        key={index}
+      >
+        {button}
+      </div>
+    );
+  }
 
   render() {
     const activeButtonMode = window.location.href.includes(COLLECTIONS_URL)
@@ -136,6 +147,8 @@ export default class RoundButton extends React.Component<Props, any> {
                 this.renderModeButtons(index, button, buttonStyling)}
               {this.props.activeDisplay &&
                 this.renderDisplayButtons(index, button, buttonStyling)}
+              {this.props.explore &&
+                this.renderExploreButtons(index, button, buttonStyling)}
             </React.Fragment>
           );
         })}

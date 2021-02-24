@@ -37,7 +37,7 @@ a {
   display: flex;
   flex-direction: row;
   align-items: center;
-  column-gap: 20px;
+  column-gap: $margin-small-4;
 
   .navSwitch {
     display: flex;
@@ -72,7 +72,7 @@ a {
     align-items: center;
 
     i {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
       height: 100%;
       margin-top: 10px;
       cursor: pointer;
@@ -111,7 +111,7 @@ a {
       }
 
       a {
-        padding: 10px 20px;
+        padding: 10px $margin-small-4;
         cursor: pointer;
 
         &:hover {
@@ -139,7 +139,7 @@ a {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: var(--font-size-md);
       background-color: rgba(#ccb79e, 0.1);
       border-radius: 100px;
       margin-left: 5px;

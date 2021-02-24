@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Switch } from "react-router-dom";
 import { COLLECTIONS_URL } from "../../../constants/urls";
 import CollectionsToolbar from "../common/Toolbar/CollectionsToolbar";
 import styles from "components/CollectionsAndPalettes/Collections/Collections.module.scss";
@@ -20,6 +20,7 @@ interface State {
     imagePath: string;
   }[];
 }
+
 export default class Collections extends React.Component<any, State> {
   constructor(props) {
     super(props);
@@ -63,9 +64,11 @@ export default class Collections extends React.Component<any, State> {
   toggleMode(mode) {
     this.setState({ mode: mode });
   }
+
   toggleDisplay(display) {
     this.setState({ display: display });
   }
+
   render() {
     return (
       <React.Fragment>
@@ -77,17 +80,6 @@ export default class Collections extends React.Component<any, State> {
           />
         </Switch>
         <React.Fragment>
-          <div className="masonry-container">
-            {this.state.card.map((item: any, index: number) => {
-              return <ItemCard mode={"image"} item={this.state.card[index]} />;
-            })}
-            {this.state.card.map((item: any, index: number) => {
-              return <ItemCard mode={"info"} item={this.state.card[index]} />;
-            })}
-            {this.state.card.map((item: any, index: number) => {
-              return <ItemCard mode={"edit"} item={this.state.card[index]} />;
-            })}
-          </div>
           <div className={styles.collectionToolbar}>
             <CollectionsToolbar
               title={"Rustic Kitchens"}
@@ -114,6 +106,17 @@ export default class Collections extends React.Component<any, State> {
               toggleMode={this.toggleMode}
               toggleDisplay={this.toggleDisplay}
             />
+          </div>
+          <div className="masonry-container">
+            {this.state.card.map((item: any, index: number) => {
+              return <ItemCard mode={"image"} item={this.state.card[index]} />;
+            })}
+            {this.state.card.map((item: any, index: number) => {
+              return <ItemCard mode={"info"} item={this.state.card[index]} />;
+            })}
+            {this.state.card.map((item: any, index: number) => {
+              return <ItemCard mode={"edit"} item={this.state.card[index]} />;
+            })}
           </div>
         </React.Fragment>
       </React.Fragment>

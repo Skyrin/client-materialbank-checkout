@@ -116,7 +116,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
             </a>
           </div>
         </div>
-        <div className="horizontal-divider-collections"></div>
+        <div className="horizontal-divider-toolbar"></div>
         <div className={styles.toolbarContent}>
           <div className={styles.navigationButtons}>
             <RoundButton
@@ -145,6 +145,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
             )}
           </div>
         </div>
+        <div className="horizontal-divider-collections"></div>
       </div>
     );
   }

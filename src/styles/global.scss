@@ -412,12 +412,20 @@ button {
   height: 1px;
 }
 
-.horizontal-divider-collections {
+.horizontal-divider-toolbar {
   border-top: 1px solid black;
   opacity: 0.6;
   width: 100%;
   height: 1px;
   margin: 10px 0 $margin-small-4 0;
+}
+
+.horizontal-divider-collections {
+  border-top: 1px solid #363648;
+  opacity: 0.1;
+  width: 100%;
+  height: 1px;
+  margin: $margin-small-4 0 $margin-medium-5 0;
 }
 
 .horizontal-divider-footer {

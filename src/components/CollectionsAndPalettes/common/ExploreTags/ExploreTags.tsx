@@ -10,7 +10,7 @@ export default class ExploreTags extends React.Component<any, any> {
           Explore tags related to your collections
         </div>
         <div className={styles.exploreButtons}>
-          <RoundButton buttons={this.props.buttons} />
+          <RoundButton explore buttons={this.props.buttons} />
         </div>
       </div>
     );
