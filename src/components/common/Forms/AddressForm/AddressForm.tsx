@@ -40,7 +40,10 @@ const DEFAULT_FORM_SCHEMA = yup.object().shape({
   company: yup.string(),
   address: yup.string().required("Required"),
   aptNumber: yup.string(),
-  zipCode: yup.string().matches(ZIPCODE_REGEX, "Should be 5 digits").required(),
+  zipCode: yup
+    .string()
+    .matches(ZIPCODE_REGEX, "Should be 5 digits")
+    .required("Required"),
   phone: yup.string().required("Required"),
 });
 
@@ -127,6 +130,31 @@ export default class AddressForm extends React.Component<Props, State> {
     lookup.zipCode = input;
     const response = await this.zipcodeClient.send(lookup);
     console.log("ZIPCODE RESPONSE", response);
+    const zipcodeResult = get(response, "lookups[0].result[0]");
+
+    if (get(zipcodeResult, "valid")) {
+      const zipcodeObj = get(zipcodeResult, "zipcodes[0]");
+      if (
+        zipcodeObj &&
+        zipcodeObj.defaultCity &&
+        zipcodeObj.stateAbbreviation
+      ) {
+        this.updateValues(
+          {
+            city: zipcodeObj.defaultCity,
+            region: zipcodeObj.stateAbbreviation,
+          },
+          true
+        );
+      }
+    } else {
+      this.setState({
+        errors: {
+          ...this.state.errors,
+          zipCode: "Invalid Zip Code",
+        },
+      });
+    }
   };
 
   debouncedFetchZipcodeDetails = debounce(this.fetchZipcodeDetails, 400);
@@ -198,7 +226,7 @@ export default class AddressForm extends React.Component<Props, State> {
 
   isValid = () => {
     const schema = this.getSchema();
-    return schema.isValidSync(this.state.values);
+    return schema.isValidSync(this.state.values) && !this.state.errors.zipCode;
   };
 
   validateField = (fieldName: string) => {
