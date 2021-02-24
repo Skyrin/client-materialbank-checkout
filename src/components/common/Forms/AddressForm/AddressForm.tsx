@@ -7,7 +7,7 @@ import styles from "./AddressForm.module.scss";
 import cn from "classnames";
 import AddressInput from "components/common/Input/AddressInput/AddressInput";
 import SmartyStreetsSDK from "smartystreets-javascript-sdk";
-import { debounce } from "lodash-es";
+import { debounce, get } from "lodash-es";
 import { ZIPCODE_REGEX } from "constants/general";
 
 export type AddressFormValuesT = {
@@ -144,7 +144,7 @@ export default class AddressForm extends React.Component<Props, State> {
             city: zipcodeObj.defaultCity,
             region: zipcodeObj.stateAbbreviation,
           },
-          true
+          false
         );
       }
     } else {
