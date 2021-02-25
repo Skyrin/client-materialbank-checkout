@@ -7,8 +7,6 @@ import * as React from "react";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./CollectionsAndPalettes.module.scss";
 import { AppContext, AppContextState } from "../../context/AppContext";
-import Breadcrumbs from "../common/Breadcrumbs/Breadcrumbs";
-import { BREADCRUMBS_STEPS } from "../../constants/general";
 import Collections from "./Collections/Collections";
 import Palettes from "./Palettes/Palettes";
 import CollectionsToolbar from "./common/Toolbar/CollectionsToolbar";

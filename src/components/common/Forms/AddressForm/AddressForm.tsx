@@ -73,6 +73,16 @@ type State = {
   errors: AddressFormErrorsT;
 };
 
+const NO_ERRORS = {
+  firstName: null,
+  lastName: null,
+  company: null,
+  address: null,
+  aptNumber: null,
+  zipCode: null,
+  phone: null,
+};
+
 const ZipcodeLookup = SmartyStreetsSDK.usZipcode.Lookup;
 
 export default class AddressForm extends React.Component<Props, State> {
@@ -93,13 +103,7 @@ export default class AddressForm extends React.Component<Props, State> {
     this.state = {
       values: props.initialValues || DEFAULT_ADDRESS_FORM_VALUES,
       errors: {
-        firstName: null,
-        lastName: null,
-        company: null,
-        address: null,
-        aptNumber: null,
-        zipCode: null,
-        phone: null,
+        ...NO_ERRORS,
       },
     };
 
@@ -203,7 +207,7 @@ export default class AddressForm extends React.Component<Props, State> {
     const errors = extractErrors(e);
     this.setState({
       errors: {
-        ...this.state.errors,
+        ...NO_ERRORS,
         ...errors,
       },
     });

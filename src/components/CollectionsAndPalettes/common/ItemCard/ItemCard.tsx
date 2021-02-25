@@ -15,10 +15,6 @@ interface Props {
 }
 
 export default class ItemCard extends React.Component<Props, any> {
-  constructor(props) {
-    super(props);
-  }
-
   renderImageItem(type) {
     return (
       <React.Fragment>
@@ -26,7 +22,7 @@ export default class ItemCard extends React.Component<Props, any> {
         {this.props.item.type !== "sample" && (
           <React.Fragment>
             <div className={cn(styles.imageContainer)}>
-              <img src={this.props.item.imagePath} />
+              <img src={this.props.item.imagePath} alt="" />
             </div>
           </React.Fragment>
         )}
@@ -38,7 +34,7 @@ export default class ItemCard extends React.Component<Props, any> {
     return (
       <React.Fragment>
         <div className={styles.imageContainer}>
-          <img src={this.props.item.imagePath} />
+          <img src={this.props.item.imagePath} alt="" />
           <div className={cn(styles.delete, styles.editButton)}>
             <i className="fal fa-trash"></i>
           </div>
@@ -60,7 +56,7 @@ export default class ItemCard extends React.Component<Props, any> {
         {this.props.item.type !== "sample" && (
           <React.Fragment>
             <div className={styles.imageContainer}>
-              <img src={this.props.item.imagePath} />
+              <img src={this.props.item.imagePath} alt="" />
             </div>
             <div className={styles.infoContainer}>
               <div>{this.props.item.title1}</div>
@@ -76,7 +72,7 @@ export default class ItemCard extends React.Component<Props, any> {
   renderSampleImage = () => {
     return (
       <div className={styles.imageContainer}>
-        <img src={this.props.item.imagePath} />
+        <img src={this.props.item.imagePath} alt="" />
         <div className={styles.priceIndicator}>$ $ $</div>
       </div>
     );
@@ -85,7 +81,7 @@ export default class ItemCard extends React.Component<Props, any> {
     return (
       <React.Fragment>
         <div className={styles.imageContainer}>
-          <img src={this.props.item.imagePath} />
+          <img src={this.props.item.imagePath} alt="" />
           <div className={styles.sampleCart}>
             <i
               className={cn("far", "fa-cart-arrow-down", styles.addCartIcon)}
