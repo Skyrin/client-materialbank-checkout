@@ -29,17 +29,12 @@
     grid-template-columns: auto;
     grid-template-areas:
       "logo"
-      "encryption-notice"
       "order-summary"
       "bread-crumbs"
       "page-wrapper";
 
     .orderSummary {
       min-width: unset;
-    }
-
-    .encryptionNotice {
-      grid-area: encryption-notice;
     }
   }
 }
