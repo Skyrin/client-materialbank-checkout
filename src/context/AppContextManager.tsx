@@ -22,6 +22,7 @@ import {
   requestCurrentCustomer,
   createCustomerAddress,
   getCustomerOrders,
+  requestOrder,
 } from "./CustomerAPI/api";
 import {
   CreateCustomerInput,
