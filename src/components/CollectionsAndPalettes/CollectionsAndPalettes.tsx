@@ -51,8 +51,7 @@ export default class CollectionsAndPalettes extends React.Component<
                 from={COLLECTIONS_AND_PALETTES_URL}
                 to={COLLECTIONS_URL}
               />
-              <Route path={COLLECTIONS_URL} component={Collections} />
-              <p>ANA ARE MER</p>
+              <Route path={COLLECTIONS_URL} component={() => <Collections />} />
               <Route path={PALETTES_URL} component={Palettes} />
             </Switch>
           </div>

@@ -120,44 +120,8 @@ a {
       }
     }
   }
-
-  .contributors {
-    display: flex;
-    align-items: center;
-
-    img {
-      height: 40px;
-      width: 40px;
-      border-radius: 100px;
-      object-fit: cover;
-      margin-left: -5px;
-    }
-
-    i {
-      height: 40px;
-      width: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: var(--font-size-md);
-      background-color: rgba(#ccb79e, 0.1);
-      border-radius: 100px;
-      margin-left: 5px;
-      cursor: pointer;
-
-      &:hover {
-        box-shadow: inset 2px 2px 5px 0 #e0dfdd, inset -2px -2px 5px 0 #ffffff;
-      }
-    }
-    .numberToShow {
-      height: 40px;
-      width: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: -5px;
-      border-radius: 24px;
-      background-color: rgba(#615c58, 0.1);
-    }
-  }
+}
+.contributors {
+  display: flex;
+  align-items: center;
 }

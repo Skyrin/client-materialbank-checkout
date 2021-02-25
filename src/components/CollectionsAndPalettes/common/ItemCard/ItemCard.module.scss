@@ -96,6 +96,12 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 
+    .textContainer {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
     .darker {
       color: #615c58;
     }

@@ -377,3 +377,20 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 }
+
+.contributors-share {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-md);
+  background-color: rgba(#ccb79e, 0.1);
+  border-radius: 100px;
+  margin-left: 5px;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: inset 2px 2px 5px 0 #e0dfdd, inset -2px -2px 5px 0 #ffffff;
+  }
+}

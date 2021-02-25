@@ -3,6 +3,7 @@ import styles from "components/CollectionsAndPalettes/common/Toolbar/Collections
 import RoundButton from "../RoundButton/RoundButton";
 import ModeButton from "../ModeButton/ModeButton";
 import cn from "classnames";
+import Contributors from "../Contributors/Contributors";
 
 interface Props {
   title: string;
@@ -14,8 +15,6 @@ interface Props {
   toggleMode?: any;
   toggleDisplay?: any;
 }
-
-const maxNoContributors = 4;
 
 export default class CollectionsToolbar extends React.Component<Props, any> {
   wrapperRef: any;
@@ -59,47 +58,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
   };
 
   renderCollectionContributors = () => {
-    if (this.props.contributors) {
-      let numberToShow = this.props.contributors.length - maxNoContributors;
-      return (
-        <React.Fragment>
-          {this.props.contributors && (
-            <div className={styles.contributors}>
-              {this.props.contributors.map(
-                (contributor: any, index: number) => {
-                  return (
-                    <React.Fragment>
-                      {this.props.contributors.length < maxNoContributors && (
-                        <img src={this.props.contributors[index]} />
-                      )}
-                      {this.props.contributors.length >= maxNoContributors &&
-                        index < maxNoContributors && (
-                          <img src={this.props.contributors[index]} />
-                        )}
-                    </React.Fragment>
-                  );
-                }
-              )}
-              {this.props.contributors.length - maxNoContributors > 1 && (
-                <a className={styles.numberToShow}>+{numberToShow}</a>
-              )}
-            </div>
-          )}
-          <a>
-            <i className="fas fa-share"></i>
-          </a>
-        </React.Fragment>
-      );
-    } else {
-      return (
-        <React.Fragment>
-          <a>Share this collection</a>
-          <a>
-            <i className="fas fa-share"></i>
-          </a>
-        </React.Fragment>
-      );
-    }
+    return <Contributors contributors={this.props.contributors} />;
   };
 
   componentDidMount() {
@@ -122,9 +81,18 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
               {this.props.isCollection && this.renderCollectionsEditDropdown()}
             </a>
           </div>
-          <div className={styles.contributors}>
-            {this.props.contributors && this.renderCollectionContributors()}
-          </div>
+          {this.props.isCollection && (
+            <div className={styles.contributors}>
+              {this.props.contributors ? (
+                this.renderCollectionContributors()
+              ) : (
+                <div className={styles.contributors}>
+                  <a>Share this collection</a>
+                  <i className="fas fa-share contributors-share"></i>
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <div className="horizontal-divider-toolbar"></div>
         <div className={styles.toolbarContent}>
