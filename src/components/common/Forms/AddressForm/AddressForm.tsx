@@ -7,7 +7,7 @@ import styles from "./AddressForm.module.scss";
 import cn from "classnames";
 import AddressInput from "components/common/Input/AddressInput/AddressInput";
 import SmartyStreetsSDK from "smartystreets-javascript-sdk";
-import { debounce } from "lodash-es";
+import { debounce, get } from "lodash-es";
 import { ZIPCODE_REGEX } from "constants/general";
 
 export type AddressFormValuesT = {
@@ -40,7 +40,10 @@ const DEFAULT_FORM_SCHEMA = yup.object().shape({
   company: yup.string(),
   address: yup.string().required("Required"),
   aptNumber: yup.string(),
-  zipCode: yup.string().matches(ZIPCODE_REGEX, "Should be 5 digits").required(),
+  zipCode: yup
+    .string()
+    .matches(ZIPCODE_REGEX, "Should be 5 digits")
+    .required("Required"),
   phone: yup.string().required("Required"),
 });
 
@@ -70,6 +73,16 @@ type State = {
   errors: AddressFormErrorsT;
 };
 
+const NO_ERRORS = {
+  firstName: null,
+  lastName: null,
+  company: null,
+  address: null,
+  aptNumber: null,
+  zipCode: null,
+  phone: null,
+};
+
 const ZipcodeLookup = SmartyStreetsSDK.usZipcode.Lookup;
 
 export default class AddressForm extends React.Component<Props, State> {
@@ -90,13 +103,7 @@ export default class AddressForm extends React.Component<Props, State> {
     this.state = {
       values: props.initialValues || DEFAULT_ADDRESS_FORM_VALUES,
       errors: {
-        firstName: null,
-        lastName: null,
-        company: null,
-        address: null,
-        aptNumber: null,
-        zipCode: null,
-        phone: null,
+        ...NO_ERRORS,
       },
     };
 
@@ -127,6 +134,31 @@ export default class AddressForm extends React.Component<Props, State> {
     lookup.zipCode = input;
     const response = await this.zipcodeClient.send(lookup);
     console.log("ZIPCODE RESPONSE", response);
+    const zipcodeResult = get(response, "lookups[0].result[0]");
+
+    if (get(zipcodeResult, "valid")) {
+      const zipcodeObj = get(zipcodeResult, "zipcodes[0]");
+      if (
+        zipcodeObj &&
+        zipcodeObj.defaultCity &&
+        zipcodeObj.stateAbbreviation
+      ) {
+        this.updateValues(
+          {
+            city: zipcodeObj.defaultCity,
+            region: zipcodeObj.stateAbbreviation,
+          },
+          false
+        );
+      }
+    } else {
+      this.setState({
+        errors: {
+          ...this.state.errors,
+          zipCode: "Invalid Zip Code",
+        },
+      });
+    }
   };
 
   debouncedFetchZipcodeDetails = debounce(this.fetchZipcodeDetails, 400);
@@ -175,7 +207,7 @@ export default class AddressForm extends React.Component<Props, State> {
     const errors = extractErrors(e);
     this.setState({
       errors: {
-        ...this.state.errors,
+        ...NO_ERRORS,
         ...errors,
       },
     });
@@ -198,7 +230,7 @@ export default class AddressForm extends React.Component<Props, State> {
 
   isValid = () => {
     const schema = this.getSchema();
-    return schema.isValidSync(this.state.values);
+    return schema.isValidSync(this.state.values) && !this.state.errors.zipCode;
   };
 
   validateField = (fieldName: string) => {

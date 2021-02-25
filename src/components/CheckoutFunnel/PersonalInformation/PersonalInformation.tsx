@@ -25,7 +25,6 @@ import AddressForm, {
   AddressFormValuesT,
   DEFAULT_ADDRESS_FORM_VALUES,
 } from "components/common/Forms/AddressForm/AddressForm";
-import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
 import RadioButton from "components/common/RadioButton/RadioButton";
 import {
@@ -853,8 +852,6 @@ export class PersonalInformation extends React.Component<Props, State> {
             className={styles.breadcrumbs}
           />
         )}
-
-        {!isOnMobile() && <EncryptionNotice />}
 
         <div className={styles.informationContainer}>
           {this.renderExpressCheckoutSection()}

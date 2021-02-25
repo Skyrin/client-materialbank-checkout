@@ -18,7 +18,6 @@ import { AppContext, AppContextState } from "context/AppContext";
 import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import { BREADCRUMBS_STEPS } from "constants/general";
 import { isOnMobile } from "utils/responsive";
-import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import LogoMobile from "../common/LogoMobile/LogoMobile";
 import cn from "classnames";
 
@@ -60,14 +59,6 @@ export default class CheckoutFunnel extends React.Component<Props> {
           {!this.context.confirmedOrderLoading && (
             <OrderSummary className={styles.orderSummary} />
           )}
-          <Switch>
-            {isOnMobile() && (
-              <Route
-                path={[PERSONAL_INFORMATION_URL, PAYMENT_URL]}
-                component={EncryptionNotice}
-              />
-            )}
-          </Switch>
           <Switch>
             {isOnMobile() && (
               <Route
