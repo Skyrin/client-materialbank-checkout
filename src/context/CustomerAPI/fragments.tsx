@@ -105,6 +105,7 @@ export const OrderFragment = `
       value
     }
     quantity_invoiced
+    quantity_ordered
     status
     selected_options {
       label

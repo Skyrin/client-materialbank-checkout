@@ -35,7 +35,7 @@ export default function OrderItem(props: Props) {
         }`}</span>
         <span
           className={styles.quantity}
-        >{`Quantity: ${orderItem.quantity_invoiced}`}</span>
+        >{`Quantity: ${orderItem.quantity_ordered}`}</span>
       </div>
     </div>
   );
