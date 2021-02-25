@@ -4,6 +4,8 @@ import RoundButton from "../RoundButton/RoundButton";
 import ModeButton from "../ModeButton/ModeButton";
 import cn from "classnames";
 import Contributors from "../Contributors/Contributors";
+import { Link } from "react-router-dom";
+import { COLLECTIONS_AND_PALETTES_URL } from "../../../../constants/urls";
 
 interface Props {
   title: string;

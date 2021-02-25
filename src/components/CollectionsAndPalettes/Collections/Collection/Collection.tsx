@@ -5,7 +5,7 @@ import face1 from "../../../../assets/images/face1.jpeg";
 import face2 from "../../../../assets/images/face2.jpg";
 import letter1 from "../../../../assets/images/letter1.png";
 
-export default class SingleCollection extends React.Component<any, any> {
+export default class Collection extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

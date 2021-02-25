@@ -1,9 +1,8 @@
 import * as React from "react";
-import { Link, Route, Switch } from "react-router-dom";
-import { SINGLE_COLLECTION_URL } from "../../../constants/urls";
+import { Link } from "react-router-dom";
+import { COLLECTIONS_URL } from "../../../constants/urls";
 import styles from "components/CollectionsAndPalettes/Collections/Collections.module.scss";
 import ExploreTags from "../common/ExploreTags/ExploreTags";
-import SingleCollection from "./SingleCollection/SingleCollection";
 import CollectionCard from "../common/CollectionCard/CollectionCard";
 import face1 from "../../../assets/images/face1.jpeg";
 import face2 from "../../../assets/images/face2.jpg";
@@ -41,23 +40,15 @@ export default class Collections extends React.Component<any, State> {
   render() {
     return (
       <React.Fragment>
-        <Switch>
-          <Route
-            path={SINGLE_COLLECTION_URL}
-            component={() => <SingleCollection />}
-          />
-          <div className={styles.cardCollection}>
-            {this.state.card.map((item: any, index: number) => {
-              return (
-                <Link
-                  to={SINGLE_COLLECTION_URL + `/${this.state.card[index].id}`}
-                >
-                  <CollectionCard item={this.state.card[index]} />
-                </Link>
-              );
-            })}
-          </div>
-        </Switch>
+        <div className={styles.cardCollection}>
+          {this.state.card.map((item: any, index: number) => {
+            return (
+              <Link to={COLLECTIONS_URL + `/${this.state.card[index].id}`}>
+                <CollectionCard item={this.state.card[index]} />
+              </Link>
+            );
+          })}
+        </div>
         <React.Fragment>
           <ExploreTags
             buttons={[
