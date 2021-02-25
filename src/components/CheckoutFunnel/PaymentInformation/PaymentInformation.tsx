@@ -2,13 +2,19 @@ import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import Logo from "components/common/Logo/Logo";
 import { BREADCRUMBS_STEPS, ORDER_ID_STORAGE_KEY } from "constants/general";
 import * as React from "react";
-import { Link, RouteComponentProps, withRouter } from "react-router-dom";
+import {
+  Link,
+  matchPath,
+  RouteComponentProps,
+  withRouter,
+} from "react-router-dom";
 import styles from "./PaymentInformation.module.scss";
 import cn from "classnames";
 import {
   CART_URL,
   goToStorefront,
   ORDER_CONFIRMATION_URL,
+  PAYPAL_SUCCESS_URL,
   PERSONAL_INFORMATION_URL,
 } from "constants/urls";
 import applePayLogo from "assets/images/apple_pay_logo_black.svg";
@@ -43,6 +49,7 @@ import {
   PaymentRequest,
   PaymentRequestPaymentMethodEvent,
 } from "@stripe/stripe-js";
+import PaypalSuccess from "./PaypalPages/PaypalSuccess";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -586,6 +593,15 @@ export class PaymentInformation extends React.Component<Props, State> {
   };
 
   render() {
+    if (
+      matchPath(this.props.location.pathname, {
+        path: PAYPAL_SUCCESS_URL,
+        exact: true,
+      })
+    ) {
+      return <PaypalSuccess />;
+    }
+
     return (
       <div className={cn("funnel-page", styles.PaymentInformation)}>
         {!isOnMobile() && <Logo className={styles.logo} />}

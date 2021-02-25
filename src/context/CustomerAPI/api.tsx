@@ -1,6 +1,6 @@
 import { AppContextState } from "context/AppContext";
 import { ClientError, graphqlRequest } from "GraphqlClient";
-import { CustomerFragment, OrderAddressFragment } from "./fragments";
+import { CustomerFragment, OrderFragment } from "./fragments";
 import { CreateCustomerInput, CustomerAddressInput } from "./models";
 
 export const requestCurrentCustomer = async (context: AppContextState) => {
@@ -98,25 +98,7 @@ export const requestOrder = async (
       customer {
         orders(filter: $filter){
           items {
-            number
-            payment_methods {
-              type
-              name
-            }
-            billing_address {
-              ${OrderAddressFragment}
-            }
-            shipping_address {
-              ${OrderAddressFragment}
-            }
-            total {
-              grand_total {
-                value
-              }
-              subtotal {
-                value
-              }
-            }
+            ${OrderFragment}
           }
         }
       }
@@ -143,81 +125,7 @@ export const getCustomerOrders = async (context: AppContextState) => {
         )
          {
           items {
-            id
-            order_date
-            number
-            status
-            total {
-              base_grand_total {
-                value
-                currency
-              }
-              grand_total {
-                value
-                currency
-              }
-              total_shipping {
-                value
-                currency
-              }
-              total_tax {
-                value
-                currency
-              }
-              subtotal {
-                currency
-                value
-              }
-            }
-            payment_methods {	
-              type	
-              name	
-              additional_data {	
-                name	
-                value	
-              }	
-            }
-            billing_address {
-              firstname
-              lastname
-              middlename
-              city
-              country_code
-              postcode
-              region
-              street
-            }
-            shipping_address {
-              firstname
-              lastname
-              middlename
-              city
-              country_code
-              postcode
-              region
-              street
-            }
-            items {
-              product_sku
-              product_name
-              id
-              product_type
-              product_sale_price {
-                currency
-                value
-              }
-              entered_options {
-                label
-                value
-               }
-              quantity_invoiced
-              status
-              selected_options {
-                label
-                value
-              }
-             
-            }
+            ${OrderFragment}
           }
         }
       }
