@@ -9,7 +9,7 @@ interface Props {
   activeButtonClassName?: string;
 }
 
-export default class RoundButton extends React.Component<Props, any> {
+export default class RoundButtons extends React.Component<Props, any> {
   activeButtonMode: number;
   animate = null;
   animationDirection = null;

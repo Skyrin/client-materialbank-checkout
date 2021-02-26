@@ -4,6 +4,10 @@ import CollectionsToolbar from "../../common/Toolbar/CollectionsToolbar";
 import face1 from "../../../../assets/images/face1.jpeg";
 import face2 from "../../../../assets/images/face2.jpg";
 import letter1 from "../../../../assets/images/letter1.png";
+import { NavLink, Switch } from "react-router-dom";
+import { COLLECTIONS_URL } from "../../../../constants/urls";
+import styles from "components/CollectionsAndPalettes/Collections/Collection/Collection.module.scss";
+import cn from "classnames";
 
 export default class Collection extends React.Component<any, any> {
   constructor(props) {
@@ -99,6 +103,10 @@ export default class Collection extends React.Component<any, any> {
   render() {
     return (
       <React.Fragment>
+        <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
+          Your Collections
+          <i className={"fas fa-chevron-right"} />
+        </NavLink>
         <CollectionsToolbar
           title={"Rustic Kitchens"}
           isCollection

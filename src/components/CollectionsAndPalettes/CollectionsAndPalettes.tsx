@@ -47,10 +47,11 @@ export default class CollectionsAndPalettes extends React.Component<
                 from={COLLECTIONS_AND_PALETTES_URL}
                 to={COLLECTIONS_URL}
               />
+              <Route path={COLLECTION_URL} component={Collection} />
               <Route
                 exact
                 path={COLLECTIONS_URL}
-                component={() => {
+                render={() => {
                   return (
                     <React.Fragment>
                       <CollectionsToolbar
@@ -64,26 +65,23 @@ export default class CollectionsAndPalettes extends React.Component<
                   );
                 }}
               />
-              <Switch>
-                <Route path={COLLECTION_URL} component={Collection} />
-                <Route
-                  exact
-                  path={PALETTES_URL}
-                  component={() => {
-                    return (
-                      <React.Fragment>
-                        <CollectionsToolbar
-                          title={"Your Collections & Palettes"}
-                          buttons={["collections", "palettes"]}
-                          activeButtonDisplay={this.state.display}
-                          toggleDisplay={this.toggleDisplay}
-                        />
-                        <Palettes />
-                      </React.Fragment>
-                    );
-                  }}
-                />
-              </Switch>
+              <Route
+                exact
+                path={PALETTES_URL}
+                render={() => {
+                  return (
+                    <React.Fragment>
+                      <CollectionsToolbar
+                        title={"Your Collections & Palettes"}
+                        buttons={["collections", "palettes"]}
+                        activeButtonDisplay={this.state.display}
+                        toggleDisplay={this.toggleDisplay}
+                      />
+                      <Palettes />
+                    </React.Fragment>
+                  );
+                }}
+              />
             </Switch>
           </div>
           <CollectionsFooter />

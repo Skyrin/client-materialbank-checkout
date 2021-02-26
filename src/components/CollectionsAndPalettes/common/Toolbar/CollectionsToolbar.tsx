@@ -1,11 +1,9 @@
 import * as React from "react";
 import styles from "components/CollectionsAndPalettes/common/Toolbar/CollectionsToolbar.module.scss";
-import RoundButton from "../RoundButton/RoundButton";
-import ModeButton from "../ModeButton/ModeButton";
+import RoundButtons from "../RoundButtons/RoundButtons";
+import ModeButtons from "../ModeButtons/ModeButtons";
 import cn from "classnames";
 import Contributors from "../Contributors/Contributors";
-import { Link } from "react-router-dom";
-import { COLLECTIONS_AND_PALETTES_URL } from "../../../../constants/urls";
 
 interface Props {
   title: string;
@@ -99,7 +97,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
         <div className="horizontal-divider-toolbar"></div>
         <div className={styles.toolbarContent}>
           <div className={styles.navigationButtons}>
-            <RoundButton
+            <RoundButtons
               buttons={this.props.buttons}
               selectedButton={this.props.activeButtonDisplay}
               onButtonSelected={this.props.toggleDisplay}
@@ -112,7 +110,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
             <div className={styles.noOfCollections}>{} Collections</div>
             {this.props.isCollection && (
               <div className={styles.navSwitch}>
-                <ModeButton
+                <ModeButtons
                   buttons={["image", "info", "edit"]}
                   selectedButton={this.props.activeButtonMode}
                   activeButtonClassName={"active"}

@@ -1,6 +1,6 @@
 import * as React from "react";
 import cn from "classnames";
-import styles from "./ModeButton.module.scss";
+import styles from "./ModeButtons.module.scss";
 
 interface Props {
   buttons: string[];
@@ -11,7 +11,7 @@ interface Props {
   iconClass: string[];
 }
 
-export default class RoundButton extends React.Component<Props, any> {
+export default class ModeButtons extends React.Component<Props, any> {
   activeButtonMode = 0;
 
   toggleAnimation = (e, index, button) => {

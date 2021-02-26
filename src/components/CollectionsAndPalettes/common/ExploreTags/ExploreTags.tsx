@@ -1,6 +1,6 @@
 import * as React from "react";
 import styles from "components/CollectionsAndPalettes/common/ExploreTags/ExploreTags.module.scss";
-import RoundButton from "../RoundButton/RoundButton";
+import RoundButtons from "../RoundButtons/RoundButtons";
 
 export default class ExploreTags extends React.Component<any, any> {
   render() {
@@ -10,7 +10,7 @@ export default class ExploreTags extends React.Component<any, any> {
           Explore tags related to your collections
         </div>
         <div className={styles.exploreButtons}>
-          <RoundButton explore buttons={this.props.buttons} />
+          <RoundButtons explore buttons={this.props.buttons} />
         </div>
       </div>
     );
