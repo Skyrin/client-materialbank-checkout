@@ -13,6 +13,8 @@ import CollectionsToolbar from "./common/Toolbar/CollectionsToolbar";
 import CollectionsHeader from "./common/CollectionsHeader/CollectionsHeader";
 import CollectionsFooter from "./common/CollectionsFooter/CollectionsFooter";
 import Collection from "./Collections/Collection/Collection";
+import ExploreTags from "./common/ExploreTags/ExploreTags";
+import MoreIdeas from "./common/MoreIdeas/MoreIdeas";
 
 type Props = RouteComponentProps;
 
@@ -83,6 +85,21 @@ export default class CollectionsAndPalettes extends React.Component<
                 }}
               />
             </Switch>
+            <div className={"commonArea"}>
+              <MoreIdeas />
+              <ExploreTags
+                buttons={[
+                  "farmhouse",
+                  "kitchen",
+                  "farmsink",
+                  "tile backsplash",
+                  "wood-look flooring",
+                  "white cabinetry",
+                  "tile flooring",
+                  "cozy color scheme",
+                ]}
+              />
+            </div>
           </div>
           <CollectionsFooter />
         </div>

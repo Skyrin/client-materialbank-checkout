@@ -2,7 +2,6 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { COLLECTIONS_URL } from "../../../constants/urls";
 import styles from "components/CollectionsAndPalettes/Collections/Collections.module.scss";
-import ExploreTags from "../common/ExploreTags/ExploreTags";
 import CollectionCard from "../common/CollectionCard/CollectionCard";
 import face1 from "../../../assets/images/face1.jpeg";
 import face2 from "../../../assets/images/face2.jpg";
@@ -49,20 +48,6 @@ export default class Collections extends React.Component<any, State> {
             );
           })}
         </div>
-        <React.Fragment>
-          <ExploreTags
-            buttons={[
-              "farmhouse",
-              "kitchen",
-              "farmsink",
-              "tile backsplash",
-              "wood-look flooring",
-              "white cabinetry",
-              "tile flooring",
-              "cozy color scheme",
-            ]}
-          />
-        </React.Fragment>
       </React.Fragment>
     );
   }

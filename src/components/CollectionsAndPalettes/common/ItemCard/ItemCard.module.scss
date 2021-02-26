@@ -9,6 +9,7 @@
   height: fit-content;
   margin-bottom: $margin-small-4;
   cursor: pointer;
+  position: relative;
 
   .imageContainer {
     position: relative;
@@ -33,6 +34,24 @@
       background-color: rgba(249, 247, 245, 0.5);
       padding: 10px;
       border-radius: 5px;
+
+      &:hover {
+        background-color: darken(rgba(249, 247, 245, 0.5), 2%);
+        box-shadow: -2px -2px 5px 0 rgba(255, 254, 254, 0.3);
+
+        i {
+          color: lighten($primary-color-user, 5%);
+        }
+      }
+
+      &:active {
+        background-color: darken(rgba(249, 247, 245, 0.5), 5%);
+        box-shadow: -2px -2px 5px 0 rgba(255, 254, 254, 0.3);
+
+        i {
+          color: lighten($primary-color-user, 8%);
+        }
+      }
 
       &.delete {
         bottom: 3%;
@@ -60,7 +79,7 @@
     .sampleCart {
       position: absolute;
       cursor: pointer;
-      bottom: 3%;
+      bottom: 90px;
       left: 5%;
       border-radius: 5px;
       font-size: var(--font-size-md);
@@ -95,6 +114,13 @@
     border-radius: var(--card-border-radius-bg);
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+
+    &.infoMode {
+      position: absolute;
+      background-color: white;
+      bottom: 0;
+      width: 100%;
+    }
 
     .textContainer {
       display: flex;

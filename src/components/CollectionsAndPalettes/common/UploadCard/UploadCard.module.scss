@@ -1,0 +1,29 @@
+@import "styles/global";
+@import "styles/variables.scss";
+
+.uploadContainer {
+  height: 380px !important;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  border: dashed 1px #c9c5c1;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: $margin-small-4;
+
+  &:hover {
+    box-shadow: shadow($shadow-size-sm, $shadow-color-normal);
+  }
+
+  div {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      font-size: 14px;
+      color: #615c58;
+    }
+  }
+}

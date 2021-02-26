@@ -10,10 +10,6 @@ interface Props {
 }
 
 export default class RoundButtons extends React.Component<Props, any> {
-  activeButtonMode: number;
-  animate = null;
-  animationDirection = null;
-
   switchDisplay(e, index, button) {
     this.props.onButtonSelected(button);
   }
