@@ -14,18 +14,21 @@ import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
 import { UpdateCustomerInput } from "context/CustomerAPI/models";
 import { ClientError } from "GraphqlClient";
+import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
 
 type Props = RouteComponentProps;
 
 type State = {
   showErrors: boolean;
   profileImageUrl: any;
+  resetPasswordNetworkError: string;
 };
 
 export default class UserAccount extends React.Component<Props, State> {
   state = {
     showErrors: false,
     profileImageUrl: null,
+    resetPasswordNetworkError: "",
   };
 
   updateProfileForm?: UpdateProfileForm;
@@ -51,6 +54,13 @@ export default class UserAccount extends React.Component<Props, State> {
         className={cn(styles.section, styles.fitContent, styles.resetSection)}
       >
         <div className={styles.sectionHeader}>Reset Password</div>
+
+        {this.state.resetPasswordNetworkError && (
+          <ErrorLabel
+            className={styles.errorLabel}
+            errorText={this.state.resetPasswordNetworkError}
+          />
+        )}
         <ResetPasswordForm
           onSavePassword={(currentPassword: string, newPassword?: string) => {
             this.saveNewPasswordClick(currentPassword, newPassword);
@@ -241,7 +251,13 @@ export default class UserAccount extends React.Component<Props, State> {
         console.log(value);
       })
       .catch((error: ClientError) => {
-        console.log("CACA");
+        let errorMessage = error.graphqlErrors[0]?.message
+          ? error.graphqlErrors[0].message
+          : error.message;
+
+        this.setState({
+          resetPasswordNetworkError: errorMessage,
+        });
         console.log(error);
       });
   };
