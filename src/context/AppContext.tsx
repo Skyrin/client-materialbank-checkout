@@ -166,6 +166,8 @@ export class AppContextState extends BaseAppContextState {
   }
 
   async updateCustomerV2(customer: UpdateCustomerInput) {}
+
+  async changePassword(currentPassword: string, newPassword: string) {}
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);

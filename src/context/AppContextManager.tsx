@@ -23,6 +23,7 @@ import {
   createCustomerAddress,
   getCustomerOrders,
   updateCustomerV2,
+  changeCustomerPassword,
 } from "./CustomerAPI/api";
 import {
   CreateCustomerInput,
@@ -168,6 +169,23 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
       try {
         await updateCustomerV2(this.getFullContext(), customer);
+      } catch (e) {
+        throw e;
+      } finally {
+        this.contextState.customerLoading = false;
+        this.forceUpdate();
+      }
+    },
+
+    changePassword: async (currentPassword: string, newPassword: string) => {
+      this.contextState.customerLoading = true;
+      this.forceUpdate();
+      try {
+        await changeCustomerPassword(
+          this.getFullContext(),
+          currentPassword,
+          newPassword
+        );
       } catch (e) {
         throw e;
       } finally {

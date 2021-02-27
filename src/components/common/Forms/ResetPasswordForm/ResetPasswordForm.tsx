@@ -4,6 +4,7 @@ import Input from "components/common/Input/Input";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
 import { PASSWORD_REGEX } from "constants/general";
+import { AddressFormValuesT } from "components/common/Forms/MapAddressForm/MapAddressForm";
 
 const resetPasswordSchema = yup.object().shape({
   currentPassword: yup.string().required("Required"),
@@ -33,7 +34,11 @@ type State = {
   };
 };
 
-export default class ResetPasswordForm extends React.Component<any, State> {
+type Props = {
+  onSavePassword: (currentPassword: string, newPassword?: string) => void;
+};
+
+export default class ResetPasswordForm extends React.Component<Props, State> {
   state = {
     resetPassword: {
       currentPassword: "",
@@ -89,7 +94,7 @@ export default class ResetPasswordForm extends React.Component<any, State> {
         <button
           className={styles.savePasswordButton}
           onClick={() => {
-            this.validateContactInfo();
+            this.onSaveNewPasswordClick();
           }}
         >
           Save New Password
@@ -111,11 +116,21 @@ export default class ResetPasswordForm extends React.Component<any, State> {
     });
   };
 
+  onSaveNewPasswordClick = () => {
+    if (this.validateContactInfo()) {
+      this.props.onSavePassword(
+        this.state.resetPassword.currentPassword,
+        this.state.resetPassword.newPassword
+      );
+    }
+  };
+
   validateContactInfo = () => {
     try {
       resetPasswordSchema.validateSync(this.state.resetPassword, {
         abortEarly: false,
       });
+      return true;
     } catch (e) {
       const errors = extractErrors(e);
       this.setState({
@@ -124,6 +139,7 @@ export default class ResetPasswordForm extends React.Component<any, State> {
           ...errors,
         },
       });
+      return false;
     }
   };
 }

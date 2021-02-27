@@ -95,6 +95,33 @@ export const updateCustomerV2 = async (
   return response;
 };
 
+export const changeCustomerPassword = async (
+  context: AppContextState,
+  currentPassword: string,
+  newPassword: string
+) => {
+  try {
+    const ChangePasswordMutation = `
+      mutation($currentPassword: String!, $newPassword: String!) {
+        changeCustomerPassword(currentPassword: $currentPassword, newPassword: $newPassword) {
+          ${UpdateCustomerFragment}
+        }
+      }
+    `;
+    const changeCustomerResponse = await graphqlRequest(
+      context,
+      ChangePasswordMutation,
+      {
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      }
+    );
+    return changeCustomerResponse;
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
+  }
+};
+
 export const createCustomerAddress = async (
   context: AppContextState,
   address: CustomerAddressInput

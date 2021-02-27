@@ -13,6 +13,7 @@ import LogoMobile from "../../common/LogoMobile/LogoMobile";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
 import { UpdateCustomerInput } from "context/CustomerAPI/models";
+import { ClientError } from "GraphqlClient";
 
 type Props = RouteComponentProps;
 
@@ -50,7 +51,11 @@ export default class UserAccount extends React.Component<Props, State> {
         className={cn(styles.section, styles.fitContent, styles.resetSection)}
       >
         <div className={styles.sectionHeader}>Reset Password</div>
-        <ResetPasswordForm />
+        <ResetPasswordForm
+          onSavePassword={(currentPassword: string, newPassword?: string) => {
+            this.saveNewPasswordClick(currentPassword, newPassword);
+          }}
+        />
       </div>
     );
   };
@@ -227,6 +232,19 @@ export default class UserAccount extends React.Component<Props, State> {
       profileImageUrl: null,
     });
   }
+
+  saveNewPasswordClick = (currentPassword: string, newPassword?: string) => {
+    this.context
+      .changePassword(currentPassword, newPassword)
+      .then((value) => {
+        console.log("CHANGED PASSWORD");
+        console.log(value);
+      })
+      .catch((error: ClientError) => {
+        console.log("CACA");
+        console.log(error);
+      });
+  };
 
   onSaveChangesClick = () => {
     if (this.updateProfileForm.validateContactInfo()) {
