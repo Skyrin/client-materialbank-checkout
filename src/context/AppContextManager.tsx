@@ -1,4 +1,4 @@
-import { CartT, CustomerT } from "constants/types";
+import { CartT, CustomerT, OrderT } from "constants/types";
 import * as React from "react";
 import { AppContext, AppContextState, Modals } from "./AppContext";
 import { cloneDeep, isArray, isString, merge, mergeWith } from "lodash-es";
