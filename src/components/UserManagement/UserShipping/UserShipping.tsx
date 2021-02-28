@@ -5,7 +5,6 @@ import UserHeader, {
 } from "components/UserManagement/UserHeader/UserHeader";
 import { SearchBar } from "components/common/SearchBar/SearchBar";
 import styles from "./UserShipping.module.scss";
-import Address from "models/Address";
 import MapAddressForm from "components/common/Forms/MapAddressForm/MapAddressForm";
 import {
   disableBodyScroll,
@@ -13,7 +12,7 @@ import {
   clearAllBodyScrollLocks,
 } from "body-scroll-lock";
 import cn from "classnames";
-import { isOnMobile } from "../../../utils/responsive";
+import { isOnMobile } from "utils/responsive";
 import { CustomerAddressInput } from "context/CustomerAPI/models";
 import { AppContext, AppContextState } from "context/AppContext";
 import { ClientError } from "GraphqlClient";
@@ -81,7 +80,6 @@ export default class UserShipping extends React.Component<Props, State> {
       this.setState({
         addresses: value.addresses,
       });
-      console.log(value.addresses);
     });
   }
 
@@ -111,7 +109,7 @@ export default class UserShipping extends React.Component<Props, State> {
   }
 
   renderMobileMap = () => {
-    return <div className={styles.map}></div>;
+    return <div className={styles.map} />;
   };
 
   render() {
@@ -123,9 +121,7 @@ export default class UserShipping extends React.Component<Props, State> {
             extraContent={
               <SearchBar
                 placeholder={"Search of shipping address"}
-                onSearchChange={(value: string) => {
-                  console.log(value);
-                }}
+                onSearchChange={() => {}}
               />
             }
           />
@@ -237,7 +233,7 @@ export default class UserShipping extends React.Component<Props, State> {
                     }}
                   />
                 )}
-                {!this.state.editAddressNetworkError && (
+                {this.state.editAddressNetworkError && (
                   <ErrorLabel
                     className={styles.errorCreateAddress}
                     errorText={this.state.editAddressNetworkError}
@@ -261,6 +257,7 @@ export default class UserShipping extends React.Component<Props, State> {
   onSaveAddress = (addressValues: AddressFormValuesT, addressId: number) => {
     this.setState({
       createAddressNetworkError: "",
+      editAddressNetworkError: "",
     });
 
     const addressFields = {
@@ -276,32 +273,47 @@ export default class UserShipping extends React.Component<Props, State> {
     };
 
     const addressInput = new CustomerAddressInput(addressFields);
-    this.context
-      .createCustomerAddress(addressInput)
-      .then((value) => {
-        console.log("GREAT SUCCESS");
-        console.log(value);
-        this.setState({
-          addresses: value?.addresses,
-        });
-      })
-      .catch((error: ClientError) => {
-        let errorMessage = error.graphqlErrors[0]?.message
-          ? error.graphqlErrors[0].message
-          : error.message;
 
-        this.setState({
-          createAddressNetworkError: errorMessage,
-        });
-      });
+    if (addressId) {
+      this.context
+        .updateCustomerAddress(addressId, addressInput)
+        .then((value) => {
+          this.setState({
+            addresses: value?.addresses,
+          });
+          this.closeModal();
+        })
+        .catch((error: ClientError) => {
+          let errorMessage = error.graphqlErrors[0]?.message
+            ? error.graphqlErrors[0].message
+            : error.message;
 
-    this.closeModal();
-    this.addAddressForm.resetForm();
+          this.setState({
+            editAddressNetworkError: errorMessage,
+          });
+        });
+    } else {
+      this.context
+        .createCustomerAddress(addressInput)
+        .then((value) => {
+          this.setState({
+            addresses: value?.addresses,
+          });
+          this.addAddressForm.resetForm();
+        })
+        .catch((error: ClientError) => {
+          let errorMessage = error.graphqlErrors[0]?.message
+            ? error.graphqlErrors[0].message
+            : error.message;
+
+          this.setState({
+            createAddressNetworkError: errorMessage,
+          });
+        });
+    }
   };
 
   makeDefault = (defaultAddress: AddressT) => {
-    console.log("ADDRESS");
-    console.log(defaultAddress);
     const addressFields = {
       company: defaultAddress.company,
       firstName: defaultAddress.firstname || "",
@@ -320,15 +332,11 @@ export default class UserShipping extends React.Component<Props, State> {
     this.context
       .updateCustomerAddress(defaultAddress.id, addressInput)
       .then((value) => {
-        console.log("GREAT SUCCESS");
-        console.log(value);
         this.setState({
           addresses: value?.addresses,
         });
       })
-      .catch((error: ClientError) => {
-        console.log("CACA");
-      });
+      .catch(() => {});
   };
 
   onEditClicked = (address: AddressT) => {
