@@ -22,6 +22,7 @@ type State = {
   showErrors: boolean;
   profileImageUrl: any;
   resetPasswordNetworkError: string;
+  updateProfileNetworkError: string;
 };
 
 export default class UserAccount extends React.Component<Props, State> {
@@ -29,6 +30,7 @@ export default class UserAccount extends React.Component<Props, State> {
     showErrors: false,
     profileImageUrl: null,
     resetPasswordNetworkError: "",
+    updateProfileNetworkError: "",
   };
 
   updateProfileForm?: UpdateProfileForm;
@@ -113,6 +115,12 @@ export default class UserAccount extends React.Component<Props, State> {
             this.updateProfileForm = ref;
           }}
         />
+        {this.state.updateProfileNetworkError && (
+          <ErrorLabel
+            className={styles.errorLabel}
+            errorText={this.state.updateProfileNetworkError}
+          />
+        )}
         <div
           className={cn(
             "horizontal-divider margin-top-big",
@@ -244,6 +252,9 @@ export default class UserAccount extends React.Component<Props, State> {
   }
 
   saveNewPasswordClick = (currentPassword: string, newPassword?: string) => {
+    this.setState({
+      resetPasswordNetworkError: "",
+    });
     this.context
       .changePassword(currentPassword, newPassword)
       .then((value) => {
@@ -263,6 +274,9 @@ export default class UserAccount extends React.Component<Props, State> {
   };
 
   onSaveChangesClick = () => {
+    this.setState({
+      updateProfileNetworkError: "",
+    });
     if (this.updateProfileForm.validateContactInfo()) {
       const customerInput = new UpdateCustomerInput({
         firstname: this.updateProfileForm.state.updateProfile.firstName,
@@ -275,10 +289,23 @@ export default class UserAccount extends React.Component<Props, State> {
         customerInput.password = this.updateProfileForm.state.updateProfile.password;
       }
 
-      this.context.updateCustomerV2(customerInput).then((value) => {
-        console.log("UPDATED CUSTOMER");
-        console.log(value);
-      });
+      this.context
+        .updateCustomerV2(customerInput)
+        .then((value) => {
+          console.log("UPDATED CUSTOMER");
+          console.log(value);
+        })
+        .catch((error: ClientError) => {
+          let errorMessage = error.graphqlErrors[0]?.message
+            ? error.graphqlErrors[0].message
+            : error.message;
+
+          this.setState({
+            updateProfileNetworkError: errorMessage,
+          });
+          console.log("CACA");
+          console.log(error);
+        });
     }
   };
 }

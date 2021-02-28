@@ -131,6 +131,7 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
               <div className={styles.inputHint}>Password</div>
               <Input
                 placeholder="Password"
+                type="password"
                 value={this.state.updateProfile.password}
                 onChange={(val: string) => {
                   this.updateFieldForm("password", val);

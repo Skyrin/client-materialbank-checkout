@@ -88,11 +88,14 @@ export const updateCustomerV2 = async (
     }
   `;
 
-  const response = await graphqlRequest(context, Mutation, {
-    input: customer,
-  });
-
-  return response;
+  try {
+    const response = await graphqlRequest(context, Mutation, {
+      input: customer,
+    });
+    return response;
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
+  }
 };
 
 export const changeCustomerPassword = async (
