@@ -148,6 +148,30 @@ export const createCustomerAddress = async (
   }
 };
 
+export const updateCustomerAddress = async (
+  context: AppContextState,
+  id: number,
+  address: CustomerAddressInput
+) => {
+  const Mutation = `
+    mutation ($id: Int!, $input: CustomerAddressInput!) {
+      updateCustomerAddress(id: $id, input: $input) {
+        id
+      }
+    }
+  `;
+
+  try {
+    const resp = await graphqlRequest(context, Mutation, {
+      id: id,
+      input: { ...address, default_billing: true },
+    });
+    return resp;
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
+  }
+};
+
 export const requestOrder = async (
   context: AppContextState,
   orderNumber: string

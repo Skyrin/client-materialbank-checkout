@@ -152,6 +152,13 @@ export class AppContextState extends BaseAppContextState {
     return Promise.resolve({});
   }
 
+  async updateCustomerAddress(
+    id: number,
+    address: CustomerAddressInput
+  ): Promise<CustomerT> {
+    return Promise.resolve({});
+  }
+
   async setBillingAddress(
     sameAsShipping: boolean,
     address?: CartAddressInput

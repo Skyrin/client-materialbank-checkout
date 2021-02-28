@@ -24,6 +24,7 @@ import {
   login,
   requestCurrentCustomer,
   requestOrder,
+  updateCustomerAddress,
   updateCustomerV2,
 } from "./CustomerAPI/api";
 import {
@@ -289,6 +290,23 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
       try {
         await createCustomerAddress(this.getFullContext(), address);
+        return await this.actions.requestCurrentCustomer();
+      } catch (e) {
+        throw e;
+      } finally {
+        this.contextState.customerLoading = false;
+        this.forceUpdate();
+      }
+    },
+
+    updateCustomerAddress: async (
+      id: number,
+      address: CustomerAddressInput
+    ) => {
+      this.contextState.customerLoading = true;
+      this.forceUpdate();
+      try {
+        await updateCustomerAddress(this.getFullContext(), id, address);
         return await this.actions.requestCurrentCustomer();
       } catch (e) {
         throw e;

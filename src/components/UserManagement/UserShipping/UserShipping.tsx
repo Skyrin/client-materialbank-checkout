@@ -65,6 +65,7 @@ type State = {
   editingAddress: AddressT;
 
   createAddressNetworkError: string;
+  editAddressNetworkError: string;
 };
 
 export default class UserShipping extends React.Component<Props, State> {
@@ -105,6 +106,7 @@ export default class UserShipping extends React.Component<Props, State> {
       },
       editingAddress: null,
       createAddressNetworkError: "",
+      editAddressNetworkError: "",
     };
   }
 
@@ -235,6 +237,12 @@ export default class UserShipping extends React.Component<Props, State> {
                     }}
                   />
                 )}
+                {!this.state.editAddressNetworkError && (
+                  <ErrorLabel
+                    className={styles.errorCreateAddress}
+                    errorText={this.state.editAddressNetworkError}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -292,13 +300,35 @@ export default class UserShipping extends React.Component<Props, State> {
   };
 
   makeDefault = (defaultAddress: AddressT) => {
-    // const newAddresses = this.state.addresses.map((address) => {
-    //   address.default = address.id === defaultAddress.id;
-    //   return address;
-    // });
-    // this.setState({
-    //   addresses: newAddresses,
-    // });
+    console.log("ADDRESS");
+    console.log(defaultAddress);
+    const addressFields = {
+      company: defaultAddress.company,
+      firstName: defaultAddress.firstname || "",
+      lastName: defaultAddress.lastname || "",
+      city: defaultAddress.city || "",
+      region: defaultAddress.region.region_code || "",
+      address: defaultAddress.street[0] || [] || "",
+      aptNumber: defaultAddress.street[1] || [] || "",
+      zipCode: defaultAddress.postcode || "",
+      default_shipping: true,
+      telephone: "123123",
+    };
+
+    const addressInput = new CustomerAddressInput(addressFields);
+
+    this.context
+      .updateCustomerAddress(defaultAddress.id, addressInput)
+      .then((value) => {
+        console.log("GREAT SUCCESS");
+        console.log(value);
+        this.setState({
+          addresses: value?.addresses,
+        });
+      })
+      .catch((error: ClientError) => {
+        console.log("CACA");
+      });
   };
 
   onEditClicked = (address: AddressT) => {

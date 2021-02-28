@@ -1,6 +1,7 @@
 import { REGIONS } from "constants/regions";
 
 export class CustomerAddressInput {
+  id: string;
   city: string;
   company: string;
   country_code: string;
@@ -26,11 +27,12 @@ export class CustomerAddressInput {
     postcode: undefined,
     region_id: 43,
     region_code: "NY",
-    telephone: "0",
+    telephone: "123456",
     street: undefined,
   };
 
   constructor(obj?: any) {
+    this.id = obj?.id;
     this.city = obj?.city || CustomerAddressInput.defaults.city;
     this.company = obj?.company || CustomerAddressInput.defaults.company;
     this.country_code =
