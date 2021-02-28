@@ -188,9 +188,10 @@
 .modalContent {
   display: flex;
   flex-flow: column;
+  overflow: auto;
   margin: auto $margin-huge-5;
   @include mobile-media {
-    margin: 0 $margin-small-4;
+    margin: 0 $margin-small-4 20px;
   }
 }
 
@@ -209,4 +210,8 @@
   .loader {
     font-size: 40px;
   }
+}
+
+.errorCreateAddress {
+  margin-top: 20px;
 }

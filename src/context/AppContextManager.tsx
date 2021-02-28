@@ -17,14 +17,14 @@ import {
 } from "./CheckoutAPI/api";
 import { CartAddressInput } from "./CheckoutAPI/models";
 import {
+  changeCustomerPassword,
   createCustomer,
-  login,
-  requestCurrentCustomer,
   createCustomerAddress,
   getCustomerOrders,
+  login,
+  requestCurrentCustomer,
   requestOrder,
   updateCustomerV2,
-  changeCustomerPassword,
 } from "./CustomerAPI/api";
 import {
   CreateCustomerInput,
@@ -288,16 +288,13 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.customerLoading = true;
       this.forceUpdate();
       try {
-        const createdAddress = await createCustomerAddress(
-          this.getFullContext(),
-          address
-        );
-        return createdAddress;
+        await createCustomerAddress(this.getFullContext(), address);
+        return await this.actions.requestCurrentCustomer();
       } catch (e) {
         throw e;
       } finally {
-        const customer = await this.actions.requestCurrentCustomer();
-        return customer;
+        this.contextState.customerLoading = false;
+        this.forceUpdate();
       }
     },
 

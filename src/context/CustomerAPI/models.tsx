@@ -26,7 +26,7 @@ export class CustomerAddressInput {
     postcode: undefined,
     region_id: 43,
     region_code: "NY",
-    telephone: "123456789",
+    telephone: "0",
     street: undefined,
   };
 

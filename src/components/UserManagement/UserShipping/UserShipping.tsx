@@ -19,6 +19,7 @@ import { AppContext, AppContextState } from "context/AppContext";
 import { ClientError } from "GraphqlClient";
 import Loader from "components/common/Loader/Loader";
 import { AddressT } from "constants/types";
+import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
 
 export const DEFAULT_ADDRESS_VALUES: AddressFormValuesT = {
   nickname: "",
@@ -61,7 +62,7 @@ type State = {
   addresses: AddressT[];
   values: AddressFormValuesT;
   errors: AddressFormErrorsT;
-  editingAddress: Address;
+  editingAddress: AddressT;
 
   createAddressNetworkError: string;
 };
@@ -192,6 +193,12 @@ export default class UserShipping extends React.Component<Props, State> {
                     this.onSaveAddress(addressValues, null);
                   }}
                 />
+                {this.state.createAddressNetworkError && (
+                  <ErrorLabel
+                    className={styles.errorCreateAddress}
+                    errorText={this.state.createAddressNetworkError}
+                  />
+                )}
               </div>
             </div>
             {isOnMobile() && this.renderMobileMap()}
@@ -243,18 +250,9 @@ export default class UserShipping extends React.Component<Props, State> {
     );
   }
 
-  onSaveAddress = (addressValues: AddressFormValuesT, addressId: string) => {
-    const newAddress = new Address({
-      id: addressId || Math.random(),
-      nickname: addressValues.nickname,
-      firstName: addressValues.firstName,
-      lastName: addressValues.lastName,
-      addressLine1: addressValues.addressLine1,
-      addressLine2: addressValues.addressLine2,
-      city: addressValues.city,
-      state: addressValues.state,
-      zipcode: addressValues.zipcode,
-      default: addressValues.default,
+  onSaveAddress = (addressValues: AddressFormValuesT, addressId: number) => {
+    this.setState({
+      createAddressNetworkError: "",
     });
 
     const addressFields = {
@@ -276,49 +274,18 @@ export default class UserShipping extends React.Component<Props, State> {
         console.log("GREAT SUCCESS");
         console.log(value);
         this.setState({
-          addresses: value.addresses,
+          addresses: value?.addresses,
         });
       })
       .catch((error: ClientError) => {
         let errorMessage = error.graphqlErrors[0]?.message
           ? error.graphqlErrors[0].message
           : error.message;
-      });
 
-    // if (newAddress.default) {
-    //   const newAddresses = this.state.addresses.map((address) => {
-    //     address.default = false;
-    //
-    //     if (address.id === addressId) {
-    //       address = newAddress;
-    //     }
-    //
-    //     return address;
-    //   });
-    //
-    //   if (!addressId) {
-    //     newAddresses.push(newAddress);
-    //   }
-    //   this.setState({
-    //     addresses: newAddresses,
-    //   });
-    // } else {
-    //   if (!addressId) {
-    //     this.state.addresses.push(newAddress);
-    //     this.setState({
-    //       addresses: this.state.addresses,
-    //     });
-    //   } else {
-    //     this.setState({
-    //       addresses: this.state.addresses.map((address) => {
-    //         if (address.id === addressId) {
-    //           address = newAddress;
-    //         }
-    //         return address;
-    //       }),
-    //     });
-    //   }
-    // }
+        this.setState({
+          createAddressNetworkError: errorMessage,
+        });
+      });
 
     this.closeModal();
     this.addAddressForm.resetForm();
@@ -335,9 +302,9 @@ export default class UserShipping extends React.Component<Props, State> {
   };
 
   onEditClicked = (address: AddressT) => {
-    // this.setState({
-    //   editingAddress: address,
-    // });
+    this.setState({
+      editingAddress: address,
+    });
     this.disableWindowsScroll();
   };
 
