@@ -4,23 +4,15 @@ import {
   COLLECTIONS_AND_PALETTES_URL,
 } from "constants/urls";
 import * as React from "react";
-import {
-  Link,
-  Redirect,
-  Route,
-  RouteComponentProps,
-  Switch,
-} from "react-router-dom";
+import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./CollectionsAndPalettes.module.scss";
 import { AppContext, AppContextState } from "../../context/AppContext";
-import Breadcrumbs from "../common/Breadcrumbs/Breadcrumbs";
-import { BREADCRUMBS_STEPS } from "../../constants/general";
-import { isOnMobile } from "../../utils/responsive";
-import LogoMobile from "../common/LogoMobile/LogoMobile";
 import Collections from "./Collections/Collections";
 import Palettes from "./Palettes/Palettes";
 import CollectionsToolbar from "./common/Toolbar/CollectionsToolbar";
 import ExploreTags from "./common/ExploreTags/ExploreTags";
+import CollectionsHeader from "./common/CollectionsHeader/CollectionsHeader";
+import CollectionsFooter from "./common/CollectionsFooter/CollectionsFooter";
 
 type Props = RouteComponentProps;
 
@@ -31,9 +23,9 @@ export default class CollectionsAndPalettes extends React.Component<Props> {
   render() {
     return (
       <React.Fragment>
-        <div className={styles.pageContent}>
-          {isOnMobile() && <LogoMobile />}
-          <div className={styles.pageWrapper}>
+        <div className={styles.pageWrapper}>
+          <CollectionsHeader />
+          <div className={styles.pageContent}>
             <CollectionsToolbar title={"Your collections & palettes"} />
             <Switch>
               <Redirect
@@ -46,6 +38,7 @@ export default class CollectionsAndPalettes extends React.Component<Props> {
             </Switch>
             <ExploreTags />
           </div>
+          <CollectionsFooter />
         </div>
       </React.Fragment>
     );

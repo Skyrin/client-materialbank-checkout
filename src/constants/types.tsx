@@ -38,7 +38,8 @@ export type OrderItemT = {
   product_type: string;
   product_sale_price: PriceT;
   entered_options: OrderItemOptionT[];
-  quantity_invoiced: string;
+  quantity_invoiced: number;
+  quantity_ordered: number;
   status: string;
   selected_options: OrderItemOptionT[];
 };
@@ -57,6 +58,7 @@ export type CartItemT = {
   };
   product?: ProductT;
   quantity?: number;
+  color?: string;
 };
 
 export type PriceT = {

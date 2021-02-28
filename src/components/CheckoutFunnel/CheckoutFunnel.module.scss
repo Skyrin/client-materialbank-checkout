@@ -6,6 +6,11 @@
   grid-template-areas: "page-wrapper order-summary"; // Get a 60% / 40% distribution
   flex-grow: 1;
 
+  &.singleColumn {
+    grid-template-columns: auto;
+    grid-template-areas: "page-wrapper";
+  }
+
   .pageWrapper {
     grid-area: page-wrapper;
   }
@@ -24,17 +29,12 @@
     grid-template-columns: auto;
     grid-template-areas:
       "logo"
-      "encryption-notice"
       "order-summary"
       "bread-crumbs"
       "page-wrapper";
 
     .orderSummary {
       min-width: unset;
-    }
-
-    .encryptionNotice {
-      grid-area: encryption-notice;
     }
   }
 }

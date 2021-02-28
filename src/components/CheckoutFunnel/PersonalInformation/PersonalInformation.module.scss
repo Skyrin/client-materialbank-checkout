@@ -13,22 +13,6 @@
     margin-bottom: var(--vertical-spacing-normal);
   }
 
-  .encryptionNotice {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(#6156fa, 0.6);
-    color: #fff;
-    height: var(--button-height);
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-normal);
-
-    .lockIcon {
-      font-size: 16px;
-      margin-right: var(--horizontal-spacing-normal);
-    }
-  }
-
   .informationContainer {
     @include mobile-media {
       padding: 0 $margin-small-3;

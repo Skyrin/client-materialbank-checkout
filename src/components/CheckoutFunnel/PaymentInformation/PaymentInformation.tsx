@@ -2,13 +2,19 @@ import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import Logo from "components/common/Logo/Logo";
 import { BREADCRUMBS_STEPS, ORDER_ID_STORAGE_KEY } from "constants/general";
 import * as React from "react";
-import { Link, RouteComponentProps, withRouter } from "react-router-dom";
+import {
+  Link,
+  matchPath,
+  RouteComponentProps,
+  withRouter,
+} from "react-router-dom";
 import styles from "./PaymentInformation.module.scss";
 import cn from "classnames";
 import {
   CART_URL,
   goToStorefront,
   ORDER_CONFIRMATION_URL,
+  PAYPAL_SUCCESS_URL,
   PERSONAL_INFORMATION_URL,
 } from "constants/urls";
 import applePayLogo from "assets/images/apple_pay_logo_black.svg";
@@ -26,7 +32,6 @@ import AddressForm, {
   AddressFormValuesT,
   DEFAULT_ADDRESS_FORM_VALUES,
 } from "components/common/Forms/AddressForm/AddressForm";
-import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
 import PromoCode from "components/common/PromoCode/PromoCode";
 import { AppContext, AppContextState } from "../../../context/AppContext";
@@ -44,6 +49,7 @@ import {
   PaymentRequest,
   PaymentRequestPaymentMethodEvent,
 } from "@stripe/stripe-js";
+import PaypalSuccess from "./PaypalPages/PaypalSuccess";
 
 export enum AddressOption {
   ShippingAddress = "shipping-address",
@@ -196,7 +202,7 @@ export class PaymentInformation extends React.Component<Props, State> {
     );
 
     if (resp) {
-      localStorage.setItem(ORDER_ID_STORAGE_KEY, resp);
+      sessionStorage.setItem(ORDER_ID_STORAGE_KEY, resp);
       event.complete("success");
       this.props.history.push(ORDER_CONFIRMATION_URL);
     } else {
@@ -243,7 +249,7 @@ export class PaymentInformation extends React.Component<Props, State> {
       const resp = await this.setPaymentMethodAndPlaceOrder(token, true);
 
       if (resp) {
-        localStorage.setItem(ORDER_ID_STORAGE_KEY, resp);
+        sessionStorage.setItem(ORDER_ID_STORAGE_KEY, resp);
         this.props.history.push(ORDER_CONFIRMATION_URL);
         return;
       } else {
@@ -587,6 +593,15 @@ export class PaymentInformation extends React.Component<Props, State> {
   };
 
   render() {
+    if (
+      matchPath(this.props.location.pathname, {
+        path: PAYPAL_SUCCESS_URL,
+        exact: true,
+      })
+    ) {
+      return <PaypalSuccess />;
+    }
+
     return (
       <div className={cn("funnel-page", styles.PaymentInformation)}>
         {!isOnMobile() && <Logo className={styles.logo} />}
@@ -597,8 +612,6 @@ export class PaymentInformation extends React.Component<Props, State> {
             className={styles.breadcrumbs}
           />
         )}
-
-        {!isOnMobile() && <EncryptionNotice />}
 
         {this.renderContactInfoSection()}
         {this.renderShipToInfoSection()}

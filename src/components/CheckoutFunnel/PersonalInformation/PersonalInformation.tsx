@@ -25,7 +25,6 @@ import AddressForm, {
   AddressFormValuesT,
   DEFAULT_ADDRESS_FORM_VALUES,
 } from "components/common/Forms/AddressForm/AddressForm";
-import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import { isOnMobile } from "utils/responsive";
 import RadioButton from "components/common/RadioButton/RadioButton";
 import {
@@ -770,7 +769,7 @@ export class PersonalInformation extends React.Component<Props, State> {
     );
     const respBody = await response.json();
     if (response.ok && respBody) {
-      localStorage.setItem(ORDER_ID_STORAGE_KEY, respBody);
+      sessionStorage.setItem(ORDER_ID_STORAGE_KEY, respBody);
       this.props.history.push(ORDER_CONFIRMATION_URL);
       return;
     }
@@ -853,8 +852,6 @@ export class PersonalInformation extends React.Component<Props, State> {
             className={styles.breadcrumbs}
           />
         )}
-
-        {!isOnMobile() && <EncryptionNotice />}
 
         <div className={styles.informationContainer}>
           {this.renderExpressCheckoutSection()}

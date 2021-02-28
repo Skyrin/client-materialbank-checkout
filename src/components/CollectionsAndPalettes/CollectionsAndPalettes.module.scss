@@ -1,5 +1,6 @@
+@import "styles/variables.scss";
 .pageContent {
-  padding: 100px;
+  padding: $margin-huge $margin-huge-5 117px $margin-huge-5;
 }
 
 * {

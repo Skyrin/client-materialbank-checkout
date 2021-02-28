@@ -18,8 +18,8 @@ import { AppContext, AppContextState } from "context/AppContext";
 import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
 import { BREADCRUMBS_STEPS } from "constants/general";
 import { isOnMobile } from "utils/responsive";
-import EncryptionNotice from "components/common/EncryptionNotice/EncryptionNotice";
 import LogoMobile from "../common/LogoMobile/LogoMobile";
+import cn from "classnames";
 
 type Props = RouteComponentProps;
 
@@ -30,7 +30,11 @@ export default class CheckoutFunnel extends React.Component<Props> {
   render() {
     return (
       <React.Fragment>
-        <div className={styles.pageContent}>
+        <div
+          className={cn(styles.pageContent, {
+            [styles.singleColumn]: this.context.confirmedOrderLoading,
+          })}
+        >
           {isOnMobile() && <LogoMobile />}
 
           <div className={styles.pageWrapper}>
@@ -52,15 +56,9 @@ export default class CheckoutFunnel extends React.Component<Props> {
               />
             </Switch>
           </div>
-          <OrderSummary className={styles.orderSummary} />
-          <Switch>
-            {isOnMobile() && (
-              <Route
-                path={[PERSONAL_INFORMATION_URL, PAYMENT_URL]}
-                component={EncryptionNotice}
-              />
-            )}
-          </Switch>
+          {!this.context.confirmedOrderLoading && (
+            <OrderSummary className={styles.orderSummary} />
+          )}
           <Switch>
             {isOnMobile() && (
               <Route

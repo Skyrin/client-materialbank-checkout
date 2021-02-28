@@ -4,6 +4,7 @@ import {
   CustomerFragment,
   OrderAddressFragment,
   UpdateCustomerFragment,
+  OrderFragment,
 } from "./fragments";
 import {
   CreateCustomerInput,
@@ -157,25 +158,7 @@ export const requestOrder = async (
       customer {
         orders(filter: $filter){
           items {
-            number
-            payment_methods {
-              type
-              name
-            }
-            billing_address {
-              ${OrderAddressFragment}
-            }
-            shipping_address {
-              ${OrderAddressFragment}
-            }
-            total {
-              grand_total {
-                value
-              }
-              subtotal {
-                value
-              }
-            }
+            ${OrderFragment}
           }
         }
       }
@@ -186,49 +169,6 @@ export const requestOrder = async (
       filter: { number: { eq: orderNumber } },
     });
     return resp["customer"]["orders"]["items"][0];
-  } catch (e) {
-    console.error(e);
-  }
-};
-
-export const requestCustomerOrders = async (context: AppContextState) => {
-  const OrdersQuery = `
-    query CustomerOrder {
-      customer {
-        orders {
-          items {
-            id
-            number
-            payment_methods {
-              type
-              name
-              additional_data {
-                name
-                value
-              }
-            }
-            billing_address {
-              ${OrderAddressFragment}
-            }
-            shipping_address {
-              ${OrderAddressFragment}
-            }
-            total {
-              grand_total {
-                value
-              }
-              subtotal {
-                value
-              }
-            }
-          }
-        }
-      }
-    }
-  `;
-  try {
-    const resp = await graphqlRequest(context, OrdersQuery);
-    return resp["customer"]["orders"];
   } catch (e) {
     console.error(e);
   }
@@ -245,73 +185,7 @@ export const getCustomerOrders = async (context: AppContextState) => {
         )
          {
           items {
-            id
-            order_date
-            number
-            status
-            total {
-              base_grand_total {
-                value
-                currency
-              }
-              grand_total {
-                value
-                currency
-              }
-              total_shipping {
-                value
-                currency
-              }
-              total_tax {
-                value
-                currency
-              }
-              subtotal {
-                currency
-                value
-              }
-            }
-            billing_address {
-              firstname
-              lastname
-              middlename
-              city
-              country_code
-              postcode
-              region
-              street
-            }
-            shipping_address {
-              firstname
-              lastname
-              middlename
-              city
-              country_code
-              postcode
-              region
-              street
-            }
-            items {
-              product_sku
-              product_name
-              id
-              product_type
-              product_sale_price {
-                currency
-                value
-              }
-              entered_options {
-                label
-                value
-               }
-              quantity_invoiced
-              status
-              selected_options {
-                label
-                value
-              }
-             
-            }
+            ${OrderFragment}
           }
         }
       }
