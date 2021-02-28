@@ -218,7 +218,6 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
       }
       return true;
     } catch (e) {
-      console.log(e);
       const errors = extractErrors(e);
       this.setState({
         updateProfileErrors: {

@@ -45,7 +45,6 @@ export default class UserAccount extends React.Component<Props, State> {
 
   componentDidMount() {
     this.context.requestCurrentCustomer().then((value) => {
-      console.log(value);
       this.updateProfileForm.newCustomerValues(value);
     });
   }
@@ -257,10 +256,7 @@ export default class UserAccount extends React.Component<Props, State> {
     });
     this.context
       .changePassword(currentPassword, newPassword)
-      .then((value) => {
-        console.log("CHANGED PASSWORD");
-        console.log(value);
-      })
+      .then(() => {})
       .catch((error: ClientError) => {
         let errorMessage = error.graphqlErrors[0]?.message
           ? error.graphqlErrors[0].message
@@ -269,7 +265,6 @@ export default class UserAccount extends React.Component<Props, State> {
         this.setState({
           resetPasswordNetworkError: errorMessage,
         });
-        console.log(error);
       });
   };
 
@@ -291,10 +286,7 @@ export default class UserAccount extends React.Component<Props, State> {
 
       this.context
         .updateCustomerV2(customerInput)
-        .then((value) => {
-          console.log("UPDATED CUSTOMER");
-          console.log(value);
-        })
+        .then(() => {})
         .catch((error: ClientError) => {
           let errorMessage = error.graphqlErrors[0]?.message
             ? error.graphqlErrors[0].message
@@ -303,8 +295,6 @@ export default class UserAccount extends React.Component<Props, State> {
           this.setState({
             updateProfileNetworkError: errorMessage,
           });
-          console.log("CACA");
-          console.log(error);
         });
     }
   };
