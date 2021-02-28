@@ -4,7 +4,6 @@ import UserHeader, {
   UserPages,
 } from "components/UserManagement/UserHeader/UserHeader";
 import { SearchBar } from "components/common/SearchBar/SearchBar";
-import mockAddresses from "models/addressesMock.json";
 import styles from "./UserShipping.module.scss";
 import Address from "models/Address";
 import MapAddressForm from "components/common/Forms/MapAddressForm/MapAddressForm";
@@ -15,6 +14,11 @@ import {
 } from "body-scroll-lock";
 import cn from "classnames";
 import { isOnMobile } from "../../../utils/responsive";
+import { CustomerAddressInput } from "context/CustomerAPI/models";
+import { AppContext, AppContextState } from "context/AppContext";
+import { ClientError } from "GraphqlClient";
+import Loader from "components/common/Loader/Loader";
+import { AddressT } from "constants/types";
 
 export const DEFAULT_ADDRESS_VALUES: AddressFormValuesT = {
   nickname: "",
@@ -54,18 +58,29 @@ export type AddressFormErrorsT = {
 type Props = RouteComponentProps;
 
 type State = {
-  addresses: Address[];
+  addresses: AddressT[];
   values: AddressFormValuesT;
   errors: AddressFormErrorsT;
   editingAddress: Address;
+
+  createAddressNetworkError: string;
 };
 
 export default class UserShipping extends React.Component<Props, State> {
+  static contextType = AppContext;
+  context!: AppContextState;
+
   targetElement = null;
   addAddressForm?: MapAddressForm;
 
   componentDidMount() {
     this.targetElement = document.querySelector("#modalId");
+    this.context.requestCurrentCustomer().then((value) => {
+      this.setState({
+        addresses: value.addresses,
+      });
+      console.log(value.addresses);
+    });
   }
 
   componentWillUnmount() {
@@ -76,7 +91,7 @@ export default class UserShipping extends React.Component<Props, State> {
     super(props);
     this.state = {
       values: DEFAULT_ADDRESS_VALUES,
-      addresses: mockAddresses.map((address) => new Address(address)),
+      addresses: [],
       errors: {
         nickname: null,
         firstName: null,
@@ -88,6 +103,7 @@ export default class UserShipping extends React.Component<Props, State> {
         zipcode: null,
       },
       editingAddress: null,
+      createAddressNetworkError: "",
     };
   }
 
@@ -118,27 +134,27 @@ export default class UserShipping extends React.Component<Props, State> {
                     <div className={styles.addressMapCell} />
                     <div className={styles.addressInfo}>
                       <div className={styles.addressNickName}>
-                        {address.nickname}
+                        {address.company}
                       </div>
                       <div className={styles.addressExtraDetails}>
-                        {address.firstName + " " + address.lastName}
+                        {address.firstname + " " + address.lastname}
                       </div>
                       <div className={styles.addressExtraDetails}>
-                        {address.addressLine1}
+                        {address.street[0]}
                       </div>
                       <div className={styles.addressExtraDetails}>
-                        {address.addressLine2}
+                        {address.street[1]}
                       </div>
                       <div className={styles.addressExtraDetails}>
                         {address.city +
                           ", " +
-                          address.state +
+                          address.region?.region_code +
                           " " +
-                          address.zipcode}
+                          address.postcode}
                       </div>
                     </div>
 
-                    {!address.default && (
+                    {!address.default_shipping && (
                       <button
                         className={styles.makeDefault}
                         onClick={() => {
@@ -148,7 +164,7 @@ export default class UserShipping extends React.Component<Props, State> {
                         Make default
                       </button>
                     )}
-                    {address.default && (
+                    {address.default_shipping && (
                       <button className={styles.defaultAddress}>
                         DEFAULT ADDRESS
                       </button>
@@ -216,6 +232,13 @@ export default class UserShipping extends React.Component<Props, State> {
             </div>
           </div>
         </div>
+
+        {this.context.customerLoading && (
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        )}
       </div>
     );
   }
@@ -234,59 +257,87 @@ export default class UserShipping extends React.Component<Props, State> {
       default: addressValues.default,
     });
 
-    if (newAddress.default) {
-      const newAddresses = this.state.addresses.map((address) => {
-        address.default = false;
+    const addressFields = {
+      company: addressValues.nickname,
+      firstName: addressValues.firstName || "",
+      lastName: addressValues.lastName || "",
+      city: addressValues.city || "",
+      region: addressValues.state || "",
+      address: addressValues.addressLine1 || [] || "",
+      aptNumber: addressValues.addressLine2 || [] || "",
+      zipCode: addressValues.zipcode || "",
+      default_shipping: addressValues.default,
+    };
 
-        if (address.id === addressId) {
-          address = newAddress;
-        }
-
-        return address;
+    const addressInput = new CustomerAddressInput(addressFields);
+    this.context
+      .createCustomerAddress(addressInput)
+      .then((value) => {
+        console.log("GREAT SUCCESS");
+        console.log(value);
+        this.setState({
+          addresses: value.addresses,
+        });
+      })
+      .catch((error: ClientError) => {
+        let errorMessage = error.graphqlErrors[0]?.message
+          ? error.graphqlErrors[0].message
+          : error.message;
       });
 
-      if (!addressId) {
-        newAddresses.push(newAddress);
-      }
-      this.setState({
-        addresses: newAddresses,
-      });
-    } else {
-      if (!addressId) {
-        this.state.addresses.push(newAddress);
-        this.setState({
-          addresses: this.state.addresses,
-        });
-      } else {
-        this.setState({
-          addresses: this.state.addresses.map((address) => {
-            if (address.id === addressId) {
-              address = newAddress;
-            }
-            return address;
-          }),
-        });
-      }
-    }
+    // if (newAddress.default) {
+    //   const newAddresses = this.state.addresses.map((address) => {
+    //     address.default = false;
+    //
+    //     if (address.id === addressId) {
+    //       address = newAddress;
+    //     }
+    //
+    //     return address;
+    //   });
+    //
+    //   if (!addressId) {
+    //     newAddresses.push(newAddress);
+    //   }
+    //   this.setState({
+    //     addresses: newAddresses,
+    //   });
+    // } else {
+    //   if (!addressId) {
+    //     this.state.addresses.push(newAddress);
+    //     this.setState({
+    //       addresses: this.state.addresses,
+    //     });
+    //   } else {
+    //     this.setState({
+    //       addresses: this.state.addresses.map((address) => {
+    //         if (address.id === addressId) {
+    //           address = newAddress;
+    //         }
+    //         return address;
+    //       }),
+    //     });
+    //   }
+    // }
 
     this.closeModal();
     this.addAddressForm.resetForm();
   };
 
-  makeDefault = (defaultAddress: Address) => {
-    const newAddresses = this.state.addresses.map((address) => {
-      address.default = address.id === defaultAddress.id;
-      return address;
-    });
-    this.setState({
-      addresses: newAddresses,
-    });
+  makeDefault = (defaultAddress: AddressT) => {
+    // const newAddresses = this.state.addresses.map((address) => {
+    //   address.default = address.id === defaultAddress.id;
+    //   return address;
+    // });
+    // this.setState({
+    //   addresses: newAddresses,
+    // });
   };
 
-  onEditClicked = (address: Address) => {
-    this.setState({
-      editingAddress: address,
-    });
+  onEditClicked = (address: AddressT) => {
+    // this.setState({
+    //   editingAddress: address,
+    // });
     this.disableWindowsScroll();
   };
 

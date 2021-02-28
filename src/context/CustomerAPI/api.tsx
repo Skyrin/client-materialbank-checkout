@@ -140,12 +140,11 @@ export const createCustomerAddress = async (
 
   try {
     const resp = await graphqlRequest(context, Mutation, {
-      input: { ...address, default_shipping: true, default_billing: true },
+      input: { ...address, default_billing: true },
     });
     return resp["createCustomerAddress"];
-  } catch (e) {
-    console.error(e);
-    throw e;
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
   }
 };
 

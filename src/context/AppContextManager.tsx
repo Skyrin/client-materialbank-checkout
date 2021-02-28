@@ -296,7 +296,8 @@ export default class AppContextManager extends React.Component<Props> {
       } catch (e) {
         throw e;
       } finally {
-        await this.actions.requestCurrentCustomer();
+        const customer = await this.actions.requestCurrentCustomer();
+        return customer;
       }
     },
 

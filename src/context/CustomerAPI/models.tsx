@@ -13,6 +13,7 @@ export class CustomerAddressInput {
   };
   telephone: string;
   street: string[];
+  default_shipping: boolean;
 
   // TODO Clarify this: city, country_code, region_id are required on Backend but not present in Design.
   // TODO: Figure out zip-code resolution / address validations
@@ -25,7 +26,7 @@ export class CustomerAddressInput {
     postcode: undefined,
     region_id: 43,
     region_code: "NY",
-    telephone: undefined,
+    telephone: "123456789",
     street: undefined,
   };
 
@@ -54,6 +55,7 @@ export class CustomerAddressInput {
     if (obj?.aptNumber) {
       this.street.push(obj?.aptNumber);
     }
+    this.default_shipping = obj?.default_shipping;
 
     // TEMPORARY OVERRIDES SO THAT WE HAVE A VALID ADDRESS
     if (!obj?.region) {
