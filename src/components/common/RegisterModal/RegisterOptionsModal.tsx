@@ -3,6 +3,7 @@ import React from "react";
 import cn from "classnames";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
+import LoginGoogle from "components/common/LoginGoogle/LoginGoogle";
 
 const REGISTER_CONTENT_ID = "loginContentId";
 
@@ -58,10 +59,15 @@ export class RegisterOptionsModal extends React.Component<any, any> {
               Continue with Facebook
             </div>
 
-            <div className={styles.signInWithButton}>
-              <div className={cn("fab", "fa-google", styles.icon)} />
-              Continue with Google
-            </div>
+            {/*<div className={styles.signInWithButton}>*/}
+            {/*  <div className={cn("fab", "fa-google", styles.icon)} />*/}
+            {/*  Continue with Google*/}
+            {/*</div>*/}
+
+            <LoginGoogle
+              className={styles.signInWithButton}
+              buttonText={"Continue with Google"}
+            />
 
             <div className={styles.signInWithButton}>
               <div className={cn("fab", "fa-apple", styles.icon)} />

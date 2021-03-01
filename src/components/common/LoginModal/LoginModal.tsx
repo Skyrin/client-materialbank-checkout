@@ -11,6 +11,7 @@ import * as yup from "yup";
 import Loader from "components/common/Loader/Loader";
 import { ClientError } from "GraphqlClient";
 import { PASSWORD_REGEX } from "constants/general";
+import LoginGoogle from "components/common/LoginGoogle/LoginGoogle";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Email must be valid.").required("Required"),
@@ -111,10 +112,15 @@ export class LoginModal extends React.Component<any, State> {
               Sign in with Facebook
             </div>
 
-            <div className={styles.signInWithButton}>
-              <div className={cn("fab", "fa-google", styles.icon)} />
-              Sign in with Google
-            </div>
+            {/*<div className={styles.signInWithButton}>*/}
+            {/*  <div className={cn("fab", "fa-google", styles.icon)} />*/}
+            {/*  Sign in with Google*/}
+            {/*</div>*/}
+
+            <LoginGoogle
+              className={styles.signInWithButton}
+              buttonText={"Sign in with Google"}
+            />
 
             <div className={styles.signInWithButton}>
               <div className={cn("fab", "fa-apple ", styles.icon)} />
