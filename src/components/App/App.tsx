@@ -94,7 +94,7 @@ class App extends React.Component<any, State> {
         </div>
 
         {this.context.getModalOpen() === Modals.CreateCollection && (
-          <CreateCollectionModal history={null} location={null} match={null} />
+          <CreateCollectionModal />
         )}
         {this.context.getModalOpen() === Modals.Login && <LoginModal />}
         {this.context.getModalOpen() === Modals.RegisterOptions && (
