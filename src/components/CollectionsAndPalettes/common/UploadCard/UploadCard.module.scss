@@ -2,28 +2,42 @@
 @import "styles/variables.scss";
 
 .uploadContainer {
-  height: 380px !important;
+  height: auto;
+  max-width: 300px;
+  width: 100%;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.4);
-  border-radius: 16px;
+  border-radius: var(--card-border-radius-nm);
   border: dashed 1px #c9c5c1;
   cursor: pointer;
   user-select: none;
   margin-bottom: $margin-small-4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #615c58;
+  font-size: var(--font-size-md);
 
-  &:hover {
-    box-shadow: shadow($shadow-size-sm, $shadow-color-normal);
-  }
-
-  div {
-    height: 100%;
+  .addIcon {
+    height: 40px;
+    width: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: var(--font-size-md);
+    border-radius: 100px;
+    background-color: white;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    margin-bottom: 10px;
 
-    span {
-      font-size: 14px;
-      color: #615c58;
+    &:hover {
+      box-shadow: inset 2px 2px 5px 0 #e0dfdd, inset -2px -2px 5px 0 #ffffff;
     }
   }
+
+  //&:hover {
+  //  box-shadow: shadow($shadow-size-sm, $shadow-color-normal);
+  //}
 }

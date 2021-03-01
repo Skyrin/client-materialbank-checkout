@@ -20,6 +20,7 @@ export enum Modals {
   RegisterOptions = "register-options",
   RegisterEmail = "register-email",
   AccountExists = "account-exists",
+  CreateCollection = "create-collection",
   None = "none",
 }
 

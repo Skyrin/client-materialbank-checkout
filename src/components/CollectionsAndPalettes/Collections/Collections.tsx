@@ -6,6 +6,7 @@ import CollectionCard from "../common/CollectionCard/CollectionCard";
 import face1 from "../../../assets/images/face1.jpeg";
 import face2 from "../../../assets/images/face2.jpg";
 import letter1 from "../../../assets/images/letter1.png";
+import UploadCard from "../common/UploadCard/UploadCard";
 
 interface State {
   card: {
@@ -40,6 +41,7 @@ export default class Collections extends React.Component<any, State> {
     return (
       <React.Fragment>
         <div className={styles.cardCollection}>
+          <UploadCard caption={"Create a Collection"} hasIcon />
           {this.state.card.map((item: any, index: number) => {
             return (
               <Link to={COLLECTIONS_URL + `/${this.state.card[index].id}`}>

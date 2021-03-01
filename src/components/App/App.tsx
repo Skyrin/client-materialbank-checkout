@@ -17,6 +17,7 @@ import {
 } from "constants/general";
 import "@stripe/stripe-js"; // Import Stripe.js at startup
 import { LoginModal } from "components/common/LoginModal/LoginModal";
+import { CreateCollectionModal } from "../common/CreateCollectionModal/CreateCollectionModal";
 import { RegisterOptionsModal } from "components/common/RegisterModal/RegisterOptionsModal";
 import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterMailModal";
 import { AccountExistsModal } from "components/common/AccountExistsModal/AccountExistsModal";
@@ -92,6 +93,9 @@ class App extends React.Component<any, State> {
           </Switch>
         </div>
 
+        {this.context.getModalOpen() === Modals.CreateCollection && (
+          <CreateCollectionModal history={null} location={null} match={null} />
+        )}
         {this.context.getModalOpen() === Modals.Login && <LoginModal />}
         {this.context.getModalOpen() === Modals.RegisterOptions && (
           <RegisterOptionsModal />
