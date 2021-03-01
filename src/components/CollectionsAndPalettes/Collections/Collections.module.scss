@@ -1,0 +1,11 @@
+@import "styles/global";
+@import "styles/variables.scss";
+
+.collectionToolbar {
+  display: flex;
+}
+.cardCollection {
+  display: flex;
+  flex-direction: row;
+  column-gap: $margin-small-4;
+}

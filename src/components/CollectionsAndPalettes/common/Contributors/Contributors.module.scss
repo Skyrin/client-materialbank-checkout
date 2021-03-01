@@ -1,0 +1,38 @@
+@import "styles/global";
+@import "styles/variables.scss";
+
+.contributors {
+  display: flex;
+  align-items: center;
+
+  &.small {
+    img,
+    .numberToShow {
+      height: 25px;
+      width: 25px;
+      font-size: 12px;
+    }
+    i {
+      display: none;
+    }
+  }
+
+  img {
+    height: 40px;
+    width: 40px;
+    border-radius: 100px;
+    object-fit: cover;
+    margin-left: -5px;
+  }
+
+  .numberToShow {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -5px;
+    border-radius: 24px;
+    background-color: rgba(#615c58, 0.1);
+  }
+}

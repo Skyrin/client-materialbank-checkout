@@ -1,0 +1,17 @@
+@import "styles/global";
+@import "styles/variables.scss";
+
+.yourCollections {
+  font-size: var(--font-size-md);
+  color: rgba(#615c58, 0.6);
+
+  i {
+    margin-left: $margin-small;
+    font-size: 11px;
+    color: rgba(#615c58, 0.3);
+  }
+
+  &:hover {
+    color: rgba(#615c58, 0.7);
+  }
+}

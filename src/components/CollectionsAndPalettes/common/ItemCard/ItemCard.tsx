@@ -116,7 +116,7 @@ export default class ItemCard extends React.Component<Props, any> {
   render() {
     return (
       <React.Fragment>
-        <div className={cn(styles.itemCard)}>
+        <div className={cn(styles.itemCard, "masonry-item")}>
           {this.renderSwitch(this.props.mode)}
         </div>
       </React.Fragment>

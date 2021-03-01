@@ -143,7 +143,7 @@ h4 {
   cursor: pointer;
   text-decoration: none;
   transition: background-color 0.05s linear, border-color 0.05s linear;
-
+  user-select: none;
   @include mobile-media {
     width: 100%;
   }
@@ -155,15 +155,28 @@ h4 {
     border: 1px solid rgba(1, 1, 1, 0.6);
     color: var(--button-collection-color);
 
+    &.mode {
+      width: 90px;
+      border: none;
+      color: #615c58;
+
+      &:hover {
+        color: white;
+      }
+    }
+
     &.grey {
       background-color: var(--button-collection-background-color);
       box-shadow: inset 0 -1px 0 0 rgba(1, 1, 1, 0.1);
       border: none;
+    }
 
-      &.active {
-        background-color: black;
-        color: white;
-      }
+    &.active {
+      background-color: black;
+      color: white;
+      font-size: 14px;
+      transition: font-size 0.5s;
+      z-index: 99;
     }
   }
 
@@ -321,12 +334,20 @@ button {
   height: 1px;
 }
 
-.horizontal-divider-collections {
+.horizontal-divider-toolbar {
   border-top: 1px solid black;
   opacity: 0.6;
   width: 100%;
   height: 1px;
   margin: 10px 0 $margin-small-4 0;
+}
+
+.horizontal-divider-collections {
+  border-top: 1px solid #363648;
+  opacity: 0.1;
+  width: 100%;
+  height: 1px;
+  margin: $margin-small-4 0 $margin-medium-5 0;
 }
 
 .horizontal-divider-footer {
@@ -340,13 +361,36 @@ button {
 $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
 .masonry-container {
-  columns: 4 200px;
+  column-count: 4;
   column-gap: 20px;
   width: 100%;
 
-  img {
+  .masonry-item {
+    display: inline-block;
     width: 100%;
-    border-radius: 5px;
-    transition: all 0.25s ease-in-out;
+    height: 100%;
+
+    img {
+      width: 100%;
+      border-radius: 5px;
+      transition: all 0.25s ease-in-out;
+    }
+  }
+}
+
+.contributors-share {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-md);
+  background-color: rgba(#ccb79e, 0.1);
+  border-radius: 100px;
+  margin-left: 5px;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: inset 2px 2px 5px 0 #e0dfdd, inset -2px -2px 5px 0 #ffffff;
   }
 }

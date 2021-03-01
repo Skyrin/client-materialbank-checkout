@@ -7,7 +7,8 @@
   overflow: hidden;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
   height: fit-content;
-  margin-bottom: 20px;
+  margin-bottom: $margin-small-4;
+  cursor: pointer;
 
   .imageContainer {
     position: relative;
@@ -94,6 +95,12 @@
     border-radius: var(--card-border-radius-bg);
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+
+    .textContainer {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
 
     .darker {
       color: #615c58;
