@@ -154,7 +154,7 @@ export default class Collection extends React.Component<any, any> {
           toggleMode={this.toggleMode}
         />
         <div className="masonry-container ">
-          <UploadCard />
+          <UploadCard caption={"Upload a photo or drag & drop here "} />
           {this.state.card.map((item: any, index: number) => {
             return (
               <ItemCard
