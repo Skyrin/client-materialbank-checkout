@@ -340,6 +340,9 @@ button {
   width: 100%;
   height: 1px;
   margin: 10px 0 $margin-small-4 0;
+  &.extra-margin {
+    margin-bottom: 40px;
+  }
 }
 
 .horizontal-divider-collections {
@@ -364,6 +367,7 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   column-count: 4;
   column-gap: 20px;
   width: 100%;
+  position: relative;
 
   .masonry-item {
     display: inline-block;

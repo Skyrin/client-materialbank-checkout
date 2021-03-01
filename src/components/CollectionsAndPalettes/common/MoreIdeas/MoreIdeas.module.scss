@@ -1,0 +1,11 @@
+@import "styles/global";
+@import "styles/variables.scss";
+
+.ideasHeader {
+  font-size: var(--font-size-xl);
+}
+
+.buttonContainer {
+  width: 183px;
+  margin: auto;
+}

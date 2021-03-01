@@ -58,7 +58,7 @@ export default class ItemCard extends React.Component<Props, any> {
             <div className={styles.imageContainer}>
               <img src={this.props.item.imagePath} alt="" />
             </div>
-            <div className={styles.infoContainer}>
+            <div className={cn(styles.infoContainer, styles.infoMode)}>
               <div>{this.props.item.title1}</div>
               <div>{this.props.item.title2}</div>
               <div className={styles.darker}>{this.props.item.title3}</div>
@@ -92,7 +92,7 @@ export default class ItemCard extends React.Component<Props, any> {
             <span>${this.props.item.price}</span>
           </div>
         </div>
-        <div className={styles.infoContainer}>
+        <div className={cn(styles.infoContainer, styles.infoMode)}>
           <div className={styles.darker}>{this.props.item.title1}</div>
           <div className={styles.darker}>{this.props.item.title2}</div>
           <div>{this.props.item.title3}</div>
@@ -116,8 +116,15 @@ export default class ItemCard extends React.Component<Props, any> {
   render() {
     return (
       <React.Fragment>
-        <div className={cn(styles.itemCard, "masonry-item")}>
-          {this.renderSwitch(this.props.mode)}
+        <div className={cn("masonry-item")}>
+          <div
+            className={cn(
+              styles.itemCard,
+              this.props.mode === "info" ? styles.infoModeCard : ""
+            )}
+          >
+            {this.renderSwitch(this.props.mode)}
+          </div>
         </div>
       </React.Fragment>
     );

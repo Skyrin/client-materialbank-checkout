@@ -6,11 +6,17 @@ export default class ExploreTags extends React.Component<any, any> {
   render() {
     return (
       <div className={styles.exploreContainer}>
+        <div className="horizontal-divider margin-top" />
+
         <div className={styles.title}>
           Explore tags related to your collections
         </div>
         <div className={styles.exploreButtons}>
-          <RoundButtons explore buttons={this.props.buttons} />
+          <RoundButtons
+            buttons={this.props.buttons}
+            onButtonSelected={null}
+            selectedButton={null}
+          />
         </div>
       </div>
     );

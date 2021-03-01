@@ -1,22 +1,15 @@
 import * as React from "react";
-import { NavLink } from "react-router-dom";
-import { COLLECTIONS_URL } from "../../../../constants/urls";
-import ItemCard from "../../common/ItemCard/ItemCard";
-import CollectionsToolbar from "../../common/Toolbar/CollectionsToolbar";
-import face1 from "../../../../assets/images/face1.jpeg";
-import face2 from "../../../../assets/images/face2.jpg";
-import letter1 from "../../../../assets/images/letter1.png";
-import UploadCard from "../../common/UploadCard/UploadCard";
-import AddToCartButton from "components/CollectionsAndPalettes/common/AddToCartButton/AddToCartButton";
-import styles from "components/CollectionsAndPalettes/Collections/Collection/Collection.module.scss";
+import styles from "components/CollectionsAndPalettes/common/MoreIdeas/MoreIdeas.module.scss";
+import cn from "classnames";
+import ItemCard from "../ItemCard/ItemCard";
+import RoundButtons from "../RoundButtons/RoundButtons";
 
-export default class Collection extends React.Component<any, any> {
+export default class MoreIdeas extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      isInViewPort: false,
-      mode: "image",
-      display: "everything",
+      maxCards: 8,
+      mode: "info",
       card: [
         {
           type: "room",
@@ -27,7 +20,6 @@ export default class Collection extends React.Component<any, any> {
           imagePath:
             "https://www.mydomaine.com/thmb/MNBaDGmg4IW7tOvl3pxVNpqQ6uE=/2500x3049/filters:fill(auto,1)/DesignbyEmilyHendersonDesignandPhotobySaraLigorria-Tramp_654-b8122ec9f66b4c69a068859958d8db37.jpg",
         },
-
         {
           type: "palette",
           title1: "Palette",
@@ -91,82 +83,53 @@ export default class Collection extends React.Component<any, any> {
           imagePath:
             "https://i.pinimg.com/474x/af/61/57/af6157319df8490fa1e6b68946da1ca2.jpg",
         },
+        {
+          type: "room",
+          title1: "Indusparquet",
+          title2: "Brazilian Pecan Engineered",
+          title3: "$8.95 / sq ft",
+          price: "6",
+          imagePath:
+            "https://i.pinimg.com/474x/af/61/57/af6157319df8490fa1e6b68946da1ca2.jpg",
+        },
       ],
     };
   }
 
-  isInViewport = () => {
-    const elem = document.querySelector(".commonArea");
-    if (elem) {
-      const bounding = elem.getBoundingClientRect();
-      return (
-        bounding.bottom < 0 ||
-        bounding.right < 0 ||
-        bounding.left > window.innerWidth ||
-        bounding.top > window.innerHeight
-      );
-    }
+  showMoreCards = () => {
+    this.setState({ maxCards: this.state.card.length });
   };
-  scrollingBehaviour = () => {
-    let moreIdeas = this.isInViewport();
-    this.setState({ isInViewPort: moreIdeas });
-  };
-
-  toggleMode = (mode) => {
-    this.setState({ mode: mode });
-  };
-
-  toggleDisplay = (display) => {
-    this.setState({ display: display });
-  };
-
-  componentDidMount() {
-    window.scrollTo(0, 0);
-    window.addEventListener("scroll", this.scrollingBehaviour);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.scrollingBehaviour);
-  }
 
   render() {
     return (
-      <React.Fragment>
-        <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
-          Your Collections
-          <i className={"fas fa-chevron-right"} />
-        </NavLink>
-        <CollectionsToolbar
-          title={"Rustic Kitchens"}
-          isCollection
-          buttons={[
-            "everything",
-            "palettes",
-            "materials",
-            "rooms",
-            "your uploads",
-            "price",
-          ]}
-          contributors={[face1, face2, letter1, face1, face2, letter1, face1]}
-          activeButtonDisplay={this.state.display}
-          toggleDisplay={this.toggleDisplay}
-          activeButtonMode={this.state.mode}
-          toggleMode={this.toggleMode}
-        />
-        <div className="masonry-container ">
-          <UploadCard />
-          {this.state.card.map((item: any, index: number) => {
-            return (
-              <ItemCard
-                key={index}
-                mode={this.state.mode}
-                item={this.state.card[index]}
-              />
-            );
-          })}
-          <AddToCartButton isInViewPort={this.state.isInViewPort} />
+      <div className={cn(styles.moreIdeasContainer)}>
+        <div className={styles.ideasHeader}>More ideas for this collection</div>
+        <div className="horizontal-divider-toolbar extra-margin"></div>
+        <div className="masonry-container">
+          {this.state.card
+            .slice(0, this.state.maxCards)
+            .map((item: any, index: number) => {
+              return (
+                <ItemCard
+                  key={index}
+                  mode={this.state.mode}
+                  item={this.state.card[index]}
+                />
+              );
+            })}
         </div>
-      </React.Fragment>
+        {this.state.card.length > this.state.maxCards && (
+          <div className={styles.buttonContainer}>
+            <RoundButtons
+              buttons={[
+                `Load ${this.state.card.length - this.state.maxCards} more`,
+              ]}
+              selectedButton={null}
+              onButtonSelected={this.showMoreCards}
+            />
+          </div>
+        )}
+      </div>
     );
   }
 }
