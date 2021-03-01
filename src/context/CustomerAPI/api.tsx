@@ -1,7 +1,16 @@
 import { AppContextState } from "context/AppContext";
 import { ClientError, graphqlRequest } from "GraphqlClient";
-import { CustomerFragment, OrderFragment } from "./fragments";
-import { CreateCustomerInput, CustomerAddressInput } from "./models";
+import {
+  CustomerFragment,
+  OrderAddressFragment,
+  UpdateCustomerFragment,
+  OrderFragment,
+} from "./fragments";
+import {
+  CreateCustomerInput,
+  CustomerAddressInput,
+  UpdateCustomerInput,
+} from "./models";
 
 export const requestCurrentCustomer = async (context: AppContextState) => {
   const CustomerQuery = `
@@ -64,6 +73,57 @@ export const createCustomer = async (
     input: customer,
   });
   return response["createCustomerV2"]["customer"];
+};
+
+export const updateCustomerV2 = async (
+  context: AppContextState,
+  customer: UpdateCustomerInput
+) => {
+  const Mutation = `
+    mutation($input: CustomerInput!) {
+      updateCustomer(input: $input) {
+        customer {
+          ${UpdateCustomerFragment}
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await graphqlRequest(context, Mutation, {
+      input: customer,
+    });
+    return response;
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
+  }
+};
+
+export const changeCustomerPassword = async (
+  context: AppContextState,
+  currentPassword: string,
+  newPassword: string
+) => {
+  try {
+    const ChangePasswordMutation = `
+      mutation($currentPassword: String!, $newPassword: String!) {
+        changeCustomerPassword(currentPassword: $currentPassword, newPassword: $newPassword) {
+          ${UpdateCustomerFragment}
+        }
+      }
+    `;
+    const changeCustomerResponse = await graphqlRequest(
+      context,
+      ChangePasswordMutation,
+      {
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      }
+    );
+    return changeCustomerResponse;
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
+  }
 };
 
 export const createCustomerAddress = async (

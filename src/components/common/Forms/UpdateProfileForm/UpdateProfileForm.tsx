@@ -4,6 +4,8 @@ import Input from "components/common/Input/Input";
 import Checkbox from "components/common/Checkbox/Checkbox";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
+import { CustomerT } from "constants/types";
+import { PASSWORD_REGEX } from "constants/general";
 
 const updateProfileSchema = yup.object().shape({
   firstName: yup.string().required("Required"),
@@ -19,12 +21,24 @@ const updateProfileSchema = yup.object().shape({
     ),
 });
 
+const passwordCheckSchema = yup.object().shape({
+  password: yup
+    .string()
+    .matches(
+      PASSWORD_REGEX,
+      "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character."
+    )
+    .required("Required"),
+});
+
 type State = {
   updateProfile: {
     firstName: string;
     lastName: string;
+    oldEmail: string;
     email: string;
     mobile: string;
+    password: string;
   };
   updateProfileErrors: {
     firstName: string;
@@ -34,6 +48,7 @@ type State = {
   };
   optIn: boolean;
   showErrors: boolean;
+  isEmailChanged: boolean;
 };
 
 type Props = {
@@ -46,16 +61,20 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
       firstName: "",
       lastName: "",
       email: "",
+      oldEmail: "",
       mobile: "",
+      password: "",
     },
     updateProfileErrors: {
       firstName: "",
       lastName: "",
       email: "",
       mobile: "",
+      password: "",
     },
     optIn: true,
     showErrors: true,
+    isEmailChanged: false,
   };
 
   constructor(props: Props) {
@@ -100,11 +119,27 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
               placeholder="Email"
               value={this.state.updateProfile.email}
               onChange={(val: string) => {
+                this.emailChanged(val);
                 this.updateFieldForm("email", val);
               }}
               error={this.state.updateProfileErrors.email}
             />
           </div>
+
+          {this.state.isEmailChanged && (
+            <div className={styles.profileInputLayout}>
+              <div className={styles.inputHint}>Password</div>
+              <Input
+                placeholder="Password"
+                type="password"
+                value={this.state.updateProfile.password}
+                onChange={(val: string) => {
+                  this.updateFieldForm("password", val);
+                }}
+                error={this.state.updateProfileErrors.password}
+              />
+            </div>
+          )}
 
           <div className={styles.profileInputLayout}>
             <div className="row center-vertically">
@@ -149,6 +184,12 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
     );
   }
 
+  emailChanged = (value: string) => {
+    this.setState({
+      isEmailChanged: this.state.updateProfile.oldEmail !== value,
+    });
+  };
+
   updateFieldForm = (fieldName: string, value: string) => {
     this.setState({
       updateProfile: {
@@ -167,6 +208,15 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
       updateProfileSchema.validateSync(this.state.updateProfile, {
         abortEarly: false,
       });
+      if (this.state.isEmailChanged) {
+        passwordCheckSchema.validateSync(
+          { password: this.state.updateProfile.password },
+          {
+            abortEarly: false,
+          }
+        );
+      }
+      return true;
     } catch (e) {
       const errors = extractErrors(e);
       this.setState({
@@ -175,6 +225,21 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
           ...errors,
         },
       });
+      return false;
     }
+  };
+
+  newCustomerValues = (customerT: CustomerT) => {
+    this.setState({
+      updateProfile: {
+        firstName: customerT?.firstname,
+        lastName: customerT?.lastname,
+        email: customerT?.email,
+        oldEmail: customerT?.email,
+        mobile: customerT?.mobile || "",
+        password: "",
+      },
+      optIn: customerT.is_subscribed,
+    });
   };
 }

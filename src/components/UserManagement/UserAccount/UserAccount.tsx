@@ -8,28 +8,45 @@ import imagePlaceholder from "assets/images/profile_placeholder.png";
 import cn from "classnames";
 import ResetPasswordForm from "components/common/Forms/ResetPasswordForm/ResetPasswordForm";
 import UpdateProfileForm from "components/common/Forms/UpdateProfileForm/UpdateProfileForm";
-import { isOnMobile } from "../../../utils/responsive";
+import { isOnMobile } from "utils/responsive";
 import LogoMobile from "../../common/LogoMobile/LogoMobile";
+import { AppContext, AppContextState } from "context/AppContext";
+import Loader from "components/common/Loader/Loader";
+import { UpdateCustomerInput } from "context/CustomerAPI/models";
+import { ClientError } from "GraphqlClient";
+import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
 
 type Props = RouteComponentProps;
 
 type State = {
   showErrors: boolean;
   profileImageUrl: any;
+  resetPasswordNetworkError: string;
+  updateProfileNetworkError: string;
 };
 
 export default class UserAccount extends React.Component<Props, State> {
   state = {
     showErrors: false,
     profileImageUrl: null,
+    resetPasswordNetworkError: "",
+    updateProfileNetworkError: "",
   };
 
   updateProfileForm?: UpdateProfileForm;
+  static contextType = AppContext;
+  context!: AppContextState;
 
   constructor(props) {
     super(props);
     this.onFileSelected = this.onFileSelected.bind(this);
     this.removePhoto = this.removePhoto.bind(this);
+  }
+
+  componentDidMount() {
+    this.context.requestCurrentCustomer().then((value) => {
+      this.updateProfileForm.newCustomerValues(value);
+    });
   }
 
   renderResetPasswordSection = () => {
@@ -38,7 +55,18 @@ export default class UserAccount extends React.Component<Props, State> {
         className={cn(styles.section, styles.fitContent, styles.resetSection)}
       >
         <div className={styles.sectionHeader}>Reset Password</div>
-        <ResetPasswordForm />
+
+        {this.state.resetPasswordNetworkError && (
+          <ErrorLabel
+            className={styles.errorLabel}
+            errorText={this.state.resetPasswordNetworkError}
+          />
+        )}
+        <ResetPasswordForm
+          onSavePassword={(currentPassword: string, newPassword?: string) => {
+            this.saveNewPasswordClick(currentPassword, newPassword);
+          }}
+        />
       </div>
     );
   };
@@ -86,6 +114,12 @@ export default class UserAccount extends React.Component<Props, State> {
             this.updateProfileForm = ref;
           }}
         />
+        {this.state.updateProfileNetworkError && (
+          <ErrorLabel
+            className={styles.errorLabel}
+            errorText={this.state.updateProfileNetworkError}
+          />
+        )}
         <div
           className={cn(
             "horizontal-divider margin-top-big",
@@ -105,7 +139,7 @@ export default class UserAccount extends React.Component<Props, State> {
           <button
             className={styles.saveChangesButton}
             onClick={() => {
-              this.updateProfileForm.validateContactInfo();
+              this.onSaveChangesClick();
             }}
           >
             Save Changes
@@ -189,6 +223,13 @@ export default class UserAccount extends React.Component<Props, State> {
           {this.renderProfileInfo()}
           {this.renderResetPasswordSection()}
         </div>
+
+        {this.context.customerLoading && (
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        )}
       </div>
     );
   }
@@ -208,4 +249,53 @@ export default class UserAccount extends React.Component<Props, State> {
       profileImageUrl: null,
     });
   }
+
+  saveNewPasswordClick = (currentPassword: string, newPassword?: string) => {
+    this.setState({
+      resetPasswordNetworkError: "",
+    });
+    this.context
+      .changePassword(currentPassword, newPassword)
+      .then(() => {})
+      .catch((error: ClientError) => {
+        let errorMessage = error.graphqlErrors[0]?.message
+          ? error.graphqlErrors[0].message
+          : error.message;
+
+        this.setState({
+          resetPasswordNetworkError: errorMessage,
+        });
+      });
+  };
+
+  onSaveChangesClick = () => {
+    this.setState({
+      updateProfileNetworkError: "",
+    });
+    if (this.updateProfileForm.validateContactInfo()) {
+      const customerInput = new UpdateCustomerInput({
+        firstname: this.updateProfileForm.state.updateProfile.firstName,
+        lastname: this.updateProfileForm.state.updateProfile.lastName,
+        is_subscribed: this.updateProfileForm.state.optIn,
+      });
+
+      if (this.updateProfileForm.state.isEmailChanged) {
+        customerInput.email = this.updateProfileForm.state.updateProfile.email;
+        customerInput.password = this.updateProfileForm.state.updateProfile.password;
+      }
+
+      this.context
+        .updateCustomerV2(customerInput)
+        .then(() => {})
+        .catch((error: ClientError) => {
+          let errorMessage = error.graphqlErrors[0]?.message
+            ? error.graphqlErrors[0].message
+            : error.message;
+
+          this.setState({
+            updateProfileNetworkError: errorMessage,
+          });
+        });
+    }
+  };
 }

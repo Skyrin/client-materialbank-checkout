@@ -1,0 +1,34 @@
+@import "styles/variablesscss";
+@import "styles/mixins";
+
+.errorAlert {
+  position: relative;
+  width: 100%;
+  background-color: $red-color-warning-background;
+  border: 1px solid $red-color-warning-border;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: $margin-small-2;
+  color: $red-color;
+  padding: $margin-small-2 $margin-small-5;
+  font-size: var(--font-size-md);
+
+  @include mobile-media {
+    margin-top: $margin-small-3;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .errorIcon {
+    width: 16px;
+    height: auto;
+    color: $red-color;
+    position: absolute;
+    text-align: center;
+    left: $margin-small-2;
+    margin-bottom: 1px;
+  }
+}

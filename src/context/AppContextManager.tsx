@@ -1,4 +1,4 @@
-import { CartT, CustomerT } from "constants/types";
+import { CartT, CustomerT, OrderT } from "constants/types";
 import * as React from "react";
 import { AppContext, AppContextState, Modals } from "./AppContext";
 import { cloneDeep, isArray, isString, merge, mergeWith } from "lodash-es";
@@ -23,10 +23,13 @@ import {
   createCustomerAddress,
   getCustomerOrders,
   requestOrder,
+  updateCustomerV2,
+  changeCustomerPassword,
 } from "./CustomerAPI/api";
 import {
   CreateCustomerInput,
   CustomerAddressInput,
+  UpdateCustomerInput,
 } from "./CustomerAPI/models";
 import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import {
@@ -169,6 +172,36 @@ export default class AppContextManager extends React.Component<Props> {
       } finally {
         this.contextState.customerLoading = false;
         this.contextState.cartInfoLoading = false;
+        this.forceUpdate();
+      }
+    },
+
+    updateCustomerV2: async (customer: UpdateCustomerInput) => {
+      this.contextState.customerLoading = true;
+      this.forceUpdate();
+      try {
+        await updateCustomerV2(this.getFullContext(), customer);
+      } catch (e) {
+        throw e;
+      } finally {
+        this.contextState.customerLoading = false;
+        this.forceUpdate();
+      }
+    },
+
+    changePassword: async (currentPassword: string, newPassword: string) => {
+      this.contextState.customerLoading = true;
+      this.forceUpdate();
+      try {
+        await changeCustomerPassword(
+          this.getFullContext(),
+          currentPassword,
+          newPassword
+        );
+      } catch (e) {
+        throw e;
+      } finally {
+        this.contextState.customerLoading = false;
         this.forceUpdate();
       }
     },

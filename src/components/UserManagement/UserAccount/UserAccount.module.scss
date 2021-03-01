@@ -221,3 +221,24 @@
     cursor: pointer;
   }
 }
+
+.loaderContainer {
+  position: fixed;
+  top: 0;
+  left: -5px;
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  background-color: rgba(#fbfbfb, 0.8);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: var(--vertical-spacing-normal);
+
+  .loader {
+    font-size: 40px;
+  }
+}
+
+.errorLabel {
+  margin-top: 20px;
+}
