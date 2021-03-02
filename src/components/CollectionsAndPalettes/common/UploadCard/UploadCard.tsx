@@ -10,6 +10,7 @@ import {
 interface Props {
   caption: string;
   hasIcon?: boolean;
+  showModal?: any;
 }
 
 export default class UploadCard extends React.Component<Props, any> {
