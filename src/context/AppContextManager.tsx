@@ -17,14 +17,15 @@ import {
 } from "./CheckoutAPI/api";
 import { CartAddressInput } from "./CheckoutAPI/models";
 import {
+  changeCustomerPassword,
   createCustomer,
-  login,
-  requestCurrentCustomer,
   createCustomerAddress,
   getCustomerOrders,
+  login,
+  requestCurrentCustomer,
   requestOrder,
+  updateCustomerAddress,
   updateCustomerV2,
-  changeCustomerPassword,
 } from "./CustomerAPI/api";
 import {
   CreateCustomerInput,
@@ -288,15 +289,30 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.customerLoading = true;
       this.forceUpdate();
       try {
-        const createdAddress = await createCustomerAddress(
-          this.getFullContext(),
-          address
-        );
-        return createdAddress;
+        await createCustomerAddress(this.getFullContext(), address);
+        return await this.actions.requestCurrentCustomer();
       } catch (e) {
         throw e;
       } finally {
-        await this.actions.requestCurrentCustomer();
+        this.contextState.customerLoading = false;
+        this.forceUpdate();
+      }
+    },
+
+    updateCustomerAddress: async (
+      id: number,
+      address: CustomerAddressInput
+    ) => {
+      this.contextState.customerLoading = true;
+      this.forceUpdate();
+      try {
+        await updateCustomerAddress(this.getFullContext(), id, address);
+        return await this.actions.requestCurrentCustomer();
+      } catch (e) {
+        throw e;
+      } finally {
+        this.contextState.customerLoading = false;
+        this.forceUpdate();
       }
     },
 

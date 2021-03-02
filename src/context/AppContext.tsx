@@ -148,7 +148,14 @@ export class AppContextState extends BaseAppContextState {
 
   async createCustomerAddress(
     address: CustomerAddressInput
-  ): Promise<AddressT> {
+  ): Promise<CustomerT> {
+    return Promise.resolve({});
+  }
+
+  async updateCustomerAddress(
+    id: number,
+    address: CustomerAddressInput
+  ): Promise<CustomerT> {
     return Promise.resolve({});
   }
 

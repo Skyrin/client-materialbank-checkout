@@ -140,12 +140,35 @@ export const createCustomerAddress = async (
 
   try {
     const resp = await graphqlRequest(context, Mutation, {
-      input: { ...address, default_shipping: true, default_billing: true },
+      input: { ...address, default_billing: true },
     });
     return resp["createCustomerAddress"];
-  } catch (e) {
-    console.error(e);
-    throw e;
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
+  }
+};
+
+export const updateCustomerAddress = async (
+  context: AppContextState,
+  id: number,
+  address: CustomerAddressInput
+) => {
+  const Mutation = `
+    mutation ($id: Int!, $input: CustomerAddressInput!) {
+      updateCustomerAddress(id: $id, input: $input) {
+        id
+      }
+    }
+  `;
+
+  try {
+    const resp = await graphqlRequest(context, Mutation, {
+      id: id,
+      input: { ...address, default_billing: true },
+    });
+    return resp;
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
   }
 };
 

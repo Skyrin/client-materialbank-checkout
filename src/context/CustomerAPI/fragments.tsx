@@ -9,6 +9,8 @@ export const CustomerAddressFragment = `
   postcode
   street
   telephone
+  default_billing
+  default_shipping
   region {
     region_code
     region_id
