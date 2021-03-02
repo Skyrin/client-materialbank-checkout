@@ -11,6 +11,20 @@
   cursor: pointer;
   position: relative;
 
+  &:hover {
+    .back {
+      display: block;
+    }
+
+    .front {
+      display: none;
+    }
+  }
+
+  .back {
+    display: none;
+  }
+
   .imageContainer {
     position: relative;
     width: 100%;

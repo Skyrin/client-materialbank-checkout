@@ -21,9 +21,12 @@ export default class ItemCard extends React.Component<Props, any> {
         {this.props.item.type === "sample" && this.renderSampleImage()}
         {this.props.item.type !== "sample" && (
           <React.Fragment>
-            <div className={cn(styles.imageContainer)}>
-              <img src={this.props.item.imagePath} alt="" />
+            <div className={styles.front}>
+              <div className={cn(styles.imageContainer)}>
+                <img src={this.props.item.imagePath} alt="" />
+              </div>
             </div>
+            <div className={styles.back}>{this.renderInfoItem(type)}</div>
           </React.Fragment>
         )}
       </React.Fragment>
@@ -55,7 +58,7 @@ export default class ItemCard extends React.Component<Props, any> {
         {this.props.item.type === "sample" && this.renderSampleInfo()}
         {this.props.item.type !== "sample" && (
           <React.Fragment>
-            <div className={styles.imageContainer}>
+            <div className={cn(styles.imageContainer, styles.infoMode)}>
               <img src={this.props.item.imagePath} alt="" />
             </div>
             <div className={cn(styles.infoContainer, styles.infoMode)}>
@@ -71,12 +74,18 @@ export default class ItemCard extends React.Component<Props, any> {
 
   renderSampleImage = () => {
     return (
-      <div className={styles.imageContainer}>
-        <img src={this.props.item.imagePath} alt="" />
-        <div className={styles.priceIndicator}>$ $ $</div>
-      </div>
+      <React.Fragment>
+        <div className={styles.front}>
+          <div className={styles.imageContainer}>
+            <img src={this.props.item.imagePath} alt="" />
+            <div className={styles.priceIndicator}>$ $ $</div>
+          </div>
+        </div>
+        <div className={styles.back}>{this.renderSampleInfo()}</div>
+      </React.Fragment>
     );
   };
+
   renderSampleInfo = () => {
     return (
       <React.Fragment>
