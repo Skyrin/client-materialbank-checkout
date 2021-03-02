@@ -1,5 +1,7 @@
 // TODO: Update this
 // Fields are marked as optional so that we can work with partial objects
+import face1 from "../assets/images/face1.jpeg";
+
 export type CartT = {
   id?: string;
   items?: CartItemT[];
@@ -146,4 +148,12 @@ export type CustomerT = {
   default_shipping?: string;
   is_subscribed?: boolean;
   mobile?: string;
+};
+
+export type CollaboratorT = {
+  firstName?: string;
+  lastName?: string;
+  isAuthenticated?: boolean;
+  imagePath?: any;
+  email?: string;
 };

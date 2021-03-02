@@ -3,7 +3,12 @@ import styles from "components/CollectionsAndPalettes/common/Toolbar/Collections
 import RoundButtons from "../RoundButtons/RoundButtons";
 import ModeButtons from "../ModeButtons/ModeButtons";
 import cn from "classnames";
-import Contributors from "../Contributors/Contributors";
+import Collaborators from "../Collaborators/Collaborators";
+import {
+  AppContext,
+  AppContextState,
+  Modals,
+} from "../../../../context/AppContext";
 
 interface Props {
   title: string;
@@ -11,13 +16,19 @@ interface Props {
   activeButtonMode?: any;
   activeButtonDisplay?: any;
   isCollection?: boolean;
-  contributors?: any;
+  collaborators?: any;
   toggleMode?: any;
   toggleDisplay?: any;
 }
 
 export default class CollectionsToolbar extends React.Component<Props, any> {
   wrapperRef: any;
+  static contextType = AppContext;
+  context!: AppContextState;
+  modalTarget = null;
+  shareCollection = () => {
+    this.context.openModal(Modals.ShareCollection);
+  };
 
   constructor(props: any) {
     super(props);
@@ -57,8 +68,8 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
     );
   };
 
-  renderCollectionContributors = () => {
-    return <Contributors contributors={this.props.contributors} />;
+  renderCollectionCollaborators = () => {
+    return <Collaborators collaborators={this.props.collaborators} />;
   };
 
   componentDidMount() {
@@ -82,13 +93,15 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
             </a>
           </div>
           {this.props.isCollection && (
-            <div className={styles.contributors}>
-              {this.props.contributors ? (
-                this.renderCollectionContributors()
+            <div className={styles.collaborators}>
+              {this.props.collaborators ? (
+                this.renderCollectionCollaborators()
               ) : (
-                <div className={styles.contributors}>
+                <div className={styles.collaborators}>
                   <a>Share this collection</a>
-                  <i className="fas fa-share contributors-share"></i>
+                  <a onClick={this.shareCollection}>
+                    <i className="fas fa-share contributors-share"></i>
+                  </a>
                 </div>
               )}
             </div>

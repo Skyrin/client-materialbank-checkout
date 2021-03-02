@@ -1,5 +1,11 @@
 import * as React from "react";
-import { AddressT, CartT, CustomerT, OrderT } from "constants/types";
+import {
+  AddressT,
+  CartT,
+  CollaboratorT,
+  CustomerT,
+  OrderT,
+} from "constants/types";
 import { cloneDeep } from "lodash-es";
 import { CartAddressInput } from "./CheckoutAPI/models";
 import {
@@ -22,10 +28,12 @@ export enum Modals {
   AccountExists = "account-exists",
   UploadPhoto = "upload-photo",
   CreateCollection = "create-collection",
+  ShareCollection = "share-collection",
   None = "none",
 }
 
 abstract class BaseAppContextState {
+  private internalCollaborators?: CollaboratorT = {};
   private internalCart?: CartT = {};
   private internalCartInfoLoading?: boolean = false;
   private internalCustomer?: CustomerT = {};
@@ -40,6 +48,14 @@ abstract class BaseAppContextState {
   private modal?: Modals = Modals.None;
 
   private internalOrdersLoading?: boolean = false;
+
+  public get collaborators() {
+    return cloneDeep(this.internalCollaborators);
+  }
+
+  public set collaborators(newCollaborators) {
+    this.internalCollaborators = newCollaborators;
+  }
 
   public get cart() {
     return cloneDeep(this.internalCart);
@@ -128,6 +144,10 @@ abstract class BaseAppContextState {
  * which will be provided to consumers
  */
 export class AppContextState extends BaseAppContextState {
+  storeCollaborators(newCollaborator) {}
+
+  async getCollaborators() {}
+
   updateCart(newCart: CartT) {}
 
   updateCustomer(newCustomer: CustomerT) {}
@@ -150,14 +170,7 @@ export class AppContextState extends BaseAppContextState {
 
   async createCustomerAddress(
     address: CustomerAddressInput
-  ): Promise<CustomerT> {
-    return Promise.resolve({});
-  }
-
-  async updateCustomerAddress(
-    id: number,
-    address: CustomerAddressInput
-  ): Promise<CustomerT> {
+  ): Promise<AddressT> {
     return Promise.resolve({});
   }
 
