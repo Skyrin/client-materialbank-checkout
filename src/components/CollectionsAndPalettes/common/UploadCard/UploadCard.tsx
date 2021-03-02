@@ -10,7 +10,7 @@ import {
 interface Props {
   caption: string;
   hasIcon?: boolean;
-  showModal?: any;
+  onClick?: any;
 }
 
 export default class UploadCard extends React.Component<Props, any> {
@@ -29,7 +29,8 @@ export default class UploadCard extends React.Component<Props, any> {
           "masonry-item",
           !this.props.hasIcon ? styles.collectionUpload : ""
         )}
-        onClick={!this.props.hasIcon ? this.uploadPhoto : undefined}
+        // onClick={!this.props.hasIcon ? this.uploadPhoto : undefined}
+        onClick={this.props.onClick}
       >
         {this.props.hasIcon && (
           <i className={cn("far fa-plus", styles.addIcon)}></i>
