@@ -108,14 +108,14 @@ export class UploadPhotoModal extends React.Component<Props, State> {
 
             <Input
               className={styles.inputField}
-              placeholder="Collection Name"
+              placeholder="Image Name"
               value={this.state.photoName}
               type="text"
               onChange={(val: string) => this.setState({ photoName: val })}
             />
 
             <div className={styles.buttonsContainer}>
-              <div className={styles.createButton}>Create Collection</div>
+              <div className={styles.createButton}>Upload Photo</div>
               <div className={styles.cancelButton} onClick={this.closeModal}>
                 Cancel
               </div>
