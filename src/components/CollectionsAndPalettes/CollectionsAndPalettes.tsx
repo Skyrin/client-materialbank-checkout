@@ -15,6 +15,7 @@ import CollectionsFooter from "./common/CollectionsFooter/CollectionsFooter";
 import Collection from "./Collections/Collection/Collection";
 import ExploreTags from "./common/ExploreTags/ExploreTags";
 import MoreIdeas from "./common/MoreIdeas/MoreIdeas";
+import { AppContext, AppContextState, Modals } from "context/AppContext";
 
 type Props = RouteComponentProps;
 
@@ -22,18 +23,29 @@ interface State {
   display: string;
 }
 
+enum DisplayOption {
+  Collections = "collections",
+  Palettes = "palettes",
+}
+
 export default class CollectionsAndPalettes extends React.Component<
   Props,
   State
 > {
-  constructor(props) {
-    super(props);
-    this.state = {
-      display: "collections",
-    };
+  static contextType = AppContext;
+  context!: AppContextState;
+
+  state = {
+    display: DisplayOption.Collections,
+  };
+
+  componentDidMount() {
+    if (!this.context.isLoggedIn) {
+      this.context.openModal(Modals.Login);
+    }
   }
 
-  toggleDisplay = (display) => {
+  toggleDisplay = (display: DisplayOption) => {
     this.setState({ display: display });
   };
 
@@ -58,7 +70,10 @@ export default class CollectionsAndPalettes extends React.Component<
                     <React.Fragment>
                       <CollectionsToolbar
                         title={"Your Collections & Palettes"}
-                        buttons={["collections", "palettes"]}
+                        buttons={[
+                          DisplayOption.Collections,
+                          DisplayOption.Palettes,
+                        ]}
                         activeButtonDisplay={this.state.display}
                         toggleDisplay={this.toggleDisplay}
                       />
@@ -75,7 +90,10 @@ export default class CollectionsAndPalettes extends React.Component<
                     <React.Fragment>
                       <CollectionsToolbar
                         title={"Your Collections & Palettes"}
-                        buttons={["collections", "palettes"]}
+                        buttons={[
+                          DisplayOption.Collections,
+                          DisplayOption.Palettes,
+                        ]}
                         activeButtonDisplay={this.state.display}
                         toggleDisplay={this.toggleDisplay}
                       />

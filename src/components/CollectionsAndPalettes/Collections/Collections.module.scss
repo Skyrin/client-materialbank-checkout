@@ -5,8 +5,9 @@
   display: flex;
 }
 .cardCollection {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   column-gap: $margin-small-4;
+  row-gap: $margin-small-4;
   margin-bottom: $margin-huge;
 }

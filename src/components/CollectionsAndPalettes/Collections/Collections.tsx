@@ -4,18 +4,9 @@ import CollectionCard from "../common/CollectionCard/CollectionCard";
 import face1 from "../../../assets/images/face1.jpeg";
 import face2 from "../../../assets/images/face2.jpg";
 import letter1 from "../../../assets/images/letter1.png";
-import { Link, Redirect, Route, Switch } from "react-router-dom";
-import {
-  COLLECTIONS_EDIT_URL,
-  COLLECTIONS_IMAGE_URL,
-  COLLECTIONS_INFO_URL,
-  COLLECTIONS_URL,
-} from "../../../constants/urls";
-import CollectionsImage from "./CollectionsImage/CollectionsImage";
-import CollectionsInfo from "./CollectionsInfo/CollectionsInfo";
-import CollectionsEdit from "./CollectionsEdit/CollectionsEdit";
-import ItemCard from "../common/ItemCard/ItemCard";
-import { createCollection } from "context/CollectionsAPI/api";
+import { Link } from "react-router-dom";
+import { COLLECTIONS_URL } from "../../../constants/urls";
+import { createCollection, getCollections } from "context/CollectionsAPI/api";
 import { AppContext, AppContextState } from "context/AppContext";
 
 interface State {
@@ -27,6 +18,8 @@ interface State {
     contributors: any;
     imagePath: string;
   }[];
+  collections: CollectionT[];
+  loadingCollections: boolean;
 }
 
 export default class Collections extends React.Component<any, State> {
@@ -47,22 +40,40 @@ export default class Collections extends React.Component<any, State> {
             "https://upload.wikimedia.org/wikipedia/commons/7/76/Color_icon_violet_v2.svg",
         },
       ],
+      collections: [],
+      loadingCollections: true,
     };
   }
 
   async componentDidMount() {
-    // const resp = await createCollection(this.context, "Test", true);
-    // console.log(resp)
+    const collections = await getCollections(this.context, {
+      limit: 100,
+      offset: 0,
+    });
+    this.setState({
+      collections: collections,
+      loadingCollections: false,
+    });
   }
 
   render() {
     return (
       <React.Fragment>
         <div className={styles.cardCollection}>
-          {this.state.card.map((item: any, index: number) => {
+          {/* {this.state.card.map((item: any, index: number) => {
             return (
-              <Link to={COLLECTIONS_URL + `/${this.state.card[index].id}`}>
-                <CollectionCard item={this.state.card[index]} />
+              <Link to={COLLECTIONS_URL + `/${item.id}`} key={`collection_${item.id}`}>
+                <CollectionCard item={item} />
+              </Link>
+            );
+          })} */}
+          {this.state.collections.map((collection) => {
+            return (
+              <Link
+                to={COLLECTIONS_URL + `/${collection.id}`}
+                key={`collection_${collection.id}`}
+              >
+                <CollectionCard collection={collection} />
               </Link>
             );
           })}
