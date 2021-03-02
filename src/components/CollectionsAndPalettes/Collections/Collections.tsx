@@ -56,7 +56,7 @@ export default class Collections extends React.Component<any, State> {
           <UploadCard
             caption={"Create a Collection"}
             hasIcon
-            showModal={this.createCollection}
+            onClick={this.createCollection}
           />
           {this.state.card.map((item: any, index: number) => {
             return (

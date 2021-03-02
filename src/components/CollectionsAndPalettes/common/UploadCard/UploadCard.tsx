@@ -5,14 +5,14 @@ import cn from "classnames";
 interface Props {
   caption: string;
   hasIcon?: boolean;
-  showModal?: any;
+  onClick?: any;
 }
 
 export default class UploadCard extends React.Component<Props, any> {
   render() {
     return (
       <div
-        onClick={this.props.showModal}
+        onClick={this.props.onClick}
         className={cn(styles.uploadContainer, "masonry-item")}
       >
         {this.props.hasIcon && (
