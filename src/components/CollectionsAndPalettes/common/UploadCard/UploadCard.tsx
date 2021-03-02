@@ -29,15 +29,15 @@ export default class UploadCard extends React.Component<Props, any> {
           "masonry-item",
           !this.props.hasIcon ? styles.collectionUpload : ""
         )}
-        // onClick={!this.props.hasIcon ? this.uploadPhoto : undefined}
         onClick={this.props.onClick}
       >
-        {this.props.hasIcon && (
-          <i className={cn("far fa-plus", styles.addIcon)}></i>
-        )}
         <div>
+          {this.props.hasIcon && (
+            <i className={cn("far fa-plus", styles.addIcon)}></i>
+          )}
           <span>{this.props.caption} </span>
         </div>
+        <div></div>
       </div>
     );
   }
