@@ -10,11 +10,11 @@ module.exports = function (app) {
     })
   );
   app.use(
-    "/collections",
+    "/collections-api",
     createProxyMiddleware({
       target: "https://mb-collections.f3labs.com",
       changeOrigin: true,
-      pathRewrite: { "^/collections": "" },
+      pathRewrite: { "^/collections-api": "" },
     })
   );
 };

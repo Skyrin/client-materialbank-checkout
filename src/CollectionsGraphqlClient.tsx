@@ -12,7 +12,9 @@ export const collectionsGraphqlRequest = async (
   const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === "development";
   const url =
     process.env.REACT_APP_COLLECTIONS_GRAPHQL_URL ||
-    (isDev ? "/collections/query" : "https://mb-collections.f3labs.com/query");
+    (isDev
+      ? "/collections-api/query"
+      : "https://mb-collections.f3labs.com/query");
 
   const authToken = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
   const headers: any = {
