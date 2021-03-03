@@ -1,12 +1,6 @@
 import * as React from "react";
-import {
-  AddressT,
-  CartT,
-  CollectionT,
-  CustomerT,
-  OrderT,
-} from "constants/types";
-import { clone, cloneDeep } from "lodash-es";
+import { CartT, CollectionT, CustomerT, OrderT } from "constants/types";
+import { cloneDeep } from "lodash-es";
 import { CartAddressInput } from "./CheckoutAPI/models";
 import {
   CreateCustomerInput,
