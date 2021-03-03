@@ -14,8 +14,9 @@ interface State {
     id: number;
     type: string;
     title1: string;
-    contributors: any;
+    contributors?: any;
     imagePath: string;
+    isPrivate?: boolean;
   }[];
 }
 
@@ -26,9 +27,9 @@ export default class Palettes extends React.Component<any, State> {
       card: [
         {
           id: 1,
+          isPrivate: true,
           type: "palette",
           title1: "Fun textures",
-          contributors: [face1, face2, letter1, face1, face2, letter1, face1],
           imagePath: palette1,
         },
       ],

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { NavLink } from "react-router-dom";
-import { COLLECTIONS_URL, PALETTES_URL } from "../../../../constants/urls";
+import { PALETTES_URL } from "../../../../constants/urls";
 import ItemCard from "../../common/ItemCard/ItemCard";
 import CollectionsToolbar from "../../common/Toolbar/CollectionsToolbar";
 import face1 from "../../../../assets/images/face1.jpeg";
