@@ -147,3 +147,77 @@ export type CustomerT = {
   is_subscribed?: boolean;
   mobile?: string;
 };
+
+export type PaletteItemT = {
+  id?: number;
+  sku?: string;
+  image?: string;
+  metadata?: {
+    imageSharedUrl?: string;
+    imageUrl?: string;
+  };
+};
+
+export type PaletteT = {
+  id?: number;
+  customerId?: number;
+  name?: string;
+  isShared?: boolean;
+  createdAt?: string;
+  items?: PaletteItemT[];
+};
+
+export type MaterialT = {
+  id?: number;
+  // TODO: Figure out if there's going to be more fields here. Currently, this is all the API returns
+};
+
+export type RoomT = {
+  id?: number;
+  // TODO: Figure out if there's going to be more fields here. Currently, this is all the API returns
+};
+
+export type CollectionUploadT = {
+  id?: number;
+  name?: string;
+  fileName?: string;
+  fileType?: string;
+  blurhash?: string;
+  s3Url?: string;
+  updatedBy?: string;
+  createdOn?: string;
+  updatedOn?: string;
+};
+
+export type CollectionItemT = {
+  id?: number;
+  collectionId?: number;
+  position?: number;
+  name?: string;
+  objectId?: string;
+  objectType?: string;
+  json?: string;
+  palette?: PaletteT;
+  material?: MaterialT;
+  room?: RoomT;
+  upload?: CollectionUploadT;
+  updatedBy?: number;
+  createdOn?: string;
+  updatedOn?: string;
+};
+
+export type CollectionCollaboratorT = {
+  userId?: number;
+  access?: "read" | "write";
+};
+
+export type CollectionT = {
+  id?: number;
+  userId?: number;
+  name?: string;
+  isPublic?: boolean;
+  createdOn?: string;
+  updatedOn?: string;
+  items?: CollectionItemT[];
+  collaborators?: CollectionCollaboratorT[];
+};

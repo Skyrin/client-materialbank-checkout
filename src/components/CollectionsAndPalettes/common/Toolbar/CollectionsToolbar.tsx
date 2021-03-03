@@ -4,6 +4,7 @@ import RoundButtons from "../RoundButtons/RoundButtons";
 import ModeButtons from "../ModeButtons/ModeButtons";
 import cn from "classnames";
 import Contributors from "../Contributors/Contributors";
+import { AppContext, AppContextState } from "context/AppContext";
 
 interface Props {
   title: string;
@@ -17,6 +18,8 @@ interface Props {
 }
 
 export default class CollectionsToolbar extends React.Component<Props, any> {
+  static contextType = AppContext;
+  context!: AppContextState;
   wrapperRef: any;
 
   constructor(props: any) {
@@ -107,7 +110,11 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
           </div>
 
           <div className={styles.toolbarSwitch}>
-            <div className={styles.noOfCollections}>{} Collections</div>
+            {!this.props.isCollection && (
+              <div className={styles.noOfCollections}>
+                {this.context.collections.length} Collections
+              </div>
+            )}
             {this.props.isCollection && (
               <div className={styles.navSwitch}>
                 <ModeButtons

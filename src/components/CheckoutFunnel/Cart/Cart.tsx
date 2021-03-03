@@ -16,6 +16,7 @@ import {
 import RadioButton from "components/common/RadioButton/RadioButton";
 import AddressForm from "components/common/Forms/AddressForm/AddressForm";
 import CreditCardForm from "components/common/Forms/CreditCardForm/CreditCardForm";
+import { createCollection } from "context/CollectionsAPI/api";
 
 type Props = RouteComponentProps;
 
@@ -67,6 +68,16 @@ export class Cart extends React.Component<Props, State> {
           }}
         >
           Create Test Cart
+        </button>
+        <br />
+        <button
+          className="button"
+          onClick={async () => {
+            const resp = await createCollection(this.context, "Test", false);
+            console.log(resp);
+          }}
+        >
+          Create Test Collection
         </button>
         <br />
         [CART]

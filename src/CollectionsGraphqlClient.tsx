@@ -4,15 +4,15 @@ import { AppContextState } from "context/AppContext";
 // Although I don't really like this approach, passing the context allows us to log the user out in case
 // of an authorization error instead of having to deal with this in a lot of other places...
 
-export const graphqlRequest = async (
+export const collectionsGraphqlRequest = async (
   context: AppContextState,
   query: string,
   variables?: Object
 ) => {
   const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === "development";
   const url =
-    process.env.REACT_APP_GRAPHQL_URL ||
-    (isDev ? "/magento/graphql" : "https://dev.design.shop/graphql");
+    process.env.REACT_APP_COLLECTIONS_GRAPHQL_URL ||
+    (isDev ? "/collections/query" : "https://mb-collections.f3labs.com/query");
 
   const authToken = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
   const headers: any = {
@@ -44,6 +44,10 @@ export const graphqlRequest = async (
   if (response.ok && !parsedResponse.errors && parsedResponse.data) {
     return parsedResponse.data;
   } else {
+    console.error(parsedResponse);
+    if (!parsedResponse.errors) {
+      return;
+    }
     if (
       parsedResponse.errors.find(
         (e) => e.message === "The request is allowed for logged in customer"
