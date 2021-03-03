@@ -4,9 +4,7 @@ import UserHeader, {
   UserPages,
 } from "components/UserManagement/UserHeader/UserHeader";
 import { SearchBar } from "components/common/SearchBar/SearchBar";
-import mockAddresses from "models/addressesMock.json";
 import styles from "./UserShipping.module.scss";
-import Address from "models/Address";
 import MapAddressForm from "components/common/Forms/MapAddressForm/MapAddressForm";
 import {
   disableBodyScroll,
@@ -14,7 +12,13 @@ import {
   clearAllBodyScrollLocks,
 } from "body-scroll-lock";
 import cn from "classnames";
-import { isOnMobile } from "../../../utils/responsive";
+import { isOnMobile } from "utils/responsive";
+import { CustomerAddressInput } from "context/CustomerAPI/models";
+import { AppContext, AppContextState } from "context/AppContext";
+import { ClientError } from "GraphqlClient";
+import Loader from "components/common/Loader/Loader";
+import { AddressT } from "constants/types";
+import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
 
 export const DEFAULT_ADDRESS_VALUES: AddressFormValuesT = {
   nickname: "",
@@ -54,18 +58,29 @@ export type AddressFormErrorsT = {
 type Props = RouteComponentProps;
 
 type State = {
-  addresses: Address[];
+  addresses: AddressT[];
   values: AddressFormValuesT;
   errors: AddressFormErrorsT;
-  editingAddress: Address;
+  editingAddress: AddressT;
+
+  createAddressNetworkError: string;
+  editAddressNetworkError: string;
 };
 
 export default class UserShipping extends React.Component<Props, State> {
+  static contextType = AppContext;
+  context!: AppContextState;
+
   targetElement = null;
   addAddressForm?: MapAddressForm;
 
   componentDidMount() {
     this.targetElement = document.querySelector("#modalId");
+    this.context.requestCurrentCustomer().then((value) => {
+      this.setState({
+        addresses: value.addresses,
+      });
+    });
   }
 
   componentWillUnmount() {
@@ -76,7 +91,7 @@ export default class UserShipping extends React.Component<Props, State> {
     super(props);
     this.state = {
       values: DEFAULT_ADDRESS_VALUES,
-      addresses: mockAddresses.map((address) => new Address(address)),
+      addresses: [],
       errors: {
         nickname: null,
         firstName: null,
@@ -88,11 +103,13 @@ export default class UserShipping extends React.Component<Props, State> {
         zipcode: null,
       },
       editingAddress: null,
+      createAddressNetworkError: "",
+      editAddressNetworkError: "",
     };
   }
 
   renderMobileMap = () => {
-    return <div className={styles.map}></div>;
+    return <div className={styles.map} />;
   };
 
   render() {
@@ -104,9 +121,7 @@ export default class UserShipping extends React.Component<Props, State> {
             extraContent={
               <SearchBar
                 placeholder={"Search of shipping address"}
-                onSearchChange={(value: string) => {
-                  console.log(value);
-                }}
+                onSearchChange={() => {}}
               />
             }
           />
@@ -118,27 +133,27 @@ export default class UserShipping extends React.Component<Props, State> {
                     <div className={styles.addressMapCell} />
                     <div className={styles.addressInfo}>
                       <div className={styles.addressNickName}>
-                        {address.nickname}
+                        {address.company}
                       </div>
                       <div className={styles.addressExtraDetails}>
-                        {address.firstName + " " + address.lastName}
+                        {address.firstname + " " + address.lastname}
                       </div>
                       <div className={styles.addressExtraDetails}>
-                        {address.addressLine1}
+                        {address.street[0]}
                       </div>
                       <div className={styles.addressExtraDetails}>
-                        {address.addressLine2}
+                        {address.street[1]}
                       </div>
                       <div className={styles.addressExtraDetails}>
                         {address.city +
                           ", " +
-                          address.state +
+                          address.region?.region_code +
                           " " +
-                          address.zipcode}
+                          address.postcode}
                       </div>
                     </div>
 
-                    {!address.default && (
+                    {!address.default_shipping && (
                       <button
                         className={styles.makeDefault}
                         onClick={() => {
@@ -148,7 +163,7 @@ export default class UserShipping extends React.Component<Props, State> {
                         Make default
                       </button>
                     )}
-                    {address.default && (
+                    {address.default_shipping && (
                       <button className={styles.defaultAddress}>
                         DEFAULT ADDRESS
                       </button>
@@ -176,6 +191,12 @@ export default class UserShipping extends React.Component<Props, State> {
                     this.onSaveAddress(addressValues, null);
                   }}
                 />
+                {this.state.createAddressNetworkError && (
+                  <ErrorLabel
+                    className={styles.errorCreateAddress}
+                    errorText={this.state.createAddressNetworkError}
+                  />
+                )}
               </div>
             </div>
             {isOnMobile() && this.renderMobileMap()}
@@ -212,78 +233,113 @@ export default class UserShipping extends React.Component<Props, State> {
                     }}
                   />
                 )}
+                {this.state.editAddressNetworkError && (
+                  <ErrorLabel
+                    className={styles.errorCreateAddress}
+                    errorText={this.state.editAddressNetworkError}
+                  />
+                )}
               </div>
             </div>
           </div>
         </div>
+
+        {this.context.customerLoading && (
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        )}
       </div>
     );
   }
 
-  onSaveAddress = (addressValues: AddressFormValuesT, addressId: string) => {
-    const newAddress = new Address({
-      id: addressId || Math.random(),
-      nickname: addressValues.nickname,
-      firstName: addressValues.firstName,
-      lastName: addressValues.lastName,
-      addressLine1: addressValues.addressLine1,
-      addressLine2: addressValues.addressLine2,
-      city: addressValues.city,
-      state: addressValues.state,
-      zipcode: addressValues.zipcode,
-      default: addressValues.default,
-    });
-
-    if (newAddress.default) {
-      const newAddresses = this.state.addresses.map((address) => {
-        address.default = false;
-
-        if (address.id === addressId) {
-          address = newAddress;
-        }
-
-        return address;
-      });
-
-      if (!addressId) {
-        newAddresses.push(newAddress);
-      }
-      this.setState({
-        addresses: newAddresses,
-      });
-    } else {
-      if (!addressId) {
-        this.state.addresses.push(newAddress);
-        this.setState({
-          addresses: this.state.addresses,
-        });
-      } else {
-        this.setState({
-          addresses: this.state.addresses.map((address) => {
-            if (address.id === addressId) {
-              address = newAddress;
-            }
-            return address;
-          }),
-        });
-      }
-    }
-
-    this.closeModal();
-    this.addAddressForm.resetForm();
-  };
-
-  makeDefault = (defaultAddress: Address) => {
-    const newAddresses = this.state.addresses.map((address) => {
-      address.default = address.id === defaultAddress.id;
-      return address;
-    });
+  onSaveAddress = (addressValues: AddressFormValuesT, addressId: number) => {
     this.setState({
-      addresses: newAddresses,
+      createAddressNetworkError: "",
+      editAddressNetworkError: "",
     });
+
+    const addressFields = {
+      company: addressValues.nickname,
+      firstName: addressValues.firstName || "",
+      lastName: addressValues.lastName || "",
+      city: addressValues.city || "",
+      region: addressValues.state || "",
+      address: addressValues.addressLine1 || "",
+      aptNumber: addressValues.addressLine2 || "",
+      zipCode: addressValues.zipcode || "",
+      default_shipping: addressValues.default,
+    };
+
+    const addressInput = new CustomerAddressInput(addressFields);
+
+    if (addressId) {
+      this.context
+        .updateCustomerAddress(addressId, addressInput)
+        .then((value) => {
+          this.setState({
+            addresses: value?.addresses,
+          });
+          this.closeModal();
+        })
+        .catch((error: ClientError) => {
+          let errorMessage = error.graphqlErrors[0]?.message
+            ? error.graphqlErrors[0].message
+            : error.message;
+
+          this.setState({
+            editAddressNetworkError: errorMessage,
+          });
+        });
+    } else {
+      this.context
+        .createCustomerAddress(addressInput)
+        .then((value) => {
+          this.setState({
+            addresses: value?.addresses,
+          });
+          this.addAddressForm.resetForm();
+        })
+        .catch((error: ClientError) => {
+          let errorMessage = error.graphqlErrors[0]?.message
+            ? error.graphqlErrors[0].message
+            : error.message;
+
+          this.setState({
+            createAddressNetworkError: errorMessage,
+          });
+        });
+    }
   };
 
-  onEditClicked = (address: Address) => {
+  makeDefault = (defaultAddress: AddressT) => {
+    const addressFields = {
+      company: defaultAddress.company,
+      firstName: defaultAddress.firstname || "",
+      lastName: defaultAddress.lastname || "",
+      city: defaultAddress.city || "",
+      region: defaultAddress.region.region_code || "",
+      address: defaultAddress.street[0] || "",
+      aptNumber: defaultAddress.street[1] || "",
+      zipCode: defaultAddress.postcode || "",
+      default_shipping: true,
+      telephone: "123123",
+    };
+
+    const addressInput = new CustomerAddressInput(addressFields);
+
+    this.context
+      .updateCustomerAddress(defaultAddress.id, addressInput)
+      .then((value) => {
+        this.setState({
+          addresses: value?.addresses,
+        });
+      })
+      .catch(() => {});
+  };
+
+  onEditClicked = (address: AddressT) => {
     this.setState({
       editingAddress: address,
     });

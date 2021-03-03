@@ -7,7 +7,8 @@ import letter1 from "../../../assets/images/letter1.png";
 import { Link } from "react-router-dom";
 import { COLLECTIONS_URL } from "../../../constants/urls";
 import { createCollection, getCollections } from "context/CollectionsAPI/api";
-import { AppContext, AppContextState } from "context/AppContext";
+import { AppContext, AppContextState, Modals } from "context/AppContext";
+import UploadCard from "../common/UploadCard/UploadCard";
 
 interface State {
   card: {
@@ -25,8 +26,13 @@ interface State {
 export default class Collections extends React.Component<any, State> {
   static contextType = AppContext;
   context!: AppContextState;
+  modalTarget = null;
 
-  constructor(props: any) {
+  createCollection = () => {
+    this.context.openModal(Modals.CreateCollection);
+  };
+
+  constructor(props) {
     super(props);
     this.state = {
       card: [
@@ -60,13 +66,11 @@ export default class Collections extends React.Component<any, State> {
     return (
       <React.Fragment>
         <div className={styles.cardCollection}>
-          {/* {this.state.card.map((item: any, index: number) => {
-            return (
-              <Link to={COLLECTIONS_URL + `/${item.id}`} key={`collection_${item.id}`}>
-                <CollectionCard item={item} />
-              </Link>
-            );
-          })} */}
+          <UploadCard
+            caption={"Create a Collection"}
+            hasIcon
+            onClick={this.createCollection}
+          />
           {this.state.collections.map((collection) => {
             return (
               <Link

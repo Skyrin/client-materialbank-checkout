@@ -4,7 +4,6 @@ import Input from "components/common/Input/Input";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
 import { PASSWORD_REGEX } from "constants/general";
-import { AddressFormValuesT } from "components/common/Forms/MapAddressForm/MapAddressForm";
 
 const resetPasswordSchema = yup.object().shape({
   currentPassword: yup.string().required("Required"),

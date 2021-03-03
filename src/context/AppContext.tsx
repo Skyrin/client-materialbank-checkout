@@ -20,6 +20,7 @@ export enum Modals {
   RegisterOptions = "register-options",
   RegisterEmail = "register-email",
   AccountExists = "account-exists",
+  CreateCollection = "create-collection",
   None = "none",
 }
 
@@ -148,7 +149,14 @@ export class AppContextState extends BaseAppContextState {
 
   async createCustomerAddress(
     address: CustomerAddressInput
-  ): Promise<AddressT> {
+  ): Promise<CustomerT> {
+    return Promise.resolve({});
+  }
+
+  async updateCustomerAddress(
+    id: number,
+    address: CustomerAddressInput
+  ): Promise<CustomerT> {
     return Promise.resolve({});
   }
 

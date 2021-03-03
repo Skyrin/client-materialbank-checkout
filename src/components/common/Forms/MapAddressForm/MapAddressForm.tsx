@@ -8,7 +8,7 @@ import { extractErrors } from "utils/forms";
 import Select from "react-dropdown-select";
 import usaStates from "models/usaStates.json";
 import styled from "@emotion/styled";
-import Address from "models/Address";
+import { AddressT } from "constants/types";
 
 const addAddressSchema = yup.object().shape({
   nickname: yup.string().required("Required"),
@@ -56,11 +56,11 @@ export type AddressFormErrorsT = {
 };
 
 type Props = {
-  editAddress?: Address;
+  editAddress?: AddressT;
   initialValues?: AddressFormValuesT;
   componentRef?: (ref: MapAddressForm) => void;
   onCancelEdit?: () => void;
-  onSave?: (addressValues: AddressFormValuesT, addressId?: string) => void;
+  onSave?: (addressValues: AddressFormValuesT, addressId?: number) => void;
 };
 
 type State = {
@@ -76,15 +76,15 @@ export default class MapAddressForm extends React.Component<Props, State> {
 
     if (props.editAddress) {
       initialValues = {
-        nickname: props.editAddress.nickname,
-        firstName: props.editAddress.firstName,
-        lastName: props.editAddress.lastName,
-        addressLine1: props.editAddress.addressLine1,
-        addressLine2: props.editAddress.addressLine2,
+        nickname: props.editAddress.company,
+        firstName: props.editAddress.firstname,
+        lastName: props.editAddress.lastname,
+        addressLine1: props.editAddress.street[0],
+        addressLine2: props.editAddress.street[1],
         city: props.editAddress.city,
-        state: props.editAddress.state,
-        zipcode: props.editAddress.zipcode,
-        default: props.editAddress.default,
+        state: props.editAddress.region.region_code,
+        zipcode: props.editAddress.postcode,
+        default: props.editAddress.default_shipping,
       };
     }
 

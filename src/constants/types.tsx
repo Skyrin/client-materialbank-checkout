@@ -88,6 +88,8 @@ export type AddressT = {
   street?: string[]; // Probably [address_line_1, address_line_2]. in our case, we should probably just do [address]. TODO: clarify this
   telephone?: string;
   region?: RegionT;
+  default_billing?: boolean;
+  default_shipping?: boolean;
 };
 
 export type OrderAddressT = {
