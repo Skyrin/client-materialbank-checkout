@@ -12,6 +12,7 @@ interface Props {
   icon?: string;
   hasIcon?: boolean;
   onClick?: any;
+  className?: string;
 }
 
 export default class UploadCard extends React.Component<Props, any> {

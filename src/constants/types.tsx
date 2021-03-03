@@ -163,8 +163,10 @@ export type PaletteT = {
   customerId?: number;
   name?: string;
   isShared?: boolean;
+  isPublic?: boolean;
   createdAt?: string;
   items?: PaletteItemT[];
+  collaborators?: CollectionCollaboratorT[];
 };
 
 export type MaterialT = {

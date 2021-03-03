@@ -5,8 +5,6 @@ import ModeButtons from "../ModeButtons/ModeButtons";
 import cn from "classnames";
 import Contributors from "../Contributors/Contributors";
 import { AppContext, AppContextState } from "context/AppContext";
-import { COLLECTIONS_URL } from "../../../../constants/urls";
-import { Link } from "react-router-dom";
 
 interface Props {
   title: string;
@@ -75,6 +73,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
   }
 
   render() {
+    console.log(this.props);
     return (
       <div className={styles.toolbarContainer}>
         <div className={styles.toolbarInfo}>

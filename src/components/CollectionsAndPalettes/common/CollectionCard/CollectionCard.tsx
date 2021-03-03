@@ -3,16 +3,9 @@ import * as React from "react";
 import styles from "../../common/ItemCard/ItemCard.module.scss";
 import Contributors from "../Contributors/Contributors";
 import cn from "classnames";
+
 interface Props {
   collection: CollectionT;
-  // item: {
-  //   id: number;
-  //   title1: string;
-  //   title2?: string;
-  //   contributors?: [];
-  //   imagePath: string;
-  //   isPrivate?: boolean;
-  // };
 }
 
 export default class ItemCard extends React.Component<Props, any> {
@@ -35,12 +28,22 @@ export default class ItemCard extends React.Component<Props, any> {
         <div className={styles.imageContainer}>
           <img src={imagePath} alt="" />
         </div>
-        <div className={styles.infoContainer}>
+        <div
+          className={cn(
+            styles.infoContainer,
+            !collection.isPublic ? styles.privateCard : ""
+          )}
+        >
           <div className={styles.textContainer}>
             <div className={styles.darker}>{collection.name}</div>
-            <Contributors small contributors={collection.collaborators} />
+            {collection.collaborators && (
+              <Contributors small contributors={collection.collaborators} />
+            )}
           </div>
-          <div>{this.renderVisibility()}</div>
+          <div>
+            {!collection.isPublic && <i className={"far fa-lock"} />}
+            {this.renderVisibility()}
+          </div>
         </div>
       </div>
     );

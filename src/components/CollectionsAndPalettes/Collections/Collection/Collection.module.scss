@@ -15,16 +15,26 @@
     color: rgba(#615c58, 0.7);
   }
 }
+
 .toDisplay {
   display: block;
 }
+
 .emptyCollection {
   display: grid;
   grid-template-columns: 1fr 3fr;
   column-gap: 90px;
   align-items: center;
+
+  div {
+    min-height: 400px;
+    max-width: 300px;
+  }
+
   .empty {
     color: #615c58;
     font-size: 20px;
+    min-height: unset;
+    max-width: unset;
   }
 }
