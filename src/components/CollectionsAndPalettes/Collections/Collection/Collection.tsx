@@ -9,8 +9,19 @@ import letter1 from "../../../../assets/images/letter1.png";
 import UploadCard from "../../common/UploadCard/UploadCard";
 import AddToCartButton from "components/CollectionsAndPalettes/common/AddToCartButton/AddToCartButton";
 import styles from "components/CollectionsAndPalettes/Collections/Collection/Collection.module.scss";
+import {
+  AppContext,
+  AppContextState,
+  Modals,
+} from "../../../../context/AppContext";
 
 export default class Collection extends React.Component<any, any> {
+  static contextType = AppContext;
+  context!: AppContextState;
+  modalTarget = null;
+  uploadPhoto = () => {
+    this.context.openModal(Modals.UploadPhoto);
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -154,7 +165,10 @@ export default class Collection extends React.Component<any, any> {
           toggleMode={this.toggleMode}
         />
         <div className="masonry-container ">
-          <UploadCard caption={"Upload a photo or drag & drop here"} />
+          <UploadCard
+            caption={"Upload a photo or drag & drop here "}
+            onClick={this.uploadPhoto}
+          />
           {this.state.card.map((item: any, index: number) => {
             return (
               <ItemCard
