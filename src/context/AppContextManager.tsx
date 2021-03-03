@@ -39,6 +39,11 @@ import {
   ORDER_ID_STORAGE_KEY,
   ORDER_NUMBER_STORAGE_KEY,
 } from "constants/general";
+import {
+  CollectionsQueryInput,
+  CreateCollectionInput,
+} from "./CollectionsAPI/models";
+import { createCollection, getCollections } from "./CollectionsAPI/api";
 
 type Props = {
   children: React.ReactNode;
@@ -86,6 +91,12 @@ export default class AppContextManager extends React.Component<Props> {
       );
       this.forceUpdate();
       return this.contextState.confirmedOrder;
+    },
+
+    updateCollections: (newCollections: CollectionT[]) => {
+      this.contextState.collections = newCollections;
+      this.forceUpdate();
+      return this.contextState.collections;
     },
 
     setLoggedIn: (newValue: boolean) => {
@@ -420,6 +431,26 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
       console.log("GOT ORDERS", orders);
       return orders["items"];
+    },
+
+    requestCollections: async (input: CollectionsQueryInput) => {
+      this.contextState.collectionsLoading = true;
+      this.forceUpdate();
+      const collections = await getCollections(this.getFullContext(), input);
+      this.contextState.collectionsLoading = false;
+      this.actions.updateCollections(collections);
+      console.log("GOT COLLECTIONS", collections);
+      return collections;
+    },
+
+    createCollection: async (input: CreateCollectionInput) => {
+      const newCollection = await createCollection(
+        this.getFullContext(),
+        input.name,
+        input.isPublic
+      );
+      this.actions.requestCollections({ limit: 100, offset: 0 });
+      return newCollection;
     },
   };
 

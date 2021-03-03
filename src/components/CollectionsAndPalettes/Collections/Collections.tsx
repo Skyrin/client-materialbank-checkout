@@ -6,9 +6,10 @@ import face2 from "../../../assets/images/face2.jpg";
 import letter1 from "../../../assets/images/letter1.png";
 import { Link } from "react-router-dom";
 import { COLLECTIONS_URL } from "../../../constants/urls";
-import { createCollection, getCollections } from "context/CollectionsAPI/api";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 import UploadCard from "../common/UploadCard/UploadCard";
+import MoreIdeas from "../common/MoreIdeas/MoreIdeas";
+import Loader from "components/common/Loader/Loader";
 
 interface State {
   card: {
@@ -19,8 +20,6 @@ interface State {
     contributors: any;
     imagePath: string;
   }[];
-  collections: CollectionT[];
-  loadingCollections: boolean;
 }
 
 export default class Collections extends React.Component<any, State> {
@@ -46,19 +45,13 @@ export default class Collections extends React.Component<any, State> {
             "https://upload.wikimedia.org/wikipedia/commons/7/76/Color_icon_violet_v2.svg",
         },
       ],
-      collections: [],
-      loadingCollections: true,
     };
   }
 
   async componentDidMount() {
-    const collections = await getCollections(this.context, {
+    await this.context.requestCollections({
       limit: 100,
       offset: 0,
-    });
-    this.setState({
-      collections: collections,
-      loadingCollections: false,
     });
   }
 
@@ -66,22 +59,32 @@ export default class Collections extends React.Component<any, State> {
     return (
       <React.Fragment>
         <div className={styles.cardCollection}>
-          <UploadCard
-            caption={"Create a Collection"}
-            hasIcon
-            onClick={this.createCollection}
-          />
-          {this.state.collections.map((collection) => {
-            return (
-              <Link
-                to={COLLECTIONS_URL + `/${collection.id}`}
-                key={`collection_${collection.id}`}
-              >
-                <CollectionCard collection={collection} />
-              </Link>
-            );
-          })}
+          {this.context.collectionsLoading ? (
+            <Loader
+              containerClassName={styles.loaderContainer}
+              loaderClassName={styles.loader}
+            />
+          ) : (
+            <React.Fragment>
+              <UploadCard
+                caption={"Create a Collection"}
+                hasIcon
+                onClick={this.createCollection}
+              />
+              {this.context.collections.map((collection) => {
+                return (
+                  <Link
+                    to={COLLECTIONS_URL + `/${collection.id}`}
+                    key={`collection_${collection.id}`}
+                  >
+                    <CollectionCard collection={collection} />
+                  </Link>
+                );
+              })}
+            </React.Fragment>
+          )}
         </div>
+        <MoreIdeas headerText="More ideas for you" />
       </React.Fragment>
     );
   }

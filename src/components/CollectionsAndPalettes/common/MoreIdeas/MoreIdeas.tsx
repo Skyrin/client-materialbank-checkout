@@ -4,8 +4,12 @@ import cn from "classnames";
 import ItemCard from "../ItemCard/ItemCard";
 import RoundButtons from "../RoundButtons/RoundButtons";
 
-export default class MoreIdeas extends React.Component<any, any> {
-  constructor(props) {
+type Props = {
+  headerText?: string;
+};
+
+export default class MoreIdeas extends React.Component<Props, any> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       maxCards: 8,
@@ -101,9 +105,11 @@ export default class MoreIdeas extends React.Component<any, any> {
   };
 
   render() {
+    const headerText =
+      this.props.headerText || "More ideas for this collection";
     return (
       <div className={cn(styles.moreIdeasContainer)}>
-        <div className={styles.ideasHeader}>More ideas for this collection</div>
+        <div className={styles.ideasHeader}>{headerText}</div>
         <div className="horizontal-divider-toolbar extra-margin"></div>
         <div className="masonry-container">
           {this.state.card

@@ -13,3 +13,8 @@ export type CollectionsQueryInput = {
   searchName?: string;
   sort: CollectionSortInput;
 };
+
+export type CreateCollectionInput = {
+  name: string;
+  isPublic: boolean;
+};

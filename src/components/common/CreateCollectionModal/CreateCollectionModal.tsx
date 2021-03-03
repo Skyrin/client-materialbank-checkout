@@ -52,6 +52,14 @@ export class CreateCollectionModal extends React.Component<Props, State> {
     disableBodyScroll(this.modalTarget);
   };
 
+  createCollection = async () => {
+    await this.context.createCollection({
+      name: this.state.collectionName,
+      isPublic: false,
+    });
+    this.closeModal();
+  };
+
   render() {
     return (
       <div
@@ -82,7 +90,12 @@ export class CreateCollectionModal extends React.Component<Props, State> {
             />
 
             <div className={styles.buttonsContainer}>
-              <div className={styles.createButton}>Create Collection</div>
+              <div
+                className={styles.createButton}
+                onClick={this.createCollection}
+              >
+                Create Collection
+              </div>
               <div className={styles.cancelButton} onClick={this.closeModal}>
                 Cancel
               </div>

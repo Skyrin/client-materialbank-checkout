@@ -25,7 +25,7 @@ export default class ItemCard extends React.Component<Props, any> {
     return (
       <div className={styles.itemCard}>
         <div className={styles.imageContainer}>
-          <img src={imagePath} />
+          <img src={imagePath} alt="" />
         </div>
         <div className={styles.infoContainer}>
           <div className={styles.textContainer}>
