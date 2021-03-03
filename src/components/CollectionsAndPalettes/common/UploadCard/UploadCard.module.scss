@@ -4,6 +4,7 @@
 .uploadContainer {
   height: auto;
   width: 100%;
+  min-height: 200px;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.4);
   border-radius: var(--card-border-radius-nm);

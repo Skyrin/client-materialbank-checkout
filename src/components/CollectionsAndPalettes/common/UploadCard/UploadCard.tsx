@@ -9,6 +9,7 @@ import {
 
 interface Props {
   caption: string;
+  icon?: string;
   hasIcon?: boolean;
   onClick?: any;
 }
@@ -27,17 +28,16 @@ export default class UploadCard extends React.Component<Props, any> {
         className={cn(
           styles.uploadContainer,
           "masonry-item",
-          !this.props.hasIcon ? styles.collectionUpload : ""
+          !this.props.icon ? styles.collectionUpload : ""
         )}
         onClick={this.props.onClick}
       >
         <div>
-          {this.props.hasIcon && (
-            <i className={cn("far fa-plus", styles.addIcon)}></i>
+          {this.props.icon && (
+            <i className={cn(this.props.icon, styles.addIcon)}></i>
           )}
           <span>{this.props.caption} </span>
         </div>
-        <div></div>
       </div>
     );
   }

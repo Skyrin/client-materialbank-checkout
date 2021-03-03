@@ -20,9 +20,11 @@ export const USER_SHIPPING_URL = `${USER_MANAGEMENT_URL}/shipping`;
 
 // Collections URLs
 export const COLLECTION_ID = ":collection_id";
+export const PALETTE_ID = ":palette_id";
 export const COLLECTIONS_URL = `${COLLECTIONS_AND_PALETTES_URL}/collections`;
 export const PALETTES_URL = `${COLLECTIONS_AND_PALETTES_URL}/palettes`;
 export const COLLECTION_URL = `${COLLECTIONS_URL}/:collection_id`;
+export const PALETTE_URL = `${PALETTES_URL}/:palette_id`;
 
 export const goToStorefront = (path?: string) => {
   // Use this to go to the storefront in order to trigger the storefront app to reload

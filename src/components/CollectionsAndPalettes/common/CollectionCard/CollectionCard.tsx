@@ -6,7 +6,7 @@ interface Props {
   item: {
     id: number;
     title1: string;
-    title2: string;
+    title2?: string;
     contributors: [];
     imagePath: string;
   };

@@ -55,7 +55,7 @@ export default class Collections extends React.Component<any, State> {
         <div className={styles.cardCollection}>
           <UploadCard
             caption={"Create a Collection"}
-            hasIcon
+            icon={"far fa-plus"}
             onClick={this.createCollection}
           />
           {this.state.card.map((item: any, index: number) => {

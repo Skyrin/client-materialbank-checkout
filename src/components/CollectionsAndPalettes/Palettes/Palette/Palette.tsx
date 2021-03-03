@@ -1,6 +1,6 @@
 import * as React from "react";
 import { NavLink } from "react-router-dom";
-import { COLLECTIONS_URL } from "../../../../constants/urls";
+import { COLLECTIONS_URL, PALETTES_URL } from "../../../../constants/urls";
 import ItemCard from "../../common/ItemCard/ItemCard";
 import CollectionsToolbar from "../../common/Toolbar/CollectionsToolbar";
 import face1 from "../../../../assets/images/face1.jpeg";
@@ -16,7 +16,7 @@ import {
   Modals,
 } from "../../../../context/AppContext";
 
-export default class Collection extends React.Component<any, any> {
+export default class Palette extends React.Component<any, any> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
@@ -144,8 +144,8 @@ export default class Collection extends React.Component<any, any> {
   render() {
     return (
       <React.Fragment>
-        <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
-          Your Collections
+        <NavLink className={styles.yourCollections} to={PALETTES_URL}>
+          Your Palettes
           <i className={"fas fa-chevron-right"} />
         </NavLink>
         <CollectionsToolbar
