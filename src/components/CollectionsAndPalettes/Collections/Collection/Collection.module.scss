@@ -18,3 +18,13 @@
 .toDisplay {
   display: block;
 }
+.emptyCollection {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  column-gap: 90px;
+  align-items: center;
+  .empty {
+    color: #615c58;
+    font-size: 20px;
+  }
+}

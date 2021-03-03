@@ -26,7 +26,6 @@ export default class Collections extends React.Component<any, State> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
-
   createCollection = () => {
     this.context.openModal(Modals.CreateCollection);
   };
@@ -68,7 +67,7 @@ export default class Collections extends React.Component<any, State> {
             <React.Fragment>
               <UploadCard
                 caption={"Create a Collection"}
-                hasIcon
+                icon={"far fa-plus"}
                 onClick={this.createCollection}
               />
               {this.context.collections.map((collection) => {

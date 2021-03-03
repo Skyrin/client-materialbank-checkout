@@ -5,6 +5,8 @@ import ModeButtons from "../ModeButtons/ModeButtons";
 import cn from "classnames";
 import Contributors from "../Contributors/Contributors";
 import { AppContext, AppContextState } from "context/AppContext";
+import { COLLECTIONS_URL } from "../../../../constants/urls";
+import { Link } from "react-router-dom";
 
 interface Props {
   title: string;

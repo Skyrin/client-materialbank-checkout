@@ -3,6 +3,7 @@ import {
   PALETTES_URL,
   COLLECTIONS_AND_PALETTES_URL,
   COLLECTION_URL,
+  PALETTE_URL,
 } from "constants/urls";
 import * as React from "react";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
@@ -14,6 +15,8 @@ import CollectionsHeader from "./common/CollectionsHeader/CollectionsHeader";
 import CollectionsFooter from "./common/CollectionsFooter/CollectionsFooter";
 import Collection from "./Collections/Collection/Collection";
 import ExploreTags from "./common/ExploreTags/ExploreTags";
+import MoreIdeas from "./common/MoreIdeas/MoreIdeas";
+import Palette from "./Palettes/Palette/Palette";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 
 type Props = RouteComponentProps;
@@ -33,11 +36,18 @@ export default class CollectionsAndPalettes extends React.Component<
 > {
   static contextType = AppContext;
   context!: AppContextState;
-
-  state = {
-    display: DisplayOption.Collections,
-  };
-
+  constructor(props) {
+    super(props);
+    let display;
+    if (window.location.href.includes(COLLECTIONS_URL)) {
+      display = DisplayOption.Collections;
+    } else if (window.location.href.includes(PALETTES_URL)) {
+      display = DisplayOption.Palettes;
+    }
+    this.state = {
+      display: display,
+    };
+  }
   componentDidMount() {
     if (!this.context.isLoggedIn) {
       this.context.openModal(Modals.Login);
@@ -62,6 +72,7 @@ export default class CollectionsAndPalettes extends React.Component<
                   to={COLLECTIONS_URL}
                 />
                 <Route path={COLLECTION_URL} component={Collection} />
+                <Route path={PALETTE_URL} component={Palette} />
                 <Route
                   exact
                   path={COLLECTIONS_URL}
@@ -104,6 +115,7 @@ export default class CollectionsAndPalettes extends React.Component<
                 />
               </Switch>
               <div className={"commonArea"}>
+                <MoreIdeas />
                 <ExploreTags
                   buttons={[
                     "farmhouse",

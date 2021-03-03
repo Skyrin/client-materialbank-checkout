@@ -2,9 +2,17 @@ import { CollectionT } from "constants/types";
 import * as React from "react";
 import styles from "../../common/ItemCard/ItemCard.module.scss";
 import Contributors from "../Contributors/Contributors";
-
+import cn from "classnames";
 interface Props {
   collection: CollectionT;
+  // item: {
+  //   id: number;
+  //   title1: string;
+  //   title2?: string;
+  //   contributors?: [];
+  //   imagePath: string;
+  //   isPrivate?: boolean;
+  // };
 }
 
 export default class ItemCard extends React.Component<Props, any> {
