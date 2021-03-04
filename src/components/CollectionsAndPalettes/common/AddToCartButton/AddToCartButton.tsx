@@ -6,8 +6,9 @@ interface Props {
   isInViewPort: boolean;
 }
 
-export default class CollectionsFooter extends React.Component<Props, any> {
+export default class AddToCartButton extends React.Component<Props, any> {
   render() {
+    console.log(this.props.isInViewPort);
     return (
       <div
         className={cn(

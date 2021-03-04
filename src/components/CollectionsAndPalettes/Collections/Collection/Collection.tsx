@@ -181,7 +181,9 @@ export default class Collection extends React.Component<any, any> {
           })}
           <AddToCartButton isInViewPort={this.state.isInViewPort} />
         </div>
-        <MoreIdeas />
+        <div className={"commonArea"}>
+          <MoreIdeas />
+        </div>
       </React.Fragment>
     );
   }
