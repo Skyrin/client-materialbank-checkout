@@ -1,16 +1,10 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
-import { COLLECTIONS_URL } from "../../../constants/urls";
 import styles from "components/CollectionsAndPalettes/Collections/Collections.module.scss";
 import CollectionCard from "../common/CollectionCard/CollectionCard";
-import face1 from "../../../assets/images/face1.jpeg";
-import face2 from "../../../assets/images/face2.jpg";
-import letter1 from "../../../assets/images/letter1.png";
 import { Link } from "react-router-dom";
 import { COLLECTIONS_URL } from "../../../constants/urls";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 import UploadCard from "../common/UploadCard/UploadCard";
-import MoreIdeas from "../common/MoreIdeas/MoreIdeas";
 import Loader from "components/common/Loader/Loader";
 
 interface State {

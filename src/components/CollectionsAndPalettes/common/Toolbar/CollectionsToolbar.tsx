@@ -3,8 +3,6 @@ import styles from "components/CollectionsAndPalettes/common/Toolbar/Collections
 import RoundButtons from "../RoundButtons/RoundButtons";
 import ModeButtons from "../ModeButtons/ModeButtons";
 import cn from "classnames";
-import Contributors from "../Contributors/Contributors";
-import { AppContext, AppContextState } from "context/AppContext";
 import Collaborators from "../Collaborators/Collaborators";
 import {
   AppContext,
