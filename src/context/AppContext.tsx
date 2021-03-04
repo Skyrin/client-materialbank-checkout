@@ -6,6 +6,7 @@ import {
   CustomerT,
   OrderT,
 } from "constants/types";
+import { CartT, CollectionT, CustomerT, OrderT } from "constants/types";
 import { cloneDeep } from "lodash-es";
 import { CartAddressInput } from "./CheckoutAPI/models";
 import {
@@ -15,6 +16,10 @@ import {
 } from "./CustomerAPI/models";
 import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import { AUTH_TOKEN_STORAGE_KEY } from "constants/general";
+import {
+  CollectionsQueryInput,
+  CreateCollectionInput,
+} from "./CollectionsAPI/models";
 
 /**
  * This class is used for handling the Context's internal data.
@@ -44,6 +49,8 @@ abstract class BaseAppContextState {
     AUTH_TOKEN_STORAGE_KEY
   );
   private internalSelectedPaymentOption?: PaymentOption;
+  private internalCollections?: CollectionT[] = [];
+  private internalCollectionsLoading: boolean = false;
 
   private modal?: Modals = Modals.None;
 
@@ -136,6 +143,22 @@ abstract class BaseAppContextState {
   public isOrdersLoading() {
     return this.internalOrdersLoading;
   }
+
+  public get collections() {
+    return cloneDeep(this.internalCollections);
+  }
+
+  public set collections(newCollections: CollectionT[]) {
+    this.internalCollections = cloneDeep(newCollections);
+  }
+
+  public get collectionsLoading() {
+    return !!this.internalCollectionsLoading;
+  }
+
+  public set collectionsLoading(isLoading: boolean) {
+    this.internalCollectionsLoading = isLoading;
+  }
 }
 
 /**
@@ -170,7 +193,14 @@ export class AppContextState extends BaseAppContextState {
 
   async createCustomerAddress(
     address: CustomerAddressInput
-  ): Promise<AddressT> {
+  ): Promise<CustomerT> {
+    return Promise.resolve({});
+  }
+
+  async updateCustomerAddress(
+    id: number,
+    address: CustomerAddressInput
+  ): Promise<CustomerT> {
     return Promise.resolve({});
   }
 
@@ -210,6 +240,16 @@ export class AppContextState extends BaseAppContextState {
   async updateCustomerV2(customer: UpdateCustomerInput) {}
 
   async changePassword(currentPassword: string, newPassword: string) {}
+
+  async requestCollections(
+    input: CollectionsQueryInput
+  ): Promise<CollectionT[]> {
+    return Promise.resolve([]);
+  }
+
+  async createCollection(input: CreateCollectionInput): Promise<CollectionT> {
+    return Promise.resolve({});
+  }
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);

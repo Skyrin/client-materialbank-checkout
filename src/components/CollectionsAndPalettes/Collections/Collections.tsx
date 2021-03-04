@@ -3,12 +3,15 @@ import { Link } from "react-router-dom";
 import { COLLECTIONS_URL } from "../../../constants/urls";
 import styles from "components/CollectionsAndPalettes/Collections/Collections.module.scss";
 import CollectionCard from "../common/CollectionCard/CollectionCard";
+import face1 from "../../../assets/images/face1.jpeg";
+import face2 from "../../../assets/images/face2.jpg";
+import letter1 from "../../../assets/images/letter1.png";
+import { Link } from "react-router-dom";
+import { COLLECTIONS_URL } from "../../../constants/urls";
+import { AppContext, AppContextState, Modals } from "context/AppContext";
 import UploadCard from "../common/UploadCard/UploadCard";
-import {
-  AppContext,
-  AppContextState,
-  Modals,
-} from "../../../context/AppContext";
+import MoreIdeas from "../common/MoreIdeas/MoreIdeas";
+import Loader from "components/common/Loader/Loader";
 
 interface State {
   card: {
@@ -51,22 +54,41 @@ export default class Collections extends React.Component<any, State> {
     };
   }
 
+  async componentDidMount() {
+    await this.context.requestCollections({
+      limit: 100,
+      offset: 0,
+    });
+  }
+
   render() {
     return (
       <React.Fragment>
         <div className={styles.cardCollection}>
-          <UploadCard
-            caption={"Create a Collection"}
-            hasIcon
-            onClick={this.createCollection}
-          />
-          {this.state.card.map((item: any, index: number) => {
-            return (
-              <Link to={COLLECTIONS_URL + `/${this.state.card[index].id}`}>
-                <CollectionCard item={this.state.card[index]} />
-              </Link>
-            );
-          })}
+          {this.context.collectionsLoading ? (
+            <Loader
+              containerClassName={styles.loaderContainer}
+              loaderClassName={styles.loader}
+            />
+          ) : (
+            <React.Fragment>
+              <UploadCard
+                caption={"Create a Collection"}
+                hasIcon
+                onClick={this.createCollection}
+              />
+              {this.context.collections.map((collection) => {
+                return (
+                  <Link
+                    to={COLLECTIONS_URL + `/${collection.id}`}
+                    key={`collection_${collection.id}`}
+                  >
+                    <CollectionCard collection={collection} />
+                  </Link>
+                );
+              })}
+            </React.Fragment>
+          )}
         </div>
       </React.Fragment>
     );

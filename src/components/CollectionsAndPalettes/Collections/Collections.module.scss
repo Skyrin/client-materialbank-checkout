@@ -7,6 +7,20 @@
 .cardCollection {
   display: grid;
   column-gap: $margin-small-4;
+  row-gap: $margin-small-4;
   margin-bottom: $margin-huge;
   grid-template-columns: repeat(4, 1fr);
+}
+
+.loaderContainer {
+  display: flex;
+  width: 100%;
+  height: 300px;
+  grid-column: 1 / span 4;
+  justify-content: center;
+  align-items: center;
+
+  .loader {
+    font-size: 50px;
+  }
 }

@@ -11,6 +11,7 @@ import {
   AppContextState,
   Modals,
 } from "../../../../context/AppContext";
+import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreIdeas";
 
 export default class Collection extends React.Component<any, any> {
   static contextType = AppContext;
@@ -227,6 +228,7 @@ export default class Collection extends React.Component<any, any> {
           })}
           <AddToCartButton isInViewPort={this.state.isInViewPort} />
         </div>
+        <MoreIdeas />
       </React.Fragment>
     );
   }

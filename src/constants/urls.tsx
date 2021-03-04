@@ -1,7 +1,7 @@
 export const CHECKOUT_FUNNEL_URL = "/checkout";
 export const USER_MANAGEMENT_URL = "/user";
 export const MAIN_SHOP_URL = "/"; // Note: This won't work locally
-export const COLLECTIONS_AND_PALETTES_URL = `/collections-and-palettes`;
+export const COLLECTIONS_AND_PALETTES_URL = `/collections`;
 
 // Checkout funnel URLs
 export const CART_URL = `/cart`;
@@ -20,7 +20,7 @@ export const USER_SHIPPING_URL = `${USER_MANAGEMENT_URL}/shipping`;
 
 // Collections URLs
 export const COLLECTION_ID = ":collection_id";
-export const COLLECTIONS_URL = `${COLLECTIONS_AND_PALETTES_URL}/collections`;
+export const COLLECTIONS_URL = `${COLLECTIONS_AND_PALETTES_URL}/my-collections`;
 export const PALETTES_URL = `${COLLECTIONS_AND_PALETTES_URL}/palettes`;
 export const COLLECTION_URL = `${COLLECTIONS_URL}/:collection_id`;
 
