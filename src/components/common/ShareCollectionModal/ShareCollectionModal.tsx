@@ -7,21 +7,12 @@ import Loader from "components/common/Loader/Loader";
 import { RouteComponentProps } from "react-router-dom";
 import Input from "../Input/Input";
 import Checkbox from "../Checkbox/Checkbox";
+import { CollaboratorT } from "../../../constants/types";
 
 type State = {
   email: string;
   publicLink: string;
-  collaborators: [
-    {
-      id: number;
-      firstName: string;
-      lastName: string;
-      imagePath: string;
-      email: string;
-      isAuthenitcated: boolean;
-      isSharedWith: boolean;
-    }
-  ];
+  collaborators: CollaboratorT[];
   isPrivate: boolean;
   isLoading: boolean;
 };
@@ -45,7 +36,7 @@ export class ShareCollectionModal extends React.Component<Props, State> {
           lastName: null,
           email: null,
           imagePath: null,
-          isAuthenitcated: null,
+          isAuthenticated: null,
           isSharedWith: null,
         },
       ],
