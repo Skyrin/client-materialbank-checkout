@@ -138,41 +138,51 @@ export default class Collection extends React.Component<any, any> {
     //TODO implement the call
     const collaborators = [
       {
+        id: 1,
         firstName: "Anne",
         lastName: "Enduser",
         isAuthenticated: true,
+        isSharedWith: true,
         imagePath:
           "https://vanishingportrait.com/wp-content/uploads/2019/05/tiffanytrenda-vanishingportrait-identity.jpg",
         email: "anne.enduser@gmail.com",
       },
       {
+        id: 2,
         firstName: "Dave",
         lastName: "Friendname",
         isAuthenticated: false,
+        isSharedWith: true,
         imagePath:
           "https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg?size=626&ext=jpg",
         email: "name.@gmail.com",
       },
       {
+        id: 3,
         firstName: "Michael",
         lastName: "Otherguy",
         isAuthenticated: false,
+        isSharedWith: true,
         imagePath:
           "https://i.pinimg.com/originals/9c/a9/b2/9ca9b293ed52b3a124b802449eb653d0.jpg",
         email: "name@gmail.com",
       },
       {
+        id: 4,
         firstName: "Amelia",
         lastName: "User",
         isAuthenticated: false,
+        isSharedWith: true,
         imagePath:
           "https://www.adobe.com/content/dam/cc/us/en/creativecloud/photography/discover/portrait-photography/CODERED_B1_portrait_photography-P4a_438x447.jpg.img.jpg",
         email: "name@gmail.com",
       },
       {
+        id: 5,
         firstName: "Marie",
         lastName: "Ishere",
         isAuthenticated: false,
+        isSharedWith: false,
         imagePath:
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWRntDjXs_RggTSWM4AdHwTQ4ppLL44GLoFw&usqp=CAU",
         email: "name@gmail.com",

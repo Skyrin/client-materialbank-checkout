@@ -6,13 +6,23 @@ import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
 import { RouteComponentProps } from "react-router-dom";
 import Input from "../Input/Input";
+import Checkbox from "../Checkbox/Checkbox";
 
 type State = {
   email: string;
   publicLink: string;
-  collaborators: {}[];
+  collaborators: [
+    {
+      id: number;
+      firstName: string;
+      lastName: string;
+      imagePath: string;
+      email: string;
+      isAuthenitcated: boolean;
+      isSharedWith: boolean;
+    }
+  ];
   isPrivate: boolean;
-  isSharedWith: boolean;
   isLoading: boolean;
 };
 type Props = RouteComponentProps;
@@ -28,9 +38,18 @@ export class ShareCollectionModal extends React.Component<Props, State> {
     this.state = {
       email: null,
       publicLink: null,
-      collaborators: [],
+      collaborators: [
+        {
+          id: null,
+          firstName: null,
+          lastName: null,
+          email: null,
+          imagePath: null,
+          isAuthenitcated: null,
+          isSharedWith: null,
+        },
+      ],
       isPrivate: false,
-      isSharedWith: true,
       isLoading: false,
     };
   }
@@ -63,6 +82,16 @@ export class ShareCollectionModal extends React.Component<Props, State> {
     disableBodyScroll(this.modalTarget);
   };
 
+  handleChange = (event, index) => {
+    let collab = this.state.collaborators.map((item) => {
+      if (item.id === index) {
+        return { ...item, isSharedWith: !item.isSharedWith };
+      }
+      return item;
+    });
+    this.setState({ collaborators: collab });
+  };
+
   renderEmailSection = () => {
     return (
       <React.Fragment>
@@ -90,23 +119,34 @@ export class ShareCollectionModal extends React.Component<Props, State> {
           Adjust sharing settings for collaborators
         </div>
         <div className={styles.collaborators}>
-          {this.state.collaborators.map((collaborator: any) => {
-            return (
-              <div className={styles.collaboratorsContainer}>
-                <img src={collaborator.imagePath} />
-                <div>
-                  <span className={styles.collaboratorName}>
-                    {collaborator.firstName + " " + collaborator.lastName}
-                    {collaborator.isAuthenticated === true ? " (You)" : null}
-                  </span>
-                  <span className={styles.collaboratorEmail}>
-                    {collaborator.email}
-                  </span>
+          {this.state.collaborators &&
+            this.state.collaborators.map((collaborator: any, index: number) => {
+              return (
+                <div className={styles.collaboratorsContainer}>
+                  <img src={collaborator.imagePath} />
+                  <div>
+                    <span className={styles.collaboratorName}>
+                      {collaborator.firstName + " " + collaborator.lastName}
+                      {collaborator.isAuthenticated === true ? " (You)" : null}
+                    </span>
+                    <span className={styles.collaboratorEmail}>
+                      {collaborator.email}
+                    </span>
+                  </div>
+                  <Checkbox
+                    className={cn(
+                      styles.checkBoxModal,
+                      !collaborator.isSharedWith ? styles.unChecked : ""
+                    )}
+                    black={true}
+                    value={collaborator.isSharedWith}
+                    onChange={(event) => {
+                      this.handleChange(event, collaborator.id);
+                    }}
+                  />
                 </div>
-                <i className="fas fa-check-circle"></i>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </React.Fragment>
     );
@@ -117,7 +157,6 @@ export class ShareCollectionModal extends React.Component<Props, State> {
       <React.Fragment>
         <div className={styles.title}> Create a public link</div>
         <div className={styles.subTitle}>
-          {" "}
           Anyone who has this link can view this board
         </div>
         <div className={styles.inputBox}>

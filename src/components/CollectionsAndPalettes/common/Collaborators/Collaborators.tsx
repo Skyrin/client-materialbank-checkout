@@ -41,23 +41,11 @@ export default class Collaborators extends React.Component<Props, any> {
               this.props.small ? styles.small : ""
             )}
           >
-            {this.props.collaborators.map(
-              (collaborator: any, index: number) => {
-                return (
-                  <React.Fragment>
-                    {this.props.collaborators.length <
-                      this.maxNoCollaborators && (
-                      <img src={this.props.collaborators[index]} />
-                    )}
-                    {this.props.collaborators.length >=
-                      this.maxNoCollaborators &&
-                      index < this.maxNoCollaborators && (
-                        <img src={this.props.collaborators[index]} />
-                      )}
-                  </React.Fragment>
-                );
-              }
-            )}
+            {this.props.collaborators
+              .slice(0, this.maxNoCollaborators)
+              .map((collaborator) => (
+                <img src={collaborator} />
+              ))}
             {this.props.collaborators.length - this.maxNoCollaborators > 0 && (
               <a className={styles.numberToShow}>+{this.numberToShow}</a>
             )}
