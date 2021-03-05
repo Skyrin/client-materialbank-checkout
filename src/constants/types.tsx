@@ -223,3 +223,18 @@ export type CollectionT = {
   items?: CollectionItemT[];
   collaborators?: CollectionCollaboratorT[];
 };
+
+export type AlgoliaProductT = {
+  sku?: string;
+  name?: string;
+  color?: string;
+  manufacturer?: string;
+  price_sign?: string;
+  image_url?: string;
+  thumbnail_url?: string;
+};
+
+export type CachedProductT = {
+  loading: boolean;
+  data?: AlgoliaProductT;
+};

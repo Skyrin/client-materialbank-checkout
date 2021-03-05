@@ -1,4 +1,4 @@
-import styles from "./UploadPhotoModal.module.scss";
+import styles from "./DuplicateCollectionModal.module.scss";
 import React from "react";
 import cn from "classnames";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
@@ -8,14 +8,12 @@ import { RouteComponentProps } from "react-router-dom";
 import Input from "../Input/Input";
 
 type State = {
-  photoName: string;
-  file: any;
+  collectionName: string;
   isLoading: boolean;
 };
 type Props = RouteComponentProps;
 
-export class UploadPhotoModal extends React.Component<Props, State> {
-  fileInput;
+export class DuplicateCollectionModal extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
@@ -24,11 +22,9 @@ export class UploadPhotoModal extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      photoName: "",
-      file: null,
+      collectionName: "",
       isLoading: false,
     };
-    this.fileInput = React.createRef();
   }
 
   onBackgroundClicked = () => {
@@ -40,7 +36,7 @@ export class UploadPhotoModal extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    this.modalTarget = document.querySelector("#uploadPhotoId");
+    this.modalTarget = document.querySelector("#duplicateCollectionId");
     this.disableWindowsScroll();
   }
 
@@ -56,16 +52,6 @@ export class UploadPhotoModal extends React.Component<Props, State> {
     disableBodyScroll(this.modalTarget);
   };
 
-  handleImageUpload = (e: any) => {
-    this.setState({
-      file: URL.createObjectURL(e.target.files[0]),
-    });
-  };
-
-  triggerInputFile = () => {
-    this.fileInput.click();
-  };
-
   render() {
     return (
       <div
@@ -78,44 +64,25 @@ export class UploadPhotoModal extends React.Component<Props, State> {
           }
         }}
       >
-        <div id={"uploadPhotoId"} className={styles.modalBox}>
+        <div id={"duplicateCollectionId"} className={styles.modalBox}>
           <div className={styles.closeButton} onClick={this.closeModal}>
             <i className="far fa-times"></i>
           </div>
           <div className={styles.modalContent}>
-            <div className={styles.title}>Upload a photo</div>
+            <div className={styles.title}>Duplicate this Collection</div>
             <div className="horizontal-divider-toolbar"></div>
-
-            <input
-              ref={(fileInput) => (this.fileInput = fileInput)}
-              className={styles.hide}
-              type="file"
-              name="upload-photo"
-              onChange={this.handleImageUpload}
-            />
-            <label
-              htmlFor="upload-photo"
-              className={cn(
-                styles.fileUploadLabel,
-                this.state.file ? styles.hide : ""
-              )}
-              onClick={this.triggerInputFile}
-            >
-              Upload Photo
-            </label>
-            <img className={styles.preview} src={this.state.file} alt="" />
-            <span>Image Name</span>
+            <span>Collection Name</span>
 
             <Input
               className={styles.inputField}
-              placeholder="Image Name"
-              value={this.state.photoName}
+              placeholder="Collection Name"
+              value={this.state.collectionName}
               type="text"
-              onChange={(val: string) => this.setState({ photoName: val })}
+              onChange={(val: string) => this.setState({ collectionName: val })}
             />
 
             <div className={styles.buttonsContainer}>
-              <div className={styles.createButton}>Upload Photo</div>
+              <div className={styles.createButton}>Create Collection</div>
               <div className={styles.cancelButton} onClick={this.closeModal}>
                 Cancel
               </div>

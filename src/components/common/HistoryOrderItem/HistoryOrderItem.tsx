@@ -2,7 +2,10 @@ import React from "react";
 import cn from "classnames";
 import styles from "./HistoryOrderItem.module.scss";
 import { OrderItemT } from "constants/types";
-import { parseCurrency } from "utils/general";
+import { getSamplePage, parseCurrency } from "utils/general";
+import { AppContext, AppContextState } from "context/AppContext";
+import { get } from "lodash-es";
+import imagePlaceholder from "assets/images/Fill.png";
 
 interface Props {
   item?: Item;
@@ -23,52 +26,73 @@ export interface Item {
   shops: Array<{ link: string; name: string; address?: string }>;
 }
 
-export function HistoryOrderItem(props: Props) {
-  const item = props.itemT;
-  return (
-    <div className={cn(styles["HistoryOrderItem"])}>
-      <div className={cn(styles["left-container"])}>
-        <div className={cn(styles["image"])} />
-        <div className={cn(styles["brand-model"])}>
+export class HistoryOrderItem extends React.Component<Props> {
+  static contextType = AppContext;
+  context!: AppContextState;
+
+  render() {
+    const item = this.props.itemT;
+    const algoliaProduct = this.context.productsCache.getProduct(
+      item.product_sku
+    );
+    const color = get(algoliaProduct, "data.color", "orderItem.color");
+    const imageUrl = get(
+      algoliaProduct,
+      "data.thumbnail_url",
+      imagePlaceholder
+    );
+
+    return (
+      <div className={cn(styles["HistoryOrderItem"])}>
+        <div className={cn(styles["left-container"])}>
+          <a href={getSamplePage(item.product_sku)}>
+            <img src={imageUrl} alt="" className={styles["image"]} />
+          </a>
+          <div className={cn(styles["brand-model"])}>
+            <div
+              className={cn(
+                styles["brand"],
+                "font-size-sm",
+                "text-color-xlight"
+              )}
+            >
+              {item.product_sku}
+            </div>
+            <div className={cn(styles["model"], "font-weight-medium")}>
+              {item.product_name}
+            </div>
+          </div>
+        </div>
+
+        <div className={cn(styles["middle-container"])}>
           <div
-            className={cn(styles["brand"], "font-size-sm", "text-color-xlight")}
+            className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
           >
-            {item.product_sku}
+            {color}
           </div>
-          <div className={cn(styles["model"], "font-weight-medium")}>
-            {item.product_name}
+          <div
+            className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
+          >
+            {parseCurrency(item.product_sale_price.currency)}
+            {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
+          </div>
+          <div
+            className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
+          >
+            {parseCurrency(item.product_sale_price.currency)}
+            {item.product_sale_price.value} / sample
           </div>
         </div>
-      </div>
 
-      <div className={cn(styles["middle-container"])}>
-        <div
-          className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
-        >
-          {"item.color"}
-        </div>
-        <div
-          className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
-        >
-          {parseCurrency(item.product_sale_price.currency)}
-          {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
-        </div>
-        <div
-          className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
-        >
-          {parseCurrency(item.product_sale_price.currency)}
-          {item.product_sale_price.value} / sample
+        <div className={cn(styles["right-container"])}>
+          <button
+            className={cn(styles["shop-button"], "font-weight-medium")}
+            onClick={this.props.onClick}
+          >
+            Shop this flooring ({"item.shops.length"})
+          </button>
         </div>
       </div>
-
-      <div className={cn(styles["right-container"])}>
-        <button
-          className={cn(styles["shop-button"], "font-weight-medium")}
-          onClick={props.onClick}
-        >
-          Shop this flooring ({"item.shops.length"})
-        </button>
-      </div>
-    </div>
-  );
+    );
+  }
 }

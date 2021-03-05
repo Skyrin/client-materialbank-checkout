@@ -32,11 +32,11 @@ export default class Contributors extends React.Component<Props, any> {
               return (
                 <React.Fragment>
                   {this.props.contributors.length < this.maxNoContributors && (
-                    <img src={this.props.contributors[index]} />
+                    <img src={this.props.contributors[index]} alt="" />
                   )}
                   {this.props.contributors.length >= this.maxNoContributors &&
                     index < this.maxNoContributors && (
-                      <img src={this.props.contributors[index]} />
+                      <img src={this.props.contributors[index]} alt="" />
                     )}
                 </React.Fragment>
               );

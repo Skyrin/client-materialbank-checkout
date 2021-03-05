@@ -35,6 +35,7 @@ export const collectionsGraphqlRequest = async (
       method: "POST",
       headers,
       body: requestBody,
+      credentials: "omit",
     });
   } catch (error) {
     console.error("Logging error:" + error);
