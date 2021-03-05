@@ -4,7 +4,7 @@ import RoundButtons from "../RoundButtons/RoundButtons";
 import ModeButtons from "../ModeButtons/ModeButtons";
 import cn from "classnames";
 import Contributors from "../Contributors/Contributors";
-import { AppContext, AppContextState } from "context/AppContext";
+import { AppContext, AppContextState, Modals } from "context/AppContext";
 
 interface Props {
   title: string;
@@ -20,7 +20,11 @@ interface Props {
 export default class CollectionsToolbar extends React.Component<Props, any> {
   static contextType = AppContext;
   context!: AppContextState;
+  modalTarget = null;
   wrapperRef: any;
+  deleteCollection = () => {
+    this.context.openModal(Modals.DeleteCollection);
+  };
 
   constructor(props: any) {
     super(props);
@@ -54,7 +58,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
           <a>Rename</a>
           <a>Duplicate Collection</a>
           <a>Make Private</a>
-          <a>Delete </a>
+          <a onClick={this.deleteCollection}>Delete </a>
         </div>
       </React.Fragment>
     );

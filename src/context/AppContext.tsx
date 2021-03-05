@@ -26,6 +26,7 @@ export enum Modals {
   AccountExists = "account-exists",
   UploadPhoto = "upload-photo",
   CreateCollection = "create-collection",
+  DeleteCollection = "delete-collection",
   None = "none",
 }
 
@@ -41,11 +42,20 @@ abstract class BaseAppContextState {
   );
   private internalSelectedPaymentOption?: PaymentOption;
   private internalCollections?: CollectionT[] = [];
+  private internalCollection?: CollectionT;
   private internalCollectionsLoading: boolean = false;
 
   private modal?: Modals = Modals.None;
 
   private internalOrdersLoading?: boolean = false;
+
+  public get collection() {
+    return cloneDeep(this.internalCollection);
+  }
+
+  public set collection(newCollection) {
+    this.internalCollection = newCollection;
+  }
 
   public get cart() {
     return cloneDeep(this.internalCart);
@@ -53,10 +63,6 @@ abstract class BaseAppContextState {
 
   public set cart(newCart: CartT) {
     this.internalCart = cloneDeep(newCart);
-  }
-
-  public get cartInfoLoading() {
-    return !!this.internalCartInfoLoading;
   }
 
   public set cartInfoLoading(newValue: boolean) {
