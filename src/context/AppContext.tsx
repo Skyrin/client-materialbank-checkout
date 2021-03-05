@@ -13,6 +13,7 @@ import {
   CollectionsQueryInput,
   CreateCollectionInput,
 } from "./CollectionsAPI/models";
+import { ProductsCache } from "./ProductsCache";
 
 /**
  * This class is used for handling the Context's internal data.
@@ -27,6 +28,7 @@ export enum Modals {
   UploadPhoto = "upload-photo",
   CreateCollection = "create-collection",
   DeleteCollection = "delete-collection",
+  DuplicateCollection = "duplicate-collection",
   None = "none",
 }
 
@@ -43,10 +45,10 @@ abstract class BaseAppContextState {
   private internalSelectedPaymentOption?: PaymentOption;
   private internalCollections?: CollectionT[] = [];
   private internalCollectionsLoading: boolean = false;
-
   private modal?: Modals = Modals.None;
-
   private internalOrdersLoading?: boolean = false;
+
+  public productsCache?: ProductsCache;
 
   public get cart() {
     return cloneDeep(this.internalCart);
@@ -54,6 +56,10 @@ abstract class BaseAppContextState {
 
   public set cart(newCart: CartT) {
     this.internalCart = cloneDeep(newCart);
+  }
+
+  public get cartInfoLoading() {
+    return !!this.internalCartInfoLoading;
   }
 
   public set cartInfoLoading(newValue: boolean) {
