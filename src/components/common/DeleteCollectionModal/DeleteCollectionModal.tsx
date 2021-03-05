@@ -13,7 +13,6 @@ import {
 
 type State = {
   isLoading: boolean;
-  collection: CollectionT;
 };
 type Props = RouteComponentProps;
 
@@ -27,16 +26,6 @@ export class DeleteCollectionModal extends React.Component<Props, State> {
 
     this.state = {
       isLoading: false,
-      collection: {
-        id: null,
-        userId: null,
-        name: null,
-        isPublic: null,
-        createdOn: null,
-        updatedOn: null,
-        items: null,
-        collaborators: null,
-      },
     };
   }
 
