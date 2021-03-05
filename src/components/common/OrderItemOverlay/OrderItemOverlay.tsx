@@ -1,7 +1,6 @@
 import React from "react";
 import cn from "classnames";
 import styles from "./OrderItemOverlay.module.scss";
-import { Item } from "components/common/HistoryOrderItem/HistoryOrderItem";
 import { OrderItemT } from "constants/types";
 import { parseCurrency } from "utils/general";
 

@@ -2,7 +2,6 @@ import { AppContextState } from "context/AppContext";
 import { ClientError, graphqlRequest } from "GraphqlClient";
 import {
   CustomerFragment,
-  OrderAddressFragment,
   UpdateCustomerFragment,
   OrderFragment,
 } from "./fragments";
