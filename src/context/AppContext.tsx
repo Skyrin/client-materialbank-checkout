@@ -42,20 +42,11 @@ abstract class BaseAppContextState {
   );
   private internalSelectedPaymentOption?: PaymentOption;
   private internalCollections?: CollectionT[] = [];
-  private internalCollection?: CollectionT;
   private internalCollectionsLoading: boolean = false;
 
   private modal?: Modals = Modals.None;
 
   private internalOrdersLoading?: boolean = false;
-
-  public get collection() {
-    return cloneDeep(this.internalCollection);
-  }
-
-  public set collection(newCollection) {
-    this.internalCollection = newCollection;
-  }
 
   public get cart() {
     return cloneDeep(this.internalCart);
