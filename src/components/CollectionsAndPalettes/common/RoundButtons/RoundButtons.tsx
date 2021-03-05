@@ -1,7 +1,5 @@
 import * as React from "react";
 import cn from "classnames";
-import { COLLECTIONS_URL, PALETTES_URL } from "../../../../constants/urls";
-import { Link } from "react-router-dom";
 
 interface Props {
   buttons: string[];
@@ -17,7 +15,7 @@ export default class RoundButtons extends React.Component<Props, any> {
     this.props.onButtonSelected(button);
   }
 
-  renderExploreButtons(index, button, buttonStyling) {
+  renderButton(index, button, buttonStyling) {
     return (
       <div
         onClick={(e) => this.switchDisplay(e, index, button)}
@@ -42,27 +40,12 @@ export default class RoundButtons extends React.Component<Props, any> {
           : ""
       }`;
     });
-    console.log(this.props.buttons);
 
     return (
       <React.Fragment>
-        {["collections", "palettes"].includes(this.props.selectedButton)
-          ? this.props.buttons.map((button: any, index: number) => {
-              return (
-                <Link
-                  to={button === "collections" ? COLLECTIONS_URL : PALETTES_URL}
-                >
-                  {this.renderExploreButtons(index, button, buttonStyling)}
-                </Link>
-              );
-            })
-          : this.props.buttons.map((button: any, index: number) => {
-              return (
-                <React.Fragment>
-                  {this.renderExploreButtons(index, button, buttonStyling)}
-                </React.Fragment>
-              );
-            })}
+        {this.props.buttons.map((button: any, index: number) =>
+          this.renderButton(index, button, buttonStyling)
+        )}
       </React.Fragment>
     );
   }

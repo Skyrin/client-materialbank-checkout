@@ -18,7 +18,6 @@ export default class PaletteCard extends React.Component<Props, any> {
   };
 
   render() {
-    console.log(this.props);
     const { palette } = this.props;
 
     const imagePath =

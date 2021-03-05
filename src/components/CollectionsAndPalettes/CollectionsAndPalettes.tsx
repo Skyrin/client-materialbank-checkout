@@ -77,6 +77,7 @@ export default class CollectionsAndPalettes extends React.Component<
                     return (
                       <React.Fragment>
                         <CollectionsToolbar
+                          history={this.props.history}
                           title={"Your Collections & Palettes"}
                           buttons={[
                             DisplayOption.Collections,
@@ -97,6 +98,7 @@ export default class CollectionsAndPalettes extends React.Component<
                     return (
                       <React.Fragment>
                         <CollectionsToolbar
+                          history={this.props.history}
                           title={"Your Collections & Palettes"}
                           buttons={[
                             DisplayOption.Collections,

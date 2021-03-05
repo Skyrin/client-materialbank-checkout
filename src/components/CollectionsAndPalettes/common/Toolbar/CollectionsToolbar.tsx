@@ -5,8 +5,10 @@ import ModeButtons from "../ModeButtons/ModeButtons";
 import cn from "classnames";
 import Contributors from "../Contributors/Contributors";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
+import { COLLECTIONS_URL, PALETTES_URL } from "../../../../constants/urls";
 
 interface Props {
+  history?: any;
   title: string;
   buttons: any;
   activeButtonMode?: any;
@@ -68,6 +70,16 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
     return <Contributors contributors={this.props.contributors} />;
   };
 
+  onClickButtonRedirect = () => {
+    if (this.props.activeButtonDisplay) {
+      let displayURL =
+        this.props.activeButtonDisplay === "collections"
+          ? PALETTES_URL
+          : COLLECTIONS_URL;
+      this.props.history.push(displayURL);
+    }
+  };
+
   componentDidMount() {
     document.addEventListener("mousedown", this.handleClickOutside);
   }
@@ -77,7 +89,6 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div className={styles.toolbarContainer}>
         <div className={styles.toolbarInfo}>
@@ -104,13 +115,17 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
         </div>
         <div className="horizontal-divider-toolbar"></div>
         <div className={styles.toolbarContent}>
-          <div className={styles.navigationButtons}>
+          <div
+            className={styles.navigationButtons}
+            onClick={this.onClickButtonRedirect}
+          >
             <RoundButtons
               buttons={this.props.buttons}
               selectedButton={this.props.activeButtonDisplay}
               onButtonSelected={this.props.toggleDisplay}
               buttonClassName={"grey"}
               activeButtonClassName={"active"}
+              onClick={() => {}}
             />
           </div>
 
