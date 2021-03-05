@@ -1,10 +1,12 @@
 import * as React from "react";
 import cn from "classnames";
 import styles from "../../common/ItemCard/ItemCard.module.scss";
+import { Droppable } from "react-beautiful-dnd";
 
 interface Props {
   mode: any;
   item: {
+    id: number;
     type: any;
     title1: string;
     title2: string;

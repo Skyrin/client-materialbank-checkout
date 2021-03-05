@@ -15,7 +15,7 @@ import {
   Modals,
 } from "../../../../context/AppContext";
 import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreIdeas";
-
+import EditItemsList from "./EditItemsList";
 export default class Collection extends React.Component<any, any> {
   static contextType = AppContext;
   context!: AppContextState;
@@ -23,6 +23,7 @@ export default class Collection extends React.Component<any, any> {
   uploadPhoto = () => {
     this.context.openModal(Modals.UploadPhoto);
   };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -31,6 +32,7 @@ export default class Collection extends React.Component<any, any> {
       display: "everything",
       card: [
         {
+          id: 1,
           type: "room",
           title1: "Living Room",
           title2: "Rhonda Roomdesigner",
@@ -41,6 +43,7 @@ export default class Collection extends React.Component<any, any> {
         },
 
         {
+          id: 2,
           type: "palette",
           title1: "Palette",
           title2: "David Designername",
@@ -50,6 +53,7 @@ export default class Collection extends React.Component<any, any> {
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5brHIzPOkAv7A4E5ul_mT5BaCRbykzf1xvA&usqp=CAU",
         },
         {
+          id: 3,
           type: "sample",
           title1: "Indusparquet",
           title2: "Brazilian Pecan Engineered",
@@ -59,6 +63,7 @@ export default class Collection extends React.Component<any, any> {
             "https://www.haro.com/media/custom/produktfinder/parkett/draufsicht/792x865/535575_HARO_PARKETT_Schiffsboden_Wenge_Favorit_Ver.jpg",
         },
         {
+          id: 4,
           type: "room",
           title1: "Indusparquet",
           title2: "Brazilian Pecan Engineered",
@@ -68,6 +73,7 @@ export default class Collection extends React.Component<any, any> {
             "https://www.john-lewis.co.uk/wp-content/uploads/2018/09/JLH-10.1443821-2500x3559.jpg",
         },
         {
+          id: 5,
           type: "room",
           title1: "Indusparquet",
           title2: "Brazilian Pecan Engineered",
@@ -77,6 +83,7 @@ export default class Collection extends React.Component<any, any> {
             "https://www.thespruce.com/thmb/ygpyRaJpg4ubo3l-sDmiQph9YuQ=/1500x1000/filters:no_upscale():max_bytes(150000):strip_icc()/Scandi1-590ba2563df78c9283f4febf.jpg",
         },
         {
+          id: 6,
           type: "sample",
           title1: "Indusparquet",
           title2: "Brazilian Pecan Engineered",
@@ -86,6 +93,7 @@ export default class Collection extends React.Component<any, any> {
             "https://s.cdnmpro.com/846376239/p/l/5/tapet-albastru-artisan-tiles-rebel-walls~22815.jpg",
         },
         {
+          id: 7,
           type: "sample",
           title1: "Indusparquet",
           title2: "Brazilian Pecan Engineered",
@@ -95,6 +103,7 @@ export default class Collection extends React.Component<any, any> {
             "https://www.thespruce.com/thmb/qbpval5ZAScQyH84n882Q5XKiAo=/4352x3264/smart/filters:no_upscale()/colourful-glazed-rectangular-ceramic-tiles-on-the-exterior-wall-of-a-building-1017505168-175e8d7651074d0eaa21d15fb7ac7019.jpg",
         },
         {
+          id: 8,
           type: "room",
           title1: "Indusparquet",
           title2: "Brazilian Pecan Engineered",
@@ -165,20 +174,27 @@ export default class Collection extends React.Component<any, any> {
           activeButtonMode={this.state.mode}
           toggleMode={this.toggleMode}
         />
+
         <div className="masonry-container ">
           <UploadCard
             caption={"Upload a photo or drag & drop here "}
             onClick={this.uploadPhoto}
           />
-          {this.state.card.map((item: any, index: number) => {
-            return (
-              <ItemCard
-                key={index}
-                mode={this.state.mode}
-                item={this.state.card[index]}
-              />
-            );
-          })}
+          {this.state.mode === "edit" ? (
+            <EditItemsList card={this.state.card} />
+          ) : (
+            <React.Fragment>
+              {this.state.card.map((item: any, index: number) => {
+                return (
+                  <ItemCard
+                    key={index}
+                    mode={this.state.mode}
+                    item={this.state.card[index]}
+                  />
+                );
+              })}
+            </React.Fragment>
+          )}
           <AddToCartButton isInViewPort={this.state.isInViewPort} />
         </div>
         <MoreIdeas />
