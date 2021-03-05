@@ -26,6 +26,7 @@ export enum Modals {
   AccountExists = "account-exists",
   UploadPhoto = "upload-photo",
   CreateCollection = "create-collection",
+  DuplicateCollection = "duplicate-collection",
   None = "none",
 }
 
