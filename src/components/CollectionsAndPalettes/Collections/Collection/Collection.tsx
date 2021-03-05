@@ -26,7 +26,7 @@ export default class Collection extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      isInViewPort: false,
+      commonAreaIsInViewport: false,
       mode: "image",
       display: "everything",
       card: [
@@ -107,7 +107,7 @@ export default class Collection extends React.Component<any, any> {
     };
   }
 
-  isInViewport = () => {
+  commonAreaIsInViewport = () => {
     const elem = document.querySelector(".commonArea");
     if (elem) {
       const bounding = elem.getBoundingClientRect();
@@ -120,8 +120,8 @@ export default class Collection extends React.Component<any, any> {
     }
   };
   scrollingBehaviour = () => {
-    let moreIdeas = this.isInViewport();
-    this.setState({ isInViewPort: moreIdeas });
+    let moreIdeas = this.commonAreaIsInViewport();
+    this.setState({ commonAreaIsInViewport: moreIdeas });
   };
 
   toggleMode = (mode) => {
@@ -135,6 +135,8 @@ export default class Collection extends React.Component<any, any> {
   componentDidMount() {
     window.scrollTo(0, 0);
     window.addEventListener("scroll", this.scrollingBehaviour);
+    let moreIdeas = this.commonAreaIsInViewport();
+    this.setState({ commonAreaIsInViewport: moreIdeas });
   }
 
   componentWillUnmount() {
@@ -179,8 +181,11 @@ export default class Collection extends React.Component<any, any> {
               />
             );
           })}
-          <AddToCartButton isInViewPort={this.state.isInViewPort} />
+          <AddToCartButton
+            commonAreaIsInViewport={this.state.commonAreaIsInViewport}
+          />
         </div>
+        {/*The commonArea element is added here in order to keep the AddToCart Button inside the Collection Cards container, also decide its position*/}
         <div className={"commonArea"}>
           <MoreIdeas />
         </div>
