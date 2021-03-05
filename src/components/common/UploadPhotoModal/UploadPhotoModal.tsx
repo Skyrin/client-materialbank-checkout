@@ -103,7 +103,7 @@ export class UploadPhotoModal extends React.Component<Props, State> {
             >
               Upload Photo
             </label>
-            <img className={styles.preview} src={this.state.file} />
+            <img className={styles.preview} src={this.state.file} alt="" />
             <span>Image Name</span>
 
             <Input

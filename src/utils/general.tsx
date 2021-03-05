@@ -1,3 +1,5 @@
+import { MAIN_SHOP_URL } from "constants/urls";
+
 export const scrollToTop = () => {
   window.requestAnimationFrame(() => {
     window.scrollTo(0, 0);
@@ -20,4 +22,8 @@ export const parseCurrency = (stringCurrency: string) => {
     default:
       return "$";
   }
+};
+
+export const getSamplePage = (sku: string) => {
+  return `${MAIN_SHOP_URL}sample/${sku}`;
 };

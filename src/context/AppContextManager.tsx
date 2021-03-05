@@ -44,6 +44,7 @@ import {
   CreateCollectionInput,
 } from "./CollectionsAPI/models";
 import { createCollection, getCollections } from "./CollectionsAPI/api";
+import { ProductsCache } from "./ProductsCache";
 
 type Props = {
   children: React.ReactNode;
@@ -452,6 +453,10 @@ export default class AppContextManager extends React.Component<Props> {
       this.actions.requestCollections({ limit: 100, offset: 0 });
       return newCollection;
     },
+
+    productsCache: new ProductsCache(() => {
+      this.forceUpdate();
+    }),
   };
 
   getFullContext = () => {

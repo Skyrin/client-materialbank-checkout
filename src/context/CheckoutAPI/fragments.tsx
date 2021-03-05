@@ -100,7 +100,6 @@ export const CartFragment = `
   ${CartPricesFragment}
   ${CartBillingAddressFragment}
   ${CartShippingAddressesFragment}
-  ${CartAvailablePaymentMethods}
   ${CartSelectedPaymentMethod}
   ${CartAppliedCouponsFragment}
   ${CartItemsFragment}
