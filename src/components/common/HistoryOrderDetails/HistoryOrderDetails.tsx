@@ -102,13 +102,7 @@ export function HistoryOrderDetails(props: Props) {
 
           <hr className={cn(styles["hr"])} />
           <div className={cn(styles["card-row"])}>
-            <i
-              className={cn(
-                "fab",
-                "VISA" === "VISA" ? "fa-cc-visa" : "fa-cc-mastercard",
-                styles["card-icon"]
-              )}
-            />
+            <i className={cn("fab", "fa-cc-visa", styles["card-icon"])} />
             Card ending in {"paymentDetails.cardEnding"}
           </div>
         </div>

@@ -23,11 +23,17 @@ interface Props {
 
 export default class CollectionsToolbar extends React.Component<Props, any> {
   wrapperRef: any;
+
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
+
   shareCollection = () => {
     this.context.openModal(Modals.ShareCollection);
+  };
+
+  duplicateCollection = () => {
+    this.context.openModal(Modals.DuplicateCollection);
   };
 
   constructor(props: any) {
@@ -60,7 +66,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
           )}
         >
           <a>Rename</a>
-          <a>Duplicate Collection</a>
+          <a onClick={this.duplicateCollection}>Duplicate Collection</a>
           <a>Make Private</a>
           <a>Delete </a>
         </div>

@@ -84,7 +84,6 @@ export default class OrderConfirmation extends React.Component<any, State> {
   };
 
   render() {
-    console.log(this.context.confirmedOrderLoading);
     if (this.context.confirmedOrderLoading) {
       return (
         <div className={cn("funnel-page", styles["OrderConfirmation"])}>
@@ -109,7 +108,6 @@ export default class OrderConfirmation extends React.Component<any, State> {
     if (orderPaymentOption && orderPaymentOption.type === "stripe_payments") {
       selectedPaymentOption = PaymentOption.CreditCard;
     }
-    console.log(this.context.confirmedOrder);
     const shippingAddress = this.parseAddress(
       get(
         this.context.confirmedOrder,

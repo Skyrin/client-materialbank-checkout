@@ -20,6 +20,7 @@ import {
   CollectionsQueryInput,
   CreateCollectionInput,
 } from "./CollectionsAPI/models";
+import { ProductsCache } from "./ProductsCache";
 
 /**
  * This class is used for handling the Context's internal data.
@@ -34,6 +35,7 @@ export enum Modals {
   UploadPhoto = "upload-photo",
   CreateCollection = "create-collection",
   ShareCollection = "share-collection",
+  DuplicateCollection = "duplicate-collection",
   None = "none",
 }
 
@@ -63,6 +65,8 @@ abstract class BaseAppContextState {
   public set collaborators(newCollaborators) {
     this.internalCollaborators = newCollaborators;
   }
+
+  public productsCache?: ProductsCache;
 
   public get cart() {
     return cloneDeep(this.internalCart);
