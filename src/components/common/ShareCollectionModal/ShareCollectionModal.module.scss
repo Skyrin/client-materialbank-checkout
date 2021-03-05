@@ -102,6 +102,7 @@
 
   .inputField {
     width: 100%;
+    pointer-events: none;
   }
 
   .copyButton {
@@ -245,6 +246,7 @@ span {
       border-radius: 100%;
       margin-left: auto;
     }
+
     .unChecked {
       background-color: white;
     }

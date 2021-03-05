@@ -28,7 +28,7 @@ export class ShareCollectionModal extends React.Component<Props, State> {
 
     this.state = {
       email: null,
-      publicLink: null,
+      publicLink: "https://designshop.link",
       collaborators: [
         {
           id: null,
@@ -153,7 +153,6 @@ export class ShareCollectionModal extends React.Component<Props, State> {
         <div className={styles.inputBox}>
           <Input
             className={styles.inputField}
-            placeholder="https://designshop.link"
             value={this.state.publicLink}
             type="text"
             onChange={(val: string) => this.setState({ publicLink: val })}
