@@ -3,9 +3,6 @@ import { NavLink } from "react-router-dom";
 import { COLLECTIONS_URL } from "../../../../constants/urls";
 import ItemCard from "../../common/ItemCard/ItemCard";
 import CollectionsToolbar from "../../common/Toolbar/CollectionsToolbar";
-import face1 from "../../../../assets/images/face1.jpeg";
-import face2 from "../../../../assets/images/face2.jpg";
-import letter1 from "../../../../assets/images/letter1.png";
 import UploadCard from "../../common/UploadCard/UploadCard";
 import AddToCartButton from "components/CollectionsAndPalettes/common/AddToCartButton/AddToCartButton";
 import styles from "components/CollectionsAndPalettes/Collections/Collection/Collection.module.scss";
@@ -107,7 +104,7 @@ export default class Collection extends React.Component<any, any> {
     };
   }
 
-  commonAreaIsInViewport = () => {
+  isInViewport = () => {
     const elem = document.querySelector(".commonArea");
     if (elem) {
       const bounding = elem.getBoundingClientRect();
@@ -120,8 +117,8 @@ export default class Collection extends React.Component<any, any> {
     }
   };
   scrollingBehaviour = () => {
-    let moreIdeas = this.commonAreaIsInViewport();
-    this.setState({ commonAreaIsInViewport: moreIdeas });
+    let moreIdeas = this.isInViewport();
+    this.setState({ isInViewPort: moreIdeas });
   };
 
   toggleMode = (mode) => {
@@ -137,6 +134,62 @@ export default class Collection extends React.Component<any, any> {
     window.addEventListener("scroll", this.scrollingBehaviour);
     let moreIdeas = this.commonAreaIsInViewport();
     this.setState({ commonAreaIsInViewport: moreIdeas });
+
+    //TODO implement the call
+    const collaborators = [
+      {
+        id: 1,
+        firstName: "Anne",
+        lastName: "Enduser",
+        isAuthenticated: true,
+        isSharedWith: true,
+        imagePath:
+          "https://vanishingportrait.com/wp-content/uploads/2019/05/tiffanytrenda-vanishingportrait-identity.jpg",
+        email: "anne.enduser@gmail.com",
+      },
+      {
+        id: 2,
+        firstName: "Dave",
+        lastName: "Friendname",
+        isAuthenticated: false,
+        isSharedWith: true,
+        imagePath:
+          "https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg?size=626&ext=jpg",
+        email: "name.@gmail.com",
+      },
+      {
+        id: 3,
+        firstName: "Michael",
+        lastName: "Otherguy",
+        isAuthenticated: false,
+        isSharedWith: true,
+        imagePath:
+          "https://i.pinimg.com/originals/9c/a9/b2/9ca9b293ed52b3a124b802449eb653d0.jpg",
+        email: "name@gmail.com",
+      },
+      {
+        id: 4,
+        firstName: "Amelia",
+        lastName: "User",
+        isAuthenticated: false,
+        isSharedWith: true,
+        imagePath:
+          "https://www.adobe.com/content/dam/cc/us/en/creativecloud/photography/discover/portrait-photography/CODERED_B1_portrait_photography-P4a_438x447.jpg.img.jpg",
+        email: "name@gmail.com",
+      },
+      {
+        id: 5,
+        firstName: "Marie",
+        lastName: "Ishere",
+        isAuthenticated: false,
+        isSharedWith: false,
+        imagePath:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWRntDjXs_RggTSWM4AdHwTQ4ppLL44GLoFw&usqp=CAU",
+        email: "name@gmail.com",
+      },
+    ];
+    this.context.storeCollaborators(collaborators);
+    this.setState({ person: collaborators });
   }
 
   componentWillUnmount() {
@@ -161,7 +214,9 @@ export default class Collection extends React.Component<any, any> {
             "your uploads",
             "price",
           ]}
-          contributors={[face1, face2, letter1, face1, face2, letter1, face1]}
+          collaborators={this.state.person.map(
+            (person: any) => person.imagePath
+          )}
           activeButtonDisplay={this.state.display}
           toggleDisplay={this.toggleDisplay}
           activeButtonMode={this.state.mode}

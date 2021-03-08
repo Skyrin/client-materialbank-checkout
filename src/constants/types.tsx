@@ -1,5 +1,6 @@
 // TODO: Update this
 // Fields are marked as optional so that we can work with partial objects
+
 export type CartT = {
   id?: string;
   items?: CartItemT[];
@@ -148,6 +149,16 @@ export type CustomerT = {
   mobile?: string;
 };
 
+export type CollaboratorT = {
+  id?: number;
+  firstName?: string;
+  lastName?: string;
+  isAuthenticated?: boolean;
+  isSharedWith?: boolean;
+  imagePath?: any;
+  email?: string;
+};
+
 export type PaletteItemT = {
   id?: number;
   sku?: string;
@@ -220,4 +231,19 @@ export type CollectionT = {
   updatedOn?: string;
   items?: CollectionItemT[];
   collaborators?: CollectionCollaboratorT[];
+};
+
+export type AlgoliaProductT = {
+  sku?: string;
+  name?: string;
+  color?: string;
+  manufacturer?: string;
+  price_sign?: string;
+  image_url?: string;
+  thumbnail_url?: string;
+};
+
+export type CachedProductT = {
+  loading: boolean;
+  data?: AlgoliaProductT;
 };

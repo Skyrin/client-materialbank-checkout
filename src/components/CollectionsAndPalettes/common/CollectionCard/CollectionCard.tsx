@@ -1,7 +1,7 @@
 import { CollectionT } from "constants/types";
 import * as React from "react";
 import styles from "../../common/ItemCard/ItemCard.module.scss";
-import Contributors from "../Contributors/Contributors";
+import Collaborators from "../Collaborators/Collaborators";
 
 interface Props {
   collection: CollectionT;
@@ -30,7 +30,7 @@ export default class ItemCard extends React.Component<Props, any> {
         <div className={styles.infoContainer}>
           <div className={styles.textContainer}>
             <div className={styles.darker}>{collection.name}</div>
-            <Contributors small contributors={collection.collaborators} />
+            <Collaborators small collaborators={collection.collaborators} />
           </div>
           <div>{this.renderVisibility()}</div>
         </div>
