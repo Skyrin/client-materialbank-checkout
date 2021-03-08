@@ -1,5 +1,12 @@
 import * as React from "react";
-import { CartT, CollectionT, CustomerT, OrderT } from "constants/types";
+import {
+  AddressT,
+  CartT,
+  CollaboratorT,
+  CollectionT,
+  CustomerT,
+  OrderT,
+} from "constants/types";
 import { cloneDeep } from "lodash-es";
 import { CartAddressInput } from "./CheckoutAPI/models";
 import {
@@ -27,11 +34,13 @@ export enum Modals {
   AccountExists = "account-exists",
   UploadPhoto = "upload-photo",
   CreateCollection = "create-collection",
+  ShareCollection = "share-collection",
   DuplicateCollection = "duplicate-collection",
   None = "none",
 }
 
 abstract class BaseAppContextState {
+  private internalCollaborators?: CollaboratorT = {};
   private internalCart?: CartT = {};
   private internalCartInfoLoading?: boolean = false;
   private internalCustomer?: CustomerT = {};
@@ -44,8 +53,18 @@ abstract class BaseAppContextState {
   private internalSelectedPaymentOption?: PaymentOption;
   private internalCollections?: CollectionT[] = [];
   private internalCollectionsLoading: boolean = false;
+
   private modal?: Modals = Modals.None;
+
   private internalOrdersLoading?: boolean = false;
+
+  public get collaborators() {
+    return cloneDeep(this.internalCollaborators);
+  }
+
+  public set collaborators(newCollaborators) {
+    this.internalCollaborators = newCollaborators;
+  }
 
   public productsCache?: ProductsCache;
 
@@ -152,6 +171,10 @@ abstract class BaseAppContextState {
  * which will be provided to consumers
  */
 export class AppContextState extends BaseAppContextState {
+  storeCollaborators(newCollaborator) {}
+
+  async getCollaborators() {}
+
   updateCart(newCart: CartT) {}
 
   updateCustomer(newCustomer: CustomerT) {}
