@@ -1,7 +1,7 @@
 import { PaletteT } from "constants/types";
 import * as React from "react";
 import styles from "../../common/ItemCard/ItemCard.module.scss";
-import Contributors from "../Contributors/Contributors";
+import Collaborators from "../Collaborators/Collaborators";
 import cn from "classnames";
 
 interface Props {
@@ -36,7 +36,7 @@ export default class PaletteCard extends React.Component<Props, any> {
           <div className={styles.textContainer}>
             <div className={styles.darker}>{palette.name}</div>
             {palette.collaborators && (
-              <Contributors small contributors={palette.collaborators} />
+              <Collaborators small collaborators={palette.collaborators} />
             )}
           </div>
           <div>

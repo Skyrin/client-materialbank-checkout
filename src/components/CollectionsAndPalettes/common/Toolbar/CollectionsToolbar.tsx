@@ -44,6 +44,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
       isOpened: false,
     };
     this.wrapperRef = React.createRef();
+    this.onClickButtonRedirect = this.onClickButtonRedirect.bind(this);
   }
 
   handleClickOutside = (evt: any) => {
@@ -80,15 +81,16 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
     return <Collaborators collaborators={this.props.collaborators} />;
   };
 
-  onClickButtonRedirect = () => {
-    if (this.props.activeButtonDisplay) {
-      let displayURL =
-        this.props.activeButtonDisplay === "collections"
-          ? PALETTES_URL
-          : COLLECTIONS_URL;
-      this.props.history.push(displayURL);
-    }
-  };
+  onClickButtonRedirect(button: string): any {
+    const redirectURLS = {
+      collections: COLLECTIONS_URL,
+      palettes: PALETTES_URL,
+    };
+    const currentURL = this.props.history.location.pathname;
+
+    if (redirectURLS[button] === currentURL) return;
+    else this.props.history.push(redirectURLS[button]);
+  }
 
   componentDidMount() {
     document.addEventListener("mousedown", this.handleClickOutside);
@@ -127,16 +129,14 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
         </div>
         <div className="horizontal-divider-toolbar"></div>
         <div className={styles.toolbarContent}>
-          <div
-            className={styles.navigationButtons}
-            onClick={this.onClickButtonRedirect}
-          >
+          <div className={styles.navigationButtons}>
             <RoundButtons
               buttons={this.props.buttons}
               selectedButton={this.props.activeButtonDisplay}
               onButtonSelected={this.props.toggleDisplay}
               buttonClassName={"grey"}
               activeButtonClassName={"active"}
+              onClick={this.onClickButtonRedirect}
             />
           </div>
 

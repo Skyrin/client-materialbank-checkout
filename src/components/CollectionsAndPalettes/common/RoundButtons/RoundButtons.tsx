@@ -10,6 +10,7 @@ interface Props {
   onClick?: Function;
 }
 
+//TODO create another component for filter round buttons
 export default class RoundButtons extends React.Component<Props, any> {
   switchDisplay(e, index, button) {
     this.props.onButtonSelected(button);
@@ -18,7 +19,10 @@ export default class RoundButtons extends React.Component<Props, any> {
   renderButton(index, button, buttonStyling) {
     return (
       <div
-        onClick={(e) => this.switchDisplay(e, index, button)}
+        onClick={(e) => {
+          this.switchDisplay(e, index, button);
+          this.props.onClick(button);
+        }}
         className={cn(
           "button collection ",
           buttonStyling[button],
