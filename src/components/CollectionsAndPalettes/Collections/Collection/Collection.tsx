@@ -104,7 +104,7 @@ export default class Collection extends React.Component<any, any> {
     };
   }
 
-  isInViewport = () => {
+  commonAreaIsInViewport = () => {
     const elem = document.querySelector(".commonArea");
     if (elem) {
       const bounding = elem.getBoundingClientRect();
@@ -117,8 +117,8 @@ export default class Collection extends React.Component<any, any> {
     }
   };
   scrollingBehaviour = () => {
-    let moreIdeas = this.isInViewport();
-    this.setState({ isInViewPort: moreIdeas });
+    let moreIdeas = this.commonAreaIsInViewport();
+    this.setState({ commonAreaIsInViewport: moreIdeas });
   };
 
   toggleMode = (mode) => {
@@ -214,9 +214,10 @@ export default class Collection extends React.Component<any, any> {
             "your uploads",
             "price",
           ]}
-          collaborators={this.state.person.map(
-            (person: any) => person.imagePath
-          )}
+          collaborators={
+            this.state.person &&
+            this.state.person.map((person: any) => person.imagePath)
+          }
           activeButtonDisplay={this.state.display}
           toggleDisplay={this.toggleDisplay}
           activeButtonMode={this.state.mode}
