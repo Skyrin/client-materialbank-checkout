@@ -19,7 +19,6 @@ function LoginFacebook(props: Props) {
     <div>
       <FacebookLogin
         appId="562118384400275"
-        autoLoad={true}
         fields="name,email,picture"
         scope="public_profile,user_friends"
         callback={onCallback}
