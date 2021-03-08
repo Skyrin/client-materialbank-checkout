@@ -1,4 +1,10 @@
-import { CartT, CollectionT, CustomerT, OrderT } from "constants/types";
+import {
+  CartT,
+  CollaboratorT,
+  CollectionT,
+  CustomerT,
+  OrderT,
+} from "constants/types";
 import * as React from "react";
 import { AppContext, AppContextState, Modals } from "./AppContext";
 import { cloneDeep, isArray, isString, merge, mergeWith } from "lodash-es";
@@ -64,6 +70,14 @@ export default class AppContextManager extends React.Component<Props> {
 
   // 'actions' holds all the functions which can be used by context consumers to manipulate the context
   private actions = {
+    storeCollaborators: (persons: CollaboratorT) => {
+      this.contextState.collaborators = persons;
+    },
+
+    getCollaborators: async () => {
+      return this.contextState.collaborators;
+    },
+
     updateCart: (newCart: CartT) => {
       this.contextState.cart = mergeWith(
         this.contextState.cart,
