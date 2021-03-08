@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   AddressT,
   CartT,
-  CollaboratorT,
+  CollectionCollaboratorT,
   CollectionT,
   CustomerT,
   OrderT,
@@ -41,7 +41,7 @@ export enum Modals {
 }
 
 abstract class BaseAppContextState {
-  private internalCollaborators?: CollaboratorT = {};
+  private internalCollaborators?: CollectionCollaboratorT = {};
   private internalCart?: CartT = {};
   private internalCartInfoLoading?: boolean = false;
   private internalCustomer?: CustomerT = {};

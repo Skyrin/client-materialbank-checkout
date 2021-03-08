@@ -5,11 +5,6 @@ import { AppContext, AppContextState, Modals } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
 import { RouteComponentProps } from "react-router-dom";
-import {
-  CollectionCollaboratorT,
-  CollectionItemT,
-  CollectionT,
-} from "../../../constants/types";
 
 type State = {
   isLoading: boolean;

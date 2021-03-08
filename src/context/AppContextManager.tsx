@@ -1,6 +1,6 @@
 import {
   CartT,
-  CollaboratorT,
+  CollectionCollaboratorT,
   CollectionT,
   CustomerT,
   OrderT,
@@ -70,7 +70,7 @@ export default class AppContextManager extends React.Component<Props> {
 
   // 'actions' holds all the functions which can be used by context consumers to manipulate the context
   private actions = {
-    storeCollaborators: (persons: CollaboratorT) => {
+    storeCollaborators: (persons: CollectionCollaboratorT) => {
       this.contextState.collaborators = persons;
     },
 
