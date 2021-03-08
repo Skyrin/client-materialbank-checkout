@@ -15,6 +15,8 @@ import Loader from "components/common/Loader/Loader";
 import { UpdateCustomerInput } from "context/CustomerAPI/models";
 import { ClientError } from "GraphqlClient";
 import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
+import LoginGoogle from "components/common/LoginGoogle/LoginGoogle";
+import LoginFacebook from "components/common/LoginFacebook/LoginFacebook";
 
 type Props = RouteComponentProps;
 
@@ -170,9 +172,22 @@ export default class UserAccount extends React.Component<Props, State> {
             />
             <div className={styles.connectAccountText}>Sign in with Google</div>
           </div>
-          <button className={styles.connectAccountButton} onClick={() => {}}>
-            Connect
-          </button>
+          {/*<button className={styles.connectAccountButton} onClick={() => {}}>*/}
+          {/*  Connect*/}
+          {/*</button>*/}
+
+          <LoginGoogle
+            className={styles.connectAccountButton}
+            buttonProp={
+              <button
+                className={styles.connectAccountButton}
+                onClick={() => {}}
+              >
+                Connect
+              </button>
+            }
+          />
+
           <div
             className={cn("row center-vertically", styles.linkedAccountOption)}
           >
@@ -187,9 +202,12 @@ export default class UserAccount extends React.Component<Props, State> {
               Sign in with Facebook
             </div>
           </div>
-          <button className={styles.connectAccountButton} onClick={() => {}}>
-            Connect
-          </button>
+
+          <LoginFacebook
+            buttonText={"Connect"}
+            className={styles.connectAccountButton}
+            hasIcon={false}
+          />
         </div>
         <div className="horizontal-divider margin-top-big" />
       </div>

@@ -8,6 +8,7 @@ const appId = "473685456965260";
 type Props = {
   buttonText: string;
   className?: string;
+  hasIcon?: boolean;
 };
 
 function LoginFacebook(props: Props) {
@@ -23,13 +24,12 @@ function LoginFacebook(props: Props) {
         scope="public_profile,user_friends"
         callback={onCallback}
         textButton={props.buttonText}
-        render={(renderProps) => (
-          <button onClick={renderProps.onClick}>
-            This is my custom FB button
-          </button>
-        )}
-        cssClass={styles.signIn}
-        icon={<div className={cn("fab", "fa-facebook-f", styles.icon)} />}
+        cssClass={props.className}
+        icon={
+          props.hasIcon && (
+            <div className={cn("fab", "fa-facebook-f", styles.icon)} />
+          )
+        }
       >
         Sign in with Faceook
       </FacebookLogin>

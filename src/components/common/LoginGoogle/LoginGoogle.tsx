@@ -7,8 +7,8 @@ const clientId =
   "436309153549-c40ouqns46cb7k8tkpuva6ts9fa0krpv.apps.googleusercontent.com";
 
 type Props = {
-  buttonText: string;
   className?: string;
+  buttonProp?: any;
 };
 
 function LoginGoogle(props: Props) {
@@ -26,13 +26,7 @@ function LoginGoogle(props: Props) {
         clientId={clientId}
         buttonText="Login"
         render={(renderProps) => (
-          <div
-            className={cn(styles.signIn, props.className)}
-            onClick={renderProps.onClick}
-          >
-            <div className={cn("fab", "fa-google", styles.icon)} />
-            {props.buttonText}
-          </div>
+          <div onClick={renderProps.onClick}>{props.buttonProp}</div>
         )}
         onSuccess={onSuccess}
         onFailure={onFailure}

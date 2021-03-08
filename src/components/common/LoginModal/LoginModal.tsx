@@ -108,11 +108,20 @@ export class LoginModal extends React.Component<any, State> {
           <div className={styles.modalContent}>
             <div className={styles.title}>Sign In</div>
 
-            <LoginFacebook buttonText={"Sign in with Facebook"} />
+            <LoginFacebook
+              buttonText={"Sign in with Facebook"}
+              className={styles.signInWithButton}
+              hasIcon={true}
+            />
 
             <LoginGoogle
               className={styles.signInWithButton}
-              buttonText={"Sign in with Google"}
+              buttonProp={
+                <div className={cn(styles.signInWithButton)}>
+                  <div className={cn("fab", "fa-google", styles.icon)} />
+                  {"Sign in with Google"}
+                </div>
+              }
             />
 
             <div className={styles.signInWithButton}>

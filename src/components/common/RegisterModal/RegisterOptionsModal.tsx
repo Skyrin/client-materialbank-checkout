@@ -55,11 +55,20 @@ export class RegisterOptionsModal extends React.Component<any, any> {
           <div className={styles.modalContent}>
             <div className={styles.title}>Register a New Account</div>
 
-            <LoginFacebook buttonText={"Continue with Facebook"} />
+            <LoginFacebook
+              buttonText={"Continue with Facebook"}
+              className={styles.signInWithButton}
+              hasIcon={true}
+            />
 
             <LoginGoogle
               className={styles.signInWithButton}
-              buttonText={"Continue with Google"}
+              buttonProp={
+                <div className={cn(styles.signInWithButton)}>
+                  <div className={cn("fab", "fa-google", styles.icon)} />
+                  {"Connect with Google"}
+                </div>
+              }
             />
 
             <div className={styles.signInWithButton}>
