@@ -1,5 +1,6 @@
 // TODO: Update this
 // Fields are marked as optional so that we can work with partial objects
+
 export type CartT = {
   id?: string;
   items?: CartItemT[];
@@ -146,6 +147,16 @@ export type CustomerT = {
   default_shipping?: string;
   is_subscribed?: boolean;
   mobile?: string;
+};
+
+export type CollaboratorT = {
+  id?: number;
+  firstName?: string;
+  lastName?: string;
+  isAuthenticated?: boolean;
+  isSharedWith?: boolean;
+  imagePath?: any;
+  email?: string;
 };
 
 export type PaletteItemT = {

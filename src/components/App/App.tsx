@@ -24,6 +24,7 @@ import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterM
 import { AccountExistsModal } from "components/common/AccountExistsModal/AccountExistsModal";
 import { CreateCustomerInput } from "context/CustomerAPI/models";
 import CollectionsAndPalettes from "../CollectionsAndPalettes/CollectionsAndPalettes";
+import { ShareCollectionModal } from "../common/ShareCollectionModal/ShareCollectionModal";
 import { DuplicateCollectionModal } from "../common/DuplicateCollectionModal/DuplicateCollectionModal";
 
 type State = {
@@ -97,8 +98,12 @@ class App extends React.Component<any, State> {
         {this.context.getModalOpen() === Modals.UploadPhoto && (
           <UploadPhotoModal />
         )}
+
         {this.context.getModalOpen() === Modals.CreateCollection && (
           <CreateCollectionModal />
+        )}
+        {this.context.getModalOpen() === Modals.ShareCollection && (
+          <ShareCollectionModal />
         )}
         {this.context.getModalOpen() === Modals.DuplicateCollection && (
           <DuplicateCollectionModal />
