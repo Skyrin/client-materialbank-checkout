@@ -19,7 +19,7 @@ function LoginFacebook(props: Props) {
   return (
     <div>
       <FacebookLogin
-        appId="562118384400275"
+        appId={appId}
         fields="name,email,picture"
         scope="public_profile,user_friends"
         callback={onCallback}
