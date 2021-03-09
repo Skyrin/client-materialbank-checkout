@@ -149,7 +149,7 @@ export type CustomerT = {
   mobile?: string;
 };
 
-export type CollaboratorT = {
+export type collectionCollaboratorT = {
   id?: number;
   firstName?: string;
   lastName?: string;

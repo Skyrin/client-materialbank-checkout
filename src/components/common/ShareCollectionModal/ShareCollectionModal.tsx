@@ -7,12 +7,12 @@ import Loader from "components/common/Loader/Loader";
 import { RouteComponentProps } from "react-router-dom";
 import Input from "../Input/Input";
 import Checkbox from "../Checkbox/Checkbox";
-import { CollaboratorT } from "../../../constants/types";
+import { CollectionCollaboratorT } from "../../../constants/types";
 
 type State = {
   email: string;
   publicLink: string;
-  collaborators: CollaboratorT[];
+  collaborators: CollectionCollaboratorT[];
   isPrivate: boolean;
   isLoading: boolean;
 };

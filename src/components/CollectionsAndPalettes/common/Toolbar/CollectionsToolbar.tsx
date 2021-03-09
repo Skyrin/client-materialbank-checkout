@@ -34,6 +34,9 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
     this.context.openModal(Modals.ShareCollection);
   };
 
+  deleteCollection = () => {
+    this.context.openModal(Modals.DeleteCollection);
+  };
   duplicateCollection = () => {
     this.context.openModal(Modals.DuplicateCollection);
   };
@@ -71,7 +74,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
           <a>Rename</a>
           <a onClick={this.duplicateCollection}>Duplicate Collection</a>
           <a>Make Private</a>
-          <a>Delete </a>
+          <a onClick={this.deleteCollection}>Delete </a>
         </div>
       </React.Fragment>
     );

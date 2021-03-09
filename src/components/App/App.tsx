@@ -24,6 +24,7 @@ import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterM
 import { AccountExistsModal } from "components/common/AccountExistsModal/AccountExistsModal";
 import { CreateCustomerInput } from "context/CustomerAPI/models";
 import CollectionsAndPalettes from "../CollectionsAndPalettes/CollectionsAndPalettes";
+import { DeleteCollectionModal } from "../common/DeleteCollectionModal/DeleteCollectionModal";
 import { ShareCollectionModal } from "../common/ShareCollectionModal/ShareCollectionModal";
 import { DuplicateCollectionModal } from "../common/DuplicateCollectionModal/DuplicateCollectionModal";
 
@@ -98,7 +99,6 @@ class App extends React.Component<any, State> {
         {this.context.getModalOpen() === Modals.UploadPhoto && (
           <UploadPhotoModal />
         )}
-
         {this.context.getModalOpen() === Modals.CreateCollection && (
           <CreateCollectionModal />
         )}
@@ -107,6 +107,9 @@ class App extends React.Component<any, State> {
         )}
         {this.context.getModalOpen() === Modals.DuplicateCollection && (
           <DuplicateCollectionModal />
+        )}
+        {this.context.getModalOpen() === Modals.DeleteCollection && (
+          <DeleteCollectionModal />
         )}
         {this.context.getModalOpen() === Modals.Login && <LoginModal />}
         {this.context.getModalOpen() === Modals.RegisterOptions && (
