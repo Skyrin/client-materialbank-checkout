@@ -128,6 +128,14 @@
     border-radius: var(--card-border-radius-bg);
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+    &.privateCard {
+      flex-direction: column;
+      row-gap: 5px;
+
+      i {
+        margin-right: 5px;
+      }
+    }
 
     &.infoMode {
       position: absolute;

@@ -6,6 +6,7 @@ import CollectionsToolbar from "../../common/Toolbar/CollectionsToolbar";
 import UploadCard from "../../common/UploadCard/UploadCard";
 import AddToCartButton from "components/CollectionsAndPalettes/common/AddToCartButton/AddToCartButton";
 import styles from "components/CollectionsAndPalettes/Collections/Collection/Collection.module.scss";
+import cn from "classnames";
 import {
   AppContext,
   AppContextState,
@@ -222,11 +223,21 @@ export default class Collection extends React.Component<any, any> {
           activeButtonMode={this.state.mode}
           toggleMode={this.toggleMode}
         />
-        <div className="masonry-container ">
+        <div
+          className={cn(
+            "masonry-container ",
+            !this.state.card.length ? styles.emptyCollection : ""
+          )}
+        >
           <UploadCard
             caption={"Upload a photo or drag & drop here "}
             onClick={this.uploadPhoto}
           />
+          {!this.state.card.length && (
+            <div className={styles.empty}>
+              You have not added anything to this collection yet!
+            </div>
+          )}
           {this.state.card.map((item: any, index: number) => {
             return (
               <ItemCard
@@ -236,7 +247,9 @@ export default class Collection extends React.Component<any, any> {
               />
             );
           })}
-          <AddToCartButton isInViewPort={this.state.isInViewPort} />
+          {this.state.card.length && (
+            <AddToCartButton isInViewPort={this.state.isInViewPort} />
+          )}
         </div>
         <MoreIdeas />
       </React.Fragment>

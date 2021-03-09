@@ -9,8 +9,10 @@ import {
   AppContextState,
   Modals,
 } from "../../../../context/AppContext";
+import { COLLECTIONS_URL, PALETTES_URL } from "../../../../constants/urls";
 
 interface Props {
+  history?: any;
   title: string;
   buttons: any;
   activeButtonMode?: any;
@@ -42,6 +44,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
       isOpened: false,
     };
     this.wrapperRef = React.createRef();
+    this.onClickButtonRedirect = this.onClickButtonRedirect.bind(this);
   }
 
   handleClickOutside = (evt: any) => {
@@ -77,6 +80,17 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
   renderCollectionCollaborators = () => {
     return <Collaborators collaborators={this.props.collaborators} />;
   };
+
+  onClickButtonRedirect(button: string): any {
+    const redirectURLS = {
+      collections: COLLECTIONS_URL,
+      palettes: PALETTES_URL,
+    };
+    const currentURL = this.props.history.location.pathname;
+
+    if (redirectURLS[button] === currentURL) return;
+    else this.props.history.push(redirectURLS[button]);
+  }
 
   componentDidMount() {
     document.addEventListener("mousedown", this.handleClickOutside);
@@ -122,6 +136,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
               onButtonSelected={this.props.toggleDisplay}
               buttonClassName={"grey"}
               activeButtonClassName={"active"}
+              onClick={this.onClickButtonRedirect}
             />
           </div>
 

@@ -68,7 +68,7 @@ export default class Collections extends React.Component<any, State> {
             <React.Fragment>
               <UploadCard
                 caption={"Create a Collection"}
-                hasIcon
+                icon={"far fa-plus"}
                 onClick={this.createCollection}
               />
               {this.context.collections.map((collection) => {

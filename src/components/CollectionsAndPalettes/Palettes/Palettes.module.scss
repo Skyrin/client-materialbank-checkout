@@ -1,0 +1,21 @@
+@import "styles/global";
+@import "styles/variables.scss";
+
+.collectionToolbar {
+  display: flex;
+}
+.cardCollection {
+  display: grid;
+  column-gap: $margin-small-4;
+  margin-bottom: $margin-huge;
+  grid-template-columns: repeat(4, 1fr);
+}
+.emptyCollection {
+  grid-template-columns: 1fr 3fr;
+  align-items: center;
+  column-gap: 90px;
+}
+.empty {
+  color: #615c58;
+  font-size: 20px;
+}
