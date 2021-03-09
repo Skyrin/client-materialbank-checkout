@@ -2,6 +2,7 @@ import { CollectionT } from "constants/types";
 import * as React from "react";
 import styles from "../../common/ItemCard/ItemCard.module.scss";
 import Collaborators from "../Collaborators/Collaborators";
+import cn from "classnames";
 
 interface Props {
   collection: CollectionT;
@@ -27,12 +28,22 @@ export default class ItemCard extends React.Component<Props, any> {
         <div className={styles.imageContainer}>
           <img src={imagePath} alt="" />
         </div>
-        <div className={styles.infoContainer}>
+        <div
+          className={cn(
+            styles.infoContainer,
+            !collection.isPublic ? styles.privateCard : ""
+          )}
+        >
           <div className={styles.textContainer}>
             <div className={styles.darker}>{collection.name}</div>
-            <Collaborators small collaborators={collection.collaborators} />
+            {collection.collaborators && (
+              <Collaborators small collaborators={collection.collaborators} />
+            )}
           </div>
-          <div>{this.renderVisibility()}</div>
+          <div>
+            {!collection.isPublic && <i className={"far fa-lock"} />}
+            {this.renderVisibility()}
+          </div>
         </div>
       </div>
     );

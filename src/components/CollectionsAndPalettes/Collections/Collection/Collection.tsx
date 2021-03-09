@@ -6,6 +6,7 @@ import CollectionsToolbar from "../../common/Toolbar/CollectionsToolbar";
 import UploadCard from "../../common/UploadCard/UploadCard";
 import AddToCartButton from "components/CollectionsAndPalettes/common/AddToCartButton/AddToCartButton";
 import styles from "components/CollectionsAndPalettes/Collections/Collection/Collection.module.scss";
+import cn from "classnames";
 import {
   AppContext,
   AppContextState,
@@ -117,8 +118,9 @@ export default class Collection extends React.Component<any, any> {
     }
   };
   scrollingBehaviour = () => {
-    let moreIdeas = this.commonAreaIsInViewport();
-    this.setState({ commonAreaIsInViewport: moreIdeas });
+    let isInViewport = this.commonAreaIsInViewport();
+    console.log("IS IN VIEWPORT", isInViewport);
+    this.setState({ commonAreaIsInViewport: isInViewport });
   };
 
   toggleMode = (mode) => {
@@ -132,8 +134,10 @@ export default class Collection extends React.Component<any, any> {
   componentDidMount() {
     window.scrollTo(0, 0);
     window.addEventListener("scroll", this.scrollingBehaviour);
-    let moreIdeas = this.commonAreaIsInViewport();
-    this.setState({ commonAreaIsInViewport: moreIdeas });
+    // TODO: Figure out why this is needed. I suspect images are not loaded fully when this runs.
+    window.setTimeout(() => {
+      this.scrollingBehaviour();
+    }, 100);
 
     //TODO implement the call
     const collaborators = [
@@ -223,11 +227,21 @@ export default class Collection extends React.Component<any, any> {
           activeButtonMode={this.state.mode}
           toggleMode={this.toggleMode}
         />
-        <div className="masonry-container ">
+        <div
+          className={cn(
+            "masonry-container ",
+            !this.state.card.length ? styles.emptyCollection : ""
+          )}
+        >
           <UploadCard
             caption={"Upload a photo or drag & drop here "}
             onClick={this.uploadPhoto}
           />
+          {!this.state.card.length && (
+            <div className={styles.empty}>
+              You have not added anything to this collection yet!
+            </div>
+          )}
           {this.state.card.map((item: any, index: number) => {
             return (
               <ItemCard
@@ -237,9 +251,11 @@ export default class Collection extends React.Component<any, any> {
               />
             );
           })}
-          <AddToCartButton
-            commonAreaIsInViewport={this.state.commonAreaIsInViewport}
-          />
+          {this.state.card.length && (
+            <AddToCartButton
+              commonAreaIsInViewport={this.state.commonAreaIsInViewport}
+            />
+          )}
         </div>
         {/*The commonArea element is added here in order to keep the AddToCart Button inside the Collection Cards container, also decide its position*/}
         <div className={"commonArea"}>

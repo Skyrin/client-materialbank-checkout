@@ -14,6 +14,7 @@ import CollectionsHeader from "./common/CollectionsHeader/CollectionsHeader";
 import CollectionsFooter from "./common/CollectionsFooter/CollectionsFooter";
 import Collection from "./Collections/Collection/Collection";
 import ExploreTags from "./common/ExploreTags/ExploreTags";
+import MoreIdeas from "./common/MoreIdeas/MoreIdeas";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 
 type Props = RouteComponentProps;
@@ -33,11 +34,18 @@ export default class CollectionsAndPalettes extends React.Component<
 > {
   static contextType = AppContext;
   context!: AppContextState;
-
-  state = {
-    display: DisplayOption.Collections,
-  };
-
+  constructor(props) {
+    super(props);
+    let display = DisplayOption.Collections;
+    if (window.location.href.includes(COLLECTIONS_URL)) {
+      display = DisplayOption.Collections;
+    } else if (window.location.href.includes(PALETTES_URL)) {
+      display = DisplayOption.Palettes;
+    }
+    this.state = {
+      display: display,
+    };
+  }
   componentDidMount() {
     if (!this.context.isLoggedIn) {
       this.context.openModal(Modals.Login);
@@ -69,6 +77,7 @@ export default class CollectionsAndPalettes extends React.Component<
                     return (
                       <React.Fragment>
                         <CollectionsToolbar
+                          history={this.props.history}
                           title={"Your Collections & Palettes"}
                           buttons={[
                             DisplayOption.Collections,
@@ -89,6 +98,7 @@ export default class CollectionsAndPalettes extends React.Component<
                     return (
                       <React.Fragment>
                         <CollectionsToolbar
+                          history={this.props.history}
                           title={"Your Collections & Palettes"}
                           buttons={[
                             DisplayOption.Collections,
@@ -104,6 +114,7 @@ export default class CollectionsAndPalettes extends React.Component<
                 />
               </Switch>
               <div className={"commonArea"}>
+                <MoreIdeas />
                 <ExploreTags
                   buttons={[
                     "farmhouse",

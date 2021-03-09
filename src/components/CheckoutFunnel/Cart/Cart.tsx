@@ -7,7 +7,6 @@ import { PERSONAL_INFORMATION_URL } from "constants/urls";
 import Checkbox from "components/common/Checkbox/Checkbox";
 import Input from "components/common/Input/Input";
 import {
-  cardNumberInputFormatter,
   cardNumberInputParser,
   digitsOnlyInputParser,
   expirationDateInputFormatter,
