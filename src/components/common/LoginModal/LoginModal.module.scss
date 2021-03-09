@@ -95,7 +95,7 @@ $element-width: 375px;
   cursor: pointer;
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-md);
-  margin-top: $margin-small-2;
+  margin-top: $margin-small-2 !important;
   transition: background-color 0.15s $ease-in-out;
 
   &:hover {
