@@ -78,7 +78,8 @@ export default class UserShipping extends React.Component<Props, State> {
     this.targetElement = document.querySelector("#modalId");
     this.context.requestCurrentCustomer().then((value) => {
       this.setState({
-        addresses: value.addresses,
+        addresses: [value.addresses[0]],
+        // addresses: value.addresses,
       });
     });
   }
