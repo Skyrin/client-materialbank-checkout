@@ -168,7 +168,7 @@
       i {
         padding: 0 $margin-small-2;
         font-size: 25px;
-        color: white;
+        color: #ccb79e;
         cursor: pointer;
         @include mobile-media {
           font-size: 30px;
@@ -182,7 +182,7 @@
   }
 
   .footerButton {
-    background-color: white;
+    background-color: #ccb79e;
     border-radius: 5px;
     padding: 0;
     color: black;
