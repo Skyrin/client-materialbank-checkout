@@ -1,7 +1,7 @@
 import { CartT, CollaboratorT, CustomerT, OrderT } from "constants/types";
 import * as React from "react";
 import { AppContext, AppContextState, Modals } from "./AppContext";
-import { cloneDeep, isArray, isString, merge, mergeWith } from "lodash-es";
+import { cloneDeep, isArray, isString, merge, mergeWith, get } from "lodash-es";
 import {
   applyCouponToCart,
   createTestCart,
@@ -45,6 +45,7 @@ import {
 } from "./CollectionsAPI/models";
 import { createCollection, getCollections } from "./CollectionsAPI/api";
 import { ProductsCache } from "./ProductsCache";
+import { algoliaProducts } from "algolia";
 
 type Props = {
   children: React.ReactNode;
@@ -465,6 +466,45 @@ export default class AppContextManager extends React.Component<Props> {
     productsCache: new ProductsCache(() => {
       this.forceUpdate();
     }),
+
+    requestRecommendedProductSKUs: async (nrOfProducts: number) => {
+      this.contextState.recommendedProductsLoading = true;
+      this.forceUpdate();
+      const cartProducts = this.contextState.cart.items;
+      const skus = cartProducts.map((p) => p.product.sku);
+      const algProducts = await this.getFullContext().productsCache.getProductsAsync(
+        skus
+      );
+      console.log("ALGOLIA CART PRODUCTS", algProducts);
+      const manufacturersSet = new Set<string>();
+      algProducts
+        .filter((ap) => !ap.loading)
+        .forEach((ap) => manufacturersSet.add(ap.data.manufacturer));
+      console.log("MANUFACTURERS SET", manufacturersSet);
+      const manufacturers = [...manufacturersSet];
+      const manufacturersFilter = manufacturers.map(
+        (man) => `manufacturer:${man}`
+      );
+      console.log("MANUFACTURERS FILTER", manufacturersSet);
+      // Exclude the already added products from the result
+      const skuFilter = skus.map((sku) => `sku:-${sku}`);
+      console.log("SKU FILTER", skuFilter);
+      const options = {
+        filters: 'manufacturer:"Fabrica"',
+        // facetFilters: [manufacturersFilter],
+        hitsPerPage: nrOfProducts,
+      };
+      console.log("ALGOLIA OPTIONS", options);
+      console.log("ALGOLIA INDEX OBJECT", algoliaProducts);
+      const resp = await algoliaProducts.search("", options);
+      console.log("ALGOLIA RESPONSE", resp);
+      const hits = get(resp, "hits", []);
+      console.log("ALGOLIA HITS", hits);
+      const recommendedSkus = hits.map((hit) => hit.sku);
+      this.contextState.recommendedProductSKUs = recommendedSkus;
+      this.contextState.requestRecommendedProductSKUsLoading = false;
+      this.forceUpdate();
+    },
   };
 
   getFullContext = () => {

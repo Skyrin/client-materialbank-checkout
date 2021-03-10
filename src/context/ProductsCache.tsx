@@ -14,6 +14,8 @@ export class ProductsCache {
 
   isBatching = false;
 
+  fetchCallbacks: Function[] = [];
+
   constructor(productsFetchedCallback: Function) {
     this.products = new Map<string, CachedProductT>();
     this.productsFetchedCallback = productsFetchedCallback;
@@ -34,15 +36,41 @@ export class ProductsCache {
     return this.products.get(sku);
   };
 
-  private enqueueSku(sku: stirng) {
+  // This function will only return when the products have been fetched
+  getProductsAsync = async (skus: string[]) => {
+    const missingSkus = [];
+    for (const sku of skus) {
+      if (!this.products.has(sku) || !this.products.get(sku).data) {
+        missingSkus.push(sku);
+      }
+    }
+    if (!missingSkus.length) {
+      return skus.map((sku) => this.products.get(sku));
+    }
+    const productsFetchedPromise = new Promise((resolve, reject) => {
+      this.enqueueSkus(missingSkus, resolve);
+    });
+    await productsFetchedPromise;
+
+    return skus.map((sku) => this.products.get(sku));
+  };
+
+  private enqueueSkus(skus: string[], callback?: Function) {
     // If we're not currently batching skus, start batching for BATCHING_DURATION ms.
-    this.batchedSkus.push(sku);
+    this.batchedSkus.push(...skus);
+    if (callback) {
+      this.fetchCallbacks.push(callback);
+    }
     if (!this.isBatching) {
       this.isBatching = true;
       window.setTimeout(() => {
         this.fetchProducts();
       }, BATCHING_DURATION);
     }
+  }
+
+  private enqueueSku(sku: string, callback?: Function) {
+    this.enqueueSkus([sku], callback);
   }
 
   private async fetchProducts() {
@@ -68,6 +96,8 @@ export class ProductsCache {
       });
     });
     this.isBatching = false;
+    this.fetchCallbacks.forEach((callback) => callback());
+    this.fetchCallbacks = [];
     this.productsFetchedCallback();
   }
 }
