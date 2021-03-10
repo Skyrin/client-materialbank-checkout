@@ -2,7 +2,7 @@ import { CartItemT } from "constants/types";
 import { AppContext, AppContextState } from "context/AppContext";
 import * as React from "react";
 import styles from "./CartItem.module.scss";
-import { get } from "lodash-es";
+import { get, sample } from "lodash-es";
 import { getSamplePage } from "utils/general";
 
 type Props = {
@@ -33,15 +33,18 @@ export default class CartItem extends React.Component<Props> {
         "https://dev.design.shop/static/version1613493863/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/image.jpg"
       )
     );
+    const sampleUrl = getSamplePage(cartItem.product.sku);
     return (
       <div className={styles.CartItem}>
         <div className={styles.itemInfo}>
-          <a href={getSamplePage(cartItem.product.sku)}>
+          <a href={sampleUrl}>
             <img className={styles.image} alt="" src={imageUrl} />
           </a>
           <div className={styles.infoContainer}>
             <span className={styles.lightText}>{manufacturer}</span>
-            <span className={styles.boldText}>{cartItem.product?.name}</span>
+            <a href={sampleUrl} className={styles.boldText}>
+              {cartItem.product?.name}
+            </a>
             {color && <span className={styles.lightText}>{color}</span>}
           </div>
         </div>
