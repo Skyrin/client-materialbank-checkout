@@ -9,7 +9,7 @@ import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./CollectionsAndPalettes.module.scss";
 import Collections from "./Collections/Collections";
 import Palettes from "./Palettes/Palettes";
-import CollectionsToolbar from "./common/Toolbar/CollectionsToolbar";
+import CollectionsToolbar from "./common/CollectionsToolbar/CollectionsToolbar";
 import CollectionsHeader from "./common/CollectionsHeader/CollectionsHeader";
 import CollectionsFooter from "./common/CollectionsFooter/CollectionsFooter";
 import Collection from "./Collections/Collection/Collection";

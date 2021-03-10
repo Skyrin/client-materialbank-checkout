@@ -1,15 +1,25 @@
 @import "styles/global";
 @import "styles/variables.scss";
+@import "styles/mixins.scss";
 
 .collectionToolbar {
   display: flex;
 }
+
 .cardCollection {
   display: grid;
   column-gap: $margin-small-4;
   row-gap: $margin-small-4;
   margin-bottom: $margin-huge;
   grid-template-columns: repeat(4, 1fr);
+  @include mobile-media {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 520px) {
+    grid-template-columns: repeat(1, 1fr);
+    margin-bottom: 40px;
+    row-gap: 15px;
+  }
 }
 
 .loaderContainer {

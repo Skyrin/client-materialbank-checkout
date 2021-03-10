@@ -2,7 +2,7 @@ import * as React from "react";
 import { NavLink } from "react-router-dom";
 import { COLLECTIONS_URL } from "../../../../constants/urls";
 import ItemCard from "../../common/ItemCard/ItemCard";
-import CollectionsToolbar from "../../common/Toolbar/CollectionsToolbar";
+import CollectionsToolbar from "../../common/CollectionsToolbar/CollectionsToolbar";
 import UploadCard from "../../common/UploadCard/UploadCard";
 import AddToCartButton from "components/CollectionsAndPalettes/common/AddToCartButton/AddToCartButton";
 import styles from "components/CollectionsAndPalettes/Collections/Collection/Collection.module.scss";
