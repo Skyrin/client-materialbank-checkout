@@ -40,7 +40,9 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
   duplicateCollection = () => {
     this.context.openModal(Modals.DuplicateCollection);
   };
-
+  makePrivateCollection = () => {
+    this.context.openModal(Modals.MakePrivateCollection);
+  };
   constructor(props: any) {
     super(props);
     this.state = {
@@ -73,7 +75,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
         >
           <a>Rename</a>
           <a onClick={this.duplicateCollection}>Duplicate Collection</a>
-          <a>Make Private</a>
+          <a onClick={this.makePrivateCollection}>Make Private </a>
           <a onClick={this.deleteCollection}>Delete </a>
         </div>
       </React.Fragment>
