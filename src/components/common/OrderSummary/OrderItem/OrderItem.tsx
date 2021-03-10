@@ -31,15 +31,19 @@ export default class OrderItem extends React.Component<Props> {
       "data.thumbnail_url",
       "https://dev.design.shop/static/version1613493863/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/image.jpg"
     );
+
+    const sampleUrl = getSamplePage(orderItem.product_sku);
     return (
       <div className={styles.OrderItem}>
         <div className={styles.itemInfo}>
-          <a href={getSamplePage(orderItem.product_sku)}>
+          <a href={sampleUrl}>
             <img className={styles.image} alt="" src={imageUrl} />
           </a>
           <div className={styles.infoContainer}>
             <span className={styles.lightText}>{manufacturer}</span>
-            <span className={styles.boldText}>{orderItem.product_name}</span>
+            <a href={sampleUrl} className={styles.boldText}>
+              {orderItem.product_name}
+            </a>
             {color && <span className={styles.lightText}>{color}</span>}
           </div>
         </div>

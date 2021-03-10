@@ -41,11 +41,11 @@ export class HistoryOrderItem extends React.Component<Props> {
       "data.thumbnail_url",
       imagePlaceholder
     );
-
+    const sampleUrl = getSamplePage(item.product_sku);
     return (
       <div className={cn(styles["HistoryOrderItem"])}>
         <div className={cn(styles["left-container"])}>
-          <a href={getSamplePage(item.product_sku)}>
+          <a href={sampleUrl}>
             <img src={imageUrl} alt="" className={styles["image"]} />
           </a>
           <div className={cn(styles["brand-model"])}>
@@ -58,9 +58,12 @@ export class HistoryOrderItem extends React.Component<Props> {
             >
               {item.product_sku}
             </div>
-            <div className={cn(styles["model"], "font-weight-medium")}>
+            <a
+              href={sampleUrl}
+              className={cn(styles["model"], "font-weight-medium")}
+            >
               {item.product_name}
-            </div>
+            </a>
           </div>
         </div>
 
