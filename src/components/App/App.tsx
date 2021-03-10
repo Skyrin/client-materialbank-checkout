@@ -27,6 +27,7 @@ import CollectionsAndPalettes from "../CollectionsAndPalettes/CollectionsAndPale
 import { DeleteCollectionModal } from "../common/DeleteCollectionModal/DeleteCollectionModal";
 import { ShareCollectionModal } from "../common/ShareCollectionModal/ShareCollectionModal";
 import { DuplicateCollectionModal } from "../common/DuplicateCollectionModal/DuplicateCollectionModal";
+import { MakePrivateModal } from "../common/MakePrivateModal/MakePrivateModal";
 
 type State = {
   createCustomerInput: CreateCustomerInput;
@@ -110,6 +111,9 @@ class App extends React.Component<any, State> {
         )}
         {this.context.getModalOpen() === Modals.DeleteCollection && (
           <DeleteCollectionModal />
+        )}
+        {this.context.getModalOpen() === Modals.MakePrivateCollection && (
+          <MakePrivateModal />
         )}
         {this.context.getModalOpen() === Modals.Login && <LoginModal />}
         {this.context.getModalOpen() === Modals.RegisterOptions && (
