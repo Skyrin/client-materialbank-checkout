@@ -34,6 +34,7 @@ export default class CollectionsAndPalettes extends React.Component<
 > {
   static contextType = AppContext;
   context!: AppContextState;
+
   constructor(props) {
     super(props);
     let display = DisplayOption.Collections;
@@ -46,6 +47,7 @@ export default class CollectionsAndPalettes extends React.Component<
       display: display,
     };
   }
+
   componentDidMount() {
     if (!this.context.isLoggedIn) {
       this.context.openModal(Modals.Login);
