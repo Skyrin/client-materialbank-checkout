@@ -1,5 +1,6 @@
 @import "styles/global";
 @import "styles/variables.scss";
+@import "styles/mixins.scss";
 
 .uploadContainer {
   height: auto;
@@ -19,6 +20,12 @@
   color: #615c58;
   font-size: var(--font-size-md);
 
+  @media (max-width: 520px) {
+    min-height: 100px;
+    margin-top: 15px;
+    margin-bottom: 0;
+  }
+
   &.collectionUpload {
     height: 380px !important;
   }
@@ -29,6 +36,10 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    @media (max-width: 520px) {
+      flex-direction: row;
+      column-gap: 15px;
+    }
   }
 
   .addIcon {
@@ -43,6 +54,9 @@
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
     cursor: pointer;
     margin-bottom: 10px;
+    @media (max-width: 520px) {
+      margin-bottom: 0;
+    }
 
     &:hover {
       box-shadow: inset 2px 2px 5px 0 #e0dfdd, inset -2px -2px 5px 0 #ffffff;

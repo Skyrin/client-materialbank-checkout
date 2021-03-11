@@ -1,5 +1,6 @@
 @import "styles/global";
 @import "styles/variables.scss";
+@import "styles/mixins.scss";
 
 .exploreContainer {
   margin-top: $margin-huge;
@@ -9,6 +10,13 @@
     flex-direction: row;
     column-gap: 3px;
     padding-top: $margin-small-4;
+    @include mobile-media {
+      overflow: scroll;
+      div {
+        min-width: 140px;
+        white-space: nowrap;
+      }
+    }
   }
 
   .title {

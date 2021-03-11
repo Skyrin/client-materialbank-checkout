@@ -21,7 +21,9 @@ export default class RoundButtons extends React.Component<Props, any> {
       <div
         onClick={(e) => {
           this.switchDisplay(e, index, button);
-          this.props.onClick(button);
+          {
+            this.props.onClick && this.props.onClick(button);
+          }
         }}
         className={cn(
           "button collection ",

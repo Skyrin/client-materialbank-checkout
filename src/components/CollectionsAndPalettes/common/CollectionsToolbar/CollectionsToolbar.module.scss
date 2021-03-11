@@ -11,7 +11,10 @@
   font-size: var(--font-size-title);
   font-weight: var(--font-weight-medium);
   color: $primary-color-user;
-  padding-right: 5px;
+  padding-right: $margin-small;
+  @include mobile-media {
+    font-size: var(--font-size-xxl);
+  }
 }
 
 .toolbarContent {
@@ -19,6 +22,11 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  @include mobile-media {
+    flex-direction: column;
+    align-items: start;
+    row-gap: 10px;
+  }
 }
 
 .navigationButtons {
@@ -127,4 +135,8 @@ a {
 .collaborators {
   display: flex;
   align-items: center;
+}
+
+.hide {
+  display: none;
 }

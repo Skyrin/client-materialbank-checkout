@@ -1,4 +1,5 @@
 @import "styles/variables.scss";
+@import "styles/mixins.scss";
 .pageWrapper {
   display: flex;
   min-height: 100vh;
@@ -7,6 +8,9 @@
 .pageContent {
   flex-grow: 1;
   padding: $margin-huge $margin-huge-5 117px $margin-huge-5;
+  @include mobile-media {
+    padding: 15px;
+  }
 }
 
 * {
