@@ -2,6 +2,7 @@ import * as React from "react";
 import styles from "components/CollectionsAndPalettes/common/CollectionsFooter/CollectionsFooter.module.scss";
 import Logo from "../../../common/Logo/Logo";
 import cn from "classnames";
+import { isOnMobile } from "../../../../utils/responsive";
 
 interface State {
   email: string;
@@ -36,22 +37,45 @@ export default class CollectionsFooter extends React.Component<any, State> {
       email: e.target.value,
     });
   };
+  renderInfoRowMobile = () => {
+    return (
+      <div className={styles.footerRowInfo}>
+        <div className={styles.infoText}>
+          <Logo className={styles.logoFooter} />
+          <div className={cn("button", styles.footerButton)}>How It Works</div>
+        </div>
+        <div className={styles.infoTextParagraph}>
+          Explore samples from hundreds of manufacturers with free overnight
+          shipping.
+          <br />
+          Order by midnight, in your hands by 10:30am the next day.
+        </div>
+      </div>
+    );
+  };
 
   render() {
     return (
       <div className={styles.footer}>
-        <div className={styles.footerRowInfo}>
-          <div className={styles.infoText}>
-            <Logo className={styles.logoFooter} />
-            <div>
-              Explore samples from hundreds of manufacturers with free overnight
-              shipping.
-              <br />
-              Order by midnight, in your hands by 10:30am the next day.
+        {isOnMobile() && this.renderInfoRowMobile()}
+        {!isOnMobile() && (
+          <React.Fragment>
+            <div className={styles.footerRowInfo}>
+              <div className={styles.infoText}>
+                <Logo className={styles.logoFooter} />
+                <div>
+                  Explore samples from hundreds of manufacturers with free
+                  overnight shipping.
+                  <br />
+                  Order by midnight, in your hands by 10:30am the next day.
+                </div>
+              </div>
+              <div className={cn("button", styles.footerButton)}>
+                How It Works
+              </div>
             </div>
-          </div>
-          <div className={cn("button", styles.footerButton)}>How It Works</div>
-        </div>
+          </React.Fragment>
+        )}
         <div className={styles.footerRowLinks}>
           <div className={styles.footerLinkColumn}>
             <span className={styles.sectionTitle}> About Design Shop</span>
