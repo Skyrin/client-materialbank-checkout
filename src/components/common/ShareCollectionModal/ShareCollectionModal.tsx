@@ -7,12 +7,13 @@ import Loader from "components/common/Loader/Loader";
 import { RouteComponentProps } from "react-router-dom";
 import Input from "../Input/Input";
 import Checkbox from "../Checkbox/Checkbox";
-import { CollectionCollaboratorT } from "../../../constants/types";
+import { CollaboratorT } from "../../../constants/types";
+import { isOnMobile } from "../../../utils/responsive";
 
 type State = {
   email: string;
   publicLink: string;
-  collaborators: CollectionCollaboratorT[];
+  collaborators: CollaboratorT[];
   isPrivate: boolean;
   isLoading: boolean;
 };
@@ -114,27 +115,36 @@ export class ShareCollectionModal extends React.Component<Props, State> {
             this.state.collaborators.map((collaborator: any, index: number) => {
               return (
                 <div className={styles.collaboratorsContainer}>
-                  <img src={collaborator.imagePath} />
-                  <div>
-                    <span className={styles.collaboratorName}>
-                      {collaborator.firstName + " " + collaborator.lastName}
-                      {collaborator.isAuthenticated === true ? " (You)" : null}
-                    </span>
-                    <span className={styles.collaboratorEmail}>
-                      {collaborator.email}
-                    </span>
+                  <div className={styles.collaboratorsInfo}>
+                    <img src={collaborator.imagePath} />
+                    <div>
+                      <span className={styles.collaboratorName}>
+                        {collaborator.firstName + " " + collaborator.lastName}
+                        {collaborator.isAuthenticated ? " (You)" : null}
+                      </span>
+                      <span className={styles.collaboratorEmail}>
+                        {collaborator.email}
+                      </span>
+                    </div>
                   </div>
-                  <Checkbox
-                    className={cn(
-                      styles.checkBoxModal,
-                      !collaborator.isSharedWith ? styles.unChecked : ""
+                  <div className={styles.checkboxContainer}>
+                    {isOnMobile() && (
+                      <span>
+                        {collaborator.isAuthenticated ? "Owner" : "Editor"}
+                      </span>
                     )}
-                    black={true}
-                    value={collaborator.isSharedWith}
-                    onChange={(event) => {
-                      this.handleChange(event, collaborator.id);
-                    }}
-                  />
+                    <Checkbox
+                      className={cn(
+                        styles.checkBoxModal,
+                        !collaborator.isSharedWith ? styles.unChecked : ""
+                      )}
+                      black={true}
+                      value={collaborator.isSharedWith}
+                      onChange={(event) => {
+                        this.handleChange(event, collaborator.id);
+                      }}
+                    />
+                  </div>
                 </div>
               );
             })}
