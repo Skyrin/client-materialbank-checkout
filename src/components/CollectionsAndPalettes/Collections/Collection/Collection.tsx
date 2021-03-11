@@ -13,6 +13,7 @@ import {
   Modals,
 } from "../../../../context/AppContext";
 import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreIdeas";
+import { isOnMobile } from "../../../../utils/responsive";
 
 export default class Collection extends React.Component<any, any> {
   static contextType = AppContext;
@@ -234,7 +235,11 @@ export default class Collection extends React.Component<any, any> {
           )}
         >
           <UploadCard
-            caption={"Upload a photo or drag & drop here "}
+            caption={
+              !isOnMobile()
+                ? "Upload a photo or drag & drop here "
+                : "Upload a photo"
+            }
             onClick={this.uploadPhoto}
           />
           {!this.state.card.length && (

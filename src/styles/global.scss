@@ -155,7 +155,7 @@ h4 {
     border: 1px solid rgba(1, 1, 1, 0.6);
     color: var(--button-collection-color);
     @include mobile-media {
-      padding: $margin-small-4 $margin-medium-5;
+      padding: 15px $margin-medium-5;
       height: 100%;
       border-radius: 30px;
     }

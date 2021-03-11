@@ -4,6 +4,9 @@
 .yourCollections {
   font-size: var(--font-size-md);
   color: rgba(#615c58, 0.6);
+  @include mobile-media {
+    padding-left: 10px;
+  }
 
   i {
     margin-left: $margin-small;
