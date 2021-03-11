@@ -3,16 +3,16 @@ import styles from "components/CollectionsAndPalettes/common/AddToCartButton/Add
 import cn from "classnames";
 
 interface Props {
-  isInViewPort: boolean;
+  commonAreaIsInViewport: boolean;
 }
 
-export default class CollectionsFooter extends React.Component<Props, any> {
+export default class AddToCartButton extends React.Component<Props, any> {
   render() {
     return (
       <div
         className={cn(
           styles.addToCartButton,
-          this.props.isInViewPort ? styles.fixed : styles.absolute
+          this.props.commonAreaIsInViewport ? styles.fixed : styles.absolute
         )}
       >
         <div>

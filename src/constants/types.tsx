@@ -149,7 +149,7 @@ export type CustomerT = {
   mobile?: string;
 };
 
-export type CollaboratorT = {
+export type collectionCollaboratorT = {
   id?: number;
   firstName?: string;
   lastName?: string;
@@ -174,8 +174,10 @@ export type PaletteT = {
   customerId?: number;
   name?: string;
   isShared?: boolean;
+  isPublic?: boolean;
   createdAt?: string;
   items?: PaletteItemT[];
+  collaborators?: CollectionCollaboratorT[];
 };
 
 export type MaterialT = {

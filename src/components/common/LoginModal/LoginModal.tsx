@@ -11,6 +11,8 @@ import * as yup from "yup";
 import Loader from "components/common/Loader/Loader";
 import { ClientError } from "GraphqlClient";
 import { PASSWORD_REGEX } from "constants/general";
+import LoginGoogle from "components/common/LoginGoogle/LoginGoogle";
+import LoginFacebook from "components/common/LoginFacebook/LoginFacebook";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Email must be valid.").required("Required"),
@@ -106,15 +108,21 @@ export class LoginModal extends React.Component<any, State> {
           <div className={styles.modalContent}>
             <div className={styles.title}>Sign In</div>
 
-            <div className={styles.signInWithButton}>
-              <div className={cn("fab", "fa-facebook-f", styles.icon)} />
-              Sign in with Facebook
-            </div>
+            <LoginFacebook
+              buttonText={"Sign in with Facebook"}
+              className={styles.signInWithButton}
+              hasIcon={true}
+            />
 
-            <div className={styles.signInWithButton}>
-              <div className={cn("fab", "fa-google", styles.icon)} />
-              Sign in with Google
-            </div>
+            <LoginGoogle
+              className={styles.signInWithButton}
+              buttonProp={
+                <div className={cn(styles.signInWithButton)}>
+                  <div className={cn("fab", "fa-google", styles.icon)} />
+                  {"Sign in with Google"}
+                </div>
+              }
+            />
 
             <div className={styles.signInWithButton}>
               <div className={cn("fab", "fa-apple ", styles.icon)} />
@@ -139,56 +147,64 @@ export class LoginModal extends React.Component<any, State> {
                 {this.state.loggingNetworkError}
               </div>
             )}
+            <form onSubmit={this.signIn}>
+              <Input
+                className={styles.inputField}
+                placeholder="Email"
+                value={this.state.login.email}
+                onChange={(val: string) => {
+                  this.updateField("email", val);
+                }}
+                error={this.state.loginErrors.email}
+              />
+              <Input
+                className={styles.inputField}
+                placeholder="Password"
+                type={this.state.showPassword ? undefined : "password"}
+                value={this.state.login.password}
+                onChange={(val: string) => {
+                  this.updateField("password", val);
+                }}
+                error={this.state.loginErrors.password}
+              />
 
-            <Input
-              className={styles.inputField}
-              placeholder="Email"
-              value={this.state.login.email}
-              onChange={(val: string) => {
-                this.updateField("email", val);
-              }}
-              error={this.state.loginErrors.email}
-            />
-            <Input
-              className={styles.inputField}
-              placeholder="Password"
-              type={this.state.showPassword ? undefined : "password"}
-              value={this.state.login.password}
-              onChange={(val: string) => {
-                this.updateField("password", val);
-              }}
-              error={this.state.loginErrors.password}
-            />
+              <div className={styles.rememberShowPass}>
+                <div
+                  className={styles.rememberMeRow}
+                  onClick={this.rememberMeClick}
+                >
+                  <Checkbox black={true} value={this.state.rememberMe} />
+                  <div className={styles.rememberMeHint}>Remember me</div>
+                </div>
 
-            <div className={styles.rememberShowPass}>
-              <div
-                className={styles.rememberMeRow}
-                onClick={this.rememberMeClick}
-              >
-                <Checkbox black={true} value={this.state.rememberMe} />
-                <div className={styles.rememberMeHint}>Remember me</div>
+                <div
+                  className={styles.showPassword}
+                  onClick={this.showPasswordClick}
+                >
+                  {!this.state.showPassword && "Show password"}
+                  {this.state.showPassword && "Hide password"}
+                </div>
               </div>
 
-              <div
-                className={styles.showPassword}
-                onClick={this.showPasswordClick}
-              >
-                {!this.state.showPassword && "Show password"}
-                {this.state.showPassword && "Hide password"}
-              </div>
-            </div>
-
-            <button className={styles.signInButton} onClick={this.signInClick}>
-              Sign In
-            </button>
-            <button className={styles.forgotPassword}>Forgot Password?</button>
-            <div className="horizontal-divider margin-top" />
-            <div className="row center-horizontally margin-top">
-              <div className={styles.registerHint}>Don't have an account?</div>
-              <button className={styles.register} onClick={this.registerClick}>
-                Register
+              <button className={styles.signInButton} type="submit">
+                Sign In
               </button>
-            </div>
+              <button className={styles.forgotPassword}>
+                Forgot Password?
+              </button>
+              <div className="horizontal-divider margin-top" />
+              <div className="row center-horizontally margin-top">
+                <div className={styles.registerHint}>
+                  Don't have an account?
+                </div>
+                <button
+                  className={styles.register}
+                  onClick={this.registerClick}
+                >
+                  Register
+                </button>
+              </div>
+            </form>
           </div>
 
           {this.state.isLoading && (
@@ -215,7 +231,8 @@ export class LoginModal extends React.Component<any, State> {
     });
   };
 
-  signInClick = () => {
+  signIn = (e) => {
+    e.preventDefault();
     this.setState({
       loggingNetworkError: "",
     });

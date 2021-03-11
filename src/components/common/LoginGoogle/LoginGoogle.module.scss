@@ -1,0 +1,39 @@
+@import "styles/variablesscss";
+
+$button-background: #eaeaec;
+
+.signIn {
+  position: relative;
+  height: 40px;
+  width: 100%;
+  border: 1px solid var(--primary-color);
+  border-radius: 20px;
+  background: $button-background;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  margin-top: $margin-small-3;
+  transition: background-color 0.15s $ease-in-out;
+
+  &:hover {
+    background: darken($button-background, 10%);
+  }
+
+  &:active {
+    background: darken($button-background, 20%);
+  }
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  color: var(--primary-color);
+  position: absolute;
+  left: $margin-small-3;
+  margin-top: $margin-small;
+}

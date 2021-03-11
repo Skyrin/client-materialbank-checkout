@@ -3,7 +3,7 @@ import {
   AddressT,
   AlgoliaProductT,
   CartT,
-  CollaboratorT,
+  CollectionCollaboratorT,
   CollectionT,
   CustomerT,
   OrderT,
@@ -35,13 +35,15 @@ export enum Modals {
   AccountExists = "account-exists",
   UploadPhoto = "upload-photo",
   CreateCollection = "create-collection",
+  DeleteCollection = "delete-collection",
   ShareCollection = "share-collection",
   DuplicateCollection = "duplicate-collection",
+  MakePrivateCollection = "make-private-collection",
   None = "none",
 }
 
 abstract class BaseAppContextState {
-  private internalCollaborators?: CollaboratorT = {};
+  private internalCollaborators?: CollectionCollaboratorT = {};
   private internalCart?: CartT = {};
   private internalCartInfoLoading?: boolean = false;
   private internalCustomer?: CustomerT = {};
@@ -54,9 +56,7 @@ abstract class BaseAppContextState {
   private internalSelectedPaymentOption?: PaymentOption;
   private internalCollections?: CollectionT[] = [];
   private internalCollectionsLoading: boolean = false;
-
   private modal?: Modals = Modals.None;
-
   private internalOrdersLoading?: boolean = false;
 
   private internalRecommendedProductSKUs: strng[] = [];

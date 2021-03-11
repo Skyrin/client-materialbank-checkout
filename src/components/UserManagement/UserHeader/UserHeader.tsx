@@ -53,7 +53,7 @@ class UserHeader extends React.Component<Props, any> {
 
   render() {
     return (
-      <div className={cn("row", "bottom-vertically", styles.header)}>
+      <div className={cn("row", "center-vertically", styles.header)}>
         <div className={styles.title}>{this.props.title}</div>
         {this.props.extraContent}
         <div className={styles.headerNav}>{this.renderButtons()}</div>
