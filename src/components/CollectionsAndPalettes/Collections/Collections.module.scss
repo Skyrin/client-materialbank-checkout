@@ -17,7 +17,7 @@
   }
   @media (max-width: 520px) {
     grid-template-columns: repeat(1, 1fr);
-    margin-bottom: 40px;
+    margin-bottom: $margin-medium-3;
     row-gap: 15px;
   }
 }
