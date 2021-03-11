@@ -154,7 +154,11 @@ h4 {
     background-color: transparent;
     border: 1px solid rgba(1, 1, 1, 0.6);
     color: var(--button-collection-color);
-
+    @include mobile-media {
+      padding: $margin-small-4 $margin-medium-5;
+      height: 100%;
+      border-radius: 30px;
+    }
     &.mode {
       width: 90px;
       border: none;
@@ -346,6 +350,10 @@ button {
   }
   &.extra-margin {
     margin-bottom: 40px;
+    @media (max-width: 520px) {
+      border-top: 1px solid black;
+      margin-bottom: 15px;
+    }
   }
 }
 
