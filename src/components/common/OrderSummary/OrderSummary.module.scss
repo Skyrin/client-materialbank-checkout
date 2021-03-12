@@ -59,21 +59,13 @@
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
     color: var(--primary-color);
+    margin-bottom: var(--vertical-spacing-normal);
 
     .giftIcon {
       font-size: 18px;
       color: var(--primary-color);
       margin-right: 8px;
     }
-  }
-
-  .giftSectionDescription {
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-normal);
-    color: var(--text-color-light);
-
-    margin-top: 6px;
-    margin-bottom: var(--vertical-spacing-normal);
   }
 
   .giftsContainer {

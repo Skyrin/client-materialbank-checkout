@@ -1,50 +1,32 @@
+import { AlgoliaProductT } from "constants/types";
 import * as React from "react";
 import styles from "./RecommendationCard.module.scss";
 
 type Props = {
-  image?: string;
-  title: string;
-  type: number;
-  click?: () => any;
-  added?: boolean;
+  product: AlgoliaProductT;
+  onClick: Function;
+  disabled?: boolean;
 };
 
 export function RecommendationCard(props: Props) {
-  enum productTypes {
-    "Upsell / Gift" = 1,
-    "Free Gift" = 2,
-  }
-
+  const image = props.product.thumbnail_url;
+  const manufacturer = props.product.manufacturer || "product.manufacturer";
+  const name = props.product.name || "product.name";
+  const color = props.product.color || "product.color";
   return (
-    <div className={styles.RecommendationCard}>
-      {props.image ? (
+    <div className={styles.RecommendationCard} onClick={props.onClick}>
+      {image ? (
         <div
           className={styles.image}
-          style={{ backgroundImage: `url(${props.image})` }}
+          style={{ backgroundImage: `url(${image})` }}
         />
       ) : (
         <div className={styles.image} />
       )}
       <div className={styles.content}>
-        <div className={styles.type}>{productTypes[props.type]}</div>
-        <div className={styles.title}>{props.title}</div>
-        <button
-          className={styles["action-button"]}
-          onClick={props.click}
-          disabled={props.added}
-        >
-          {props.added ? (
-            <React.Fragment>
-              Added
-              <i className="far fa-check" />
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              Add for free
-              <i className="far fa-plus-circle" />
-            </React.Fragment>
-          )}
-        </button>
+        <div className={styles.type}>{manufacturer}</div>
+        <div className={styles.title}>{name}</div>
+        <div className={styles.color}>{color}</div>
       </div>
     </div>
   );

@@ -25,47 +25,6 @@ export default class OrderConfirmation extends React.Component<any, State> {
     loadingOrder: true,
   };
 
-  // TODO: Create a class/type for this info once we have API docs
-  recommendations = [
-    {
-      id: 1,
-      title: "Product Title 1",
-      image:
-        "https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png",
-      type: 1,
-    },
-    {
-      id: 2,
-      title: "Product Title 2",
-      image: "",
-      type: 1,
-    },
-    {
-      id: 3,
-      title: "Product Title 3",
-      image: "",
-      type: 1,
-    },
-    {
-      id: 4,
-      title: "Product Title 4",
-      image: "",
-      type: 1,
-    },
-    {
-      id: 5,
-      title: "Product Title 5",
-      image: "",
-      type: 1,
-    },
-    {
-      id: 6,
-      title: "Product Title 6",
-      image: "",
-      type: 1,
-    },
-  ];
-
   async componentDidMount() {
     scrollToTop();
     await this.context.requestConfirmedOrder();
@@ -128,6 +87,7 @@ export default class OrderConfirmation extends React.Component<any, State> {
       "total.subtotal.value",
       get(this.context.cart, "prices.subtotal_including_tax.value", 172)
     );
+
     return (
       <div className={cn("funnel-page", styles["OrderConfirmation"])}>
         {!isOnMobile() && <Logo className={styles.logo} />}
@@ -186,8 +146,7 @@ export default class OrderConfirmation extends React.Component<any, State> {
           </h2>
           <Recommendations
             className={styles["Recommendations"]}
-            recommendations={this.recommendations}
-            recommendationClick={this.recommendationClick}
+            orderedProducts={this.context.confirmedOrder?.items || []}
           />
         </div>
 
