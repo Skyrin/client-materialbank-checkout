@@ -168,92 +168,90 @@ export class RegisterMailModal extends React.Component<Props, State> {
           <div className={styles.closeButton} onClick={this.closeModal} />
           <div className={styles.modalContent}>
             <div className={styles.title}>Register a New Account</div>
-
-            <Input
-              className={styles.inputField}
-              placeholder="First Name"
-              value={this.state.register.firstName}
-              onChange={(val: string) => {
-                this.updateField("firstName", val);
-              }}
-              error={this.state.registerErrors.firstName}
-            />
-            <Input
-              className={styles.inputField}
-              placeholder="Last Name"
-              value={this.state.register.lastName}
-              onChange={(val: string) => {
-                this.updateField("lastName", val);
-              }}
-              error={this.state.registerErrors.lastName}
-            />
-            <Input
-              className={styles.inputField}
-              placeholder="Email"
-              value={this.state.register.email}
-              onChange={(val: string) => {
-                this.updateField("email", val);
-              }}
-              error={this.state.registerErrors.email}
-            />
-            <Input
-              className={styles.inputField}
-              placeholder="Password"
-              value={this.state.register.password}
-              type="password"
-              onChange={(val: string) => {
-                this.passwordFieldUpdated(val);
-              }}
-              error={this.state.registerErrors.password}
-            />
-
-            {this.renderPasswordCheck()}
-
-            <div className="row center-vertically center-horizontally margin-top-big">
-              <Checkbox
-                black={true}
-                value={this.state.register.acceptTerms}
-                onChange={(value) => {
-                  this.acceptTermsChange(value);
+            <form onSubmit={this.register}>
+              <Input
+                className={styles.inputField}
+                placeholder="First Name"
+                value={this.state.register.firstName}
+                onChange={(val: string) => {
+                  this.updateField("firstName", val);
                 }}
+                error={this.state.registerErrors.firstName}
               />
-              <div className={styles.acceptTermsHint}>
-                I accept the&nbsp;
-                <a href="/" className={styles.inlineLink}>
-                  <span>Terms of Service</span>
-                </a>
-                &nbsp;and&nbsp;
-                <a href="/" className={styles.inlineLink}>
-                  <span>Privacy Policy</span>
-                </a>
-              </div>
-            </div>
+              <Input
+                className={styles.inputField}
+                placeholder="Last Name"
+                value={this.state.register.lastName}
+                onChange={(val: string) => {
+                  this.updateField("lastName", val);
+                }}
+                error={this.state.registerErrors.lastName}
+              />
+              <Input
+                className={styles.inputField}
+                placeholder="Email"
+                value={this.state.register.email}
+                onChange={(val: string) => {
+                  this.updateField("email", val);
+                }}
+                error={this.state.registerErrors.email}
+              />
+              <Input
+                className={styles.inputField}
+                placeholder="Password"
+                value={this.state.register.password}
+                type="password"
+                onChange={(val: string) => {
+                  this.passwordFieldUpdated(val);
+                }}
+                error={this.state.registerErrors.password}
+              />
 
-            {this.state.registerErrors.acceptTerms && (
-              <div className={styles.acceptTermsError}>
-                Required to accept Terms of Service
-              </div>
-            )}
+              {this.renderPasswordCheck()}
 
-            {this.state.registerRequestError && (
-              <div className={styles.registerAlert}>
-                <i
-                  className={cn(
-                    "fas",
-                    "fa-exclamation-triangle",
-                    styles.errorIcon
-                  )}
+              <div className="row center-vertically center-horizontally margin-top-big">
+                <Checkbox
+                  black={true}
+                  value={this.state.register.acceptTerms}
+                  onChange={(value) => {
+                    this.acceptTermsChange(value);
+                  }}
                 />
-                {this.state.registerRequestError}
+                <div className={styles.acceptTermsHint}>
+                  I accept the&nbsp;
+                  <a href="/" className={styles.inlineLink}>
+                    <span>Terms of Service</span>
+                  </a>
+                  &nbsp;and&nbsp;
+                  <a href="/" className={styles.inlineLink}>
+                    <span>Privacy Policy</span>
+                  </a>
+                </div>
               </div>
-            )}
 
-            <button
-              className={styles.registerButton}
-              onClick={this.registerClick}
-            >
-              Register
-            </button>
+              {this.state.registerErrors.acceptTerms && (
+                <div className={styles.acceptTermsError}>
+                  Required to accept Terms of Service
+                </div>
+              )}
+
+              {this.state.registerRequestError && (
+                <div className={styles.registerAlert}>
+                  <i
+                    className={cn(
+                      "fas",
+                      "fa-exclamation-triangle",
+                      styles.errorIcon
+                    )}
+                  />
+                  {this.state.registerRequestError}
+                </div>
+              )}
+
+              <button className={styles.registerButton} type="submit">
+                Register
+              </button>
+            </form>
           </div>
 
           {this.state.isLoading && (
@@ -280,7 +278,9 @@ export class RegisterMailModal extends React.Component<Props, State> {
     });
   };
 
-  registerClick = () => {
+  register = (e) => {
+    e.preventDefault();
+
     if (this.validateRegisterForm()) {
       this.setState({
         isLoading: true,

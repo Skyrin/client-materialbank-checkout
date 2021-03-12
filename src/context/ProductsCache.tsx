@@ -14,6 +14,8 @@ export class ProductsCache {
 
   isBatching = false;
 
+  fetchCallbacks: Function[] = [];
+
   constructor(productsFetchedCallback: Function) {
     this.products = new Map<string, CachedProductT>();
     this.productsFetchedCallback = productsFetchedCallback;
@@ -24,50 +26,89 @@ export class ProductsCache {
     if (this.products.has(sku)) {
       return this.products.get(sku);
     }
-    // Add the product to the cache as loading, and queue the algolia request to fetch it
-    this.products.set(sku, {
-      loading: true,
-    });
+    console.error(
+      "[PRODUCT CACHE] ENTERED GET PRODUCT WITH:",
+      sku,
+      ", WAS NOT IN CACHE"
+    );
     this.enqueueSku(sku);
 
     // Return the product (loading for now)
     return this.products.get(sku);
   };
 
-  private enqueueSku(sku: stirng) {
+  // This function will only return when the products have been fetched
+  getProductsAsync = async (skus: string[]) => {
+    console.error("[PRODUCT CACHE] ENTERED GET ASYNC WITH:", skus);
+    const missingSkus = skus.filter(
+      (sku) => !this.products.has(sku) || !this.products.get(sku).data
+    );
+    if (!missingSkus.length) {
+      return skus.map((sku) => this.products.get(sku));
+    }
+    const productsFetchedPromise = new Promise((resolve, reject) => {
+      this.enqueueSkus(missingSkus, resolve);
+    });
+    await productsFetchedPromise;
+
+    return skus.map((sku) => this.products.get(sku));
+  };
+
+  enqueueSkus = (skus: string[], callback?: Function) => {
     // If we're not currently batching skus, start batching for BATCHING_DURATION ms.
-    this.batchedSkus.push(sku);
+    const newSkus = skus.filter(
+      (sku) => !this.batchedSkus.includes(sku) && !this.products.has(sku)
+    );
+    this.batchedSkus.push(...newSkus);
+    if (callback) {
+      this.fetchCallbacks.push(callback);
+    }
+    // Add objects to cache so we know they are supposed to be loading
+    newSkus.forEach((sku) => {
+      this.products.set(sku, {
+        loading: true,
+      });
+    });
     if (!this.isBatching) {
       this.isBatching = true;
+      console.log("[PRODUCT CACHE] STARTED BATCHING PROCESS");
       window.setTimeout(() => {
         this.fetchProducts();
       }, BATCHING_DURATION);
     }
-  }
+  };
 
-  private async fetchProducts() {
+  enqueueSku = (sku: string, callback?: Function) => {
+    this.enqueueSkus([sku], callback);
+  };
+
+  fetchProducts = async () => {
     if (!this.batchedSkus || !this.batchedSkus.length) {
       console.log("No products to request");
     }
 
     const skuFilter = this.batchedSkus.map((sku) => `sku:${sku}`);
-    console.log("FETCHING ALGOLIA PRODUCTS", skuFilter);
+    console.log("[PRODUCT CACHE] FETCHING ALGOLIA PRODUCTS", skuFilter);
     const options = {
       facetFilters: [skuFilter, "type_id:simple"],
       hitsPerPage: this.batchedSkus.length,
     };
-    console.log("ALGOLIA OPTIONS", options);
+    console.log("[PRODUCT CACHE] ALGOLIA OPTIONS", options);
     const resp = await algoliaProducts.search("", options);
-    console.log("RECEIVED ALGOLIA RESPONSE", resp);
+    console.log("[PRODUCT CACHE] RECEIVED ALGOLIA RESPONSE", resp);
     const products = get(resp, "hits", []);
-    console.log("RECEIVED ALGOLIA PRODUCTS", products);
+    console.log("[PRODUCT CACHE] RECEIVED ALGOLIA PRODUCTS", products);
     products.forEach((product) => {
       this.products.set(product.sku, {
         loading: false,
         data: product,
       });
     });
-    this.isBatching = false;
+    console.log("[PRODUCT CACHE] CALLING FETCH CALLBACKS");
+    this.fetchCallbacks.forEach((callback) => callback());
+    this.fetchCallbacks = [];
     this.productsFetchedCallback();
-  }
+    this.isBatching = false;
+    this.batchedSkus = [];
+  };
 }

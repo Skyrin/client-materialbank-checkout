@@ -106,9 +106,9 @@ export default class Collection extends React.Component<any, any> {
   }
 
   commonAreaIsInViewport = () => {
-    const elem = document.querySelector(".commonArea");
-    if (elem) {
-      const bounding = elem.getBoundingClientRect();
+    const commonArea = document.querySelector(".commonArea");
+    if (commonArea) {
+      const bounding = commonArea.getBoundingClientRect();
       return (
         bounding.bottom < 0 ||
         bounding.right < 0 ||
@@ -117,9 +117,9 @@ export default class Collection extends React.Component<any, any> {
       );
     }
   };
+
   scrollingBehaviour = () => {
     let isInViewport = this.commonAreaIsInViewport();
-    console.log("IS IN VIEWPORT", isInViewport);
     this.setState({ commonAreaIsInViewport: isInViewport });
   };
 
@@ -229,7 +229,7 @@ export default class Collection extends React.Component<any, any> {
         />
         <div
           className={cn(
-            "masonry-container ",
+            "masonry-container",
             !this.state.card.length ? styles.emptyCollection : ""
           )}
         >
@@ -256,10 +256,6 @@ export default class Collection extends React.Component<any, any> {
               commonAreaIsInViewport={this.state.commonAreaIsInViewport}
             />
           )}
-        </div>
-        {/*The commonArea element is added here in order to keep the AddToCart Button inside the Collection Cards container, also decide its position*/}
-        <div className={"commonArea"}>
-          <MoreIdeas />
         </div>
       </React.Fragment>
     );

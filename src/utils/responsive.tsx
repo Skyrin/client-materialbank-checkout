@@ -1,9 +1,9 @@
 export const MOBILE_WIDTH = 970;
 
-var onMobile = window.innerWidth <= MOBILE_WIDTH;
+var onMobile = window.screen.width <= MOBILE_WIDTH;
 
 const handleResize = (evt: any) => {
-  if (window.innerWidth <= MOBILE_WIDTH) {
+  if (window.screen.width <= MOBILE_WIDTH) {
     onMobile = true;
   } else {
     onMobile = false;

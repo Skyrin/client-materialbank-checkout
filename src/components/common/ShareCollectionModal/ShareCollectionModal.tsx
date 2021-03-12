@@ -114,7 +114,7 @@ export class ShareCollectionModal extends React.Component<Props, State> {
             this.state.collaborators.map((collaborator: any, index: number) => {
               return (
                 <div className={styles.collaboratorsContainer}>
-                  <img src={collaborator.imagePath} />
+                  <img src={collaborator.imagePath} alt="" />
                   <div>
                     <span className={styles.collaboratorName}>
                       {collaborator.firstName + " " + collaborator.lastName}

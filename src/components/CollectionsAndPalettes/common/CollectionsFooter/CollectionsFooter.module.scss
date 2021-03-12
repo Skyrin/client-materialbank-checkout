@@ -8,17 +8,40 @@
   display: flex;
   flex-direction: column;
   row-gap: $margin-huge;
+  @include mobile-media {
+    padding: $margin-small-4 $margin-medium;
+    row-gap: $margin-large-2;
+  }
 
   .footerRowInfo {
     display: grid;
     grid-template-columns: 65% 35%;
     align-items: center;
+    @include mobile-media {
+      grid-template-columns: 100%;
+      row-gap: 13px;
+
+      .infoTextParagraph {
+        font-size: 14px;
+      }
+    }
 
     .logoFooter {
       height: 60px;
+      @include mobile-media {
+        height: 45px;
+      }
 
       div {
+        @include mobile-media {
+          height: 100%;
+        }
+
         svg {
+          @include mobile-media {
+            height: 100%;
+          }
+
           path {
             fill: white;
           }
@@ -45,6 +68,10 @@
     display: grid;
     grid-template-columns: 25% 40% 35%;
     align-items: center;
+    @include mobile-media {
+      grid-template-columns: 1fr;
+      row-gap: $margin-large-2;
+    }
 
     .footerLinkColumn {
       display: flex;
@@ -92,6 +119,9 @@
           padding: 10px $margin-small-3;
           border: none;
           color: rgba(#fff, 0.6);
+          @include mobile-media {
+            height: 45px;
+          }
 
           &:focus {
             outline: none;
@@ -112,23 +142,37 @@
     align-items: center;
     justify-content: space-between;
     padding-bottom: $margin-small-2;
+    @include mobile-media {
+      grid-template-columns: 100%;
+      row-gap: $margin-small-4;
+    }
 
     .copyRights {
       font-size: var(--font-size-sm);
       color: rgba(#fff, 0.6);
       text-align: center;
+      @include mobile-media {
+        order: 1;
+        text-align: start;
+      }
     }
 
     .socialButtons {
       display: flex;
       align-items: center;
       margin-left: auto;
+      @include mobile-media {
+        margin-left: 0;
+      }
 
       i {
         padding: 0 $margin-small-2;
         font-size: 25px;
-        color: white;
+        color: #ccb79e;
         cursor: pointer;
+        @include mobile-media {
+          font-size: 30px;
+        }
       }
     }
   }
@@ -138,7 +182,7 @@
   }
 
   .footerButton {
-    background-color: white;
+    background-color: #ccb79e;
     border-radius: 5px;
     padding: 0;
     color: black;
@@ -147,10 +191,17 @@
     margin-left: auto;
     width: 100%;
     user-select: none;
+    @include mobile-media {
+      font-size: 14px !important;
+      height: 45px;
+    }
 
     &.signUp {
       height: 50px;
       max-width: 105px;
+      @include mobile-media {
+        height: 45px;
+      }
     }
 
     &:hover {
