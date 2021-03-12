@@ -10,7 +10,7 @@ import Loader from "../Loader/Loader";
 import { RouteComponentProps, withRouter, matchPath } from "react-router-dom";
 import { ORDER_CONFIRMATION_URL } from "constants/urls";
 import OrderItem from "./OrderItem/OrderItem";
-import { isEqual } from "lodash-es";
+import { isEmpty, isEqual } from "lodash-es";
 import { getSamplePage } from "utils/general";
 
 type Props = RouteComponentProps & {
@@ -37,8 +37,17 @@ class OrderSummary extends React.Component<Props, State> {
     if (!isEqual(this.oldContext, this.context)) {
       const oldCart = this.oldContext.cart;
       const newCart = this.context.cart;
-      if (!isEqual(oldCart, newCart)) {
-        this.context.requestRecommendedProductSKUs(2);
+
+      if (
+        !this.isOnConfirmationPage() &&
+        !isEqual(oldCart, newCart) &&
+        !isEmpty(newCart)
+      ) {
+        const oldSkus = (oldCart.items || []).map((item) => item.product.sku);
+        const newSkus = newCart.items.map((item) => item.product.sku);
+        if (!isEqual(oldSkus, newSkus) && newSkus.length) {
+          this.context.requestRecommendedProductSKUs(2);
+        }
       }
     }
     this.oldContext = this.context;
@@ -74,16 +83,12 @@ class OrderSummary extends React.Component<Props, State> {
     );
   };
 
-  renderGiftSection = () => {
+  renderRecommendationSection = () => {
     const recommendedSKUs = this.context.recommendedProductSKUs;
     const products = recommendedSKUs
       .map((sku) => this.context.productsCache.getProduct(sku))
-      .filter((p) => !p.loading);
-    // const products = [
-    //   { sku: "123", name: "Test", color: "Blue", manufacturer: "Test Man", thumbnail_url: "https://dev.design.shop/media/catalog/product/cache/53e412d837cb1f799c5a72f2deb3b0f2/base_image/10000/100305223.jpg" },
-    //   { sku: "234", name: "Test 2", color: "Red", manufacturer: "Test Man 2", thumbnail_url: "https://dev.design.shop/media/catalog/product/cache/53e412d837cb1f799c5a72f2deb3b0f2/base_image/10000/100305223.jpg" }
-    // ]
-
+      .filter((p) => !p.loading)
+      .map((p) => p.data);
     if (!products.length) {
       return null;
     }
@@ -96,6 +101,7 @@ class OrderSummary extends React.Component<Props, State> {
         <div className={styles.giftsContainer}>
           {products.map((product) => (
             <RecommendationCard
+              key={`recommendation_${product.sku}`}
               product={product}
               onClick={() => {
                 window.location = getSamplePage(product.sku);
@@ -181,9 +187,8 @@ class OrderSummary extends React.Component<Props, State> {
             ))}
           </div>
           {!isOnMobile() &&
-            (this.isOnConfirmationPage()
-              ? this.renderAddedGiftsSection()
-              : this.renderGiftSection())}
+            !this.isOnConfirmationPage() &&
+            this.renderRecommendationSection()}
           {this.renderPricesSection()}
           <div className={styles.totalContainer}>
             <span>Total</span>

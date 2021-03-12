@@ -473,39 +473,47 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
     }),
 
-    requestRecommendedProductSKUs: async (nrOfProducts: number) => {
+    requestRecommendedProductSKUs: async (
+      nrOfProducts: number,
+      productSkus?: string[]
+    ) => {
       this.contextState.recommendedProductsLoading = true;
       this.forceUpdate();
-      const cartProducts = this.contextState.cart.items;
-      const skus = cartProducts.map((p) => p.product.sku);
+      const skus =
+        productSkus || this.contextState.cart.items.map((p) => p.product.sku);
+      console.log("[REC] REQUESTING ALGOLIA CARD PRODUCTS", skus);
       const algProducts = await this.getFullContext().productsCache.getProductsAsync(
         skus
       );
-      console.log("ALGOLIA CART PRODUCTS", algProducts);
+      console.log("[REC] ALGOLIA CART PRODUCTS", algProducts);
       const manufacturersSet = new Set<string>();
       algProducts
         .filter((ap) => !ap.loading)
         .forEach((ap) => manufacturersSet.add(ap.data.manufacturer));
-      console.log("MANUFACTURERS SET", manufacturersSet);
+      console.log("[REC] MANUFACTURERS SET", manufacturersSet);
       const manufacturers = [...manufacturersSet];
       const manufacturersFilter = manufacturers.map(
         (man) => `manufacturer:${man}`
       );
-      console.log("MANUFACTURERS FILTER", manufacturersSet);
+      console.log("[REC] MANUFACTURERS FILTER", manufacturersFilter);
       // Exclude the already added products from the result
       const skuFilter = skus.map((sku) => `sku:-${sku}`);
-      console.log("SKU FILTER", skuFilter);
+      console.log("[REC] SKU FILTER", skuFilter);
       const options = {
-        filters: 'manufacturer:"Fabrica"',
-        // facetFilters: [manufacturersFilter],
+        facetFilters: [manufacturersFilter, ...skuFilter, "type_id:simple"],
         hitsPerPage: nrOfProducts,
       };
-      console.log("ALGOLIA OPTIONS", options);
-      console.log("ALGOLIA INDEX OBJECT", algoliaProducts);
+      console.log("[REC] ALGOLIA OPTIONS", options);
       const resp = await algoliaProducts.search("", options);
-      console.log("ALGOLIA RESPONSE", resp);
+      console.log("[REC] ALGOLIA RESPONSE", resp);
       const hits = get(resp, "hits", []);
-      console.log("ALGOLIA HITS", hits);
+      console.log("[REC] ALGOLIA HITS", hits);
+      hits.forEach((hit) => {
+        this.getFullContext().productsCache.products.set(hit.sku, {
+          loading: false,
+          data: hit,
+        });
+      });
       const recommendedSkus = hits.map((hit) => hit.sku);
       this.contextState.recommendedProductSKUs = recommendedSkus;
       this.contextState.requestRecommendedProductSKUsLoading = false;

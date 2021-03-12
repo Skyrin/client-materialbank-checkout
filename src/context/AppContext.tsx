@@ -1,7 +1,5 @@
 import * as React from "react";
 import {
-  AddressT,
-  AlgoliaProductT,
   CartT,
   CollectionCollaboratorT,
   CollectionT,
@@ -275,7 +273,10 @@ export class AppContextState extends BaseAppContextState {
     return Promise.resolve({});
   }
 
-  async requestRecommendedProductSKUs(nrOfProducts: number): Promise<string[]> {
+  async requestRecommendedProductSKUs(
+    nrOfProducts: number,
+    productSkus?: string[]
+  ): Promise<string[]> {
     return Promise.resolve([]);
   }
 }
