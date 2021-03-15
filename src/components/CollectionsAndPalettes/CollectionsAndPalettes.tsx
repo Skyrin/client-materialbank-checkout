@@ -115,22 +115,18 @@ export default class CollectionsAndPalettes extends React.Component<
                   }}
                 />
               </Switch>
-              {/*The commonArea element is added here in order to keep the AddToCart Button inside the Collection Cards container, also decide its position*/}
-              <div className={"commonArea"}>
-                <MoreIdeas />
-                <ExploreTags
-                  buttons={[
-                    "farmhouse",
-                    "kitchen",
-                    "farmsink",
-                    "tile backsplash",
-                    "wood-look flooring",
-                    "white cabinetry",
-                    "tile flooring",
-                    "cozy color scheme",
-                  ]}
-                />
-              </div>
+              <ExploreTags
+                buttons={[
+                  "farmhouse",
+                  "kitchen",
+                  "farmsink",
+                  "tile backsplash",
+                  "wood-look flooring",
+                  "white cabinetry",
+                  "tile flooring",
+                  "cozy color scheme",
+                ]}
+              />
             </div>
           ) : (
             <div className={styles.pageContent}></div>

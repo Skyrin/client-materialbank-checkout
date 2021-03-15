@@ -137,6 +137,8 @@ a {
   align-items: center;
 }
 
-.hide {
-  display: none;
+@media (max-width: 520px) {
+  .hide {
+    display: none;
+  }
 }
