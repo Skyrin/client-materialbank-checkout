@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-  AddressT,
   CartT,
   CollectionCollaboratorT,
   CollectionT,
@@ -57,6 +56,9 @@ abstract class BaseAppContextState {
   private internalCollectionsLoading: boolean = false;
   private modal?: Modals = Modals.None;
   private internalOrdersLoading?: boolean = false;
+
+  private internalRecommendedProductSKUs: strng[] = [];
+  private internalRecommendedProductSKUsLoading: boolean = false;
 
   public get collaborators() {
     return cloneDeep(this.internalCollaborators);
@@ -163,6 +165,22 @@ abstract class BaseAppContextState {
   public set collectionsLoading(isLoading: boolean) {
     this.internalCollectionsLoading = isLoading;
   }
+
+  public get recommendedProductSKUs() {
+    return cloneDeep(this.internalRecommendedProductSKUs);
+  }
+
+  public set recommendedProductSKUs(newProducts: string[]) {
+    this.internalRecommendedProductSKUs = cloneDeep(newProducts);
+  }
+
+  public get recommendedProductSKUsLoading() {
+    return !!this.internalRecommendedProductSKUsLoading;
+  }
+
+  public set recommendedProductSKUsLoading(isLoading: boolean) {
+    this.internalRecommendedProductSKUsLoading = isLoading;
+  }
 }
 
 /**
@@ -253,6 +271,13 @@ export class AppContextState extends BaseAppContextState {
 
   async createCollection(input: CreateCollectionInput): Promise<CollectionT> {
     return Promise.resolve({});
+  }
+
+  async requestRecommendedProductSKUs(
+    nrOfProducts: number,
+    productSkus?: string[]
+  ): Promise<string[]> {
+    return Promise.resolve([]);
   }
 }
 

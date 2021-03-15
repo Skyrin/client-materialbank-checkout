@@ -2,31 +2,48 @@ import React from "react";
 import styles from "./Recommendations.module.scss";
 import cn from "classnames";
 import { RecommendationCard } from "components/common/RecommendationCard/RecommendationCard";
+import { AppContext, AppContextState } from "context/AppContext";
+import { OrderItemT } from "constants/types";
+import { getSamplePage } from "utils/general";
 
 type Props = {
-  recommendations: { id: number; [key: string]: any }[];
-  recommendationClick: (productId: number) => any;
+  orderedProducts: OrderItemT[];
   className: string;
 };
 
-export function Recommendations(props: Props) {
-  if (props.recommendations?.length) {
-    return (
-      <div className={cn(styles.Recommendations, props.className)}>
-        <div className={styles["recommendations-grid"]}>
-          {props.recommendations.map((r) => (
-            <RecommendationCard
-              key={r.id}
-              title={r.title}
-              type={r.type}
-              image={r.image}
-              click={() => props.recommendationClick(r.id)}
-            />
-          ))}
+export class Recommendations extends React.Component<Props> {
+  static contextType = AppContext;
+  context!: AppContextState;
+
+  async componentDidMount() {
+    const orderedSkus = this.props.orderedProducts.map((p) => p.product_sku);
+    console.log("ordered_skus", orderedSkus);
+    this.context.requestRecommendedProductSKUs(6, orderedSkus);
+  }
+
+  render() {
+    const recommendations = this.context.recommendedProductSKUs
+      .map((sku) => this.context.productsCache.getProduct(sku))
+      .filter((p) => !p.loading)
+      .map((p) => p.data);
+
+    if (recommendations.length) {
+      return (
+        <div className={cn(styles.Recommendations, this.props.className)}>
+          <div className={styles["recommendations-grid"]}>
+            {recommendations.map((r) => (
+              <RecommendationCard
+                product={r}
+                onClick={() => {
+                  window.location = getSamplePage(r.sku);
+                }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    );
-  } else {
-    return null;
+      );
+    } else {
+      return null;
+    }
   }
 }

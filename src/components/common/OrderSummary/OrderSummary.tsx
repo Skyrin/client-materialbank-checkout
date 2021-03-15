@@ -10,6 +10,8 @@ import Loader from "../Loader/Loader";
 import { RouteComponentProps, withRouter, matchPath } from "react-router-dom";
 import { ORDER_CONFIRMATION_URL } from "constants/urls";
 import OrderItem from "./OrderItem/OrderItem";
+import { isEmpty, isEqual } from "lodash-es";
+import { getSamplePage } from "utils/general";
 
 type Props = RouteComponentProps & {
   className?: string;
@@ -21,9 +23,34 @@ type State = {
 class OrderSummary extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
+  oldContext!: AppContextState;
 
   state = {
     isOpen: false,
+  };
+
+  componentDidMount() {
+    this.oldContext = this.context;
+  }
+
+  componentDidUpdate = (prevProps: Props, prevState: State) => {
+    if (!isEqual(this.oldContext, this.context)) {
+      const oldCart = this.oldContext.cart;
+      const newCart = this.context.cart;
+
+      if (
+        !this.isOnConfirmationPage() &&
+        !isEqual(oldCart, newCart) &&
+        !isEmpty(newCart)
+      ) {
+        const oldSkus = (oldCart.items || []).map((item) => item.product.sku);
+        const newSkus = newCart.items.map((item) => item.product.sku);
+        if (!isEqual(oldSkus, newSkus) && newSkus.length) {
+          this.context.requestRecommendedProductSKUs(2);
+        }
+      }
+    }
+    this.oldContext = this.context;
   };
 
   renderSummaryHeader = () => {
@@ -56,34 +83,31 @@ class OrderSummary extends React.Component<Props, State> {
     );
   };
 
-  renderGiftSection = () => {
+  renderRecommendationSection = () => {
+    const recommendedSKUs = this.context.recommendedProductSKUs;
+    const products = recommendedSKUs
+      .map((sku) => this.context.productsCache.getProduct(sku))
+      .filter((p) => !p.loading)
+      .map((p) => p.data);
+    if (!products.length) {
+      return null;
+    }
+
     return (
       <div className={styles.section}>
         <div className={styles.giftSectionHeader}>
-          <i className={cn("fal", "fa-gift", styles.giftIcon)} />
-          <span className={styles.giftSectionTitle}>
-            Select A Free Gift With Your Order
-          </span>
+          <span className={styles.giftSectionTitle}>You may also like</span>
         </div>
-        <span className={styles.giftSectionDescription}>
-          Get an issue of Table Magazine or Mockup Magazine as a thank you for
-          ordering from Design Shop!
-        </span>
         <div className={styles.giftsContainer}>
-          <RecommendationCard
-            title="Table Magazine Issue #45"
-            type={2}
-            click={() => {
-              console.log("CLICKED GIFT CARD");
-            }}
-          />
-          <RecommendationCard
-            title="Mockup Magazine Issue #21"
-            type={2}
-            click={() => {
-              console.log("CLICKED GIFT CARD");
-            }}
-          />
+          {products.map((product) => (
+            <RecommendationCard
+              key={`recommendation_${product.sku}`}
+              product={product}
+              onClick={() => {
+                window.location = getSamplePage(product.sku);
+              }}
+            />
+          ))}
         </div>
         <PromoCode />
       </div>
@@ -163,9 +187,8 @@ class OrderSummary extends React.Component<Props, State> {
             ))}
           </div>
           {!isOnMobile() &&
-            (this.isOnConfirmationPage()
-              ? this.renderAddedGiftsSection()
-              : this.renderGiftSection())}
+            !this.isOnConfirmationPage() &&
+            this.renderRecommendationSection()}
           {this.renderPricesSection()}
           <div className={styles.totalContainer}>
             <span>Total</span>
