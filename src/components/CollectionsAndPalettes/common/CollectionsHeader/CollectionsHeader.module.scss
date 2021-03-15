@@ -30,6 +30,27 @@
       column-gap: 25px;
     }
   }
+
+  i,
+  a > i {
+    color: rgba(#fff, 0.8);
+    padding: 0 15px 0 15px;
+    font-size: var(--font-size-xl);
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:first-of-type {
+      padding-left: 0;
+    }
+
+    &:last-of-type {
+      padding-right: 0;
+    }
+
+    &:hover {
+      color: white;
+    }
+  }
 }
 
 .headerLogo {
@@ -103,26 +124,6 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-}
-i,
-a > i {
-  color: rgba(#fff, 0.8);
-  padding: 0 15px 0 15px;
-  font-size: var(--font-size-xl);
-  cursor: pointer;
-  transition: color 0.2s;
-
-  &:first-of-type {
-    padding-left: 0;
-  }
-
-  &:last-of-type {
-    padding-right: 0;
-  }
-
-  &:hover {
-    color: white;
-  }
 }
 
 .searchContainer,
