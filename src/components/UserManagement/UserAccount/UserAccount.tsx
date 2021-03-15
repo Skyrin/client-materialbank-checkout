@@ -95,8 +95,12 @@ export default class UserAccount extends React.Component<Props, State> {
             alt=""
           />
           <div>
-            <div className={styles.profileName}>Anne Soandso</div>
-            <div className={styles.profileEmail}>annes@gmail.com</div>
+            <div className={styles.profileName}>
+              {this.state.customer?.firstname} {this.state.customer?.lastname}
+            </div>
+            <div className={styles.profileEmail}>
+              {this.state.customer?.email}
+            </div>
           </div>
           <input
             className={styles.uploadInput}
