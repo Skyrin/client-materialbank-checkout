@@ -125,7 +125,6 @@ export default class Collection extends React.Component<any, any> {
   scrollingBehaviour = () => {
     let isInViewport = this.commonAreaIsInViewport();
     this.setState({ commonAreaIsInViewport: isInViewport });
-    console.log(isInViewport);
   };
 
   toggleMode = (mode) => {
