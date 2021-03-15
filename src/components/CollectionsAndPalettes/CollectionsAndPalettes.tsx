@@ -9,7 +9,7 @@ import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./CollectionsAndPalettes.module.scss";
 import Collections from "./Collections/Collections";
 import Palettes from "./Palettes/Palettes";
-import CollectionsToolbar from "./common/Toolbar/CollectionsToolbar";
+import CollectionsToolbar from "./common/CollectionsToolbar/CollectionsToolbar";
 import CollectionsHeader from "./common/CollectionsHeader/CollectionsHeader";
 import CollectionsFooter from "./common/CollectionsFooter/CollectionsFooter";
 import Collection from "./Collections/Collection/Collection";
@@ -120,22 +120,18 @@ export default class CollectionsAndPalettes extends React.Component<
                   }}
                 />
               </Switch>
-              {/*The commonArea element is added here in order to keep the AddToCart Button inside the Collection Cards container, also decide its position*/}
-              <div className={"commonArea"}>
-                <MoreIdeas />
-                <ExploreTags
-                  buttons={[
-                    "farmhouse",
-                    "kitchen",
-                    "farmsink",
-                    "tile backsplash",
-                    "wood-look flooring",
-                    "white cabinetry",
-                    "tile flooring",
-                    "cozy color scheme",
-                  ]}
-                />
-              </div>
+              <ExploreTags
+                buttons={[
+                  "farmhouse",
+                  "kitchen",
+                  "farmsink",
+                  "tile backsplash",
+                  "wood-look flooring",
+                  "white cabinetry",
+                  "tile flooring",
+                  "cozy color scheme",
+                ]}
+              />
             </div>
           ) : (
             <div className={styles.pageContent}></div>

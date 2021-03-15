@@ -1,5 +1,5 @@
 import * as React from "react";
-import styles from "components/CollectionsAndPalettes/common/Toolbar/CollectionsToolbar.module.scss";
+import styles from "components/CollectionsAndPalettes/common/CollectionsToolbar/CollectionsToolbar.module.scss";
 import RoundButtons from "../RoundButtons/RoundButtons";
 import ModeButtons from "../ModeButtons/ModeButtons";
 import cn from "classnames";
@@ -168,7 +168,9 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
             )}
           </div>
         </div>
-        <div className="horizontal-divider-collections"></div>
+        <div
+          className={cn("horizontal-divider-collections", styles.hide)}
+        ></div>
       </div>
     );
   }

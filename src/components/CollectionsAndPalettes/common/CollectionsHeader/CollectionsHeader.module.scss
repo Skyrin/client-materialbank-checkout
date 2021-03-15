@@ -1,5 +1,6 @@
 @import "styles/global";
 @import "styles/variables.scss";
+@import "styles/mixins.scss";
 
 .Header {
   background-color: black;
@@ -9,26 +10,82 @@
   padding: $margin-small-4 $margin-huge-5;
   column-gap: $margin-medium;
   justify-content: space-between;
+  @include mobile-media {
+    padding: 0 30px;
+
+    .mobileIcons,
+    .mobileLogo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      a > i,
+      i {
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0;
+      }
+    }
+    .mobileIcons {
+      column-gap: 25px;
+    }
+  }
+
+  i,
+  a > i {
+    color: rgba(#fff, 0.8);
+    padding: 0 15px 0 15px;
+    font-size: var(--font-size-xl);
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:first-of-type {
+      padding-left: 0;
+    }
+
+    &:last-of-type {
+      padding-right: 0;
+    }
+
+    &:hover {
+      color: white;
+    }
+  }
 }
 
 .headerLogo {
   h1 {
     font-size: 26px;
     color: white;
+
+    @include mobile-media {
+      margin-left: 10px;
+      font-size: 24px;
+    }
   }
 
   div {
     display: flex;
     align-items: center;
     margin-right: 0 !important;
+    @include mobile-media {
+      width: 100% !important;
+    }
 
     svg {
       height: 40px;
+      @include mobile-media {
+        height: 35px;
+      }
 
       path {
         fill: white;
       }
     }
+  }
+
+  @include mobile-media {
+    margin-left: 15px;
   }
 }
 
@@ -67,24 +124,60 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
 
-  i {
-    color: rgba(#fff, 0.8);
-    padding: 0 15px 0 15px;
-    font-size: var(--font-size-xl);
+.searchContainer,
+.hamburgerMenu {
+  position: absolute;
+  background-color: black;
+  height: auto;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  padding: $margin-small-4;
+  z-index: 101;
+  flex-direction: column;
+
+  p {
+    order: -1;
+  }
+
+  div {
+    width: 100%;
+  }
+}
+
+.hamburgerMenu {
+  padding: 0;
+
+  a {
+    user-select: none;
+    color: white;
+    padding: $margin-small-4;
     cursor: pointer;
-    transition: color 0.2s;
+    border-top: 1px solid rgba(white, 0.2);
+    display: flex;
+    column-gap: 10px;
 
-    &:first-of-type {
-      padding-left: 0;
+    img {
+      height: 40px;
+      width: 40px;
+      border-radius: 100px;
+      object-fit: cover;
+      margin-left: -5px;
     }
 
-    &:last-of-type {
-      padding-right: 0;
-    }
-
-    &:hover {
-      color: white;
+    .account {
+      display: flex;
+      flex-direction: column;
     }
   }
+}
+
+.hide {
+  display: none;
+}
+
+.display {
+  display: flex;
 }
