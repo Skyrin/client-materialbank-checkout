@@ -26,6 +26,7 @@ type Props = {
   className?: string;
   style?: Object;
   error?: React.ReactElement | string | null;
+  userInputStyle?: boolean;
 };
 
 export default function Input(props: Props) {
@@ -41,7 +42,9 @@ export default function Input(props: Props) {
       })}
     >
       <input
-        className={styles.input}
+        className={cn(styles.input, {
+          [styles.userInput]: props.userInputStyle,
+        })}
         type={props.type || "text"}
         placeholder={props.placeholder}
         value={value}

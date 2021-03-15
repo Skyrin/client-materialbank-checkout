@@ -8,8 +8,6 @@ import { CustomerT } from "constants/types";
 import { PASSWORD_REGEX } from "constants/general";
 
 const updateProfileSchema = yup.object().shape({
-  firstName: yup.string().required("Required"),
-  lastName: yup.string().required("Required"),
   email: yup.string().email("Email is invalid").required("Required"),
   mobile: yup
     .string()
@@ -33,16 +31,12 @@ const passwordCheckSchema = yup.object().shape({
 
 type State = {
   updateProfile: {
-    firstName: string;
-    lastName: string;
     oldEmail: string;
     email: string;
     mobile: string;
     password: string;
   };
   updateProfileErrors: {
-    firstName: string;
-    lastName: string;
     email: string;
     mobile: string;
   };
@@ -58,16 +52,12 @@ type Props = {
 export default class UpdateProfileForm extends React.Component<Props, State> {
   state = {
     updateProfile: {
-      firstName: "",
-      lastName: "",
       email: "",
       oldEmail: "",
       mobile: "",
       password: "",
     },
     updateProfileErrors: {
-      firstName: "",
-      lastName: "",
       email: "",
       mobile: "",
       password: "",
@@ -90,33 +80,10 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
       <div>
         <div className={styles.updateProfileForm}>
           <div className={styles.profileInputLayout}>
-            <div className={styles.inputHint}>First</div>
-            <Input
-              placeholder="First name"
-              value={this.state.updateProfile.firstName}
-              onChange={(val: string) => {
-                this.updateFieldForm("firstName", val);
-              }}
-              error={this.state.updateProfileErrors.firstName}
-            />
-          </div>
-
-          <div className={styles.profileInputLayout}>
-            <div className={styles.inputHint}>Last</div>
-            <Input
-              placeholder="Last name"
-              value={this.state.updateProfile.lastName}
-              onChange={(val: string) => {
-                this.updateFieldForm("lastName", val);
-              }}
-              error={this.state.updateProfileErrors.lastName}
-            />
-          </div>
-
-          <div className={styles.profileInputLayout}>
             <div className={styles.inputHint}>Email</div>
             <Input
               placeholder="Email"
+              userInputStyle={true}
               value={this.state.updateProfile.email}
               onChange={(val: string) => {
                 this.emailChanged(val);
@@ -132,6 +99,7 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
               <Input
                 placeholder="Password"
                 type="password"
+                userInputStyle={true}
                 value={this.state.updateProfile.password}
                 onChange={(val: string) => {
                   this.updateFieldForm("password", val);
@@ -151,6 +119,7 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
             <Input
               placeholder="Mobile"
               value={this.state.updateProfile.mobile}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("mobile", val);
               }}
@@ -232,8 +201,6 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
   newCustomerValues = (customerT: CustomerT) => {
     this.setState({
       updateProfile: {
-        firstName: customerT?.firstname,
-        lastName: customerT?.lastname,
         email: customerT?.email,
         oldEmail: customerT?.email,
         mobile: customerT?.mobile || "",

@@ -27,8 +27,6 @@
   }
 
   .section {
-    @include roundedContainer;
-    padding: $margin-medium-3 $margin-medium-3;
     @include mobile-media {
       border: none;
       padding: 0 $margin-small-4;
@@ -40,13 +38,14 @@
   }
 
   .sectionHeader {
-    font-size: var(--font-size-xxl);
+    font-size: var(--font-size-xl);
     font-weight: var(--font-weight-medium);
     color: $primary-color-user;
   }
 
   .editPhoto {
     display: flex;
+    margin-left: auto;
     @include mobile-media {
       flex-direction: column;
       justify-content: center;
@@ -204,6 +203,19 @@
       @include roundedContainer;
       border-radius: 0;
     }
+  }
+
+  .profileName {
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-lg);
+    color: $primary-color-user;
+    margin-left: $margin-small-3;
+  }
+
+  .profileEmail {
+    font-size: var(--font-size-md);
+    color: $primary-color-user;
+    margin-left: $margin-small-3;
   }
 
   .uploadInput {

@@ -94,6 +94,10 @@ export default class UserAccount extends React.Component<Props, State> {
             className={styles.userImage}
             alt=""
           />
+          <div>
+            <div className={styles.profileName}>Anne Soandso</div>
+            <div className={styles.profileEmail}>annes@gmail.com</div>
+          </div>
           <input
             className={styles.uploadInput}
             id={"cameraUpload"}
@@ -301,8 +305,6 @@ export default class UserAccount extends React.Component<Props, State> {
     });
     if (this.updateProfileForm.validateContactInfo()) {
       const customerInput = new UpdateCustomerInput({
-        firstname: this.updateProfileForm.state.updateProfile.firstName,
-        lastname: this.updateProfileForm.state.updateProfile.lastName,
         is_subscribed: this.updateProfileForm.state.optIn,
       });
 
