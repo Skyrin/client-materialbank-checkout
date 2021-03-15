@@ -51,6 +51,9 @@
   margin: $margin-small-4 $margin-small-2 10px auto;
   cursor: pointer;
   transition: background-color 0.15s $ease-in-out;
+  @include mobile-media {
+    display: none;
+  }
 
   i {
     font-size: 21px;
@@ -71,6 +74,9 @@
   font-size: var(--font-size-xxl);
   color: var(--primary-color);
   margin-bottom: 10px;
+  @include mobile-media {
+    padding-top: $margin-small-5;
+  }
 }
 
 span {
