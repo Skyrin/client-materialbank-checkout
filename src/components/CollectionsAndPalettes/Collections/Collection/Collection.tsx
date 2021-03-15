@@ -109,10 +109,12 @@ export default class Collection extends React.Component<any, any> {
 
   commonAreaIsInViewport = () => {
     const commonArea = document.querySelector(".commonArea");
-    if (commonArea) {
+    const footer = document.querySelector(".footerArea");
+    if (commonArea && footer) {
       const bounding = commonArea.getBoundingClientRect();
+      const footerBound = footer.getBoundingClientRect();
       return (
-        bounding.bottom < 0 ||
+        bounding.bottom + footerBound.bottom < 0 ||
         bounding.right < 0 ||
         bounding.left > window.innerWidth ||
         bounding.top > window.innerHeight
@@ -123,6 +125,7 @@ export default class Collection extends React.Component<any, any> {
   scrollingBehaviour = () => {
     let isInViewport = this.commonAreaIsInViewport();
     this.setState({ commonAreaIsInViewport: isInViewport });
+    console.log(isInViewport);
   };
 
   toggleMode = (mode) => {
