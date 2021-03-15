@@ -51,6 +51,11 @@ export default class CollectionsAndPalettes extends React.Component<
   componentDidMount() {
     if (!this.context.isLoggedIn) {
       this.context.openModal(Modals.Login);
+    } else {
+      this.context.requestCollections({
+        limit: 100,
+        offset: 0,
+      });
     }
   }
 

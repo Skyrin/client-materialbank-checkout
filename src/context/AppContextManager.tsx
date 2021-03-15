@@ -49,7 +49,11 @@ import {
   CollectionsQueryInput,
   CreateCollectionInput,
 } from "./CollectionsAPI/models";
-import { createCollection, getCollections } from "./CollectionsAPI/api";
+import {
+  createCollection,
+  getCollection,
+  getCollections,
+} from "./CollectionsAPI/api";
 import { ProductsCache } from "./ProductsCache";
 import { algoliaProducts } from "algolia";
 
@@ -457,6 +461,19 @@ export default class AppContextManager extends React.Component<Props> {
       this.actions.updateCollections(collections);
       console.log("GOT COLLECTIONS", collections);
       return collections;
+    },
+
+    requestCollection: async (collectionId: number) => {
+      this.contextState.collectionLoading = true;
+      this.forceUpdate();
+      const collection = await getCollection(
+        this.getFullContext(),
+        collectionId
+      );
+      this.contextState.collectionLoading = false;
+      this.contextState.collection = collection;
+      console.log("GOT COLLECTION", collection);
+      return collection;
     },
 
     createCollection: async (input: CreateCollectionInput) => {

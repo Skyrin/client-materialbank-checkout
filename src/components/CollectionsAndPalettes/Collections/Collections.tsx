@@ -48,13 +48,6 @@ export default class Collections extends React.Component<any, State> {
     };
   }
 
-  async componentDidMount() {
-    await this.context.requestCollections({
-      limit: 100,
-      offset: 0,
-    });
-  }
-
   render() {
     return (
       <React.Fragment>
