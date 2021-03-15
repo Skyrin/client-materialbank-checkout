@@ -97,6 +97,54 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
+@mixin blackGradientButton {
+  height: 40px;
+  width: 190px;
+  border-radius: 5px;
+  background-image: linear-gradient(to bottom, #555555, #000000);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+  color: white;
+  border: 1px solid var(--primary-color);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  transition: background-color 0.15s $ease-in-out;
+
+  &:hover,
+  &:focus {
+    background-color: lighten($primary-color-user, 5%);
+    background-image: linear-gradient(to bottom, #000000, #111111);
+  }
+
+  &:active {
+    background-image: linear-gradient(to bottom, #000000, #222222);
+  }
+}
+
+@mixin grayGradientButton {
+  height: 40px;
+  width: auto;
+  border-radius: 5px;
+  padding-left: $margin-small-5;
+  padding-right: $margin-small-5;
+  background-image: linear-gradient(to bottom, #ffffff, #bbbbbb);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+  color: $primary-color-user;
+  border: 1px solid var(--primary-color);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  transition: background-color 0.15s $ease-in-out;
+
+  &:hover,
+  &:focus {
+    background-color: lighten($primary-color-user, 5%);
+    background-image: linear-gradient(to bottom, #ffffff, #aaaaaa);
+  }
+
+  &:active {
+    background-image: linear-gradient(to bottom, #bbbbbb, #ffffff);
+  }
+}
+
 @mixin labelButton {
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-md);

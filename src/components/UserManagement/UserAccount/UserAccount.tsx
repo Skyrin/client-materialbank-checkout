@@ -132,14 +132,6 @@ export default class UserAccount extends React.Component<Props, State> {
             errorText={this.state.updateProfileNetworkError}
           />
         )}
-        <div
-          className={cn(
-            "horizontal-divider margin-top-big",
-            styles.horizontalDividerLinked
-          )}
-        />
-        {this.renderLinkedAccountSection()}
-        {this.renderDeleteAccount()}
 
         <div
           className={cn(
@@ -157,6 +149,14 @@ export default class UserAccount extends React.Component<Props, State> {
             Save Changes
           </button>
         </div>
+        <div
+          className={cn(
+            "horizontal-divider margin-top-big",
+            styles.horizontalDividerLinked
+          )}
+        />
+        {this.renderLinkedAccountSection()}
+        {this.renderDeleteAccount()}
       </div>
     );
   };
@@ -233,7 +233,7 @@ export default class UserAccount extends React.Component<Props, State> {
             We're sorry to see you go! By deleting your account, you will lose
             all of your favorites and account history.
           </div>
-          <button className={styles.connectAccountButton} onClick={() => {}}>
+          <button className={styles.deleteAccountButton} onClick={() => {}}>
             Delete...
           </button>
         </div>
