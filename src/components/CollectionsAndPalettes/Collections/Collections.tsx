@@ -6,6 +6,7 @@ import { COLLECTIONS_URL } from "../../../constants/urls";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 import UploadCard from "../common/UploadCard/UploadCard";
 import Loader from "components/common/Loader/Loader";
+import MoreIdeas from "../common/MoreIdeas/MoreIdeas";
 
 interface State {
   card: {
@@ -84,6 +85,7 @@ export default class Collections extends React.Component<any, State> {
             </React.Fragment>
           )}
         </div>
+        <MoreIdeas headerText="More ideas for you" />
       </React.Fragment>
     );
   }
