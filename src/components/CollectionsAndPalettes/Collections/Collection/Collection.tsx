@@ -22,6 +22,7 @@ export default class Collection extends React.Component<any, any> {
   uploadPhoto = () => {
     this.context.openModal(Modals.UploadPhoto);
   };
+
   constructor(props) {
     super(props);
     this.state = {
