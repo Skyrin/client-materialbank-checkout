@@ -223,6 +223,15 @@ export type CollectionCollaboratorT = {
   userId?: number;
   access?: "read" | "write";
 };
+export type CollaboratorT = {
+  id?: number;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  imagePath?: string;
+  isAuthenticated?: boolean;
+  isSharedWith?: boolean;
+};
 
 export type CollectionT = {
   id?: number;
