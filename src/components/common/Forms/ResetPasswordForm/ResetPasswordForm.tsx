@@ -4,6 +4,7 @@ import Input from "components/common/Input/Input";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
 import { PASSWORD_REGEX } from "constants/general";
+import cn from "classnames";
 
 const resetPasswordSchema = yup.object().shape({
   currentPassword: yup.string().required("Required"),
@@ -59,6 +60,7 @@ export default class ResetPasswordForm extends React.Component<Props, State> {
           <Input
             placeholder="Current Password"
             type={"password"}
+            userInputStyle={true}
             value={this.state.resetPassword.currentPassword}
             onChange={(val: string) => {
               this.updatePasswordForm("currentPassword", val);
@@ -71,6 +73,7 @@ export default class ResetPasswordForm extends React.Component<Props, State> {
           <Input
             placeholder="New Password"
             type={"password"}
+            userInputStyle={true}
             value={this.state.resetPassword.newPassword}
             onChange={(val: string) => {
               this.updatePasswordForm("newPassword", val);
@@ -83,6 +86,7 @@ export default class ResetPasswordForm extends React.Component<Props, State> {
           <Input
             placeholder="Confirm New Password"
             type={"password"}
+            userInputStyle={true}
             value={this.state.resetPassword.confirmNewPassword}
             onChange={(val: string) => {
               this.updatePasswordForm("confirmNewPassword", val);
@@ -91,7 +95,13 @@ export default class ResetPasswordForm extends React.Component<Props, State> {
           />
         </div>
         <button
-          className={styles.savePasswordButton}
+          className={cn(styles.savePasswordButton, {
+            [styles.disabled]: !(
+              this.state.resetPassword.newPassword &&
+              this.state.resetPassword.currentPassword &&
+              this.state.resetPassword.confirmNewPassword
+            ),
+          })}
           onClick={() => {
             this.onSaveNewPasswordClick();
           }}
