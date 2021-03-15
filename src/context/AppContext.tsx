@@ -54,6 +54,8 @@ abstract class BaseAppContextState {
   private internalSelectedPaymentOption?: PaymentOption;
   private internalCollections?: CollectionT[] = [];
   private internalCollectionsLoading: boolean = false;
+  private internalCollection?: CollectionT = {};
+  private internalCollectionLoading: boolean = false;
   private modal?: Modals = Modals.None;
   private internalOrdersLoading?: boolean = false;
 
@@ -166,6 +168,22 @@ abstract class BaseAppContextState {
     this.internalCollectionsLoading = isLoading;
   }
 
+  public get collection() {
+    return cloneDeep(this.internalCollection);
+  }
+
+  public set collection(newCollection: CollectionT) {
+    this.internalCollection = cloneDeep(newCollection);
+  }
+
+  public get collectionLoading() {
+    return !!this.internalCollectionLoading;
+  }
+
+  public set collectionLoading(isLoading: boolean) {
+    this.internalCollectionLoading = isLoading;
+  }
+
   public get recommendedProductSKUs() {
     return cloneDeep(this.internalRecommendedProductSKUs);
   }
@@ -267,6 +285,10 @@ export class AppContextState extends BaseAppContextState {
     input: CollectionsQueryInput
   ): Promise<CollectionT[]> {
     return Promise.resolve([]);
+  }
+
+  async requestCollection(collectionId: number): Promise<CollectionT> {
+    return Promise.resolve({});
   }
 
   async createCollection(input: CreateCollectionInput): Promise<CollectionT> {

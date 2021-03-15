@@ -4,17 +4,22 @@ import cn from "classnames";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
-import { RouteComponentProps } from "react-router-dom";
+import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
 import Input from "../Input/Input";
+import { COLLECTION_URL } from "constants/urls";
+import { uploadPhoto } from "context/CollectionsAPI/api";
+import { get } from "lodash-es";
 
 type State = {
-  photoName: string;
+  name: string;
   file: any;
+  fileUrl: string;
+  fileName: string;
   isLoading: boolean;
 };
 type Props = RouteComponentProps;
 
-export class UploadPhotoModal extends React.Component<Props, State> {
+class UploadPhotoModal extends React.Component<Props, State> {
   fileInput;
   static contextType = AppContext;
   context!: AppContextState;
@@ -24,8 +29,10 @@ export class UploadPhotoModal extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      photoName: "",
+      name: "",
       file: null,
+      fileUrl: "",
+      fileName: "",
       isLoading: false,
     };
     this.fileInput = React.createRef();
@@ -56,14 +63,53 @@ export class UploadPhotoModal extends React.Component<Props, State> {
     disableBodyScroll(this.modalTarget);
   };
 
-  handleImageUpload = (e: any) => {
+  toBase64 = (file: File) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  handleImageUpload = async (e: any) => {
+    const base64 = await this.toBase64(e.target.files[0]);
+    console.log("FILE", e.target.files[0]);
     this.setState({
-      file: URL.createObjectURL(e.target.files[0]),
+      file: base64.split(",")[1],
+      fileUrl: URL.createObjectURL(e.target.files[0]),
+      fileName: e.target.files[0].name,
     });
   };
 
   triggerInputFile = () => {
     this.fileInput.click();
+  };
+
+  getCollectionId = () => {
+    const collectionPageResult = matchPath(this.props.location.pathname, {
+      path: COLLECTION_URL,
+      exact: true,
+    });
+    return get(collectionPageResult, "params.collection_id");
+  };
+
+  submit = async () => {
+    console.log(this.state);
+    const collectionId = this.getCollectionId();
+    if (collectionId) {
+      const resp = await uploadPhoto(this.context, this.getCollectionId(), {
+        file: this.state.file,
+        fileName: this.state.fileName,
+        name: this.state.name,
+      });
+      console.log("UPLOAD PHOTO RESPONSE", resp);
+      await this.context.requestCollections({
+        limit: 100,
+        offset: 0,
+      });
+      this.closeModal();
+    }
   };
 
   render() {
@@ -97,25 +143,27 @@ export class UploadPhotoModal extends React.Component<Props, State> {
               htmlFor="upload-photo"
               className={cn(
                 styles.fileUploadLabel,
-                this.state.file ? styles.hide : ""
+                this.state.fileUrl ? styles.hide : ""
               )}
               onClick={this.triggerInputFile}
             >
               Upload Photo
             </label>
-            <img className={styles.preview} src={this.state.file} alt="" />
+            <img className={styles.preview} src={this.state.fileUrl} alt="" />
             <span>Image Name</span>
 
             <Input
               className={styles.inputField}
               placeholder="Image Name"
-              value={this.state.photoName}
+              value={this.state.name}
               type="text"
-              onChange={(val: string) => this.setState({ photoName: val })}
+              onChange={(val: string) => this.setState({ name: val })}
             />
 
             <div className={styles.buttonsContainer}>
-              <div className={styles.createButton}>Upload Photo</div>
+              <div className={styles.createButton} onClick={this.submit}>
+                Upload Photo
+              </div>
               <div className={styles.cancelButton} onClick={this.closeModal}>
                 Cancel
               </div>
@@ -132,3 +180,5 @@ export class UploadPhotoModal extends React.Component<Props, State> {
     );
   }
 }
+
+export default withRouter(UploadPhotoModal);

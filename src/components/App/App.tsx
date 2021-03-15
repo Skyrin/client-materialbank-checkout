@@ -17,7 +17,7 @@ import {
 } from "constants/general";
 import "@stripe/stripe-js"; // Import Stripe.js at startup
 import { LoginModal } from "components/common/LoginModal/LoginModal";
-import { UploadPhotoModal } from "components/common/UploadPhotoModal/UploadPhotoModal";
+import UploadPhotoModal from "components/common/UploadPhotoModal/UploadPhotoModal";
 import { CreateCollectionModal } from "../common/CreateCollectionModal/CreateCollectionModal";
 import { RegisterOptionsModal } from "components/common/RegisterModal/RegisterOptionsModal";
 import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterMailModal";

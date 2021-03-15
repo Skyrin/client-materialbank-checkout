@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, RouteComponentProps, withRouter } from "react-router-dom";
 import { COLLECTIONS_URL } from "../../../../constants/urls";
 import ItemCard from "../../common/ItemCard/ItemCard";
 import CollectionsToolbar from "../../common/CollectionsToolbar/CollectionsToolbar";
@@ -13,11 +13,16 @@ import {
   Modals,
 } from "../../../../context/AppContext";
 import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreIdeas";
+import { find, get } from "lodash-es";
+import Loader from "components/common/Loader/Loader";
 
-export default class Collection extends React.Component<any, any> {
+type Props = RouteComponentProps;
+
+class Collection extends React.Component<Props, any> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
+
   uploadPhoto = () => {
     this.context.openModal(Modals.UploadPhoto);
   };
@@ -140,6 +145,12 @@ export default class Collection extends React.Component<any, any> {
       this.scrollingBehaviour();
     }, 100);
 
+    const collectionId = parseInt(
+      get(this.props.match, "params.collection_id", "")
+    );
+    if (collectionId) {
+      this.context.requestCollection(collectionId);
+    }
     //TODO implement the call
     const collaborators = [
       {
@@ -201,7 +212,41 @@ export default class Collection extends React.Component<any, any> {
     window.removeEventListener("scroll", this.scrollingBehaviour);
   }
 
+  getCollection() {
+    // TODO: Figure out why the collectionId filter doesn't work on the collections() query
+    const collectionId = parseInt(
+      get(this.props.match, "params.collection_id", "")
+    );
+    const contextCollection = this.context.collection;
+    const contextCollections = this.context.collections;
+    if (collectionId !== contextCollection.id) {
+      return contextCollections.find((col) => col.id === collectionId) || {};
+    }
+    return contextCollection || {};
+  }
+
   render() {
+    const collection = this.getCollection();
+    const collectionItems = get(collection, "items", []);
+    const finalItems = collectionItems.length
+      ? collectionItems
+      : this.state.card;
+
+    if (!collection.id) {
+      return (
+        <React.Fragment>
+          <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
+            Your Collections
+            <i className={"fas fa-chevron-right"} />
+          </NavLink>
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        </React.Fragment>
+      );
+    }
+
     return (
       <React.Fragment>
         <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
@@ -209,7 +254,7 @@ export default class Collection extends React.Component<any, any> {
           <i className={"fas fa-chevron-right"} />
         </NavLink>
         <CollectionsToolbar
-          title={"Rustic Kitchens"}
+          title={collection.name || "collection.name"}
           isCollection
           buttons={[
             "everything",
@@ -231,28 +276,22 @@ export default class Collection extends React.Component<any, any> {
         <div
           className={cn(
             "masonry-container",
-            !this.state.card.length ? styles.emptyCollection : ""
+            !finalItems.length ? styles.emptyCollection : ""
           )}
         >
           <UploadCard
             caption={"Upload a photo or drag & drop here "}
             onClick={this.uploadPhoto}
           />
-          {!this.state.card.length && (
+          {!finalItems.length && (
             <div className={styles.empty}>
               You have not added anything to this collection yet!
             </div>
           )}
-          {this.state.card.map((item: any, index: number) => {
-            return (
-              <ItemCard
-                key={index}
-                mode={this.state.mode}
-                item={this.state.card[index]}
-              />
-            );
+          {finalItems.map((item: any, index: number) => {
+            return <ItemCard key={index} mode={this.state.mode} item={item} />;
           })}
-          {this.state.card.length && (
+          {finalItems.length && (
             <AddToCartButton
               commonAreaIsInViewport={this.state.commonAreaIsInViewport}
             />
@@ -266,3 +305,5 @@ export default class Collection extends React.Component<any, any> {
     );
   }
 }
+
+export default withRouter(Collection);
