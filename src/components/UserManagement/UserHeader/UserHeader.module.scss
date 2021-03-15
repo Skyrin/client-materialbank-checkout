@@ -4,9 +4,7 @@
 .headerNav {
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: space-between;
-  padding: $margin-small-4 0;
   margin-left: auto;
 
   @include mobile-media {
@@ -17,10 +15,46 @@
 
 .header {
   display: flex;
+  flex-flow: column;
+  height: auto;
+  padding-top: 27px;
   @include mobile-media {
     flex-direction: column-reverse;
     padding: 0 $margin-small-4;
   }
+}
+
+.subHeaderTop {
+  display: flex;
+  height: auto;
+  border-bottom: 1px solid $color_user-border;
+
+  @include mobile-media {
+    flex-direction: column-reverse;
+    padding: 0 $margin-small-4;
+  }
+}
+
+.welcomeHint {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: $primary-color-user;
+}
+
+.welcomeHintGray {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: $gray-color-user;
+  margin-left: $margin-small-2;
+  margin-right: $margin-small-2;
+}
+
+.logout {
+  @include labelButtonUnderline;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  margin: 0;
+  padding: 0;
 }
 
 body,
@@ -38,11 +72,10 @@ button {
 }
 
 .title {
-  line-height: 28pt;
-  font-size: var(--font-size-title-big);
+  font-size: var(--font-size-xxl);
   font-weight: var(--font-weight-medium);
   color: $primary-color-user;
-  margin-bottom: $margin-small;
+  margin-bottom: $margin-small-4;
   @include mobile-media {
     font-size: var(--font-size-xxl);
     margin-bottom: 0;
@@ -56,10 +89,11 @@ button {
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);
   color: $primary-color-60-user;
-  height: $margin-small-4;
+  height: auto;
   cursor: pointer;
   transition: color 0.1s $ease-in-out;
   text-decoration: none;
+  padding-bottom: 27px;
 
   &:not(:last-of-type) {
     margin-right: $margin-medium-5;
@@ -74,6 +108,8 @@ button {
 
   &.selected {
     color: $primary-color-user;
+    margin-top: 4px;
+    border-bottom: 4px solid $primary-color-user;
   }
 
   &:hover {

@@ -17,6 +17,7 @@ import { ClientError } from "GraphqlClient";
 import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
 import LoginGoogle from "components/common/LoginGoogle/LoginGoogle";
 import LoginFacebook from "components/common/LoginFacebook/LoginFacebook";
+import { CustomerT } from "constants/types";
 
 type Props = RouteComponentProps;
 
@@ -25,6 +26,7 @@ type State = {
   profileImageUrl: any;
   resetPasswordNetworkError: string;
   updateProfileNetworkError: string;
+  customer: CustomerT;
 };
 
 export default class UserAccount extends React.Component<Props, State> {
@@ -33,6 +35,7 @@ export default class UserAccount extends React.Component<Props, State> {
     profileImageUrl: null,
     resetPasswordNetworkError: "",
     updateProfileNetworkError: "",
+    customer: null,
   };
 
   updateProfileForm?: UpdateProfileForm;
@@ -47,6 +50,9 @@ export default class UserAccount extends React.Component<Props, State> {
 
   componentDidMount() {
     this.context.requestCurrentCustomer().then((value) => {
+      this.setState({
+        customer: value,
+      });
       this.updateProfileForm.newCustomerValues(value);
     });
   }
@@ -236,7 +242,10 @@ export default class UserAccount extends React.Component<Props, State> {
     return (
       <div className={styles.UserAccount}>
         {isOnMobile() && <LogoMobile />}
-        <UserHeader title={UserPages.Account.name} />
+        <UserHeader
+          title={UserPages.Account.name}
+          customer={this.state.customer}
+        />
         <div className={styles.pageContent}>
           {this.renderProfileInfo()}
           {this.renderResetPasswordSection()}

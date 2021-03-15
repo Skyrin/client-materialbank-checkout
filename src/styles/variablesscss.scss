@@ -4,12 +4,16 @@ $primary-color-user: #2f2f2f;
 $primary-color-10-user: rgba($primary-color-user, 0.1);
 $primary-color-60-user: rgba($primary-color-user, 0.6);
 $primary-color-80-user: rgba($primary-color-user, 0.8);
+$gray-color-user: #615c58;
 
 $brown-color: #745a32;
 $red-color: #d8232a;
 $orange-color: #f99140;
 $orange-light-color: #f5be81;
 $green-color: #61c38f;
+
+$background-gray-color: #f9f7f5;
+$background-header-color: #111111;
 
 $red-color-warning-background: #ffecea;
 $red-color-warning-border: #feb9b1;
@@ -107,6 +111,11 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   &:active {
     color: lighten($primary-color-user, 50%);
   }
+}
+
+@mixin labelButtonUnderline {
+  @include labelButton;
+  text-decoration: underline;
 }
 
 @mixin blueLabelButton {

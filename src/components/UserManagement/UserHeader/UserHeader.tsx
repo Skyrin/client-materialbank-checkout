@@ -8,6 +8,7 @@ import {
   USER_ORDER_HISTORY_URL,
   USER_SHIPPING_URL,
 } from "constants/urls";
+import { CustomerT } from "constants/types";
 
 export const UserPages: { [key: string]: any } = {
   OrderHistory: {
@@ -31,6 +32,7 @@ export const UserPages: { [key: string]: any } = {
 type Props = {
   title: string;
   extraContent?: any;
+  customer: CustomerT;
 };
 
 class UserHeader extends React.Component<Props, any> {
@@ -53,10 +55,21 @@ class UserHeader extends React.Component<Props, any> {
 
   render() {
     return (
-      <div className={cn("row", "center-vertically", styles.header)}>
-        <div className={styles.title}>{this.props.title}</div>
-        {this.props.extraContent}
-        <div className={styles.headerNav}>{this.renderButtons()}</div>
+      <div className={cn(styles.header)}>
+        <div className={cn("row", styles.subHeaderTop)}>
+          <div className={styles.title}>{this.props.title}</div>
+          {this.props.extraContent}
+          <div className={styles.headerNav}>{this.renderButtons()}</div>
+        </div>
+        {this.props.customer && (
+          <div className={cn("row", "margin-top")}>
+            <div className={styles.welcomeHint}>
+              Welcome back, {this.props.customer.firstname}!
+            </div>
+            <div className={styles.welcomeHintGray}>Not you?</div>
+            <button className={styles.logout}>Log Out</button>
+          </div>
+        )}
       </div>
     );
   }
