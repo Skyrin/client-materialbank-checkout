@@ -13,7 +13,8 @@
     padding: $margin-small-4 $margin-huge-5 $margin-small-4;
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-xxl);
-    color: $primary-color-user;
+    color: white;
+    background-color: $background-header-color;
     text-decoration: none;
     @include mobile-media {
       display: none;
@@ -22,5 +23,6 @@
 
   .pageWrapper {
     flex-grow: 1;
+    background-color: $background-gray-color;
   }
 }
