@@ -172,8 +172,8 @@ a {
 .floatingShare {
   display: none;
   position: absolute;
-  right: 6%;
-  top: 7%;
+  right: $margin-small-4;
+  top: 10px;
   @media (max-width: 520px) {
     display: block;
   }
