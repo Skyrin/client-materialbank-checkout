@@ -108,6 +108,9 @@ a {
       height: 100%;
       margin-top: 10px;
       cursor: pointer;
+      @include mobile-media {
+        margin-top: 15px;
+      }
     }
 
     .collectionEditDropdown {
@@ -163,6 +166,16 @@ a {
   align-items: center;
   @media (max-width: 520px) {
     display: none;
+  }
+}
+
+.floatingShare {
+  display: none;
+  position: absolute;
+  right: 6%;
+  top: 6.2%;
+  @media (max-width: 520px) {
+    display: block;
   }
 }
 

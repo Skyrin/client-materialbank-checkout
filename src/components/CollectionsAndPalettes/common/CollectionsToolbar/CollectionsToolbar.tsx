@@ -43,6 +43,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
   makePrivateCollection = () => {
     this.context.openModal(Modals.MakePrivateCollection);
   };
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -131,6 +132,9 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
               )}
             </div>
           )}
+          <a className={styles.floatingShare} onClick={this.shareCollection}>
+            <i className="fas fa-share contributors-share"></i>
+          </a>
         </div>
         <div className="horizontal-divider-toolbar"></div>
         <div className={styles.toolbarContent}>
