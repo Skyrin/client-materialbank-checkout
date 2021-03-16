@@ -23,9 +23,7 @@
 .mobileHint {
   @include grayText;
   margin-left: auto;
-  @include mobile-media {
-    font-size: 10px;
-  }
+  font-size: 10px;
 }
 
 .optInHint {
@@ -42,6 +40,8 @@
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);
   margin-bottom: $margin-small;
+  color: $primary-color-user;
+
   @include mobile-media {
     font-size: 12px;
   }

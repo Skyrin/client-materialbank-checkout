@@ -17,6 +17,7 @@ import { ClientError } from "GraphqlClient";
 import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
 import LoginGoogle from "components/common/LoginGoogle/LoginGoogle";
 import LoginFacebook from "components/common/LoginFacebook/LoginFacebook";
+import { CustomerT } from "constants/types";
 
 type Props = RouteComponentProps;
 
@@ -25,6 +26,7 @@ type State = {
   profileImageUrl: any;
   resetPasswordNetworkError: string;
   updateProfileNetworkError: string;
+  customer: CustomerT;
 };
 
 export default class UserAccount extends React.Component<Props, State> {
@@ -33,6 +35,7 @@ export default class UserAccount extends React.Component<Props, State> {
     profileImageUrl: null,
     resetPasswordNetworkError: "",
     updateProfileNetworkError: "",
+    customer: null,
   };
 
   updateProfileForm?: UpdateProfileForm;
@@ -47,6 +50,9 @@ export default class UserAccount extends React.Component<Props, State> {
 
   componentDidMount() {
     this.context.requestCurrentCustomer().then((value) => {
+      this.setState({
+        customer: value,
+      });
       this.updateProfileForm.newCustomerValues(value);
     });
   }
@@ -88,6 +94,14 @@ export default class UserAccount extends React.Component<Props, State> {
             className={styles.userImage}
             alt=""
           />
+          <div>
+            <div className={styles.profileName}>
+              {this.state.customer?.firstname} {this.state.customer?.lastname}
+            </div>
+            <div className={styles.profileEmail}>
+              {this.state.customer?.email}
+            </div>
+          </div>
           <input
             className={styles.uploadInput}
             id={"cameraUpload"}
@@ -122,14 +136,6 @@ export default class UserAccount extends React.Component<Props, State> {
             errorText={this.state.updateProfileNetworkError}
           />
         )}
-        <div
-          className={cn(
-            "horizontal-divider margin-top-big",
-            styles.horizontalDividerLinked
-          )}
-        />
-        {this.renderLinkedAccountSection()}
-        {this.renderDeleteAccount()}
 
         <div
           className={cn(
@@ -147,6 +153,14 @@ export default class UserAccount extends React.Component<Props, State> {
             Save Changes
           </button>
         </div>
+        <div
+          className={cn(
+            "horizontal-divider margin-top-big",
+            styles.horizontalDividerLinked
+          )}
+        />
+        {this.renderLinkedAccountSection()}
+        {this.renderDeleteAccount()}
       </div>
     );
   };
@@ -223,7 +237,7 @@ export default class UserAccount extends React.Component<Props, State> {
             We're sorry to see you go! By deleting your account, you will lose
             all of your favorites and account history.
           </div>
-          <button className={styles.connectAccountButton} onClick={() => {}}>
+          <button className={styles.deleteAccountButton} onClick={() => {}}>
             Delete...
           </button>
         </div>
@@ -236,7 +250,10 @@ export default class UserAccount extends React.Component<Props, State> {
     return (
       <div className={styles.UserAccount}>
         {isOnMobile() && <LogoMobile />}
-        <UserHeader title={UserPages.Account.name} />
+        <UserHeader
+          title={UserPages.Account.name}
+          customer={this.state.customer}
+        />
         <div className={styles.pageContent}>
           {this.renderProfileInfo()}
           {this.renderResetPasswordSection()}
@@ -292,8 +309,6 @@ export default class UserAccount extends React.Component<Props, State> {
     });
     if (this.updateProfileForm.validateContactInfo()) {
       const customerInput = new UpdateCustomerInput({
-        firstname: this.updateProfileForm.state.updateProfile.firstName,
-        lastname: this.updateProfileForm.state.updateProfile.lastName,
         is_subscribed: this.updateProfileForm.state.optIn,
       });
 

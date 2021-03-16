@@ -18,3 +18,9 @@ export type CreateCollectionInput = {
   name: string;
   isPublic: boolean;
 };
+
+export type UploadPhotoInput = {
+  name: string;
+  file: string;
+  fileName: string;
+};
