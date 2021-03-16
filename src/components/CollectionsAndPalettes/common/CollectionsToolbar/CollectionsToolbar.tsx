@@ -132,9 +132,16 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
               )}
             </div>
           )}
-          <a className={styles.floatingShare} onClick={this.shareCollection}>
-            <i className="fas fa-share contributors-share"></i>
-          </a>
+          {this.props.isCollection && (
+            <React.Fragment>
+              <a
+                className={styles.floatingShare}
+                onClick={this.shareCollection}
+              >
+                <i className="fas fa-share contributors-share"></i>
+              </a>
+            </React.Fragment>
+          )}
         </div>
         <div className="horizontal-divider-toolbar"></div>
         <div className={styles.toolbarContent}>
