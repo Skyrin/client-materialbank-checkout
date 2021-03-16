@@ -56,7 +56,7 @@ export default class CollectionsFooter extends React.Component<any, State> {
 
   render() {
     return (
-      <div className={styles.footer}>
+      <div className={cn(styles.footer, "footerArea")}>
         {isOnMobile() && this.renderInfoRowMobile()}
         {!isOnMobile() && (
           <React.Fragment>

@@ -13,6 +13,7 @@ import {
   Modals,
 } from "../../../../context/AppContext";
 import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreIdeas";
+import { isOnMobile } from "../../../../utils/responsive";
 import { find, get } from "lodash-es";
 import Loader from "components/common/Loader/Loader";
 
@@ -113,10 +114,12 @@ class Collection extends React.Component<Props, any> {
 
   commonAreaIsInViewport = () => {
     const commonArea = document.querySelector(".commonArea");
-    if (commonArea) {
+    const footer = document.querySelector(".footerArea");
+    if (commonArea && footer) {
       const bounding = commonArea.getBoundingClientRect();
+      const footerBound = footer.getBoundingClientRect();
       return (
-        bounding.bottom < 0 ||
+        bounding.bottom + footerBound.bottom < 0 ||
         bounding.right < 0 ||
         bounding.left > window.innerWidth ||
         bounding.top > window.innerHeight
@@ -280,7 +283,11 @@ class Collection extends React.Component<Props, any> {
           )}
         >
           <UploadCard
-            caption={"Upload a photo or drag & drop here "}
+            caption={
+              !isOnMobile()
+                ? "Upload a photo or drag & drop here "
+                : "Upload a photo"
+            }
             onClick={this.uploadPhoto}
           />
           {!finalItems.length && (
