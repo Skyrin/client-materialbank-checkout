@@ -32,6 +32,7 @@ export const DEFAULT_CREDIT_CARD_FORM_VALUES: CreditCardFormValuesT = {
   creditCardName: "",
   cardDate: "",
   cardCVV: "",
+  isDefault: false,
 };
 
 export type CreditCardFormValuesT = {
@@ -40,6 +41,7 @@ export type CreditCardFormValuesT = {
   creditCardName: string;
   cardDate: string;
   cardCVV: string;
+  isDefault: boolean;
 };
 
 type CreditCardFormErrorsT = {
@@ -55,6 +57,7 @@ type Props = {
   onSave?: (creditCardValues: CreditCardFormValuesT) => void;
   onCancel?: (id: string) => void;
   onDelete?: (id: string) => void;
+  onSetDefault?: (id: string) => void;
   visible?: boolean;
 };
 
@@ -168,8 +171,11 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
         )}
         <div className={styles.buttons}>
           <div className={styles.formButtonsEdit}>
-            {this.state.editMode && (
-              <button className={styles.setDefaultButton}>
+            {this.state.editMode && !this.props.initialValues.isDefault && (
+              <button
+                className={styles.setDefaultButton}
+                onClick={() => this.props.onSetDefault(this.state.values.id)}
+              >
                 Set as default
               </button>
             )}

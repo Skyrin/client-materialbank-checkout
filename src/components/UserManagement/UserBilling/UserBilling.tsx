@@ -172,6 +172,7 @@ export default class UserBilling extends React.Component<Props, State> {
                       creditCardName: paymentMethod.creditCard.name,
                       cardDate: paymentMethod.creditCard.expiration,
                       cardCVV: paymentMethod.creditCard.cvv,
+                      isDefault: paymentMethod.isDefault,
                     }}
                     visible={paymentMethod.isOpen}
                     onSave={(values) => {
@@ -182,6 +183,9 @@ export default class UserBilling extends React.Component<Props, State> {
                     }}
                     onDelete={(id: string) => {
                       this.deleteCard(id);
+                    }}
+                    onSetDefault={(id: string) => {
+                      this.makeDefault(id);
                     }}
                   />
                   {/*)}*/}
@@ -292,14 +296,16 @@ export default class UserBilling extends React.Component<Props, State> {
     });
   }
 
-  makeDefault(index: number) {
+  makeDefault(id: string) {
     let paymentMethods = this.state.paymentMethods;
 
     paymentMethods = paymentMethods.map((paymentMethod) => ({
       ...paymentMethod,
       isDefault: false,
     }));
-    paymentMethods[index].isDefault = true;
+
+    paymentMethods.find((payment) => payment.id === id).isDefault = true;
+
     this.setState({
       paymentMethods: paymentMethods,
     });
