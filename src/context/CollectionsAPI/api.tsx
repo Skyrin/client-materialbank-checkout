@@ -23,6 +23,23 @@ export const createCollection = async (
   return resp && get(resp, "collectionAdd");
 };
 
+export const deleteCollection = async (
+  context: AppContextState,
+  collectionId: number
+) => {
+  const collectionDeleteMutation = `
+    mutation collectionDelete($id: Int!) {
+      collectionDelete(id: $id) }`;
+  const resp = await collectionsGraphqlRequest(
+    context,
+    collectionDeleteMutation,
+    {
+      id: collectionId,
+    }
+  );
+  return resp && get(resp, "collectionDelete");
+};
+
 export const getCollections = async (
   context: AppContextState,
   variables: CollectionsQueryInput
