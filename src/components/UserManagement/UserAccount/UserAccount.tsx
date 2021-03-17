@@ -84,32 +84,35 @@ export default class UserAccount extends React.Component<Props, State> {
       <div className={cn(styles.section, styles.updateProfileInfo)}>
         <div className={styles.sectionHeader}>Update profile Info</div>
 
-        <div className="row center-vertically margin-top-big">
-          <img
-            src={
-              this.state.profileImageUrl
-                ? this.state.profileImageUrl
-                : imagePlaceholder
-            }
-            className={styles.userImage}
-            alt=""
-          />
-          <div>
-            <div className={styles.profileName}>
-              {this.state.customer?.firstname} {this.state.customer?.lastname}
-            </div>
-            <div className={styles.profileEmail}>
-              {this.state.customer?.email}
+        <div className={cn(styles.userImageRow)}>
+          <div className={"row center-vertically"}>
+            <img
+              src={
+                this.state.profileImageUrl
+                  ? this.state.profileImageUrl
+                  : imagePlaceholder
+              }
+              className={styles.userImage}
+              alt=""
+            />
+            <div>
+              <div className={styles.profileName}>
+                {this.state.customer?.firstname} {this.state.customer?.lastname}
+              </div>
+              <div className={styles.profileEmail}>
+                {this.state.customer?.email}
+              </div>
             </div>
           </div>
-          <input
-            className={styles.uploadInput}
-            id={"cameraUpload"}
-            type={"file"}
-            accept={"image/*"}
-            onChange={this.onFileSelected}
-          />
+
           <div className={styles.editPhoto}>
+            <input
+              className={styles.uploadInput}
+              id={"cameraUpload"}
+              type={"file"}
+              accept={"image/*"}
+              onChange={this.onFileSelected}
+            />
             <button className={styles.editImageButton}>
               <label className={styles.uploadLabel} htmlFor={"cameraUpload"}>
                 Upload new photo
@@ -137,12 +140,7 @@ export default class UserAccount extends React.Component<Props, State> {
           />
         )}
 
-        <div
-          className={cn(
-            "row center-vertically margin-top-big",
-            styles.formEditButtons
-          )}
-        >
+        <div className={cn("row center-vertically", styles.formEditButtons)}>
           <button className={styles.cancelButton}>Cancel</button>
           <button
             className={styles.saveChangesButton}
@@ -167,7 +165,7 @@ export default class UserAccount extends React.Component<Props, State> {
 
   renderLinkedAccountSection = () => {
     return (
-      <div className={cn("margin-top-big", styles.linkedAccounts)}>
+      <div className={cn(styles.linkedAccounts)}>
         <div className={styles.subSectionHeader}>Linked Accounts</div>
         <div className={styles.description}>
           We use this to let you sign in and to populate your profile

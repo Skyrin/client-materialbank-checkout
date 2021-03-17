@@ -22,14 +22,14 @@
       grid-template-columns: 1fr;
       margin-top: 0;
       border-top: 1px solid var(--color-separator);
-      padding-top: $margin-small-4;
+      padding-top: $margin-medium-3;
     }
   }
 
   .section {
     @include mobile-media {
       border: none;
-      padding: 0 $margin-small-4;
+      padding: 0 $margin-medium;
     }
 
     &.fitContent {
@@ -41,16 +41,18 @@
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-medium);
     color: $primary-color-user;
+
+    @include mobile-media {
+      font-size: var(--font-size-md);
+    }
   }
 
   .editPhoto {
     display: flex;
     margin-left: auto;
     @include mobile-media {
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      row-gap: $margin-small-4;
+      margin-left: 0;
+      margin-top: $margin-small-4;
     }
   }
 
@@ -63,10 +65,27 @@
     margin-top: $margin-medium-2;
   }
 
+  .userImageRow {
+    display: flex;
+    flex-flow: row;
+    margin-top: $margin-medium;
+
+    @include mobile-media {
+      flex-flow: column;
+      margin-top: $margin-small-4;
+    }
+  }
+
   .userImage {
     width: 86px;
     height: 86px;
     border-radius: 43px;
+
+    @include mobile-media {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+    }
   }
 
   .editImageButton {
@@ -76,7 +95,14 @@
     cursor: pointer;
     transition: color 0.15s $ease-in-out;
     @include mobile-media {
-      margin-left: 14px;
+      margin-left: 0;
+      font-size: var(--font-size-sm);
+    }
+
+    & + .editImageButton {
+      @include mobile-media {
+        margin-left: auto;
+      }
     }
 
     &:hover {
@@ -92,6 +118,7 @@
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-medium);
     margin-bottom: $margin-small;
+    color: $primary-color-user;
     @include mobile-media {
       margin-bottom: 10px;
     }
@@ -99,6 +126,10 @@
 
   .description {
     @include grayText;
+    @include mobile-media {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-normal);
+    }
   }
 
   .horizontalDividerLinked {
@@ -108,9 +139,7 @@
   }
 
   .linkedAccounts {
-    @include mobile-media {
-      margin-top: $margin-small-4;
-    }
+    margin-top: $margin-medium;
   }
 
   .linkedAccountsGrid {
@@ -119,17 +148,6 @@
     grid-template-rows: auto;
     row-gap: $margin-small-4;
     margin-top: $margin-medium;
-    @include mobile-media {
-      grid-template-columns: 1fr;
-      row-gap: 10px;
-      margin-top: 10px;
-    }
-  }
-
-  .linkedAccountOption > i {
-    @include mobile-media {
-      display: none;
-    }
   }
 
   .connectAccountButton {
@@ -138,6 +156,7 @@
     padding: 0;
     @include mobile-media {
       width: 100%;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -152,8 +171,8 @@
     margin-left: $margin-small-3;
 
     @include mobile-media {
-      margin-top: 10px;
-      margin-left: 0;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-normal);
     }
   }
 
@@ -169,6 +188,7 @@
   }
 
   .formEditButtons {
+    margin-top: $margin-medium;
     @include mobile-media {
       justify-content: space-between;
       margin-bottom: $margin-small-4;
@@ -179,10 +199,20 @@
     @include grayGradientButton;
     margin-left: auto;
     margin-right: $margin-small-4;
+    flex-grow: 1;
+    width: auto;
+    @include mobile-media {
+      margin: 0;
+    }
   }
 
   .saveChangesButton {
     @include blackGradientButton;
+    flex-grow: 1;
+    width: auto;
+    @include mobile-media {
+      margin-left: 10px;
+    }
   }
 
   .resetSection {
@@ -200,6 +230,10 @@
     font-size: var(--font-size-lg);
     color: $primary-color-user;
     margin-left: $margin-small-3;
+
+    @include mobile-media {
+      font-size: var(--font-size-md);
+    }
   }
 
   .profileEmail {

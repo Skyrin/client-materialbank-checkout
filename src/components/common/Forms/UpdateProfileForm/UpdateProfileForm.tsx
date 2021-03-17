@@ -136,6 +136,7 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
           }}
         >
           <Checkbox
+            className={styles.optInCheck}
             black={true}
             value={this.state.optIn}
             onChange={(val: boolean) => {
@@ -145,8 +146,8 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
             }}
           />
           <div className={styles.optInHint}>
-            Opt-in to Design Shop's newsletter: tips, ideas and promotional
-            content sent to your email
+            Opt-in to newsletter: tips, ideas and promotional content sent to
+            your email
           </div>
         </div>
       </div>
