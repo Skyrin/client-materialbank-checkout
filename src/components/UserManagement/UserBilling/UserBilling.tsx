@@ -60,29 +60,15 @@ export default class UserBilling extends React.Component<Props, State> {
             alt=""
             className={styles.creditCardIcon}
           />
-          <div className={styles.creditCardInfo}>
-            <div className={styles.creditCardNumber}>
-              {paymentMethod.creditCard.getObfuscatedNumber()}
-            </div>
-            <div className={styles.fullName}>
-              {paymentMethod.creditCard.name}
-            </div>
+
+          <div className={styles.creditCardNumber}>
+            {paymentMethod.creditCard.getShortObfuscatedNumber()}
           </div>
-        </div>
-        <div className={styles.creditCardEdit}>
-          {!paymentMethod.isDefault && (
-            <div
-              className={styles.makeDefault}
-              onClick={() => {
-                this.makeDefault(index);
-              }}
-            >
-              Make Default
-            </div>
-          )}
+
           {paymentMethod.isDefault && (
             <div className={styles.defaultPayment}>DEFAULT</div>
           )}
+
           <button
             className={cn(styles.editButton, {
               [styles.editMode]: paymentMethod.isOpen,

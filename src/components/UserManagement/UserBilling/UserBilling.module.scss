@@ -22,7 +22,7 @@
   .pageContent {
     margin-top: $margin-medium-3;
     @include mobile-media {
-      padding: 0 $margin-small-4 $margin-small-4 $margin-small-4;
+      padding: 0 $margin-medium $margin-small-4 $margin-medium;
       border-top: 1px solid $color-user-border;
       margin-top: 0;
     }
@@ -59,7 +59,7 @@
     @include mobile-media {
       display: flex;
       flex-direction: column;
-      padding: 10px 0;
+      padding: 0;
       height: auto;
     }
 
@@ -68,7 +68,8 @@
       flex-direction: row;
       width: 100%;
       justify-content: flex-start;
-
+      align-items: center;
+      padding: $margin-small-4 $margin-small-2;
       img {
         margin-right: $margin-medium;
       }
@@ -83,23 +84,8 @@
       margin-top: 14px;
     }
 
-    .creditCardInfo {
-      display: flex;
-      align-items: flex-start;
-      flex-direction: column;
-      text-align: center;
-
-      div:first-child {
-        margin-bottom: 14px;
-      }
-
-      div {
-        font-size: 12px;
-      }
-
-      .creditCardNumber {
-        margin-left: 0;
-      }
+    .creditCardNumber {
+      margin-left: 0;
     }
   }
 
@@ -139,6 +125,10 @@
     font-weight: var(--font-weight-medium);
     transition: border-color 0.2s $ease-in-out background-color 0.15s
       $ease-in-out;
+
+    @include mobile-media {
+      margin-left: auto;
+    }
 
     &.editMode {
       background-color: rgba($primary-color-user, 0.3);

@@ -12,6 +12,7 @@ import {
   expirationDateInputFormatter,
   expirationDateInputParser,
 } from "components/common/Input/utils";
+import { isOnMobile } from "utils/responsive";
 
 const editCreditCardSchema = yup.object().shape({
   creditCardNumber: yup.string().required("Required"),
@@ -167,18 +168,31 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
             >
               Delete this card
             </button>
+
+            {isOnMobile() &&
+              this.state.editMode &&
+              !this.props.initialValues.isDefault && (
+                <button
+                  className={styles.setDefaultButton}
+                  onClick={() => this.props.onSetDefault(this.state.values.id)}
+                >
+                  Set as default
+                </button>
+              )}
           </div>
         )}
         <div className={styles.buttons}>
           <div className={styles.formButtonsEdit}>
-            {this.state.editMode && !this.props.initialValues.isDefault && (
-              <button
-                className={styles.setDefaultButton}
-                onClick={() => this.props.onSetDefault(this.state.values.id)}
-              >
-                Set as default
-              </button>
-            )}
+            {!isOnMobile() &&
+              this.state.editMode &&
+              !this.props.initialValues.isDefault && (
+                <button
+                  className={styles.setDefaultButton}
+                  onClick={() => this.props.onSetDefault(this.state.values.id)}
+                >
+                  Set as default
+                </button>
+              )}
 
             <button className={styles.cancelButton} onClick={this.cancelClick}>
               Cancel
