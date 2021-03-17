@@ -3,7 +3,7 @@
 //@import "styles/global";
 
 .UserBilling {
-  padding: 62px 100px 162px;
+  padding: 0 100px 162px;
 
   @mixin normalText {
     font-size: var(--font-size-md);
@@ -191,5 +191,22 @@
   .example-leave.example-leave-active {
     opacity: 0.01;
     transition: opacity 300ms ease-in;
+  }
+}
+
+.loaderContainer {
+  position: fixed;
+  top: 0;
+  left: -5px;
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  background-color: rgba(#fbfbfb, 0.8);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: var(--vertical-spacing-normal);
+
+  .loader {
+    font-size: 40px;
   }
 }

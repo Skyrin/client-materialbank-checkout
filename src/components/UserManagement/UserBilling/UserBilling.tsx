@@ -18,21 +18,37 @@ import EditCreditCardForm, {
 } from "components/common/Forms/EditCreditCardForm/EditCreditCardForm";
 import LogoMobile from "../../common/LogoMobile/LogoMobile";
 import { isOnMobile } from "../../../utils/responsive";
+import { CustomerT } from "constants/types";
+import { AppContext, AppContextState } from "context/AppContext";
+import Loader from "components/common/Loader/Loader";
 
 type Props = RouteComponentProps;
 
 type State = {
   paymentMethods: PaymentMethod[];
+  customer: CustomerT;
 };
 
 export default class UserBilling extends React.Component<Props, State> {
+  static contextType = AppContext;
+  context!: AppContextState;
+
   addCreditCardForm?: EditCreditCardForm;
 
   constructor(props) {
     super(props);
     this.state = {
       paymentMethods: mockPayments.map((payment) => new PaymentMethod(payment)),
+      customer: null,
     };
+  }
+
+  componentDidMount() {
+    this.context.requestCurrentCustomer().then((value) => {
+      this.setState({
+        customer: value,
+      });
+    });
   }
 
   renderMobilePaymentRow(paymentMethod, index) {
@@ -138,7 +154,10 @@ export default class UserBilling extends React.Component<Props, State> {
       <div className={styles.UserBilling}>
         {isOnMobile() && <LogoMobile />}
 
-        <UserHeader title={UserPages.Billing.name} />
+        <UserHeader
+          title={UserPages.Billing.name}
+          customer={this.state.customer}
+        />
         <div className={styles.pageContent}>
           {this.state.paymentMethods.map(
             (paymentMethod: PaymentMethod, index) => {
@@ -195,6 +214,12 @@ export default class UserBilling extends React.Component<Props, State> {
             />
           </div>
         </div>
+        {this.context.customerLoading && (
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        )}
       </div>
     );
   }
