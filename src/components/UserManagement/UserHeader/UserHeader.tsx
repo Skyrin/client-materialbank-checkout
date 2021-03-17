@@ -9,6 +9,7 @@ import {
   USER_SHIPPING_URL,
 } from "constants/urls";
 import { CustomerT } from "constants/types";
+import { isOnMobile } from "utils/responsive";
 
 export const UserPages: { [key: string]: any } = {
   OrderHistory: {
@@ -57,12 +58,15 @@ class UserHeader extends React.Component<Props, any> {
     return (
       <div className={cn(styles.header)}>
         <div className={cn("row", styles.subHeaderTop)}>
-          <div className={styles.title}>{this.props.title}</div>
+          {!isOnMobile() && (
+            <div className={styles.title}>{this.props.title}</div>
+          )}
+
           {this.props.extraContent}
           <div className={styles.headerNav}>{this.renderButtons()}</div>
         </div>
         {this.props.customer && (
-          <div className={cn("row", "margin-top")}>
+          <div className={cn("row", "margin-top", "center-vertically")}>
             <div className={styles.welcomeHint}>
               Welcome back, {this.props.customer.firstname}!
             </div>
