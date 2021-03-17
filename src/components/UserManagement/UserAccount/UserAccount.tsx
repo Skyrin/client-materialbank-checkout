@@ -158,6 +158,8 @@ export default class UserAccount extends React.Component<Props, State> {
           )}
         />
         {this.renderLinkedAccountSection()}
+        {isOnMobile() && this.renderResetPasswordSection()}
+        {isOnMobile() && <div className="horizontal-divider margin-top-big" />}
         {this.renderDeleteAccount()}
       </div>
     );
@@ -254,7 +256,7 @@ export default class UserAccount extends React.Component<Props, State> {
         />
         <div className={styles.pageContent}>
           {this.renderProfileInfo()}
-          {this.renderResetPasswordSection()}
+          {!isOnMobile() && this.renderResetPasswordSection()}
         </div>
 
         {this.context.customerLoading && (

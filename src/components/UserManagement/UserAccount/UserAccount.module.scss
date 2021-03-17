@@ -199,19 +199,19 @@
     @include grayGradientButton;
     margin-left: auto;
     margin-right: $margin-small-4;
-    flex-grow: 1;
-    width: auto;
     @include mobile-media {
       margin: 0;
+      width: auto;
+      flex-grow: 1;
     }
   }
 
   .saveChangesButton {
     @include blackGradientButton;
-    flex-grow: 1;
-    width: auto;
     @include mobile-media {
       margin-left: 10px;
+      width: auto;
+      flex-grow: 1;
     }
   }
 
@@ -219,9 +219,10 @@
     border-left: 1px solid $color_user-border;
     padding-left: $margin-huge-5;
     @include mobile-media {
-      padding-top: $margin-medium;
-      @include roundedContainer;
-      border-radius: 0;
+      padding-left: 0;
+      padding-right: 0;
+      border-left: none;
+      margin-top: $margin-medium;
     }
   }
 
