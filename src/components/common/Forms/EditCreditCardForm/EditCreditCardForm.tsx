@@ -103,6 +103,7 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
               placeholder="xxxx xxxx xxxx xxxx"
               formatter={cardNumberInputFormatter}
               parser={cardNumberInputParser}
+              userInputStyle={true}
               value={this.state.values.creditCardNumber}
               error={this.state.errors.creditCardNumber}
               onChange={(val: string) => {
@@ -117,6 +118,7 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
               placeholder="First M. Last"
               value={this.state.values.creditCardName}
               error={this.state.errors.creditCardName}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("creditCardName", val);
               }}
@@ -129,6 +131,7 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
               placeholder="MM / YY"
               value={this.state.values.cardDate}
               error={this.state.errors.cardDate}
+              userInputStyle={true}
               formatter={expirationDateInputFormatter}
               parser={expirationDateInputParser}
               inputMode="numeric"
@@ -144,6 +147,7 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
               placeholder="xxx"
               value={this.state.values.cardCVV}
               error={this.state.errors.cardCVV}
+              userInputStyle={true}
               parser={digitsOnlyInputParser}
               inputMode="numeric"
               onChange={(val: string) => {
@@ -152,16 +156,24 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
             />
           </div>
         </div>
-        <div className={styles.buttons}>
-          {this.state.editMode && (
+        {this.state.editMode && (
+          <div className={styles.deleteButtonContainer}>
             <button
               className={styles.deleteButton}
               onClick={() => this.props.onDelete(this.state.values.id)}
             >
-              DELETE THIS CARD
+              Delete this card
             </button>
-          )}
+          </div>
+        )}
+        <div className={styles.buttons}>
           <div className={styles.formButtonsEdit}>
+            {this.state.editMode && (
+              <button className={styles.setDefaultButton}>
+                Set as default
+              </button>
+            )}
+
             <button className={styles.cancelButton} onClick={this.cancelClick}>
               Cancel
             </button>

@@ -12,7 +12,7 @@
   padding: 0 $margin-medium;
   grid-template-areas:
     "title form"
-    "title buttons";
+    "delete-card buttons";
 
   transition: opacity 0.35s $ease-in-out, padding 0.35s $ease-in-out,
     max-height 0.35s $ease-in-out;
@@ -49,7 +49,7 @@
       display: flex;
       flex-direction: column;
       margin-top: $margin-small-4;
-      margin-bottom: margin-medium;
+      margin-bottom: $margin-medium;
       row-gap: 15px;
     }
 
@@ -80,8 +80,8 @@
   .buttons {
     grid-area: buttons;
     display: flex;
+
     margin-top: $margin-medium;
-    justify-content: space-between;
     @include mobile-media {
       display: flex;
       align-items: center;
@@ -94,60 +94,43 @@
     }
 
     .formButtonsEdit {
+      width: 100%;
+      display: flex;
       @include mobile-media {
-        width: 100%;
-        display: flex;
         justify-content: space-between;
         align-items: center;
-      }
-    }
-
-    .deleteButton {
-      @include mobile-media {
-        padding: 0;
-        margin: $margin-medium 0;
       }
     }
   }
 
   .saveChanges {
-    @include blackButton;
+    @include blackGradientButton;
   }
 
   .cancelButton {
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-md);
-    color: $primary-color-user;
-    transition: color 0.15s $ease-in-out;
-    padding: $margin-small-3;
+    @include grayGradientButton;
     margin-left: auto;
+    margin-right: $margin-small-4;
     @include mobile-media {
       margin: 0;
     }
+  }
 
-    &:hover {
-      color: lighten($primary-color-user, 30%);
-    }
+  .deleteButtonContainer {
+    grid-area: delete-card;
+    position: relative;
+  }
 
-    &:active {
-      color: lighten($primary-color-user, 50%);
-    }
+  .setDefaultButton {
+    @include labelButtonUnderline;
+    padding: 0;
+    align-self: flex-end;
   }
 
   .deleteButton {
-    font-family: "Roboto", sans-serif;
-    font-weight: var(--font-weight-normal);
-    font-size: var(--font-size-md);
-    letter-spacing: 1px;
-    color: $red-color;
-    transition: color 0.15s $ease-in-out;
-
-    &:hover {
-      color: lighten($red-color, 10%);
-    }
-
-    &:active {
-      color: lighten($red-color, 30%);
-    }
+    @include labelButtonUnderline;
+    padding: 0;
+    position: absolute;
+    bottom: 0;
   }
 }
