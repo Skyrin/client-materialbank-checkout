@@ -4,14 +4,17 @@ import cn from "classnames";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
-import { RouteComponentProps } from "react-router-dom";
+import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
+import { get } from "lodash-es";
+import { COLLECTION_URL, COLLECTIONS_URL } from "../../../constants/urls";
+import { deleteCollection } from "../../../context/CollectionsAPI/api";
 
 type State = {
   isLoading: boolean;
 };
 type Props = RouteComponentProps;
 
-export class DeleteCollectionModal extends React.Component<Props, State> {
+class DeleteCollectionModal extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
@@ -49,6 +52,28 @@ export class DeleteCollectionModal extends React.Component<Props, State> {
     disableBodyScroll(this.modalTarget);
   };
 
+  getCollectionId = () => {
+    const collectionPageResult = matchPath(this.props.location.pathname, {
+      path: COLLECTION_URL,
+      exact: true,
+    });
+    return get(collectionPageResult, "params.collection_id");
+  };
+
+  submit = async () => {
+    const collectionId = parseInt(this.getCollectionId());
+    if (collectionId) {
+      const resp = await deleteCollection(this.context, collectionId);
+      console.log("delete response", resp);
+      await this.context.requestCollections({
+        limit: 100,
+        offset: 0,
+      });
+      this.closeModal();
+      this.props.history.push(COLLECTIONS_URL);
+    }
+  };
+
   render() {
     return (
       <div
@@ -71,7 +96,9 @@ export class DeleteCollectionModal extends React.Component<Props, State> {
             </div>
             <div className="horizontal-divider-toolbar"></div>
             <div className={styles.buttonsContainer}>
-              <div className={styles.createButton}>Delete Collection</div>
+              <div className={styles.createButton} onClick={this.submit}>
+                Delete Collection
+              </div>
               <div className={styles.cancelButton} onClick={this.closeModal}>
                 Cancel
               </div>
@@ -88,3 +115,5 @@ export class DeleteCollectionModal extends React.Component<Props, State> {
     );
   }
 }
+
+export default withRouter(DeleteCollectionModal);
