@@ -9,6 +9,8 @@ import {
   USER_SHIPPING_URL,
 } from "constants/urls";
 import { CustomerT } from "constants/types";
+import { isOnMobile } from "utils/responsive";
+import { AppContext, AppContextState, Modals } from "context/AppContext";
 
 export const UserPages: { [key: string]: any } = {
   OrderHistory: {
@@ -36,6 +38,9 @@ type Props = {
 };
 
 class UserHeader extends React.Component<Props, any> {
+  static contextType = AppContext;
+  context!: AppContextState;
+
   renderButtons = () => {
     return Object.values(UserPages).map((page: any, index) => {
       return (
@@ -57,22 +62,32 @@ class UserHeader extends React.Component<Props, any> {
     return (
       <div className={cn(styles.header)}>
         <div className={cn("row", styles.subHeaderTop)}>
-          <div className={styles.title}>{this.props.title}</div>
+          {!isOnMobile() && (
+            <div className={styles.title}>{this.props.title}</div>
+          )}
+
           {this.props.extraContent}
           <div className={styles.headerNav}>{this.renderButtons()}</div>
         </div>
         {this.props.customer && (
-          <div className={cn("row", "margin-top")}>
+          <div className={cn("row", "margin-top", "center-vertically")}>
             <div className={styles.welcomeHint}>
               Welcome back, {this.props.customer.firstname}!
             </div>
             <div className={styles.welcomeHintGray}>Not you?</div>
-            <button className={styles.logout}>Log Out</button>
+            <button className={styles.logout} onClick={this.logout}>
+              Log Out
+            </button>
           </div>
         )}
       </div>
     );
   }
+
+  logout = () => {
+    this.context.logout();
+    this.context.openModal(Modals.Login);
+  };
 }
 
 export default UserHeader;
