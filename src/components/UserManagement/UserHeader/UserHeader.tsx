@@ -10,6 +10,7 @@ import {
 } from "constants/urls";
 import { CustomerT } from "constants/types";
 import { isOnMobile } from "utils/responsive";
+import { AppContext, AppContextState, Modals } from "context/AppContext";
 
 export const UserPages: { [key: string]: any } = {
   OrderHistory: {
@@ -37,6 +38,9 @@ type Props = {
 };
 
 class UserHeader extends React.Component<Props, any> {
+  static contextType = AppContext;
+  context!: AppContextState;
+
   renderButtons = () => {
     return Object.values(UserPages).map((page: any, index) => {
       return (
@@ -71,12 +75,19 @@ class UserHeader extends React.Component<Props, any> {
               Welcome back, {this.props.customer.firstname}!
             </div>
             <div className={styles.welcomeHintGray}>Not you?</div>
-            <button className={styles.logout}>Log Out</button>
+            <button className={styles.logout} onClick={this.logout}>
+              Log Out
+            </button>
           </div>
         )}
       </div>
     );
   }
+
+  logout = () => {
+    this.context.logout();
+    this.context.openModal(Modals.Login);
+  };
 }
 
 export default UserHeader;
