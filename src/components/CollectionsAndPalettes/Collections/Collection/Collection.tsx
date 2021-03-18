@@ -31,6 +31,7 @@ class Collection extends React.Component<Props, any> {
   constructor(props) {
     super(props);
     this.state = {
+      isPublic: true,
       commonAreaIsInViewport: false,
       mode: "image",
       display: "everything",
@@ -227,6 +228,9 @@ class Collection extends React.Component<Props, any> {
     }
     return contextCollection || {};
   }
+  handleRename = (updatedTitle) => {
+    this.context.collection.name = updatedTitle;
+  };
 
   render() {
     const collection = this.getCollection();
@@ -275,6 +279,8 @@ class Collection extends React.Component<Props, any> {
           toggleDisplay={this.toggleDisplay}
           activeButtonMode={this.state.mode}
           toggleMode={this.toggleMode}
+          isPublic={this.state.isPublic}
+          onCollectionRename={this.handleRename}
         />
         <div
           className={cn(
@@ -312,5 +318,4 @@ class Collection extends React.Component<Props, any> {
     );
   }
 }
-
 export default withRouter(Collection);

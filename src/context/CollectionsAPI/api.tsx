@@ -98,3 +98,25 @@ export const uploadPhoto = async (
     return resp && get(resp, "collectionAddUpload");
   }
 };
+
+export const renameCollection = async (
+  context: AppContextState,
+  collectionId: number,
+  collectionName: string,
+  isPublic: boolean
+) => {
+  const collectionEditMutation = `
+    mutation collectionEdit($id: Int!, $name: String, $isPublic: Boolean) {
+      collectionEdit(id: $id, name: $name, isPublic: $isPublic )
+      }`;
+  const resp = await collectionsGraphqlRequest(
+    context,
+    collectionEditMutation,
+    {
+      id: collectionId,
+      name: collectionName,
+      isPublic: isPublic,
+    }
+  );
+  return resp && get(resp, "collectionEdit");
+};
