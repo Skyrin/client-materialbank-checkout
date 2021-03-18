@@ -11,7 +11,6 @@ import { deleteCollection } from "../../../context/CollectionsAPI/api";
 
 type State = {
   isLoading: boolean;
-  collections: any;
 };
 type Props = RouteComponentProps;
 
@@ -25,7 +24,6 @@ class DeleteCollectionModal extends React.Component<Props, State> {
 
     this.state = {
       isLoading: false,
-      collections: null,
     };
   }
 
@@ -67,15 +65,9 @@ class DeleteCollectionModal extends React.Component<Props, State> {
     if (collectionId) {
       const resp = await deleteCollection(this.context, collectionId);
       console.log("delete response", resp);
-      let collections = await this.context.requestCollections({
+      await this.context.requestCollections({
         limit: 100,
         offset: 0,
-      });
-      const newCollections = collections.filter(
-        (collection) => collection.id !== collectionId
-      );
-      this.setState({
-        collections: newCollections,
       });
       this.closeModal();
       this.props.history.push(COLLECTIONS_URL);
