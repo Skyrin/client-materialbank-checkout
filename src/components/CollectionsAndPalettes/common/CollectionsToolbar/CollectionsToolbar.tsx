@@ -138,6 +138,10 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
         isPublic
       );
       console.log("rename response", resp);
+      await this.context.requestCollections({
+        limit: 100,
+        offset: 0,
+      });
     }
   };
 
