@@ -17,7 +17,7 @@ import { CustomerAddressInput } from "context/CustomerAPI/models";
 import { AppContext, AppContextState } from "context/AppContext";
 import { ClientError } from "GraphqlClient";
 import Loader from "components/common/Loader/Loader";
-import { AddressT } from "constants/types";
+import { AddressT, CustomerT } from "constants/types";
 import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
 
 export const DEFAULT_ADDRESS_VALUES: AddressFormValuesT = {
@@ -58,6 +58,7 @@ export type AddressFormErrorsT = {
 type Props = RouteComponentProps;
 
 type State = {
+  customer: CustomerT;
   addresses: AddressT[];
   values: AddressFormValuesT;
   errors: AddressFormErrorsT;
@@ -79,6 +80,7 @@ export default class UserShipping extends React.Component<Props, State> {
     this.context.requestCurrentCustomer().then((value) => {
       this.setState({
         addresses: value.addresses,
+        customer: value,
       });
     });
   }
@@ -92,6 +94,7 @@ export default class UserShipping extends React.Component<Props, State> {
     this.state = {
       values: DEFAULT_ADDRESS_VALUES,
       addresses: [],
+      customer: null,
       errors: {
         nickname: null,
         firstName: null,
@@ -118,88 +121,84 @@ export default class UserShipping extends React.Component<Props, State> {
         <div className={styles.UserShipping}>
           <UserHeader
             title={UserPages.Shipping.name}
-            extraContent={
-              <SearchBar
-                placeholder={"Search of shipping address"}
-                onSearchChange={() => {}}
-              />
-            }
+            customer={this.state.customer}
           />
           <div className={styles.pageContent}>
             <div className={styles.addressGrid}>
               {this.state.addresses.map((address) => {
                 return (
                   <div className={styles.addressCell} key={address.id}>
-                    <div className={styles.addressMapCell} />
-                    <div className={styles.addressInfo}>
+                    <div className={"row center-vertically"}>
                       <div className={styles.addressNickName}>
                         {address.company}
                       </div>
-                      <div className={styles.addressExtraDetails}>
-                        {address.firstname + " " + address.lastname}
-                      </div>
-                      <div className={styles.addressExtraDetails}>
-                        {address.street[0]}
-                      </div>
-                      <div className={styles.addressExtraDetails}>
-                        {address.street[1]}
-                      </div>
-                      <div className={styles.addressExtraDetails}>
-                        {address.city +
-                          ", " +
-                          address.region?.region_code +
-                          " " +
-                          address.postcode}
-                      </div>
-                    </div>
 
-                    {!address.default_shipping && (
+                      {address.default_shipping && (
+                        <div className={styles.defaultAddress}>DEFAULT</div>
+                      )}
+
                       <button
-                        className={styles.makeDefault}
+                        className={styles.editAddressCell}
                         onClick={() => {
-                          this.makeDefault(address);
+                          this.onEditClicked(address);
                         }}
                       >
-                        Make default
+                        Edit
                       </button>
-                    )}
-                    {address.default_shipping && (
-                      <button className={styles.defaultAddress}>
-                        DEFAULT ADDRESS
-                      </button>
-                    )}
+                    </div>
+                    {/*<div className={styles.addressMapCell} />*/}
+                    {/*<div className={styles.addressInfo}>*/}
+                    {/*  <div className={styles.addressNickName}>*/}
+                    {/*    {address.company}*/}
+                    {/*  </div>*/}
+                    {/*  <div className={styles.addressExtraDetails}>*/}
+                    {/*    {address.firstname + " " + address.lastname}*/}
+                    {/*  </div>*/}
+                    {/*  <div className={styles.addressExtraDetails}>*/}
+                    {/*    {address.street[0]}*/}
+                    {/*  </div>*/}
+                    {/*  <div className={styles.addressExtraDetails}>*/}
+                    {/*    {address.street[1]}*/}
+                    {/*  </div>*/}
+                    {/*  <div className={styles.addressExtraDetails}>*/}
+                    {/*    {address.city +*/}
+                    {/*      ", " +*/}
+                    {/*      address.region?.region_code +*/}
+                    {/*      " " +*/}
+                    {/*      address.postcode}*/}
+                    {/*  </div>*/}
+                    {/*</div>*/}
 
-                    <button
-                      className={styles.editAddressCell}
-                      onClick={() => {
-                        this.onEditClicked(address);
-                      }}
-                    >
-                      Edit
-                    </button>
+                    {/*{!address.default_shipping && (*/}
+                    {/*  <button*/}
+                    {/*    className={styles.makeDefault}*/}
+                    {/*    onClick={() => {*/}
+                    {/*      this.makeDefault(address);*/}
+                    {/*    }}*/}
+                    {/*  >*/}
+                    {/*    Make default*/}
+                    {/*  </button>*/}
+                    {/*)}*/}
                   </div>
                 );
               })}
             </div>
-            <div className={styles.mapContainer}>
-              <div className={styles.addAddressContainer}>
-                <MapAddressForm
-                  componentRef={(ref) => {
-                    this.addAddressForm = ref;
-                  }}
-                  onSave={(addressValues) => {
-                    this.onSaveAddress(addressValues, null);
-                  }}
+            <div className={styles.addAddressContainer}>
+              <MapAddressForm
+                componentRef={(ref) => {
+                  this.addAddressForm = ref;
+                }}
+                onSave={(addressValues) => {
+                  this.onSaveAddress(addressValues, null);
+                }}
+              />
+              {this.state.createAddressNetworkError && (
+                <ErrorLabel
+                  className={styles.errorCreateAddress}
+                  errorText={this.state.createAddressNetworkError}
                 />
-                {this.state.createAddressNetworkError && (
-                  <ErrorLabel
-                    className={styles.errorCreateAddress}
-                    errorText={this.state.createAddressNetworkError}
-                  />
-                )}
-              </div>
+              )}
             </div>
-            {isOnMobile() && this.renderMobileMap()}
           </div>
         </div>
 
