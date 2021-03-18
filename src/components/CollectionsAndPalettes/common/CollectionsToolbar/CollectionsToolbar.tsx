@@ -22,6 +22,7 @@ interface State {
   isOpened: boolean;
   isRenameMode: boolean;
   title: string;
+  updatedTitle: string;
 }
 
 interface ToolbarProps {
@@ -34,7 +35,6 @@ interface ToolbarProps {
   collaborators?: any;
   toggleMode?: any;
   toggleDisplay?: any;
-  isPublic?: boolean;
 }
 
 type Props = RouteComponentProps;
@@ -67,10 +67,10 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
       isOpened: false,
       isRenameMode: false,
       title: this.props.title,
+      updatedTitle: null,
     };
     this.wrapperRefDropdown = React.createRef();
     this.wrapperRefRename = React.createRef();
-    this.onClickButtonRedirect = this.onClickButtonRedirect.bind(this);
   }
 
   renderCollectionsEditDropdown = () => {
@@ -103,7 +103,7 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
     return <Collaborators collaborators={this.props.collaborators} />;
   };
 
-  onClickButtonRedirect(button: string): any {
+  onClickButtonRedirect = (button: string) => {
     const redirectURLS = {
       collections: COLLECTIONS_URL,
       palettes: PALETTES_URL,
@@ -112,7 +112,7 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
 
     if (redirectURLS[button] === currentURL) return;
     else this.props.history.push(redirectURLS[button]);
-  }
+  };
 
   getCollectionId = () => {
     const collectionPageResult = matchPath(this.props.location.pathname, {
@@ -123,38 +123,37 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
   };
 
   handleTitleChange = (e: any) => {
-    this.setState({ title: e.target.value });
+    this.setState({ updatedTitle: e.target.value });
   };
 
   handleTitleUpdate = async (e: any) => {
+    if (e.key === "Enter") {
+      this.setState({ isRenameMode: false, title: this.state.updatedTitle });
+    } else if (e.key === "Escape") {
+      this.setState({
+        isRenameMode: false,
+        title: this.props.title,
+        updatedTitle: this.state.title,
+      });
+    }
+  };
+
+  submit = async (e: any) => {
     const collectionId = parseInt(this.getCollectionId());
-    let name = this.state.title;
-    let isPublic = this.props.isPublic;
     if (collectionId) {
+      await this.handleTitleUpdate(e);
       const resp = await renameCollection(
         this.context,
         collectionId,
-        name,
-        isPublic
+        this.state.title
       );
       console.log("rename response", resp);
       await this.context.requestCollections({
         limit: 100,
         offset: 0,
       });
+      await this.context.requestCollection(collectionId);
     }
-  };
-
-  submitOnEnter = async (e: any) => {
-    await this.handleTitleUpdate(e);
-    if (e.key === "Enter") {
-      this.setState({ isRenameMode: false, title: this.state.title });
-    }
-  };
-
-  submitOnClickOutside = async (e: any) => {
-    await this.handleTitleUpdate(e);
-    this.setState({ isRenameMode: false, title: this.state.title });
   };
 
   handleClickOutside = (e: any) => {
@@ -170,7 +169,11 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
       this.wrapperRefRename &&
       !this.wrapperRefRename.current.contains(e.target)
     ) {
-      this.submitOnClickOutside(e);
+      this.setState({
+        isRenameMode: false,
+        title: this.props.title,
+        updatedTitle: this.state.title,
+      });
     }
   };
 
@@ -189,13 +192,14 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
           <div className={styles.titleFlex}>
             {this.state.isRenameMode ? (
               <input
+                defaultValue={this.state.title}
                 ref={this.wrapperRefRename}
                 className={styles.renameInput}
-                value={this.state.title}
+                value={this.state.updatedTitle}
                 type="text"
                 name="Rename"
                 onChange={this.handleTitleChange}
-                onKeyPress={this.submitOnEnter}
+                onKeyDown={this.submit}
               />
             ) : (
               <div className={styles.title}>{this.state.title}</div>

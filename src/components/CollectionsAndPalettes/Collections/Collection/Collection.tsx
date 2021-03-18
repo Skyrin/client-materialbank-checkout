@@ -31,7 +31,6 @@ class Collection extends React.Component<Props, any> {
   constructor(props) {
     super(props);
     this.state = {
-      isPublic: true,
       commonAreaIsInViewport: false,
       mode: "image",
       display: "everything",
@@ -276,7 +275,6 @@ class Collection extends React.Component<Props, any> {
           toggleDisplay={this.toggleDisplay}
           activeButtonMode={this.state.mode}
           toggleMode={this.toggleMode}
-          isPublic={this.state.isPublic}
         />
         <div
           className={cn(
