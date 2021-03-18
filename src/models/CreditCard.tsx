@@ -37,6 +37,12 @@ export default class CreditCard {
     });
   }
 
+  getShortObfuscatedNumber() {
+    return (
+      "*" + this.number.substring(this.number.length - 4, this.number.length)
+    );
+  }
+
   getMaskType(cardType: CreditCardType) {
     switch (cardType) {
       case CreditCardType.AmericanExpress:
