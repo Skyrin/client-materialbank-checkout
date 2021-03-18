@@ -35,7 +35,6 @@ interface ToolbarProps {
   toggleMode?: any;
   toggleDisplay?: any;
   isPublic?: boolean;
-  onCollectionRename?: any;
 }
 
 type Props = RouteComponentProps;
@@ -123,10 +122,6 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
     return get(collectionPageResult, "params.collection_id");
   };
 
-  handleRename = () => {
-    let updatedTitle = this.state.title;
-    this.props.onCollectionRename(updatedTitle);
-  };
   handleTitleChange = (e: any) => {
     this.setState({ title: e.target.value });
   };
