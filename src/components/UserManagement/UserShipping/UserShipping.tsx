@@ -115,6 +115,93 @@ export default class UserShipping extends React.Component<Props, State> {
     return <div className={styles.map} />;
   };
 
+  renderAddressGrid = () => {
+    return (
+      <div>
+        <div className={styles.title}>Your Addresses</div>
+        <div className={styles.addressGrid}>
+          {this.state.addresses.map((address) => {
+            return (
+              <div className={styles.addressCell} key={address.id}>
+                <div className={"row center-vertically"}>
+                  <div className={styles.addressNickName}>
+                    {address.company}
+                  </div>
+
+                  {address.default_shipping && (
+                    <div className={styles.defaultAddress}>DEFAULT</div>
+                  )}
+
+                  <button
+                    className={styles.editAddressCell}
+                    onClick={() => {
+                      this.onEditClicked(address);
+                    }}
+                  >
+                    Edit
+                  </button>
+                </div>
+
+                <div className={styles.addressInfoContainer}>
+                  <div className={styles.addressInfo}>
+                    <div className={styles.addressExtraDetails}>
+                      {address.firstname}
+                    </div>
+                    <div className={styles.addressExtraDetails}>
+                      {address.lastname}
+                    </div>
+                  </div>
+
+                  <div className={styles.addressInfo}>
+                    <div className={styles.addressExtraDetails}>
+                      {address.street[0]}
+                    </div>
+                    <div className={styles.addressExtraDetails}>
+                      {address.street[1]}
+                    </div>
+                  </div>
+
+                  <div className={styles.addressInfo}>
+                    <div className={styles.addressExtraDetails}>
+                      {address.city + ", "}
+                    </div>
+                    <div className={styles.addressExtraDetails}>
+                      {address.region?.region_code}
+                    </div>
+                    <div className={styles.addressExtraDetails}>
+                      {address.postcode}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  renderAddAddress = () => {
+    return (
+      <div className={styles.addAddressContainer}>
+        <MapAddressForm
+          componentRef={(ref) => {
+            this.addAddressForm = ref;
+          }}
+          onSave={(addressValues) => {
+            this.onSaveAddress(addressValues, null);
+          }}
+        />
+        {this.state.createAddressNetworkError && (
+          <ErrorLabel
+            className={styles.errorCreateAddress}
+            errorText={this.state.createAddressNetworkError}
+          />
+        )}
+      </div>
+    );
+  };
+
   render() {
     return (
       <div>
@@ -124,81 +211,8 @@ export default class UserShipping extends React.Component<Props, State> {
             customer={this.state.customer}
           />
           <div className={styles.pageContent}>
-            <div className={styles.addressGrid}>
-              {this.state.addresses.map((address) => {
-                return (
-                  <div className={styles.addressCell} key={address.id}>
-                    <div className={"row center-vertically"}>
-                      <div className={styles.addressNickName}>
-                        {address.company}
-                      </div>
-
-                      {address.default_shipping && (
-                        <div className={styles.defaultAddress}>DEFAULT</div>
-                      )}
-
-                      <button
-                        className={styles.editAddressCell}
-                        onClick={() => {
-                          this.onEditClicked(address);
-                        }}
-                      >
-                        Edit
-                      </button>
-                    </div>
-                    {/*<div className={styles.addressMapCell} />*/}
-                    {/*<div className={styles.addressInfo}>*/}
-                    {/*  <div className={styles.addressNickName}>*/}
-                    {/*    {address.company}*/}
-                    {/*  </div>*/}
-                    {/*  <div className={styles.addressExtraDetails}>*/}
-                    {/*    {address.firstname + " " + address.lastname}*/}
-                    {/*  </div>*/}
-                    {/*  <div className={styles.addressExtraDetails}>*/}
-                    {/*    {address.street[0]}*/}
-                    {/*  </div>*/}
-                    {/*  <div className={styles.addressExtraDetails}>*/}
-                    {/*    {address.street[1]}*/}
-                    {/*  </div>*/}
-                    {/*  <div className={styles.addressExtraDetails}>*/}
-                    {/*    {address.city +*/}
-                    {/*      ", " +*/}
-                    {/*      address.region?.region_code +*/}
-                    {/*      " " +*/}
-                    {/*      address.postcode}*/}
-                    {/*  </div>*/}
-                    {/*</div>*/}
-
-                    {/*{!address.default_shipping && (*/}
-                    {/*  <button*/}
-                    {/*    className={styles.makeDefault}*/}
-                    {/*    onClick={() => {*/}
-                    {/*      this.makeDefault(address);*/}
-                    {/*    }}*/}
-                    {/*  >*/}
-                    {/*    Make default*/}
-                    {/*  </button>*/}
-                    {/*)}*/}
-                  </div>
-                );
-              })}
-            </div>
-            <div className={styles.addAddressContainer}>
-              <MapAddressForm
-                componentRef={(ref) => {
-                  this.addAddressForm = ref;
-                }}
-                onSave={(addressValues) => {
-                  this.onSaveAddress(addressValues, null);
-                }}
-              />
-              {this.state.createAddressNetworkError && (
-                <ErrorLabel
-                  className={styles.errorCreateAddress}
-                  errorText={this.state.createAddressNetworkError}
-                />
-              )}
-            </div>
+            {this.renderAddressGrid()}
+            {this.renderAddAddress()}
           </div>
         </div>
 

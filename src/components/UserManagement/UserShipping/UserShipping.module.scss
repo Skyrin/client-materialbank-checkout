@@ -20,12 +20,19 @@
   }
 }
 
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+  color: $primary-color-user;
+}
+
 .addressGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, calc(50% - 20px));
   grid-template-rows: 135px;
   grid-column-gap: 20px;
   grid-row-gap: 20px;
+  margin-top: $margin-small-3;
   @include mobile-media {
     grid-row-gap: 10px;
     grid-template-columns: 1fr;
@@ -62,12 +69,21 @@
   color: $primary-color-user;
 }
 
+.addressInfoContainer {
+  margin-top: $margin-small-3;
+}
+
+.addressInfo {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+
 .addressExtraDetails {
   @include grayText;
-  margin-top: $margin-small;
 
   & + .addressExtraDetails {
-    margin-top: 0;
+    margin-left: $margin-small;
   }
 }
 
