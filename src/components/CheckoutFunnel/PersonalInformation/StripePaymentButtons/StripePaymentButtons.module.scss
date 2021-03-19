@@ -1,0 +1,22 @@
+.applePay {
+  background-color: #0b0b09;
+  color: #fff;
+
+  &:hover {
+    background-color: lighten(#0b0b09, 10%);
+  }
+}
+
+.googlePay {
+  background-color: #fff;
+  color: #5f6368;
+  border: solid 1px rgba(17, 17, 17, 0.6);
+
+  &:hover {
+    background-color: darken(#fff, 5%);
+  }
+}
+
+.paymentLogo {
+  height: 20px;
+}

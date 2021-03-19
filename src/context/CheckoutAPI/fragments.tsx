@@ -18,6 +18,12 @@ export const CartPricesFragment = `
     subtotal_including_tax {
       value
     }
+    subtotal_excluding_tax {
+      value
+    }
+    grand_total {
+      value
+    }
   }
 `;
 
@@ -63,6 +69,9 @@ export const CartShippingAddressesFragment = `
     selected_shipping_method {
       carrier_code
       method_code
+      amount {
+        value
+      }
     }
   }
 `;

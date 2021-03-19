@@ -7,6 +7,7 @@ export type CartT = {
   prices?: {
     grand_total?: PriceT;
     subtotal_including_tax?: PriceT;
+    subtotal_excluding_tax?: PriceT;
   };
   billing_address?: BilingAddressT;
   shipping_addresses?: ShippingAddressT[]; // Why multiple? ¯\_(ツ)_/¯
@@ -123,6 +124,7 @@ export type PaymentMethodT = {
 
 export type SelectedPaymentMethodT = PaymentMethodT & {
   purchase_order_number?: string;
+  amount?: PriceT;
 };
 
 export type ShippingMethodT = {

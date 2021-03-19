@@ -2,58 +2,37 @@
 @import "styles/global";
 
 .PersonalInformation {
-  --button-height: 40px;
+  --button-height: 50px;
 
-  @include mobile-media {
-    padding: 0 0 $margin-small-3;
+  // Override input here. Reduce the risk of affecting other parts of the app that might've already used the common input.
+  input {
+    border-radius: 5px !important;
+    border: 1px solid $checkout-primary-color;
+    font-weight: var(--font-weight-normal);
   }
 
-  .logo,
-  .breadcrumbs {
-    margin-bottom: var(--vertical-spacing-normal);
-  }
-
-  .informationContainer {
-    @include mobile-media {
-      padding: 0 $margin-small-3;
-    }
-  }
-
-  .expressCheckoutSubtitle {
-    text-align: center;
-    margin-bottom: 15px; // This seems to be a random 15px compared to most other spacings...
+  .inputLabel {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: $checkout-primary-color;
+    margin-top: 10px;
   }
 
   .section {
-    padding: var(--vertical-spacing-normal) 0;
-    border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
-
-    @include mobile-media {
-      padding: $margin-small-3 0;
-    }
+    margin-bottom: 30px;
 
     .sectionTitleLine {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      margin-bottom: var(--vertical-spacing-normal);
-
-      @include mobile-media {
-        margin-bottom: $margin-small-3;
-      }
+      margin-bottom: 12px;
     }
   }
 
   .expressCheckoutOptions {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: var(--horizontal-spacing-normal);
-
-    @include mobile-media {
-      grid-template-columns: auto;
-      column-gap: 0;
-      row-gap: $margin-small-2;
-    }
+    grid-template-columns: 1fr;
+    row-gap: 10px;
 
     .expressCheckoutOption {
       height: var(--button-height);
@@ -72,43 +51,29 @@
         }
       }
 
-      &.applePay {
-        background-color: #0b0b09;
-        color: #fff;
-
-        &:hover {
-          background-color: lighten(#0b0b09, 10%);
-        }
-      }
-
-      &.googlePay {
-        background-color: #000;
-        color: #fff;
-
-        &:hover {
-          background-color: lighten(#000, 10%);
-        }
-      }
-
       .expressCheckoutLogo {
-        height: 18px;
+        height: 20px;
       }
     }
   }
 
-  .expressCheckoutFootnote {
-    text-align: center;
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-normal);
-    color: var(--text-color-light);
-    margin-bottom: var(--vertical-spacing-half);
-    line-height: 1.5;
+  .payWithCard {
+    position: relative;
+    height: 1px;
+    width: 100%;
+    background-color: rgba($checkout-primary-color, 0.1);
+    margin-top: 50px;
+    margin-bottom: 40px;
 
-    @include mobile-media {
-      width: 100%;
-      margin-top: $margin-small-3;
-      line-height: 0;
-      font-size: var(--font-size-sm);
+    .text {
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 0 18px;
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-medium);
+      color: rgba($gray-color-user, 0.6);
     }
   }
 
@@ -186,91 +151,10 @@
   .createAccountSection {
     display: grid;
     align-content: space-between;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 120px auto;
     grid-template-rows: auto;
     row-gap: var(--vertical-spacing-half);
     column-gap: var(--vertical-spacing-half);
-    grid-template-areas:
-      "first-name last-name"
-      "email email"
-      "password confirm-password";
-
-    @include mobile-media {
-      font-size: var(--font-size-xs);
-      grid-template-columns: 1fr;
-      grid-template-areas:
-        "first-name"
-        "last-name"
-        "email"
-        "password"
-        "confirm-password";
-    }
-
-    .firstName {
-      grid-area: first-name;
-    }
-
-    .lastName {
-      grid-area: last-name;
-    }
-
-    .email {
-      grid-area: email;
-    }
-
-    .password {
-      grid-area: password;
-    }
-
-    .confirmPassword {
-      grid-area: confirm-password;
-    }
-  }
-
-  .shippingMethodSection {
-    .sectionTitle {
-      margin-bottom: var(--vertical-spacing-half);
-    }
-
-    .method {
-      display: flex;
-      justify-content: space-between;
-
-      .methodInfo {
-        display: flex;
-        flex-direction: column;
-
-        .methodName {
-          font-size: var(--font-size-lg);
-          font-weight: var(--font-weight-medium);
-          color: var(--primary-color);
-
-          @include mobile-media {
-            font-size: var(--font-size-sm);
-          }
-        }
-
-        .methodEstimatedDelivery {
-          font-size: var(--font-size-md);
-          font-weight: var(--font-weight-normal);
-          color: var(--text-color-light);
-
-          @include mobile-media {
-            font-size: var(--font-size-sm);
-          }
-        }
-      }
-
-      .methodPrice {
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-medium);
-        color: var(--primary-color);
-
-        @include mobile-media {
-          font-size: var(--font-size-sm);
-        }
-      }
-    }
   }
 
   .shippingAddressSection {
@@ -283,8 +167,8 @@
 
     .addressLine {
       font-size: var(--font-size-md);
-      color: var(--primary-color);
-      font-weight: var(--font-weight-normal);
+      color: $checkout-primary-color;
+      font-weight: var(--font-weight-medium);
 
       @include mobile-media {
         font-size: var(--font-size-sm);
@@ -304,15 +188,58 @@
     }
   }
 
-  .navigationContainer {
+  .billingOption {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    margin-top: 30px;
+    cursor: pointer;
 
-    @include mobile-media {
-      flex-flow: column;
-      flex-direction: column-reverse;
+    .checkbox {
+      margin-right: 8px;
     }
+  }
+
+  .billingAddress {
+    margin-bottom: 30px;
+  }
+
+  .totalsContainer {
+    border-top: 1px solid rgba($gray-color-user, 0.1);
+    margin-bottom: var(--vertical-spacing-normal);
+
+    .totalLine {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 40px;
+      border-bottom: 1px solid rgba($gray-color-user, 0.1);
+
+      .label,
+      .value {
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-medium);
+        color: $gray-color-user;
+      }
+    }
+
+    .grandTotalLine {
+      @extend .totalLine;
+      height: 60px;
+      border-bottom: 0;
+
+      .label,
+      .value {
+        font-size: var(--font-size-xl);
+        color: $checkout-primary-color;
+      }
+    }
+  }
+
+  .payButton {
+    @include blackGradientButton;
+    width: 100%;
+    height: 60px;
+    font-size: var(--font-size-lg);
   }
 
   .loaderContainer {

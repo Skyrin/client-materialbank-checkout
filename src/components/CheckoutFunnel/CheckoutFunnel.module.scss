@@ -2,8 +2,8 @@
 
 .pageContent {
   display: grid;
-  grid-template-columns: 3fr 2fr;
-  grid-template-areas: "page-wrapper order-summary"; // Get a 60% / 40% distribution
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "order-summary page-wrapper";
   flex-grow: 1;
 
   &.singleColumn {
@@ -13,16 +13,12 @@
 
   .pageWrapper {
     grid-area: page-wrapper;
+    box-shadow: -6px 0 12px 0 rgba(0, 0, 0, 0.08);
   }
 
   .orderSummary {
     min-width: 350px;
     grid-area: order-summary;
-  }
-
-  .breadCrumbs {
-    grid-area: bread-crumbs;
-    margin: $margin-small-2 $margin-small-3 0;
   }
 
   @include mobile-media {

@@ -76,7 +76,7 @@ class UploadPhotoModal extends React.Component<Props, State> {
     const base64 = await this.toBase64(e.target.files[0]);
     console.log("FILE", e.target.files[0]);
     this.setState({
-      file: base64.split(",")[1],
+      file: base64,
       fileUrl: URL.createObjectURL(e.target.files[0]),
       fileName: e.target.files[0].name,
     });

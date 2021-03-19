@@ -1,5 +1,5 @@
 @import "styles/mixins.scss";
-@import "styles/variables.scss";
+@import "styles/variablesscss.scss";
 
 html,
 body,
@@ -31,7 +31,7 @@ a {
   display: flex;
   flex-direction: column;
   background-color: #fff;
-  padding: 40px 80px;
+  padding: 80px 140px;
 
   @include mobile-media {
     padding: 40px 0;

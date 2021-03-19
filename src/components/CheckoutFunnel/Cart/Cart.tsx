@@ -5,17 +5,11 @@ import styles from "./Cart.module.scss";
 import cn from "classnames";
 import { PERSONAL_INFORMATION_URL } from "constants/urls";
 import Checkbox from "components/common/Checkbox/Checkbox";
-import Input from "components/common/Input/Input";
-import {
-  cardNumberInputParser,
-  digitsOnlyInputParser,
-  expirationDateInputFormatter,
-  expirationDateInputParser,
-} from "components/common/Input/utils";
 import RadioButton from "components/common/RadioButton/RadioButton";
 import AddressForm from "components/common/Forms/AddressForm/AddressForm";
 import CreditCardForm from "components/common/Forms/CreditCardForm/CreditCardForm";
 import { createCollection } from "context/CollectionsAPI/api";
+import { RESTRequest } from "RestClient";
 
 type Props = RouteComponentProps;
 
@@ -67,6 +61,18 @@ export class Cart extends React.Component<Props, State> {
           }}
         >
           Create Test Cart
+        </button>
+        <br />
+        <button
+          className="button"
+          onClick={async () => {
+            const resp = await RESTRequest("GET", "customers/me");
+            console.log("REST USER RESP", resp);
+            const user = await resp.json();
+            console.log("REST USER RESP JSON", user);
+          }}
+        >
+          Request User Via REST
         </button>
         <br />
         <button
@@ -168,40 +174,6 @@ export class Cart extends React.Component<Props, State> {
             onChange={(addr) => {
               console.log("ADDRESS CHANGED", addr);
             }}
-          />
-          <Input
-            value={this.state.debugTextInput}
-            onChange={(val: string) => this.setState({ debugTextInput: val })}
-            placeholder="Normal text input"
-          />
-          <Input
-            value={this.state.debugCardNumberInput}
-            onChange={(val: string) =>
-              this.setState({ debugCardNumberInput: val })
-            }
-            formatter={cardNumberInputFormatter}
-            parser={cardNumberInputParser}
-            placeholder="Card Number"
-            inputMode="numeric"
-          />
-          <Input
-            value={this.state.debugTextInputParsed}
-            onChange={(val: string) =>
-              this.setState({ debugTextInputParsed: val })
-            }
-            formatter={expirationDateInputFormatter}
-            parser={expirationDateInputParser}
-            placeholder="Expiration (MM/YR)"
-            inputMode="numeric"
-          />
-          <Input
-            value={this.state.debugNumberOnlyInput}
-            onChange={(val: string) =>
-              this.setState({ debugNumberOnlyInput: val })
-            }
-            parser={digitsOnlyInputParser}
-            placeholder="Should only accept digits"
-            inputMode="numeric"
           />
         </div>
       </React.Fragment>

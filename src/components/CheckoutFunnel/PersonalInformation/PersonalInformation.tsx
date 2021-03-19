@@ -1,26 +1,12 @@
-import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
-import Logo from "components/common/Logo/Logo";
-import {
-  BREADCRUMBS_STEPS,
-  ORDER_ID_STORAGE_KEY,
-  PASSWORD_REGEX,
-} from "constants/general";
+import { ORDER_ID_STORAGE_KEY, PASSWORD_REGEX } from "constants/general";
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PersonalInformation.module.scss";
 import cn from "classnames";
-import {
-  CART_URL,
-  goToStorefront,
-  ORDER_CONFIRMATION_URL,
-  PAYMENT_URL,
-} from "constants/urls";
-import applePayLogo from "assets/images/apple_pay_logo.svg";
-import googlePayLogo from "assets/images/google_pay_logo_white.svg";
+import { ORDER_CONFIRMATION_URL, PAYMENT_URL } from "constants/urls";
 import Input from "components/common/Input/Input";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
-import { DateTime } from "luxon";
 import AddressForm, {
   AddressFormValuesT,
   DEFAULT_ADDRESS_FORM_VALUES,
@@ -40,11 +26,13 @@ import {
 import { parsePhoneNumber, scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
 import { PaymentOption } from "../PaymentInformation/PaymentInformation";
-import { createPaypalTokenForCart } from "context/CheckoutAPI/api";
 import ButtonLoader from "components/common/ButtonLoader/ButtonLoader";
-import { loadStripe, PaymentRequest, Stripe } from "@stripe/stripe-js";
 import { RESTRequest } from "RestClient";
 import { getAddressId } from "utils/context";
+import CreditCardForm from "components/common/Forms/CreditCardForm/CreditCardForm";
+import Checkbox from "components/common/Checkbox/Checkbox";
+import PaypalExpress from "./PaypalExpress/PaypalExpress";
+import StripePaymentButtons from "./StripePaymentButtons/StripePaymentButtons";
 
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
@@ -62,8 +50,6 @@ const contactInfoSchema = yup.object().shape({
     .required("Required")
     .oneOf([yup.ref("password")], "Passwords don't match"),
 });
-
-declare var paypal: any;
 
 type Props = RouteComponentProps;
 
@@ -84,14 +70,14 @@ type State = {
   };
   selectedShippingAddressId: number;
   shippingAddress: AddressFormValuesT;
+  billingAddress: AddressFormValuesT;
   paypalExpressInfo: {
     token: string;
     payer_id: string;
   };
-  isSubmitting: boolean;
-  googlePayPossible: boolean;
-  applePayPossible: boolean;
   stripePaymentMethodId: string;
+  isSubmitting: boolean;
+  billingSameAsShipping: boolean;
 };
 
 export class PersonalInformation extends React.Component<Props, State> {
@@ -99,9 +85,8 @@ export class PersonalInformation extends React.Component<Props, State> {
   context!: AppContextState;
   oldContext!: AppContextState;
 
-  stripe: Stripe;
-  applePayPaymentRequest: PaymentRequest;
-  googlePayPaymentRequest: PaymentRequest;
+  shippingAddressForm?: AddressForm;
+  billingAddressForm?: AddressForm;
 
   constructor(props: Props, context: AppContextState) {
     super(props, context);
@@ -125,14 +110,14 @@ export class PersonalInformation extends React.Component<Props, State> {
         ? this.getDefaultSelectedShippingAddressId(context)
         : -1,
       shippingAddress: DEFAULT_ADDRESS_FORM_VALUES,
+      billingAddress: DEFAULT_ADDRESS_FORM_VALUES,
       paypalExpressInfo: {
         token: "",
         payer_id: "",
       },
-      isSubmitting: false,
-      googlePayPossible: false,
-      applePayPossible: false,
       stripePaymentMethodId: "",
+      isSubmitting: false,
+      billingSameAsShipping: true,
     };
   }
 
@@ -168,144 +153,9 @@ export class PersonalInformation extends React.Component<Props, State> {
     return -1;
   };
 
-  shippingAddressForm?: AddressForm;
-
   componentDidMount() {
     scrollToTop();
-
-    console.log(paypal);
-    paypal
-      .Buttons({
-        fundingSource: paypal.FUNDING.PAYPAL,
-        style: {
-          height: 40,
-        },
-        createOrder: this.createPaypalToken,
-        onApprove: this.handlePaypalTransactionApprove,
-      })
-      .render("#paypal-express");
-
-    this.initStripe();
   }
-
-  initStripe = async () => {
-    // If we don't have cart data, retry stripe after 0.5s
-    if (!this.context.cart.prices?.subtotal_including_tax?.value) {
-      window.setTimeout(this.initStripe, 500);
-      return;
-    }
-
-    this.stripe = await loadStripe(
-      "pk_test_51I1F3fCnVrIUZxgWfN53yuaDE2trsJ1rFx7g1Nj44m3SMaCdKPuK1q7fm2IaBMnk0pB2lJsy4q0b2EP1NgiUcUaS00wwKh2Q54"
-    );
-    const paymentRequestOptions = {
-      country: "US",
-      currency: "usd",
-      total: {
-        label: "Total",
-        amount:
-          (this.context.cart.prices?.subtotal_including_tax?.value || 10) * 100, // ??????? Is it in cents?
-      },
-      requestPayerName: true,
-      requestPayerEmail: true,
-      requestPayerPhone: true,
-      requestShipping: true,
-      shippingOptions: [
-        {
-          id: "fedex",
-          label: "FedEx Priority Overnight",
-          amount: 0,
-        },
-      ],
-    };
-    this.applePayPaymentRequest = this.stripe.paymentRequest({
-      ...paymentRequestOptions,
-      wallets: ["applePay"],
-    });
-    this.googlePayPaymentRequest = this.stripe.paymentRequest({
-      ...paymentRequestOptions,
-      wallets: ["googlePay", "browserCard"],
-    });
-    const applePayPossible = !!(await this.applePayPaymentRequest.canMakePayment());
-    const googlePayPossible = !!(await this.googlePayPaymentRequest.canMakePayment());
-
-    if (applePayPossible) {
-      this.applePayPaymentRequest.on(
-        "paymentmethod",
-        this.handleStripePaymentMethod
-      );
-    }
-
-    if (googlePayPossible) {
-      this.googlePayPaymentRequest.on(
-        "paymentmethod",
-        this.handleStripePaymentMethod
-      );
-    }
-
-    console.log("APPLE POSSIBLE", applePayPossible);
-    console.log("GOOGLE POSSIBLE", googlePayPossible);
-
-    this.setState({
-      applePayPossible: applePayPossible,
-      googlePayPossible: googlePayPossible,
-    });
-  };
-
-  handleStripePaymentMethod = async (
-    event: PaymentRequestPaymentMethodEvent
-  ) => {
-    const { complete, ...restOfEvent } = event;
-    const paymentMethod = restOfEvent.paymentMethod;
-    console.log("GOT EVENT", event);
-
-    const [firstName, lastName] = (restOfEvent.payerName || "").split(" ");
-    this.setState(
-      {
-        stripePaymentMethodId: paymentMethod.id,
-        createAccount: {
-          firstname: firstName,
-          lastname: lastName,
-          email: restOfEvent.payerEmail,
-        },
-      },
-      async () => {
-        const [shippingFirstName, shippingLastName] = (
-          restOfEvent.shippingAddress?.recipient || ""
-        ).split(" ");
-        this.validateContactInfo();
-
-        const addressFields = {
-          firstName: shippingFirstName || "",
-          lastName: shippingLastName || "",
-          city: restOfEvent.shippingAddress?.city || "",
-          region: restOfEvent.shippingAddress?.region || "",
-          address: (restOfEvent.shippingAddress?.addressLine || [])[0] || "",
-          aptNumber: (restOfEvent.shippingAddress?.addressLine || [])[1] || "",
-          zipCode: restOfEvent.shippingAddress?.postalCode || "",
-          phone: parsePhoneNumber(restOfEvent.shippingAddress?.phone || ""),
-        };
-
-        if (this.context.isLoggedIn) {
-          // Found shipping address on customer, no need to create it again
-          const addressId = getAddressId(this.context, addressFields);
-          if (addressId !== -1) {
-            await this.context.setShippingAddress(addressId);
-          } else {
-            const newAddress = await this.createCustomerAddress(addressFields);
-            await this.context.setShippingAddress(newAddress.id);
-          }
-          complete("success");
-          await this.placeOrderWithStripe();
-          return;
-        } else {
-          this.shippingAddressForm.updateValues(addressFields, true);
-        }
-
-        complete("success");
-      }
-    );
-  };
 
   shouldComponentUpdate = (nextProps: Props, nextState: State) => {
     this.oldContext = this.context;
@@ -344,139 +194,70 @@ export class PersonalInformation extends React.Component<Props, State> {
     }
   };
 
-  createPaypalToken = async () => {
-    const response = await createPaypalTokenForCart(
-      this.context,
-      this.context.cart.id,
-      true
+  renderExpressCheckoutSection = () => {
+    if (!this.context.cart.items || this.context.cart.items.length === 0) {
+      return null;
+    }
+
+    return (
+      <React.Fragment>
+        <div className={styles.expressCheckoutOptions}>
+          <StripePaymentButtons
+            className={styles.expressCheckoutOption}
+            onTransactionApproved={this.handleTransactionApproved}
+          />
+          <PaypalExpress
+            className={styles.expressCheckoutOption}
+            onTransactionApproved={this.handleTransactionApproved}
+          />
+        </div>
+        <div className={styles.payWithCard}>
+          <div className={styles.text}>Or pay with card</div>
+        </div>
+      </React.Fragment>
     );
-    console.log(response);
-    return response["token"];
   };
 
-  handlePaypalTransactionApprove = async (data, actions) => {
-    console.log("DATA", data);
-    // Get order details from Paypal
-    // It contains info about the customer and the selected shipping address
-    const order = await actions.order.get(data.orderID);
-    console.log("ORDER", order);
+  handleTransactionApproved = (transactionData: Object) => {
+    let tokenInfo;
+    if (transactionData.paypalExpressInfo) {
+      tokenInfo = transactionData.paypalExpressInfo;
+    } else if (transactionData.stripePaymentMethodId) {
+      tokenInfo = {
+        stripePaymentMethodId: transactionData.stripePaymentMethodId,
+      };
+    }
 
-    // Extract customer + shipping address info from order
-    const shippingAddress = get(
-      order,
-      "purchase_units[0].shipping.address",
-      {}
-    );
-    const shippingContact = get(
-      order,
-      "purchase_units[0].shipping.name.full_name",
-      ""
-    );
-    const customer = get(order, "payer");
-    const [shippingFirstName, shippingLastName] = shippingContact.split(" ");
+    if (!tokenInfo) {
+      console.error("Did not receive payment tokens!");
+      return;
+    }
 
-    // If user is logged in, save only the paypal tokens as we already have the customer info + shipping
-    this.setState({
-      // Save paypal tokens so we can set the payment method on submit
-      paypalExpressInfo: {
-        token: data.orderID,
-        payer_id: data.payerID,
-      },
-    });
+    const customerFields = transactionData.customer;
+    const shippingAddressFields = transactionData.shippingAddress;
 
-    if (
-      this.context.isLoggedIn &&
-      this.state.selectedShippingAddressId !== -1
-    ) {
-      return this.placeOrderWithPaypal();
-    } else {
+    if (!this.context.isLoggedIn) {
       this.setState(
         {
           ...this.state,
-          // Pre-fill the Create Account form with customer info
+          ...tokenInfo,
           createAccount: {
             ...this.state.createAccount,
-            firstname: customer.name.given_name,
-            lastname: customer.name.surname,
-            email: customer.email_address,
+            ...customerFields,
           },
         },
         () => {
-          // Update shipping address form after setting state
           this.validateContactInfo();
           this.shippingAddressForm.updateValues(
             {
               ...this.state.shippingAddress,
-              firstName: shippingFirstName,
-              lastName: shippingLastName,
-              city: shippingAddress.admin_area_2,
-              region: shippingAddress.admin_area_1,
-              address: shippingAddress.address_line_1,
-              aptNumber: shippingAddress.address_line_2 || "",
-              zipCode: shippingAddress.postal_code,
+              ...shippingAddressFields,
             },
             true
           );
         }
       );
     }
-  };
-
-  renderExpressCheckoutSection = () => {
-    const columns = [
-      true,
-      this.state.applePayPossible,
-      this.state.googlePayPossible,
-    ]
-      .filter((e) => e)
-      .map((e) => "1fr");
-    const templateColumns = isOnMobile() ? "auto" : `${columns.join(" ")}`;
-    return (
-      <React.Fragment>
-        <div className={styles.section}>
-          <h3 className={styles.expressCheckoutSubtitle}>Express Checkout</h3>
-          <div
-            className={styles.expressCheckoutOptions}
-            style={{
-              gridTemplateColumns: templateColumns,
-            }}
-          >
-            <div id="paypal-express" className={styles.expressCheckoutOption} />
-            {this.state.applePayPossible && (
-              <div
-                className={cn(styles.expressCheckoutOption, styles.applePay)}
-                onClick={() => {
-                  this.applePayPaymentRequest.show();
-                }}
-              >
-                <img
-                  src={applePayLogo}
-                  alt="Apple Pay"
-                  className={styles.expressCheckoutLogo}
-                />
-              </div>
-            )}
-            {this.state.googlePayPossible && (
-              <div
-                className={cn(styles.expressCheckoutOption, styles.googlePay)}
-                onClick={() => {
-                  this.googlePayPaymentRequest.show();
-                }}
-              >
-                <img
-                  src={googlePayLogo}
-                  alt="Google Pay"
-                  className={styles.expressCheckoutLogo}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-        <div className={styles.expressCheckoutFootnote}>
-          Or continue to pay with a credit card
-        </div>
-      </React.Fragment>
-    );
   };
 
   validateContactInfo = () => {
@@ -544,15 +325,12 @@ export class PersonalInformation extends React.Component<Props, State> {
     return (
       <div className={styles.section}>
         <div className={styles.sectionTitleLine}>
-          <h3 className={styles.sectionTitle}>Create an Account</h3>
+          <h3 className={styles.sectionTitle}>Your information</h3>
           <div>
-            <span className={styles.loginHint}>Already have an account?</span>
+            <span className={styles.loginHint}>Have an account?</span>
             <span
               className={styles.loginLink}
               onClick={() => {
-                // Hardcoded for now, so we don't create a ton of accounts unless we want to test the register
-                // this.context.login("test@example.com", "StrongPassword1");
-
                 this.context.openModal(Modals.Login);
               }}
             >
@@ -561,9 +339,10 @@ export class PersonalInformation extends React.Component<Props, State> {
           </div>
         </div>
         <div className={styles.createAccountSection}>
+          <div className={styles.inputLabel}>First Name</div>
           <Input
             className={styles.firstName}
-            placeholder="First Name"
+            placeholder="John"
             value={this.state.createAccount.firstname}
             onChange={(val: string) => {
               this.updateField("firstname", val);
@@ -571,9 +350,10 @@ export class PersonalInformation extends React.Component<Props, State> {
             onBlur={() => this.validateContactInfoField("firstname")}
             error={this.state.createAccountErrors.firstname}
           />
+          <div className={styles.inputLabel}>Last Name</div>
           <Input
             className={styles.lastName}
-            placeholder="Last Name"
+            placeholder="Doe"
             value={this.state.createAccount.lastname}
             onChange={(val: string) => {
               this.updateField("lastname", val);
@@ -581,9 +361,10 @@ export class PersonalInformation extends React.Component<Props, State> {
             onBlur={() => this.validateContactInfoField("lastname")}
             error={this.state.createAccountErrors.lastname}
           />
+          <div className={styles.inputLabel}>Email Address</div>
           <Input
             className={styles.email}
-            placeholder="Email Address"
+            placeholder="example@gmail.com"
             value={this.state.createAccount.email}
             onChange={(val: string) => {
               this.updateField("email", val);
@@ -591,9 +372,9 @@ export class PersonalInformation extends React.Component<Props, State> {
             onBlur={() => this.validateContactInfoField("email")}
             error={this.state.createAccountErrors.email}
           />
+          <div className={styles.inputLabel}>Password</div>
           <Input
             className={styles.password}
-            placeholder="Create Password"
             type="password"
             value={this.state.createAccount.password}
             onChange={(val: string) => {
@@ -602,9 +383,9 @@ export class PersonalInformation extends React.Component<Props, State> {
             onBlur={() => this.validateContactInfoField("password")}
             error={this.state.createAccountErrors.password}
           />
+          <div className={styles.inputLabel}>Confirm Password</div>
           <Input
             className={styles.confirmPassword}
-            placeholder="Re-Enter Password"
             type="password"
             value={this.state.createAccount.confirmPassword}
             onChange={(val: string) => {
@@ -613,28 +394,6 @@ export class PersonalInformation extends React.Component<Props, State> {
             onBlur={() => this.validateContactInfoField("confirmPassword")}
             error={this.state.createAccountErrors.confirmPassword}
           />
-        </div>
-      </div>
-    );
-  };
-
-  renderShippingMethodSection = () => {
-    // TODO: Clarify if this is always going to be "tomorrow" or if we need a dynamic value here
-    const estimatedDeliveryDate = DateTime.local().plus({ days: 1 });
-
-    return (
-      <div className={cn(styles.section, styles.shippingMethodSection)}>
-        <h3 className={styles.sectionTitle}>Shipping Method</h3>
-        <div className={styles.method}>
-          <div className={styles.methodInfo}>
-            <span className={styles.methodName}>FedEx Priority Overnight</span>
-            <span className={styles.methodEstimatedDelivery}>
-              {`Delivery tomorrow, ${estimatedDeliveryDate.toFormat(
-                "MMMM dd, yyyy"
-              )}.`}
-            </span>
-          </div>
-          <span className={styles.methodPrice}>FREE</span>
         </div>
       </div>
     );
@@ -719,6 +478,121 @@ export class PersonalInformation extends React.Component<Props, State> {
     );
   };
 
+  renderPaymentInformationSection = () => {
+    return (
+      <div className={styles.section}>
+        <h3 className={styles.sectionTitle}>Payment Information</h3>
+        <CreditCardForm
+          useStripe
+          visible
+          onChange={(newValues: CreditCardFormValuesT) => {
+            this.setState({
+              creditCardInfo: newValues,
+            });
+            this.creditCardForm?.validateForm();
+          }}
+          componentRef={(ref) => {
+            this.creditCardForm = ref;
+          }}
+        />
+        <div
+          className={styles.billingOption}
+          onClick={() => {
+            this.setState({
+              billingSameAsShipping: !this.state.billingSameAsShipping,
+            });
+          }}
+        >
+          <Checkbox
+            className={styles.checkbox}
+            value={this.state.billingSameAsShipping}
+          />
+          <span className={styles.text}>
+            Billing address is the same as shipping
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  renderBillingAddress = () => {
+    return (
+      <AddressForm
+        withAutocomplete
+        listClassName={
+          !this.state.billingSameAsShipping ? styles.billingAddress : undefined
+        }
+        visible={!this.state.billingSameAsShipping}
+        onChange={(newValues: AddressFormValuesT) => {
+          this.setState({
+            billingAddress: newValues,
+          });
+        }}
+        componentRef={(ref) => {
+          this.billingAddressForm = ref;
+        }}
+      />
+    );
+  };
+
+  renderCurrency = (value?: number, def?: string) => {
+    if (!value) {
+      return def;
+    }
+    return `$${value}`;
+  };
+
+  renderTotals = () => {
+    return (
+      <div className={styles.totalsContainer}>
+        <div className={styles.totalLine}>
+          <div className={styles.label}>Subtotal</div>
+          <div className={styles.value}>
+            {this.renderCurrency(
+              get(this.context.cart, "prices.subtotal_excluding_tax.value"),
+              "-"
+            )}
+          </div>
+        </div>
+        <div className={styles.totalLine}>
+          <div className={styles.label}>Shipping</div>
+          <div className={styles.value}>
+            {this.renderCurrency(
+              get(
+                this.context.cart,
+                "shipping_addresses[0].selected_shipping_method.amount.value"
+              ),
+              "-"
+            )}
+          </div>
+        </div>
+        <div className={styles.totalLine}>
+          <div className={styles.label}>
+            Estimated tax{" "}
+            {this.state.shippingAddress.zipCode
+              ? ` for ${this.state.shippingAddress.zipCode}`
+              : ``}
+          </div>
+          <div className={styles.value}>
+            {this.renderCurrency(
+              get(this.context.cart, "selected_shipping_method.amount.value"),
+              "-"
+            )}
+          </div>
+        </div>
+        <div className={styles.grandTotalLine}>
+          <div className={styles.label}>Total</div>
+          <div className={styles.value}>
+            {this.renderCurrency(
+              get(this.context.cart, "prices.grand_total.value"),
+              "-"
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   placeOrderWithPaypal = async () => {
     // If paypal, set the billing to be same as shipping
     this.setState({
@@ -775,7 +649,7 @@ export class PersonalInformation extends React.Component<Props, State> {
     }
   };
 
-  async onSubmit() {
+  onSubmit = async () => {
     this.setState({ isSubmitting: true });
     try {
       if (!this.context.isLoggedIn) {
@@ -832,51 +706,29 @@ export class PersonalInformation extends React.Component<Props, State> {
         isSubmitting: false,
       });
     }
-  }
+  };
 
-  async createCustomerAddress(addressFields?: any) {
+  createCustomerAddress = async (addressFields?: any) => {
     const addressInput = new CustomerAddressInput(
       addressFields || this.state.shippingAddress
     );
     return await this.context.createCustomerAddress(addressInput);
-  }
+  };
 
   render() {
     return (
       <div className={cn("funnel-page", styles.PersonalInformation)}>
-        {!isOnMobile() && <Logo className={styles.logo} />}
-
-        {!isOnMobile() && (
-          <Breadcrumbs
-            steps={BREADCRUMBS_STEPS}
-            className={styles.breadcrumbs}
-          />
-        )}
-
         <div className={styles.informationContainer}>
           {this.renderExpressCheckoutSection()}
           {this.context.isLoggedIn && this.renderContactInfoSection()}
           {!this.context.isLoggedIn && this.renderCreateAccountSection()}
-          {this.renderShippingMethodSection()}
           {this.renderShippingAddressSection()}
-
-          {isOnMobile() && <div className={cn("horizontal-divider")} />}
-
+          {this.renderPaymentInformationSection()}
+          {this.renderBillingAddress()}
+          {this.renderTotals()}
           <div className={styles.navigationContainer}>
-            <div
-              className={cn("link-button", { "margin-top": isOnMobile() })}
-              onClick={() => {
-                goToStorefront(CART_URL);
-              }}
-            >
-              <i className="far fa-long-arrow-left" />
-              Return to cart
-            </div>
             <button
-              className={cn("button large", {
-                "margin-top": isOnMobile(),
-                hasLoader: this.state.isSubmitting,
-              })}
+              className={styles.payButton}
               onClick={() => this.onSubmit()}
               disabled={
                 this.state.isSubmitting ||
@@ -887,9 +739,10 @@ export class PersonalInformation extends React.Component<Props, State> {
                   !this.shippingAddressForm.isValid())
               }
             >
-              {this.state.paypalExpressInfo.payer_id
-                ? "Place My Order"
-                : "Continue to Payment"}
+              {`Pay ${this.renderCurrency(
+                get(this.context.cart, "prices.grand_total.value"),
+                "-"
+              )}`}
               {this.state.isSubmitting && <ButtonLoader />}
             </button>
           </div>

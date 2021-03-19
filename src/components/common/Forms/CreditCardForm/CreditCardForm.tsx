@@ -127,7 +127,7 @@ export default class CreditCardForm extends React.Component<Props, State> {
           invalid: styles.hasError,
         },
         style: { base: defaultStyle },
-        placeholder: "Card Number",
+        placeholder: "4111 1111 1111 1111",
         showIcon: true,
       });
       this.cardNumber.mount("#stripe-card-number");
@@ -137,7 +137,7 @@ export default class CreditCardForm extends React.Component<Props, State> {
           invalid: styles.hasError,
         },
         style: { base: defaultStyle },
-        placeholder: "Expiration (MM/YR)",
+        placeholder: "MM / YY",
       });
       this.cardExpiry.mount("#stripe-card-expiration");
       this.cardCVC = this.elements.create("cardCvc", {
@@ -146,7 +146,7 @@ export default class CreditCardForm extends React.Component<Props, State> {
           invalid: styles.hasError,
         },
         style: { base: defaultStyle },
-        placeholder: "CVV",
+        placeholder: "123",
       });
       this.cardCVC.mount("#stripe-card-cvc");
 
@@ -284,9 +284,7 @@ export default class CreditCardForm extends React.Component<Props, State> {
           [styles.visible]: this.props.visible === true,
         })}
       >
-        <div id="stripe-card-number" />
-        <div id="stripe-card-expiration" />
-        <div id="stripe-card-cvc" />
+        <div className={styles.inputLabel}>Name on Card</div>
         <Input
           className={styles.cardNameArea}
           value={this.state.values.creditCardName}
@@ -297,8 +295,14 @@ export default class CreditCardForm extends React.Component<Props, State> {
             this.validateField("creditCardName");
           }}
           error={this.state.errors.creditCardName}
-          placeholder="Name On Card"
+          placeholder="John Doe"
         />
+        <div className={styles.inputLabel}>Card Number</div>
+        <div id="stripe-card-number" />
+        <div className={styles.inputLabel}>Expiration</div>
+        <div id="stripe-card-expiration" />
+        <div className={styles.inputLabel}>CVV</div>
+        <div id="stripe-card-cvc" />
       </div>
     );
   };
