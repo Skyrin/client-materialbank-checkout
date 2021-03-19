@@ -312,5 +312,4 @@ class Collection extends React.Component<Props, any> {
     );
   }
 }
-
 export default withRouter(Collection);
