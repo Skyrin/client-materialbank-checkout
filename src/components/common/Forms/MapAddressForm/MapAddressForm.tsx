@@ -122,6 +122,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="My house"
               value={this.state.values.nickname}
               error={this.state.errors.nickname}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("nickname", val);
               }}
@@ -134,6 +135,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="Jane"
               value={this.state.values.firstName}
               error={this.state.errors.firstName}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("firstName", val);
               }}
@@ -146,6 +148,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="Doe"
               value={this.state.values.lastName}
               error={this.state.errors.lastName}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("lastName", val);
               }}
@@ -158,6 +161,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="123 Street Name"
               value={this.state.values.addressLine1}
               error={this.state.errors.addressLine1}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("addressLine1", val);
               }}
@@ -170,6 +174,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="Apt. #22A"
               value={this.state.values.addressLine2}
               error={this.state.errors.addressLine2}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("addressLine2", val);
               }}
@@ -182,6 +187,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="City"
               value={this.state.values.city}
               error={this.state.errors.city}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("city", val);
               }}
@@ -212,6 +218,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="XXXXX-XXXX"
               value={this.state.values.zipcode}
               error={this.state.errors.zipcode}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("zipcode", val);
               }}
@@ -319,9 +326,10 @@ const StyledSelect = styled(Select)`
   width: 100%;
   height: var(--input-height);
   padding: 10px 16px;
-  border-radius: var(--input-border-radius);
+  border-radius: 5px;
   outline: none;
-  border: 1px solid rgba(var(--primary-color-rgb), 0.1);
+  border-color: rgba(var(--primary-color-rgb), 0.1);
+  background-color: white;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
   font-size: var(--font-size-md);
   transition: border-color 0.1s linear, box-shadow 0.1s linear;

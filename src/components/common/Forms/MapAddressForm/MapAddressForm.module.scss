@@ -3,13 +3,13 @@
 
 .title {
   color: $primary-color-user;
-  font-size: var(--font-size-xxl);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-medium);
 }
 
 .addressForm {
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
   row-gap: $margin-small-3;
   column-gap: $margin-small-2;
@@ -88,9 +88,12 @@
 }
 
 .cancelAddAddress {
-  @include labelButton;
+  @include grayGradientButton;
+  width: 40%;
 }
 
 .addAddressButton {
-  @include blackButton;
+  @include blackGradientButton;
+  margin-left: $margin-small-4;
+  width: 60%;
 }
