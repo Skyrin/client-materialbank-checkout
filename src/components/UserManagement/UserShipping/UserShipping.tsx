@@ -111,10 +111,6 @@ export default class UserShipping extends React.Component<Props, State> {
     };
   }
 
-  renderMobileMap = () => {
-    return <div className={styles.map} />;
-  };
-
   renderAddressGrid = () => {
     return (
       <div>
@@ -235,8 +231,10 @@ export default class UserShipping extends React.Component<Props, State> {
                 this.onModalBackgroundClicked();
               }}
             />
-            <div className={cn(styles.mapContainer, styles.inModal)}>
-              <div className={styles.addAddressContainer}>
+            <div
+              className={cn(styles.editAddressFormContainer, styles.inModal)}
+            >
+              <div>
                 {this.state.editingAddress && (
                   <MapAddressForm
                     editAddress={this.state.editingAddress}

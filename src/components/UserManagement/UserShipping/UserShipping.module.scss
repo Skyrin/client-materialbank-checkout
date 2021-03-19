@@ -108,21 +108,14 @@
   margin-left: auto;
 }
 
-.mapContainer {
-  @include roundedContainer;
+.editAddressFormContainer {
   height: max-content;
   position: relative;
-  margin-top: $margin-small-4;
-  background: url("/assets/images/map_dummy.jpg") no-repeat center center;
+  padding: $margin-small-5 $margin-huge-5 $margin-medium;
   @include mobile-media {
     background: none;
     border: none;
     margin-top: 0;
-  }
-
-  &.inModal {
-    //margin: auto $margin-huge-5;
-    margin: 0;
   }
 }
 
@@ -158,32 +151,41 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(black, 0.5);
+  background: rgba(white, 0.8);
 
   &.visible {
     display: flex;
     flex-flow: column;
     position: fixed;
+    align-items: center;
+    justify-content: center;
   }
 }
 
 .closeModal {
-  font-size: 20px;
-  color: white;
-  width: 19px;
-  height: 19px;
+  font-size: 15px;
+  color: black;
+  width: 15px;
+  height: 15px;
   align-self: flex-end;
   cursor: pointer;
+  margin-top: $margin-small-4;
+  margin-right: $margin-small-4;
+
   @include mobile-media {
     visibility: hidden;
   }
 }
 
 .modalContent {
+  background-color: white;
   display: flex;
   flex-flow: column;
   overflow: auto;
-  margin: auto $margin-huge-5;
+
+  box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+  border-radius: $margin-small;
+
   @include mobile-media {
     margin: 0 $margin-small-4 20px;
   }
