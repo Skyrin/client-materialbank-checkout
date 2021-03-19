@@ -126,6 +126,7 @@ export default class CollectionsHeader extends React.Component<
                 src={
                   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNpc6DbICSHt31iHPg7h4hUewU0K-VQUD_5A&usqp=CAU"
                 }
+                alt=""
               />
               <div className={styles.account}>
                 <span>Hi,</span>

@@ -177,8 +177,13 @@ export default class AppContextManager extends React.Component<Props> {
       }
     },
 
-    openModal: (modal: Modals) => {
-      this.contextState.setModalOpen(modal);
+    openModal: (modal: Modals, modalParams: Object = {}) => {
+      this.contextState.setModalOpen(modal, modalParams);
+      this.forceUpdate();
+    },
+
+    closeModal: () => {
+      this.contextState.setModalOpen(Modals.None, {});
       this.forceUpdate();
     },
 

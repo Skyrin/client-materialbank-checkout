@@ -80,7 +80,7 @@ export class LoginModal extends React.Component<any, State> {
   };
 
   closeLoginModal = () => {
-    this.context.openModal(Modals.None);
+    this.context.closeModal();
   };
 
   enableWindowScroll = () => {
@@ -246,6 +246,10 @@ export class LoginModal extends React.Component<any, State> {
           this.setState({
             isLoading: false,
           });
+          const modalParams = this.context.getModalParams();
+          if (modalParams.successCallback) {
+            modalParams.successCallback();
+          }
           this.closeLoginModal();
         })
         .catch((error: ClientError) => {
