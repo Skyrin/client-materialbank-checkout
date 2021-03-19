@@ -2,7 +2,7 @@ import { CartItemT } from "constants/types";
 import { AppContext, AppContextState } from "context/AppContext";
 import * as React from "react";
 import styles from "./CartItem.module.scss";
-import { get, sample } from "lodash-es";
+import { get } from "lodash-es";
 import { getSamplePage } from "utils/general";
 
 type Props = {

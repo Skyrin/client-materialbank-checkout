@@ -57,6 +57,7 @@ abstract class BaseAppContextState {
   private internalCollection?: CollectionT = {};
   private internalCollectionLoading: boolean = false;
   private modal?: Modals = Modals.None;
+  private modalParams?: Object = {};
   private internalOrdersLoading?: boolean = false;
 
   private internalRecommendedProductSKUs: strng[] = [];
@@ -96,12 +97,18 @@ abstract class BaseAppContextState {
     this.internalIsLoggedIn = newValue;
   }
 
-  public setModalOpen(newValue: Modals) {
+  public setModalOpen(newValue: Modals, modalParams = {}) {
     this.modal = newValue;
+    // Pass the params by reference to make sure that callbacks are still part of the original component
+    this.modalParams = modalParams;
   }
 
   public getModalOpen() {
     return this.modal;
+  }
+
+  public getModalParams() {
+    return this.modalParams;
   }
 
   public get customer() {

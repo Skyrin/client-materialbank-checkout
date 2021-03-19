@@ -141,7 +141,7 @@ class App extends React.Component<any, State> {
   }
 
   createCustomerAlreadyExists = (createCustomerInput: CreateCustomerInput) => {
-    this.context.openModal(Modals.None);
+    this.context.closeModal();
     this.setState({
       createCustomerInput: createCustomerInput,
     });

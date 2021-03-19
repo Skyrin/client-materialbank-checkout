@@ -63,7 +63,7 @@ export class AccountExistsModal extends React.Component<Props, State> {
   };
 
   closeModal = () => {
-    this.context.openModal(Modals.None);
+    this.context.closeModal();
   };
 
   componentDidMount() {
@@ -185,7 +185,7 @@ export class AccountExistsModal extends React.Component<Props, State> {
           this.setState({
             isLoading: false,
           });
-          this.context.openModal(Modals.None);
+          this.context.closeModal();
         })
         .catch((error: ClientError) => {
           let errorMessage = error.graphqlErrors[0]?.message

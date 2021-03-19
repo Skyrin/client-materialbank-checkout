@@ -14,7 +14,6 @@ import CollectionsHeader from "./common/CollectionsHeader/CollectionsHeader";
 import CollectionsFooter from "./common/CollectionsFooter/CollectionsFooter";
 import Collection from "./Collections/Collection/Collection";
 import ExploreTags from "./common/ExploreTags/ExploreTags";
-import MoreIdeas from "./common/MoreIdeas/MoreIdeas";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 
 type Props = RouteComponentProps;
@@ -50,7 +49,14 @@ export default class CollectionsAndPalettes extends React.Component<
 
   componentDidMount() {
     if (!this.context.isLoggedIn) {
-      this.context.openModal(Modals.Login);
+      this.context.openModal(Modals.Login, {
+        successCallback: () => {
+          this.context.requestCollections({
+            limit: 100,
+            offset: 0,
+          });
+        },
+      });
     } else {
       this.context.requestCollections({
         limit: 100,

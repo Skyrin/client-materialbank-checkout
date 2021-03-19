@@ -14,7 +14,7 @@ import {
 } from "../../../../context/AppContext";
 import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreIdeas";
 import { isOnMobile } from "../../../../utils/responsive";
-import { find, get } from "lodash-es";
+import { get } from "lodash-es";
 import Loader from "components/common/Loader/Loader";
 
 type Props = RouteComponentProps;

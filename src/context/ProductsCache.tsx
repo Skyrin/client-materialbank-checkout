@@ -26,7 +26,7 @@ export class ProductsCache {
     if (this.products.has(sku)) {
       return this.products.get(sku);
     }
-    console.error(
+    console.log(
       "[PRODUCT CACHE] ENTERED GET PRODUCT WITH:",
       sku,
       ", WAS NOT IN CACHE"
@@ -39,7 +39,7 @@ export class ProductsCache {
 
   // This function will only return when the products have been fetched
   getProductsAsync = async (skus: string[]) => {
-    console.error("[PRODUCT CACHE] ENTERED GET ASYNC WITH:", skus);
+    console.log("[PRODUCT CACHE] ENTERED GET ASYNC WITH:", skus);
     const missingSkus = skus.filter(
       (sku) => !this.products.has(sku) || !this.products.get(sku).data
     );

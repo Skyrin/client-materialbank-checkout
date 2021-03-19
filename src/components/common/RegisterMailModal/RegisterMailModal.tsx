@@ -1,7 +1,7 @@
 import styles from "./RegisterMailModal.module.scss";
 import React from "react";
 import cn from "classnames";
-import { AppContext, AppContextState, Modals } from "context/AppContext";
+import { AppContext, AppContextState } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Input from "components/common/Input/Input";
 import Checkbox from "components/common/Checkbox/Checkbox";
@@ -92,7 +92,7 @@ export class RegisterMailModal extends React.Component<Props, State> {
   };
 
   closeModal = () => {
-    this.context.openModal(Modals.None);
+    this.context.closeModal();
   };
 
   componentDidMount() {
