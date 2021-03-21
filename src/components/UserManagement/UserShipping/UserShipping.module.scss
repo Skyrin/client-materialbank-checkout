@@ -17,6 +17,10 @@
   margin-top: $margin-medium-3;
   @include mobile-media {
     margin-top: 0;
+    border-top: 1px solid $color-user-border;
+    padding: $margin-small-4 $margin-medium $margin-small-4 $margin-medium;
+    display: flex;
+    flex-flow: column;
   }
 }
 
@@ -24,6 +28,9 @@
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-medium);
   color: $primary-color-user;
+  @include mobile-media {
+    font-size: var(--font-size-lg);
+  }
 }
 
 .addressGrid {
@@ -34,10 +41,10 @@
   grid-row-gap: 20px;
   margin-top: $margin-small-3;
   @include mobile-media {
-    grid-row-gap: 10px;
+    grid-row-gap: 0;
     grid-template-columns: 1fr;
-    padding: 10px $margin-small-4;
     border-bottom: 1px solid $color-user-border;
+    margin-top: 0;
   }
 
   //&::after {
@@ -57,6 +64,19 @@
   background-blend-mode: soft-light;
   background: white;
   padding: $margin-small-4;
+
+  @include mobile-media {
+    box-shadow: none;
+    border: none;
+    background-blend-mode: soft-light;
+    background: transparent;
+    border-bottom: 1px solid $color-user-border;
+    padding: $margin-small-4 0;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+  }
 }
 
 .addressInfo {
@@ -139,7 +159,7 @@
   @include mobile-media {
     width: 100%;
     margin: 0;
-    padding: $margin-medium $margin-small-4;
+    padding: $margin-medium 0;
     border: none;
     border-radius: 0;
   }

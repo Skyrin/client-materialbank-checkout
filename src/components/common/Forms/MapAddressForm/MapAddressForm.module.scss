@@ -5,6 +5,10 @@
   color: $primary-color-user;
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-medium);
+
+  @include mobile-media {
+    font-size: var(--font-size-lg);
+  }
 }
 
 .addressForm {
@@ -78,6 +82,10 @@
     font-weight: var(--font-weight-medium);
     color: $primary-color-user;
     margin-bottom: $margin-small;
+
+    @include mobile-media {
+      font-size: var(--font-size-sm);
+    }
   }
 }
 

@@ -366,5 +366,9 @@ const StyledSelect = styled(Select)`
   .react-dropdown-select-input {
     font-family: "IBM Plex Sans", sans-serif;
     font-size: 14px;
+
+    @include mobile-media {
+      font-size: var(--font-size-sm);
+    }
   }
 `;
