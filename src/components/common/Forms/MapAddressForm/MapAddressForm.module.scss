@@ -8,6 +8,13 @@
 
   @include mobile-media {
     font-size: var(--font-size-lg);
+    margin-top: 0;
+  }
+
+  &.editing {
+    @include mobile-media {
+      margin-top: $margin-small-4;
+    }
   }
 }
 

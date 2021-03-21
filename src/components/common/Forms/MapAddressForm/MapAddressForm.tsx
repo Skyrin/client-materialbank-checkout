@@ -62,6 +62,7 @@ type Props = {
   onCancelEdit?: () => void;
   onSave?: (addressValues: AddressFormValuesT, addressId?: number) => void;
   onDelete?: (addressId?: number) => void;
+  className?: any;
 };
 
 type State = {
@@ -111,9 +112,13 @@ export default class MapAddressForm extends React.Component<Props, State> {
 
   render() {
     return (
-      <div>
-        <div className={styles.title}>
-          {this.props.editAddress && "Edit Address"}
+      <div className={this.props.className}>
+        <div
+          className={cn(styles.title, {
+            [styles.editing]: this.props.editAddress,
+          })}
+        >
+          {this.props.editAddress && `Editing "${this.state.values.nickname}"`}
           {!this.props.editAddress && "Add a New Address"}
         </div>
         <div className={styles.addressForm}>

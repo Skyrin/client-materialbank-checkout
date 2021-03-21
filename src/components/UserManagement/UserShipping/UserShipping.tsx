@@ -15,8 +15,9 @@ import { CustomerAddressInput } from "context/CustomerAPI/models";
 import { AppContext, AppContextState } from "context/AppContext";
 import { ClientError } from "GraphqlClient";
 import Loader from "components/common/Loader/Loader";
-import { AddressT, CustomerT } from "constants/types";
+import { AddressT, CustomerT, RegionT } from "constants/types";
 import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
+import { isOnMobile } from "utils/responsive";
 
 export const DEFAULT_ADDRESS_VALUES: AddressFormValuesT = {
   nickname: "",
@@ -167,6 +168,41 @@ export default class UserShipping extends React.Component<Props, State> {
                     </div>
                   </div>
                 </div>
+
+                {isOnMobile() && (
+                  <MapAddressForm
+                    className={cn(styles.mobileEditAddress, {
+                      [styles.visible]:
+                        this.state.editingAddress?.id === address.id,
+                    })}
+                    editAddress={{
+                      id: address?.id,
+                      city: address?.city,
+                      company: address?.company,
+                      firstname: address?.firstname,
+                      lastname: address?.lastname,
+                      postcode: address?.postcode,
+                      street: address?.street, // Probably [address_line_1, address_line_2]. in our case, we should probably just do [address]. TODO: clarify this
+                      telephone: address?.telephone,
+                      region: address?.region,
+                      default_billing: address?.default_billing,
+                      default_shipping: address?.default_shipping,
+                    }}
+                    onCancelEdit={this.cancelEditAddress}
+                    onSave={(addressValues, addressId) => {
+                      this.onSaveAddress(addressValues, addressId);
+                    }}
+                    onDelete={(addressId) => {
+                      this.deleteAddress(addressId);
+                    }}
+                  />
+                )}
+                {this.state.editAddressNetworkError && (
+                  <ErrorLabel
+                    className={styles.errorCreateAddress}
+                    errorText={this.state.editAddressNetworkError}
+                  />
+                )}
               </div>
             );
           })}
@@ -213,7 +249,7 @@ export default class UserShipping extends React.Component<Props, State> {
         <div
           id={"modalId"}
           className={cn(styles.modalBackground, {
-            [styles.visible]: this.state.editingAddress,
+            [styles.visible]: this.state.editingAddress && !isOnMobile(),
           })}
           onClick={(event) => {
             // @ts-ignore
@@ -351,10 +387,18 @@ export default class UserShipping extends React.Component<Props, State> {
   };
 
   onEditClicked = (address: AddressT) => {
-    this.setState({
-      editingAddress: address,
-    });
-    this.disableWindowsScroll();
+    if (address.id !== this.state.editingAddress?.id) {
+      this.setState({
+        editingAddress: address,
+      });
+    } else {
+      this.setState({
+        editingAddress: null,
+      });
+    }
+    if (!isOnMobile()) {
+      this.disableWindowsScroll();
+    }
   };
 
   onModalBackgroundClicked = () => {
