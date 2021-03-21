@@ -324,32 +324,6 @@ export default class UserShipping extends React.Component<Props, State> {
     }
   };
 
-  makeDefault = (defaultAddress: AddressT) => {
-    const addressFields = {
-      company: defaultAddress.company,
-      firstName: defaultAddress.firstname || "",
-      lastName: defaultAddress.lastname || "",
-      city: defaultAddress.city || "",
-      region: defaultAddress.region.region_code || "",
-      address: defaultAddress.street[0] || "",
-      aptNumber: defaultAddress.street[1] || "",
-      zipCode: defaultAddress.postcode || "",
-      default_shipping: true,
-      telephone: "123123",
-    };
-
-    const addressInput = new CustomerAddressInput(addressFields);
-
-    this.context
-      .updateCustomerAddress(defaultAddress.id, addressInput)
-      .then((value) => {
-        this.setState({
-          addresses: value?.addresses,
-        });
-      })
-      .catch(() => {});
-  };
-
   onEditClicked = (address: AddressT) => {
     this.setState({
       editingAddress: address,

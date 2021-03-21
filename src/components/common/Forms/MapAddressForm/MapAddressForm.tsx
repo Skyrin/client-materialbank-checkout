@@ -61,6 +61,7 @@ type Props = {
   componentRef?: (ref: MapAddressForm) => void;
   onCancelEdit?: () => void;
   onSave?: (addressValues: AddressFormValuesT, addressId?: number) => void;
+  onDelete?: (addressId?: number) => void;
 };
 
 type State = {
@@ -242,7 +243,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
         </div>
         <div
           className={cn(
-            "row full-width center-vertically center-horizontally margin-top",
+            "full-width center-vertically center-horizontally margin-top",
             styles.addAddressButtons
           )}
         >
@@ -260,6 +261,11 @@ export default class MapAddressForm extends React.Component<Props, State> {
             {!this.props.editAddress && "Add Address"}
           </button>
         </div>
+        {this.props.editAddress && (
+          <button className={styles.deleteAddressButton}>
+            Delete this address
+          </button>
+        )}
       </div>
     );
   }

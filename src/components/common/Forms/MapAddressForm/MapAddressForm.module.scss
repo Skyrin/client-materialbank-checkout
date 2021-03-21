@@ -82,6 +82,9 @@
 }
 
 .addAddressButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: $margin-small-4;
   @include mobile-media {
     justify-content: space-between !important;
   }
@@ -89,11 +92,17 @@
 
 .cancelAddAddress {
   @include grayGradientButton;
-  width: 40%;
+  width: auto;
 }
 
 .addAddressButton {
   @include blackGradientButton;
-  margin-left: $margin-small-4;
-  width: 60%;
+  width: auto;
+}
+
+.deleteAddressButton {
+  @include labelButtonUnderline;
+  display: block;
+  margin: $margin-medium auto auto;
+  padding: 0;
 }
