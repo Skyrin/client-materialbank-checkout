@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router-dom";
 import UserHeader, {
   UserPages,
 } from "components/UserManagement/UserHeader/UserHeader";
-import { SearchBar } from "components/common/SearchBar/SearchBar";
 import styles from "./UserShipping.module.scss";
 import MapAddressForm from "components/common/Forms/MapAddressForm/MapAddressForm";
 import {
@@ -12,7 +11,6 @@ import {
   clearAllBodyScrollLocks,
 } from "body-scroll-lock";
 import cn from "classnames";
-import { isOnMobile } from "utils/responsive";
 import { CustomerAddressInput } from "context/CustomerAPI/models";
 import { AppContext, AppContextState } from "context/AppContext";
 import { ClientError } from "GraphqlClient";
@@ -242,6 +240,9 @@ export default class UserShipping extends React.Component<Props, State> {
                     onSave={(addressValues, addressId) => {
                       this.onSaveAddress(addressValues, addressId);
                     }}
+                    onDelete={(addressId) => {
+                      this.deleteAddress(addressId);
+                    }}
                   />
                 )}
                 {this.state.editAddressNetworkError && (
@@ -263,6 +264,31 @@ export default class UserShipping extends React.Component<Props, State> {
         )}
       </div>
     );
+  }
+
+  deleteAddress(addressId: number) {
+    this.setState({
+      createAddressNetworkError: "",
+      editAddressNetworkError: "",
+    });
+
+    this.context
+      .deleteCustomerAddress(addressId)
+      .then((value) => {
+        this.setState({
+          addresses: value?.addresses,
+        });
+        this.closeModal();
+      })
+      .catch((error: ClientError) => {
+        let errorMessage = error.graphqlErrors[0]?.message
+          ? error.graphqlErrors[0].message
+          : error.message;
+
+        this.setState({
+          editAddressNetworkError: errorMessage,
+        });
+      });
   }
 
   onSaveAddress = (addressValues: AddressFormValuesT, addressId: number) => {

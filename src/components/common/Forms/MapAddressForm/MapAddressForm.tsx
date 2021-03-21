@@ -262,7 +262,10 @@ export default class MapAddressForm extends React.Component<Props, State> {
           </button>
         </div>
         {this.props.editAddress && (
-          <button className={styles.deleteAddressButton}>
+          <button
+            className={styles.deleteAddressButton}
+            onClick={this.deleteClicked}
+          >
             Delete this address
           </button>
         )}
@@ -287,6 +290,10 @@ export default class MapAddressForm extends React.Component<Props, State> {
     if (this.validateAddress()) {
       this.props.onSave(this.state.values, this.props?.editAddress?.id);
     }
+  };
+
+  deleteClicked = () => {
+    this.props.onDelete(this.props?.editAddress?.id);
   };
 
   cancelClicked = () => {

@@ -244,6 +244,10 @@ export class AppContextState extends BaseAppContextState {
     return Promise.resolve({});
   }
 
+  async deleteCustomerAddress(id: number): Promise<CustomerT> {
+    return Promise.resolve({});
+  }
+
   async setBillingAddress(
     sameAsShipping: boolean,
     address?: CartAddressInput
