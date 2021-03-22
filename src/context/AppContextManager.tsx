@@ -325,8 +325,12 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.customerLoading = true;
       this.forceUpdate();
       try {
-        await createCustomerAddress(this.getFullContext(), address);
-        return await this.actions.requestCurrentCustomer();
+        const resp = await createCustomerAddress(
+          this.getFullContext(),
+          address
+        );
+        await this.actions.requestCurrentCustomer();
+        return resp;
       } catch (e) {
         throw e;
       } finally {

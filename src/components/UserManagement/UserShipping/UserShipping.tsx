@@ -296,6 +296,9 @@ export default class UserShipping extends React.Component<Props, State> {
       this.context
         .createCustomerAddress(addressInput)
         .then((value) => {
+          return this.context.requestCurrentCustomer();
+        })
+        .then((value) => {
           this.setState({
             addresses: value?.addresses,
           });

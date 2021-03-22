@@ -240,7 +240,7 @@ export class AppContextState extends BaseAppContextState {
 
   async createCustomerAddress(
     address: CustomerAddressInput
-  ): Promise<CustomerT> {
+  ): Promise<AddressT> {
     return Promise.resolve({});
   }
 
