@@ -123,6 +123,9 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 @mixin grayGradientButton {
   height: 40px;
   width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 5px;
   padding-left: $margin-small-5;
   padding-right: $margin-small-5;
@@ -192,4 +195,17 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 @mixin roundedContainerMobile {
   border-bottom: 1px solid $color-user-border;
   border-radius: 8px;
+}
+
+@mixin roundGrayLabel {
+  display: flex;
+  font-size: var(--font-size-xs);
+  padding: 0 $margin-small-2;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 1px;
+  color: $primary-color-user;
+  background-color: rgba(black, 0.2);
+  height: 20px;
+  border-radius: 10px;
+  align-items: center;
 }

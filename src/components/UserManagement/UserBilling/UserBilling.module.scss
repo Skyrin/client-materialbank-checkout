@@ -105,17 +105,8 @@
   }
 
   .defaultPayment {
-    display: flex;
+    @include roundGrayLabel;
     margin-left: $margin-small-4;
-    font-size: var(--font-size-xs);
-    padding: 0 $margin-small-2;
-    font-weight: var(--font-weight-medium);
-    letter-spacing: 1px;
-    color: $primary-color-user;
-    background-color: rgba(black, 0.2);
-    height: 20px;
-    border-radius: 10px;
-    align-items: center;
   }
 
   .editButton {
