@@ -9,6 +9,7 @@
 .pageContent {
   flex-grow: 1;
   padding: $margin-huge $margin-huge-5 117px $margin-huge-5;
+  position: relative;
   @include mobile-media {
     padding: 15px;
   }

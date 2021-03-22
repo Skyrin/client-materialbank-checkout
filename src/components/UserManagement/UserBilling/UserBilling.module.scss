@@ -3,7 +3,7 @@
 //@import "styles/global";
 
 .UserBilling {
-  padding: 62px 100px 162px;
+  padding: 0 100px 162px;
 
   @mixin normalText {
     font-size: var(--font-size-md);
@@ -22,7 +22,7 @@
   .pageContent {
     margin-top: $margin-medium-3;
     @include mobile-media {
-      padding: 0 $margin-small-4 $margin-small-4 $margin-small-4;
+      padding: 0 $margin-medium $margin-small-4 $margin-medium;
       border-top: 1px solid $color-user-border;
       margin-top: 0;
     }
@@ -52,14 +52,14 @@
   .paymentRow {
     display: grid;
     height: 100px;
-    grid-template-columns: 64px 250px 1fr auto auto;
+    grid-template-columns: 64px 250px 1fr auto;
     grid-template-rows: auto;
     align-items: center;
     padding: 0 $margin-medium;
     @include mobile-media {
       display: flex;
       flex-direction: column;
-      padding: 10px 0;
+      padding: 0;
       height: auto;
     }
 
@@ -68,7 +68,8 @@
       flex-direction: row;
       width: 100%;
       justify-content: flex-start;
-
+      align-items: center;
+      padding: $margin-small-4 $margin-small-2;
       img {
         margin-right: $margin-medium;
       }
@@ -83,23 +84,8 @@
       margin-top: 14px;
     }
 
-    .creditCardInfo {
-      display: flex;
-      align-items: flex-start;
-      flex-direction: column;
-      text-align: center;
-
-      div:first-child {
-        margin-bottom: 14px;
-      }
-
-      div {
-        font-size: 12px;
-      }
-
-      .creditCardNumber {
-        margin-left: 0;
-      }
+    .creditCardNumber {
+      margin-left: 0;
     }
   }
 
@@ -119,11 +105,8 @@
   }
 
   .defaultPayment {
-    margin-right: $margin-small-4;
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    letter-spacing: 1px;
-    color: $brown-color;
+    @include roundGrayLabel;
+    margin-left: $margin-small-4;
   }
 
   .editButton {
@@ -133,6 +116,10 @@
     font-weight: var(--font-weight-medium);
     transition: border-color 0.2s $ease-in-out background-color 0.15s
       $ease-in-out;
+
+    @include mobile-media {
+      margin-left: auto;
+    }
 
     &.editMode {
       background-color: rgba($primary-color-user, 0.3);
@@ -163,6 +150,9 @@
   }
 
   .fullName {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
     @include normalText;
   }
 
@@ -191,5 +181,22 @@
   .example-leave.example-leave-active {
     opacity: 0.01;
     transition: opacity 300ms ease-in;
+  }
+}
+
+.loaderContainer {
+  position: fixed;
+  top: 0;
+  left: -5px;
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  background-color: rgba(#fbfbfb, 0.8);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: var(--vertical-spacing-normal);
+
+  .loader {
+    font-size: 40px;
   }
 }

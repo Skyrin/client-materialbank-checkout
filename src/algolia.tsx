@@ -6,5 +6,5 @@ export const algoliaClient = algoliasearch(
 );
 
 export const algoliaProducts = algoliaClient.initIndex(
-  "magento2_default_products"
+  process.env.ALGOLIA_INDEX_PRODUCTS || "dev-ds_default_products"
 );

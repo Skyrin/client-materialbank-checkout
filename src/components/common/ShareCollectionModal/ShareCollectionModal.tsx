@@ -1,7 +1,7 @@
 import styles from "./ShareCollectionModal.module.scss";
 import React from "react";
 import cn from "classnames";
-import { AppContext, AppContextState, Modals } from "context/AppContext";
+import { AppContext, AppContextState } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
 import { RouteComponentProps } from "react-router-dom";
@@ -51,7 +51,7 @@ export class ShareCollectionModal extends React.Component<Props, State> {
   };
 
   closeModal = () => {
-    this.context.openModal(Modals.None);
+    this.context.closeModal();
   };
 
   componentDidMount() {
@@ -116,7 +116,7 @@ export class ShareCollectionModal extends React.Component<Props, State> {
               return (
                 <div className={styles.collaboratorsContainer}>
                   <div className={styles.collaboratorsInfo}>
-                    <img src={collaborator.imagePath} />
+                    <img src={collaborator.imagePath} alt="" />
                     <div>
                       <span className={styles.collaboratorName}>
                         {collaborator.firstName + " " + collaborator.lastName}

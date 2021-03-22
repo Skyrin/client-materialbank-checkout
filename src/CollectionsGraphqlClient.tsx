@@ -52,8 +52,8 @@ export const collectionsGraphqlRequest = async (
       return;
     }
     if (
-      parsedResponse.errors.find(
-        (e) => e.message === "The request is allowed for logged in customer"
+      parsedResponse.errors.find((e) =>
+        e.message.toLowerCase().includes("unauthorized")
       )
     ) {
       // TEMP: This is a very quick way to deal with tokens expiring.

@@ -4,6 +4,10 @@
 
 .exploreContainer {
   margin-top: $margin-huge;
+  @include mobile-media {
+    margin-bottom: $margin-huge;
+    margin-top: 15px;
+  }
 
   .exploreButtons {
     display: flex;

@@ -12,10 +12,15 @@
   padding: 0 $margin-medium;
   grid-template-areas:
     "title form"
-    "title buttons";
+    "delete-card buttons";
 
   transition: opacity 0.35s $ease-in-out, padding 0.35s $ease-in-out,
     max-height 0.35s $ease-in-out;
+
+  @include mobile-media {
+    display: flex;
+    flex-direction: column;
+  }
 
   &.visible {
     opacity: 1;
@@ -33,6 +38,10 @@
     color: $primary-color-user;
     font-size: var(--font-size-xxl);
     font-weight: var(--font-weight-medium);
+
+    @include mobile-media {
+      font-size: var(--font-size-md);
+    }
   }
 
   .form {
@@ -49,7 +58,7 @@
       display: flex;
       flex-direction: column;
       margin-top: $margin-small-4;
-      margin-bottom: margin-medium;
+      margin-bottom: $margin-medium;
       row-gap: 15px;
     }
 
@@ -74,14 +83,17 @@
       font-weight: var(--font-weight-medium);
       color: $primary-color-user;
       margin-bottom: $margin-small;
+      @include mobile-media {
+        font-size: var(--font-size-sm);
+      }
     }
   }
 
   .buttons {
     grid-area: buttons;
     display: flex;
+
     margin-top: $margin-medium;
-    justify-content: space-between;
     @include mobile-media {
       display: flex;
       align-items: center;
@@ -94,60 +106,58 @@
     }
 
     .formButtonsEdit {
+      width: 100%;
+      display: flex;
       @include mobile-media {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
         align-items: center;
-      }
-    }
-
-    .deleteButton {
-      @include mobile-media {
-        padding: 0;
-        margin: $margin-medium 0;
       }
     }
   }
 
   .saveChanges {
-    @include blackButton;
+    @include blackGradientButton;
+    @include mobile-media {
+      flex-grow: 2;
+      margin: 0 0 0 $margin-small-2;
+    }
   }
 
   .cancelButton {
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-md);
-    color: $primary-color-user;
-    transition: color 0.15s $ease-in-out;
-    padding: $margin-small-3;
+    @include grayGradientButton;
     margin-left: auto;
+    margin-right: $margin-small-4;
     @include mobile-media {
       margin: 0;
+      flex-grow: 3;
     }
+  }
 
-    &:hover {
-      color: lighten($primary-color-user, 30%);
+  .deleteButtonContainer {
+    grid-area: delete-card;
+    position: relative;
+
+    @include mobile-media {
+      display: flex;
     }
+  }
 
-    &:active {
-      color: lighten($primary-color-user, 50%);
+  .setDefaultButton {
+    @include labelButtonUnderline;
+    padding: 0;
+    align-self: flex-end;
+    @include mobile-media {
+      margin-left: auto;
     }
   }
 
   .deleteButton {
-    font-family: "Roboto", sans-serif;
-    font-weight: var(--font-weight-normal);
-    font-size: var(--font-size-md);
-    letter-spacing: 1px;
-    color: $red-color;
-    transition: color 0.15s $ease-in-out;
+    @include labelButtonUnderline;
+    padding: 0;
+    position: absolute;
+    bottom: 0;
 
-    &:hover {
-      color: lighten($red-color, 10%);
-    }
-
-    &:active {
-      color: lighten($red-color, 30%);
+    @include mobile-media {
+      position: relative;
     }
   }
 }

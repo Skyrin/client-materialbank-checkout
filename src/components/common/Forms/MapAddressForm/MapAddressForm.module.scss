@@ -3,13 +3,24 @@
 
 .title {
   color: $primary-color-user;
-  font-size: var(--font-size-xxl);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-medium);
+
+  @include mobile-media {
+    font-size: var(--font-size-lg);
+    margin-top: 0;
+  }
+
+  &.editing {
+    @include mobile-media {
+      margin-top: $margin-small-4;
+    }
+  }
 }
 
 .addressForm {
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
   row-gap: $margin-small-3;
   column-gap: $margin-small-2;
@@ -78,19 +89,35 @@
     font-weight: var(--font-weight-medium);
     color: $primary-color-user;
     margin-bottom: $margin-small;
+
+    @include mobile-media {
+      font-size: var(--font-size-sm);
+    }
   }
 }
 
 .addAddressButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: $margin-small-4;
   @include mobile-media {
     justify-content: space-between !important;
   }
 }
 
 .cancelAddAddress {
-  @include labelButton;
+  @include grayGradientButton;
+  width: auto;
 }
 
 .addAddressButton {
-  @include blackButton;
+  @include blackGradientButton;
+  width: auto;
+}
+
+.deleteAddressButton {
+  @include labelButtonUnderline;
+  display: block;
+  margin: $margin-medium auto auto;
+  padding: 0;
 }

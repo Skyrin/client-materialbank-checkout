@@ -18,7 +18,7 @@ export class RegisterOptionsModal extends React.Component<any, any> {
   };
 
   closeModal = () => {
-    this.context.openModal(Modals.None);
+    this.context.closeModal();
   };
 
   componentDidMount() {

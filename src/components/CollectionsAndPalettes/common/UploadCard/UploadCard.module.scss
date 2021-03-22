@@ -28,6 +28,10 @@
 
   &.collectionUpload {
     height: 380px !important;
+    @media (max-width: 520px) {
+      height: 60px !important;
+      margin-bottom: $margin-small-4;
+    }
   }
 
   div {

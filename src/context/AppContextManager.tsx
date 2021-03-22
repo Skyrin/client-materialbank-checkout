@@ -26,6 +26,7 @@ import {
   changeCustomerPassword,
   createCustomer,
   createCustomerAddress,
+  deleteCustomerAddress,
   getCustomerOrders,
   login,
   requestCurrentCustomer,
@@ -177,8 +178,13 @@ export default class AppContextManager extends React.Component<Props> {
       }
     },
 
-    openModal: (modal: Modals) => {
-      this.contextState.setModalOpen(modal);
+    openModal: (modal: Modals, modalParams: Object = {}) => {
+      this.contextState.setModalOpen(modal, modalParams);
+      this.forceUpdate();
+    },
+
+    closeModal: () => {
+      this.contextState.setModalOpen(Modals.None, {});
       this.forceUpdate();
     },
 
@@ -320,7 +326,12 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.customerLoading = true;
       this.forceUpdate();
       try {
-        return await createCustomerAddress(this.getFullContext(), address);
+        const resp = await createCustomerAddress(
+          this.getFullContext(),
+          address
+        );
+        await this.actions.requestCurrentCustomer();
+        return resp;
       } catch (e) {
         throw e;
       } finally {
@@ -337,6 +348,21 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
       try {
         await updateCustomerAddress(this.getFullContext(), id, address);
+        return await this.actions.requestCurrentCustomer();
+      } catch (e) {
+        throw e;
+      } finally {
+        this.contextState.customerLoading = false;
+        this.forceUpdate();
+      }
+    },
+
+    deleteCustomerAddress: async (id: number) => {
+      this.contextState.customerLoading = true;
+      this.forceUpdate();
+
+      try {
+        await deleteCustomerAddress(this.getFullContext(), id);
         return await this.actions.requestCurrentCustomer();
       } catch (e) {
         throw e;

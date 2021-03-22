@@ -1,7 +1,7 @@
 import styles from "./UploadPhotoModal.module.scss";
 import React from "react";
 import cn from "classnames";
-import { AppContext, AppContextState, Modals } from "context/AppContext";
+import { AppContext, AppContextState } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
 import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
@@ -43,7 +43,7 @@ class UploadPhotoModal extends React.Component<Props, State> {
   };
 
   closeModal = () => {
-    this.context.openModal(Modals.None);
+    this.context.closeModal();
   };
 
   componentDidMount() {

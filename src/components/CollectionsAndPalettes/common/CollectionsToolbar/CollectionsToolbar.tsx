@@ -9,9 +9,23 @@ import {
   AppContextState,
   Modals,
 } from "../../../../context/AppContext";
-import { COLLECTIONS_URL, PALETTES_URL } from "../../../../constants/urls";
+import {
+  COLLECTION_URL,
+  COLLECTIONS_URL,
+  PALETTES_URL,
+} from "../../../../constants/urls";
+import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
+import { get } from "lodash-es";
+import { renameCollection } from "../../../../context/CollectionsAPI/api";
 
-interface Props {
+interface State {
+  isOpened: boolean;
+  isRenameMode: boolean;
+  title: string;
+  updatedTitle: string;
+}
+
+interface ToolbarProps {
   history?: any;
   title: string;
   buttons: any;
@@ -23,8 +37,11 @@ interface Props {
   toggleDisplay?: any;
 }
 
-export default class CollectionsToolbar extends React.Component<Props, any> {
-  wrapperRef: any;
+type Props = RouteComponentProps;
+
+class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
+  wrapperRefDropdown: any;
+  wrapperRefRename: any;
 
   static contextType = AppContext;
   context!: AppContextState;
@@ -43,37 +60,37 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
   makePrivateCollection = () => {
     this.context.openModal(Modals.MakePrivateCollection);
   };
+
   constructor(props: any) {
     super(props);
     this.state = {
       isOpened: false,
+      isRenameMode: false,
+      title: this.props.title,
+      updatedTitle: null,
     };
-    this.wrapperRef = React.createRef();
-    this.onClickButtonRedirect = this.onClickButtonRedirect.bind(this);
+    this.wrapperRefDropdown = React.createRef();
+    this.wrapperRefRename = React.createRef();
   }
-
-  handleClickOutside = (evt: any) => {
-    if (
-      this.props.isCollection &&
-      this.wrapperRef &&
-      !this.wrapperRef.current.contains(evt.target)
-    ) {
-      this.setState({ isOpened: false });
-    }
-  };
 
   renderCollectionsEditDropdown = () => {
     return (
       <React.Fragment>
         <i className="far fa-ellipsis-h"></i>
         <div
-          ref={this.wrapperRef}
+          ref={this.wrapperRefDropdown}
           className={cn(
             styles.collectionEditDropdown,
             `${this.state.isOpened ? styles.opened : styles.closed}`
           )}
         >
-          <a>Rename</a>
+          <a
+            onClick={() => {
+              this.setState({ isRenameMode: !this.state.isRenameMode });
+            }}
+          >
+            Rename
+          </a>
           <a onClick={this.duplicateCollection}>Duplicate Collection</a>
           <a onClick={this.makePrivateCollection}>Make Private </a>
           <a onClick={this.deleteCollection}>Delete </a>
@@ -86,7 +103,7 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
     return <Collaborators collaborators={this.props.collaborators} />;
   };
 
-  onClickButtonRedirect(button: string): any {
+  onClickButtonRedirect = (button: string) => {
     const redirectURLS = {
       collections: COLLECTIONS_URL,
       palettes: PALETTES_URL,
@@ -95,7 +112,70 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
 
     if (redirectURLS[button] === currentURL) return;
     else this.props.history.push(redirectURLS[button]);
-  }
+  };
+
+  getCollectionId = () => {
+    const collectionPageResult = matchPath(this.props.location.pathname, {
+      path: COLLECTION_URL,
+      exact: true,
+    });
+    return get(collectionPageResult, "params.collection_id");
+  };
+
+  handleTitleChange = (e: any) => {
+    this.setState({ updatedTitle: e.target.value });
+  };
+
+  handleTitleUpdate = async (e: any) => {
+    if (e.key === "Enter") {
+      this.setState({ isRenameMode: false, title: this.state.updatedTitle });
+    } else if (e.key === "Escape") {
+      this.setState({
+        isRenameMode: false,
+        title: this.props.title,
+        updatedTitle: this.state.title,
+      });
+    }
+  };
+
+  submit = async (e: any) => {
+    const collectionId = parseInt(this.getCollectionId());
+    if (collectionId) {
+      await this.handleTitleUpdate(e);
+      const resp = await renameCollection(
+        this.context,
+        collectionId,
+        this.state.title
+      );
+      console.log("rename response", resp);
+      await this.context.requestCollections({
+        limit: 100,
+        offset: 0,
+      });
+      await this.context.requestCollection(collectionId);
+    }
+  };
+
+  handleClickOutside = (e: any) => {
+    if (
+      this.props.isCollection &&
+      this.wrapperRefDropdown &&
+      !this.wrapperRefDropdown.current.contains(e.target)
+    ) {
+      this.setState({ isOpened: false });
+    }
+    if (
+      this.state.isRenameMode &&
+      this.wrapperRefRename &&
+      !this.wrapperRefRename.current.contains(e.target)
+    ) {
+      this.setState({
+        isRenameMode: false,
+        title: this.props.title,
+        updatedTitle: this.state.title,
+      });
+    }
+  };
 
   componentDidMount() {
     document.addEventListener("mousedown", this.handleClickOutside);
@@ -110,7 +190,20 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
       <div className={styles.toolbarContainer}>
         <div className={styles.toolbarInfo}>
           <div className={styles.titleFlex}>
-            <div className={styles.title}>{this.props.title}</div>
+            {this.state.isRenameMode ? (
+              <input
+                defaultValue={this.state.title}
+                ref={this.wrapperRefRename}
+                className={styles.renameInput}
+                value={this.state.updatedTitle}
+                type="text"
+                name="Rename"
+                onChange={this.handleTitleChange}
+                onKeyDown={this.submit}
+              />
+            ) : (
+              <div className={styles.title}>{this.state.title}</div>
+            )}
             <a
               onClick={() => this.setState({ isOpened: !this.state.isOpened })}
             >
@@ -130,6 +223,16 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
                 </div>
               )}
             </div>
+          )}
+          {this.props.isCollection && (
+            <React.Fragment>
+              <a
+                className={styles.floatingShare}
+                onClick={this.shareCollection}
+              >
+                <i className="fas fa-share contributors-share"></i>
+              </a>
+            </React.Fragment>
           )}
         </div>
         <div className="horizontal-divider-toolbar"></div>
@@ -175,3 +278,5 @@ export default class CollectionsToolbar extends React.Component<Props, any> {
     );
   }
 }
+
+export default withRouter(CollectionsToolbar);

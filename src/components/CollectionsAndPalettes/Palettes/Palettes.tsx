@@ -1,6 +1,6 @@
 import * as React from "react";
 import styles from "components/CollectionsAndPalettes/Collections/Collections.module.scss";
-import { AppContext, AppContextState, Modals } from "context/AppContext";
+import { AppContext, AppContextState } from "context/AppContext";
 import UploadCard from "../common/UploadCard/UploadCard";
 import MoreIdeas from "../common/MoreIdeas/MoreIdeas";
 import Loader from "components/common/Loader/Loader";

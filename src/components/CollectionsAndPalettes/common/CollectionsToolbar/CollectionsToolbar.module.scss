@@ -4,6 +4,9 @@
 .toolbarContainer {
   width: 100%;
   padding-top: 13px;
+  @include mobile-media {
+    padding: 0 10px;
+  }
 }
 
 .title {
@@ -13,7 +16,8 @@
   color: $primary-color-user;
   padding-right: $margin-small;
   @include mobile-media {
-    font-size: var(--font-size-xxl);
+    font-size: 28px;
+    margin-top: 8px;
   }
 }
 
@@ -26,6 +30,8 @@
     flex-direction: column;
     align-items: start;
     row-gap: 10px;
+    margin-bottom: 5px;
+    margin-top: 5px;
   }
 }
 
@@ -33,6 +39,15 @@
   display: flex;
   flex-direction: row;
   column-gap: 3px;
+  @include mobile-media {
+    overflow: scroll;
+    width: 100%;
+    column-gap: 8px;
+    div {
+      min-width: 140px;
+      white-space: nowrap;
+    }
+  }
 }
 
 .noOfCollections {
@@ -48,6 +63,9 @@ a {
   flex-direction: row;
   align-items: center;
   column-gap: $margin-small-4;
+  @media (max-width: 520px) {
+    order: -1;
+  }
 
   .navSwitch {
     display: flex;
@@ -57,6 +75,10 @@ a {
     background-image: linear-gradient(279deg, #000000, #ffffff 0%),
       linear-gradient(to bottom, #f9f7f5, #f9f7f5);
     position: relative;
+    @media (max-width: 520px) {
+      box-shadow: none;
+      background-image: none;
+    }
 
     i {
       margin-right: 7px;
@@ -86,6 +108,9 @@ a {
       height: 100%;
       margin-top: 10px;
       cursor: pointer;
+      @include mobile-media {
+        margin-top: 15px;
+      }
     }
 
     .collectionEditDropdown {
@@ -93,6 +118,7 @@ a {
       flex-direction: column;
       border-radius: 5px;
       z-index: 100;
+      user-select: none;
       -webkit-backdrop-filter: blur(5px);
       backdrop-filter: blur(5px);
       box-shadow: 10px 10px 20px 0 rgba(17, 17, 17, 0.3),
@@ -118,6 +144,10 @@ a {
 
       &.opened {
         display: flex;
+        @media (max-width: 520px) {
+          right: 20px;
+          margin-top: 10px;
+        }
       }
 
       a {
@@ -132,9 +162,34 @@ a {
   }
 }
 
+.renameInput {
+  line-height: 28pt;
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-medium);
+  color: #2f2f2f;
+  padding: 0;
+  //padding-right: 5px;
+  border: none;
+  outline: none;
+  width: auto;
+}
+
 .collaborators {
   display: flex;
   align-items: center;
+  @media (max-width: 520px) {
+    display: none;
+  }
+}
+
+.floatingShare {
+  display: none;
+  position: absolute;
+  right: $margin-small-4;
+  top: 10px;
+  @media (max-width: 520px) {
+    display: block;
+  }
 }
 
 @media (max-width: 520px) {

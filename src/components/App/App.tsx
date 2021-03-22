@@ -24,7 +24,7 @@ import { RegisterMailModal } from "components/common/RegisterMailModal/RegisterM
 import { AccountExistsModal } from "components/common/AccountExistsModal/AccountExistsModal";
 import { CreateCustomerInput } from "context/CustomerAPI/models";
 import CollectionsAndPalettes from "../CollectionsAndPalettes/CollectionsAndPalettes";
-import { DeleteCollectionModal } from "../common/DeleteCollectionModal/DeleteCollectionModal";
+import DeleteCollectionModal from "../common/DeleteCollectionModal/DeleteCollectionModal";
 import { ShareCollectionModal } from "../common/ShareCollectionModal/ShareCollectionModal";
 import { DuplicateCollectionModal } from "../common/DuplicateCollectionModal/DuplicateCollectionModal";
 import { MakePrivateModal } from "../common/MakePrivateModal/MakePrivateModal";
@@ -141,7 +141,7 @@ class App extends React.Component<any, State> {
   }
 
   createCustomerAlreadyExists = (createCustomerInput: CreateCustomerInput) => {
-    this.context.openModal(Modals.None);
+    this.context.closeModal();
     this.setState({
       createCustomerInput: createCustomerInput,
     });

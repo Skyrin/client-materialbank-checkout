@@ -20,7 +20,7 @@
   padding-top: 27px;
   @include mobile-media {
     flex-direction: column-reverse;
-    padding: 0 $margin-small-4;
+    padding: 0 $margin-medium;
   }
 }
 
@@ -31,7 +31,9 @@
 
   @include mobile-media {
     flex-direction: column-reverse;
-    padding: 0 $margin-small-4;
+    padding: 0;
+    margin-top: $margin-medium-2;
+    border-bottom: none;
   }
 }
 
@@ -39,6 +41,10 @@
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-medium);
   color: $primary-color-user;
+
+  @include mobile-media {
+    font-size: var(--font-size-md);
+  }
 }
 
 .welcomeHintGray {
@@ -47,6 +53,11 @@
   color: $gray-color-user;
   margin-left: $margin-small-2;
   margin-right: $margin-small-2;
+
+  @include mobile-media {
+    margin-left: auto;
+    font-size: var(--font-size-xs);
+  }
 }
 
 .logout {
@@ -55,6 +66,10 @@
   font-weight: var(--font-weight-medium);
   margin: 0;
   padding: 0;
+
+  @include mobile-media {
+    font-size: var(--font-size-sm);
+  }
 }
 
 body,
@@ -93,7 +108,12 @@ button {
   cursor: pointer;
   transition: color 0.1s $ease-in-out;
   text-decoration: none;
-  padding-bottom: 27px;
+  padding-bottom: $margin-small-5;
+
+  @include mobile-media {
+    font-size: var(--font-size-xs);
+    padding-bottom: $margin-small-3;
+  }
 
   &:not(:last-of-type) {
     margin-right: $margin-medium-5;
@@ -110,6 +130,10 @@ button {
     color: $primary-color-user;
     margin-top: 4px;
     border-bottom: 4px solid $primary-color-user;
+
+    @include mobile-media {
+      border-bottom: 2px solid $primary-color-user;
+    }
   }
 
   &:hover {

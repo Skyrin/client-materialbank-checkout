@@ -171,6 +171,26 @@ export const updateCustomerAddress = async (
   }
 };
 
+export const deleteCustomerAddress = async (
+  context: AppContextState,
+  id: number
+) => {
+  const Mutation = `
+    mutation ($id: Int!) {
+      deleteCustomerAddress(id: $id)
+    }
+  `;
+
+  try {
+    const resp = await graphqlRequest(context, Mutation, {
+      id: id,
+    });
+    return resp;
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
+  }
+};
+
 export const requestOrder = async (
   context: AppContextState,
   orderNumber: string

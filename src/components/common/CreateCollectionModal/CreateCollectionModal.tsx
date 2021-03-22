@@ -1,7 +1,7 @@
 import styles from "./CreateCollectionModal.module.scss";
 import React from "react";
 import cn from "classnames";
-import { AppContext, AppContextState, Modals } from "context/AppContext";
+import { AppContext, AppContextState } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
 import { RouteComponentProps } from "react-router-dom";
@@ -32,7 +32,7 @@ export class CreateCollectionModal extends React.Component<Props, State> {
   };
 
   closeModal = () => {
-    this.context.openModal(Modals.None);
+    this.context.closeModal();
   };
 
   componentDidMount() {

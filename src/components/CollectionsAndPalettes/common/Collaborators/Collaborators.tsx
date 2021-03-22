@@ -44,7 +44,7 @@ export default class Collaborators extends React.Component<Props, any> {
             {this.props.collaborators
               .slice(0, this.maxNoCollaborators)
               .map((collaborator) => (
-                <img src={collaborator} />
+                <img src={collaborator} alt="" />
               ))}
             {this.props.collaborators.length - this.maxNoCollaborators > 0 && (
               <a className={styles.numberToShow}>+{this.numberToShow}</a>
