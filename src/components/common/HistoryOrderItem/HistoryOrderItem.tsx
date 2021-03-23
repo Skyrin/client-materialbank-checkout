@@ -6,6 +6,7 @@ import { getSamplePage, parseCurrency } from "utils/general";
 import { AppContext, AppContextState } from "context/AppContext";
 import { get } from "lodash-es";
 import imagePlaceholder from "assets/images/Fill.png";
+import { isOnMobile } from "utils/responsive";
 
 interface Props {
   item?: Item;
@@ -49,50 +50,97 @@ export class HistoryOrderItem extends React.Component<Props> {
             <img src={imageUrl} alt="" className={styles["image"]} />
           </a>
           <div className={cn(styles["brand-model"])}>
-            <div
-              className={cn(
-                styles["brand"],
-                "font-size-sm",
-                "text-color-xlight"
-              )}
-            >
-              {item.product_sku}
-            </div>
+            {!isOnMobile() && (
+              <div
+                className={cn(
+                  styles["brand"],
+                  "font-size-sm",
+                  "text-color-xlight"
+                )}
+              >
+                {item.product_sku}
+              </div>
+            )}
+
             <a
               href={sampleUrl}
               className={cn(styles["model"], "font-weight-medium")}
             >
               {item.product_name}
             </a>
+
+            <div
+              className={cn(
+                styles["label"],
+                "font-size-sm",
+                "text-color-xlight",
+                styles.colorLabel
+              )}
+            >
+              {color}
+            </div>
+
+            {isOnMobile() && (
+              <div
+                className={cn(
+                  styles["label"],
+                  "font-size-sm",
+                  "text-color-xlight",
+                  styles.pricePerArea
+                )}
+              >
+                {parseCurrency(item.product_sale_price.currency)}
+                {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
+              </div>
+            )}
+
+            {isOnMobile() && (
+              <div
+                className={cn(
+                  styles["label"],
+                  "font-size-sm",
+                  "text-color-xlight",
+                  styles.sample
+                )}
+              >
+                {parseCurrency(item.product_sale_price.currency)}
+                {item.product_sale_price.value} / sample
+              </div>
+            )}
           </div>
         </div>
 
-        <div className={cn(styles["middle-container"])}>
-          <div
-            className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
-          >
-            {color}
+        {!isOnMobile() && (
+          <div className={cn(styles["middle-container"])}>
+            <div
+              className={cn(
+                styles["label"],
+                "font-size-sm",
+                "text-color-xlight"
+              )}
+            >
+              {parseCurrency(item.product_sale_price.currency)}
+              {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
+            </div>
+            <div
+              className={cn(
+                styles["label"],
+                "font-size-sm",
+                "text-color-xlight"
+              )}
+            >
+              {parseCurrency(item.product_sale_price.currency)}
+              {item.product_sale_price.value} / sample
+            </div>
           </div>
-          <div
-            className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
-          >
-            {parseCurrency(item.product_sale_price.currency)}
-            {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
-          </div>
-          <div
-            className={cn(styles["label"], "font-size-sm", "text-color-xlight")}
-          >
-            {parseCurrency(item.product_sale_price.currency)}
-            {item.product_sale_price.value} / sample
-          </div>
-        </div>
+        )}
 
         <div className={cn(styles["right-container"])}>
           <button
             className={cn(styles["shop-button"], "font-weight-medium")}
             onClick={this.props.onClick}
           >
-            Shop this flooring ({"item.shops.length"})
+            Buy Again
           </button>
         </div>
       </div>

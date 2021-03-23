@@ -15,6 +15,7 @@ export function SearchBar(props: Props) {
     <div
       className={cn(
         styles.searchBar,
+        props.className,
         props.collectionHeader ? styles.collectionsSearch : ""
       )}
     >
