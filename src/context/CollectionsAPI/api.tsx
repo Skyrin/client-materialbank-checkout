@@ -110,7 +110,13 @@ export const uploadPhoto = async (
     const resp = await collectionsGraphqlRequest(
       context,
       CollectionAddUploadMutation,
-      { id: uploadId }
+      {
+        collectionId: collectionId,
+        position: 0,
+        upload: {
+          id: uploadId,
+        },
+      }
     );
     return resp && get(resp, "collectionAddUpload");
   }
