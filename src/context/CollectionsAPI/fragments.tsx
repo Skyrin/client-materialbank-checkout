@@ -39,7 +39,7 @@ export const CollectionItemFragment = `
     ${PaletteFragment}
   }
   material {
-    id
+    sku
   }
   room {
     id

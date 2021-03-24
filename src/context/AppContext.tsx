@@ -240,7 +240,7 @@ export class AppContextState extends BaseAppContextState {
 
   async createCustomerAddress(
     address: CustomerAddressInput
-  ): Promise<CustomerT> {
+  ): Promise<AddressT> {
     return Promise.resolve({});
   }
 
@@ -248,6 +248,10 @@ export class AppContextState extends BaseAppContextState {
     id: number,
     address: CustomerAddressInput
   ): Promise<CustomerT> {
+    return Promise.resolve({});
+  }
+
+  async deleteCustomerAddress(id: number): Promise<CustomerT> {
     return Promise.resolve({});
   }
 

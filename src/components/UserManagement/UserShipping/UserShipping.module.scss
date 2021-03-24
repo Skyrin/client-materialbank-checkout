@@ -2,7 +2,7 @@
 @import "styles/mixins.scss";
 
 .UserShipping {
-  padding: 62px 100px 162px;
+  padding: 0 100px 162px;
   overflow: hidden;
   @include mobile-media {
     padding: 0;
@@ -10,23 +10,43 @@
 }
 
 .pageContent {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto;
+  column-gap: $margin-huge-5;
   margin-top: $margin-medium-3;
   @include mobile-media {
     margin-top: 0;
+    border-top: 1px solid $color-user-border;
+    padding: $margin-small-4 $margin-medium $margin-small-4 $margin-medium;
+    display: flex;
+    flex-flow: column;
+  }
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+  color: $primary-color-user;
+  @include mobile-media {
+    font-size: var(--font-size-lg);
   }
 }
 
 .addressGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, calc(33% - 20px));
-  grid-template-rows: auto;
+  grid-template-columns: repeat(auto-fit, calc(50% - 20px));
+  grid-template-rows: 135px;
   grid-column-gap: 20px;
   grid-row-gap: 20px;
+  margin-top: $margin-small-3;
   @include mobile-media {
-    grid-row-gap: 10px;
+    display: flex;
+    flex-flow: column;
+    grid-row-gap: 0;
     grid-template-columns: 1fr;
-    padding: 10px $margin-small-4;
     border-bottom: 1px solid $color-user-border;
+    margin-top: 0;
   }
 
   //&::after {
@@ -39,32 +59,38 @@
 }
 
 .addressCell {
-  height: 200px;
-  @include roundedContainer;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 40px;
-  column-gap: $margin-small-4;
-  row-gap: $margin-small-4;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 1px 2px 5px 0 #e0dfdd, -1px -2px 5px 0 #fafbff;
+  border: solid 1px rgba(17, 17, 17, 0.1);
+  background-blend-mode: soft-light;
+  background: white;
   padding: $margin-small-4;
+
   @include mobile-media {
-    padding: 0;
-    padding-top: 10px;
-    border-bottom: none;
-    border-right: none;
-    border-left: none;
-    border-top: 1px solid $color-user-border;
-    border-radius: 0;
-    column-gap: 10px;
-    row-gap: 10px;
-    width: 100%;
-    height: auto;
+    box-shadow: none;
+    border: none;
+    background-blend-mode: soft-light;
+    background: transparent;
+    border-bottom: 1px solid $color-user-border;
+    padding: $margin-small-4 0;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
   }
 }
 
-.addressMapCell {
-  background: url("/assets/images/map_placeholder.svg") no-repeat center;
-  background-size: cover;
+.mobileEditAddress {
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.35s $ease-in-out, opacity 0.35s $ease-in-out;
+  overflow: hidden;
+
+  &.visible {
+    max-height: 2000px;
+    opacity: 1;
+  }
 }
 
 .addressInfo {
@@ -77,12 +103,21 @@
   color: $primary-color-user;
 }
 
+.addressInfoContainer {
+  margin-top: $margin-small-3;
+}
+
+.addressInfo {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+
 .addressExtraDetails {
   @include grayText;
-  margin-top: $margin-small;
 
   & + .addressExtraDetails {
-    margin-top: 0;
+    margin-left: $margin-small;
   }
 }
 
@@ -97,37 +132,24 @@
 }
 
 .defaultAddress {
-  font-weight: var(--font-weight-normal);
-  font-size: var(--font-size-sm);
-  margin-right: auto;
-  letter-spacing: 1px;
-  color: $brown-color;
-  cursor: auto;
-  @include mobile-media {
-    margin-right: 0;
-    margin-left: auto;
-  }
+  @include roundGrayLabel;
+  margin-left: $margin-small;
 }
 
 .editAddressCell {
-  @include whiteButton;
+  @include labelButtonUnderline;
+  padding: 0;
+  margin-left: auto;
 }
 
-.mapContainer {
-  @include roundedContainer;
+.editAddressFormContainer {
   height: max-content;
   position: relative;
-  margin-top: $margin-small-4;
-  background: url("/assets/images/map_dummy.jpg") no-repeat center center;
+  padding: $margin-small-5 $margin-huge-5 $margin-medium;
   @include mobile-media {
     background: none;
     border: none;
     margin-top: 0;
-  }
-
-  &.inModal {
-    //margin: auto $margin-huge-5;
-    margin: 0;
   }
 }
 
@@ -142,17 +164,16 @@
 }
 
 .addAddressContainer {
-  @include roundedContainer;
-  background: white;
   display: inline-block;
-  width: 400px;
   height: max-content;
-  margin: $margin-small-4;
-  padding: $margin-medium $margin-medium-4;
+
+  border-left: 1px solid $color_user-border;
+  padding-left: $margin-huge;
+
   @include mobile-media {
     width: 100%;
     margin: 0;
-    padding: $margin-medium $margin-small-4;
+    padding: $margin-medium 0;
     border: none;
     border-radius: 0;
   }
@@ -164,32 +185,42 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(black, 0.5);
+  background: rgba(white, 0.8);
 
   &.visible {
     display: flex;
     flex-flow: column;
     position: fixed;
+    align-items: center;
+    justify-content: center;
   }
 }
 
 .closeModal {
-  font-size: 20px;
-  color: white;
-  width: 19px;
-  height: 19px;
+  font-size: 15px;
+  color: black;
+  width: 15px;
+  height: 15px;
   align-self: flex-end;
   cursor: pointer;
+  margin-top: $margin-small-4;
+  margin-right: $margin-small-4;
+
   @include mobile-media {
     visibility: hidden;
   }
 }
 
 .modalContent {
+  background-color: white;
   display: flex;
   flex-flow: column;
   overflow: auto;
-  margin: auto $margin-huge-5;
+
+  box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+  border-radius: $margin-small;
+  border: solid 1px rgba($primary-color-user, 0.1);
+
   @include mobile-media {
     margin: 0 $margin-small-4 20px;
   }

@@ -61,6 +61,8 @@ type Props = {
   componentRef?: (ref: MapAddressForm) => void;
   onCancelEdit?: () => void;
   onSave?: (addressValues: AddressFormValuesT, addressId?: number) => void;
+  onDelete?: (addressId?: number) => void;
+  className?: any;
 };
 
 type State = {
@@ -110,9 +112,13 @@ export default class MapAddressForm extends React.Component<Props, State> {
 
   render() {
     return (
-      <div>
-        <div className={styles.title}>
-          {this.props.editAddress && "Edit Address"}
+      <div className={this.props.className}>
+        <div
+          className={cn(styles.title, {
+            [styles.editing]: this.props.editAddress,
+          })}
+        >
+          {this.props.editAddress && `Editing "${this.state.values.nickname}"`}
           {!this.props.editAddress && "Add a New Address"}
         </div>
         <div className={styles.addressForm}>
@@ -122,6 +128,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="My house"
               value={this.state.values.nickname}
               error={this.state.errors.nickname}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("nickname", val);
               }}
@@ -134,6 +141,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="Jane"
               value={this.state.values.firstName}
               error={this.state.errors.firstName}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("firstName", val);
               }}
@@ -146,6 +154,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="Doe"
               value={this.state.values.lastName}
               error={this.state.errors.lastName}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("lastName", val);
               }}
@@ -158,6 +167,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="123 Street Name"
               value={this.state.values.addressLine1}
               error={this.state.errors.addressLine1}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("addressLine1", val);
               }}
@@ -170,6 +180,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="Apt. #22A"
               value={this.state.values.addressLine2}
               error={this.state.errors.addressLine2}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("addressLine2", val);
               }}
@@ -182,6 +193,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="City"
               value={this.state.values.city}
               error={this.state.errors.city}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("city", val);
               }}
@@ -212,6 +224,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               placeholder="XXXXX-XXXX"
               value={this.state.values.zipcode}
               error={this.state.errors.zipcode}
+              userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("zipcode", val);
               }}
@@ -235,7 +248,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
         </div>
         <div
           className={cn(
-            "row full-width center-vertically center-horizontally margin-top",
+            "full-width center-vertically center-horizontally margin-top",
             styles.addAddressButtons
           )}
         >
@@ -253,6 +266,14 @@ export default class MapAddressForm extends React.Component<Props, State> {
             {!this.props.editAddress && "Add Address"}
           </button>
         </div>
+        {this.props.editAddress && (
+          <button
+            className={styles.deleteAddressButton}
+            onClick={this.deleteClicked}
+          >
+            Delete this address
+          </button>
+        )}
       </div>
     );
   }
@@ -274,6 +295,10 @@ export default class MapAddressForm extends React.Component<Props, State> {
     if (this.validateAddress()) {
       this.props.onSave(this.state.values, this.props?.editAddress?.id);
     }
+  };
+
+  deleteClicked = () => {
+    this.props.onDelete(this.props?.editAddress?.id);
   };
 
   cancelClicked = () => {
@@ -319,9 +344,10 @@ const StyledSelect = styled(Select)`
   width: 100%;
   height: var(--input-height);
   padding: 10px 16px;
-  border-radius: var(--input-border-radius);
+  border-radius: 5px;
   outline: none;
-  border: 1px solid rgba(var(--primary-color-rgb), 0.1);
+  border-color: rgba(var(--primary-color-rgb), 0.1);
+  background-color: white;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
   font-size: var(--font-size-md);
   transition: border-color 0.1s linear, box-shadow 0.1s linear;
@@ -345,5 +371,9 @@ const StyledSelect = styled(Select)`
   .react-dropdown-select-input {
     font-family: "IBM Plex Sans", sans-serif;
     font-size: 14px;
+
+    @include mobile-media {
+      font-size: var(--font-size-sm);
+    }
   }
 `;
