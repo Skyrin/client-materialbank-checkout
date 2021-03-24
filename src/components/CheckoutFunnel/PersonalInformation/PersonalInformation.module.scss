@@ -62,11 +62,7 @@
   .expressCheckoutOptions {
     display: grid;
     grid-template-columns: 1fr;
-    row-gap: 10px;
-
-    @include mobile-media {
-      row-gap: 20px;
-    }
+    row-gap: 20px;
 
     .expressCheckoutOption {
       height: var(--button-height);
