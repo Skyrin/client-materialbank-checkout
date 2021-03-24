@@ -39,7 +39,6 @@ export default class ItemCard extends React.Component<Props, any> {
       "material.price_sign"
     );
     const name = get(algoliaProduct, "data.name", "material.name");
-    console.log(this.props.item.material);
 
     return {
       type: this.props.item.objectType,
