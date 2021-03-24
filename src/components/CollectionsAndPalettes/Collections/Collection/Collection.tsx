@@ -84,7 +84,7 @@ class Collection extends React.Component<Props, State> {
           objectId: "3",
           objectType: "material",
           material: {
-            id: 100306199,
+            sku: "100306199",
           },
           updatedBy: 92,
           createdOn: "createdon3",
@@ -98,7 +98,7 @@ class Collection extends React.Component<Props, State> {
           objectId: "4",
           objectType: "material",
           material: {
-            id: 100067327,
+            sku: "100067327",
           },
           updatedBy: 92,
           createdOn: "createdon4",

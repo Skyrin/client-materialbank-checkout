@@ -15,23 +15,18 @@ export default class ItemCard extends React.Component<Props, any> {
   context!: AppContextState;
   materialItem: any;
 
-  mapAlgoleaToObject(): any {
-    let item = null;
+  mapAlgoliaToObject(): any {
+    let material = null;
     if (this.props.item.material) {
-      item = this.props.item.material.id.toString();
-    } else {
-      item = this.props.item.upload;
-    }
-    const algoliaProduct = this.context.productsCache.getProduct(item);
-    const color = get(
-      algoliaProduct,
-      "data.color",
-      "this.props.item.material.color"
-    );
+      material = this.props.item.material;
+    } else return;
+
+    const algoliaProduct = this.context.productsCache.getProduct(material.sku);
+    const color = get(algoliaProduct, "data.color", "material.color");
     const manufacturer = get(
       algoliaProduct,
       "data.manufacturer",
-      "this.props.item.material.manufacturer"
+      "material.manufacturer"
     );
     const imageUrl = get(
       algoliaProduct,
@@ -41,14 +36,12 @@ export default class ItemCard extends React.Component<Props, any> {
     const priceSign = get(
       algoliaProduct,
       "data.price_sign",
-      "this.props.item.material.price_sign"
+      "material.price_sign"
     );
-    const name = get(
-      algoliaProduct,
-      "data.name",
-      "this.props.item.material.name"
-    );
-    this.materialItem = {
+    const name = get(algoliaProduct, "data.name", "material.name");
+    console.log(this.props.item.material);
+
+    return {
       type: this.props.item.objectType,
       priceSign,
       imageUrl,
@@ -71,13 +64,12 @@ export default class ItemCard extends React.Component<Props, any> {
   };
 
   renderMaterialImage = () => {
+    let materialItem = this.mapAlgoliaToObject();
     return (
       <React.Fragment>
         <div className={styles.imageContainer}>
-          <img src={this.materialItem.imageUrl} alt="" />
-          <div className={styles.priceIndicator}>
-            {this.materialItem.priceSign}
-          </div>
+          <img src={materialItem.imageUrl} alt="" />
+          <div className={styles.priceIndicator}>{materialItem.priceSign}</div>
         </div>
       </React.Fragment>
     );
@@ -97,6 +89,7 @@ export default class ItemCard extends React.Component<Props, any> {
   }
 
   renderEditItem() {
+    let materialItem = this.mapAlgoliaToObject();
     return (
       <React.Fragment>
         <div className={styles.imageContainer}>
@@ -104,7 +97,7 @@ export default class ItemCard extends React.Component<Props, any> {
             <img src={this.props.item.upload.s3Url} alt="" />
           )}
           {this.props.item.objectType === "material" && (
-            <img src={this.materialItem.imageUrl} alt="" />
+            <img src={materialItem.imageUrl} alt="" />
           )}
           <div className={cn(styles.delete, styles.editButton)}>
             <i className="fal fa-trash"></i>
@@ -143,11 +136,12 @@ export default class ItemCard extends React.Component<Props, any> {
   };
 
   renderMaterialInfo = () => {
+    let materialItem = this.mapAlgoliaToObject();
     return (
       <React.Fragment>
         <React.Fragment>
           <div className={styles.imageContainer}>
-            <img src={this.materialItem.imageUrl} alt="" />
+            <img src={materialItem.imageUrl} alt="" />
             <div className={styles.sampleCart}>
               <i
                 className={cn("far", "fa-cart-arrow-down", styles.addCartIcon)}
@@ -158,13 +152,11 @@ export default class ItemCard extends React.Component<Props, any> {
             </div>
           </div>
           <div className={cn(styles.infoContainer, styles.infoMode)}>
-            <div className={styles.darker}>{this.materialItem.name}</div>
-            <div className={styles.darker}>
-              {this.materialItem.manufacturer}
-            </div>
-            <div>{this.materialItem.color}</div>
+            <div className={styles.darker}>{materialItem.name}</div>
+            <div className={styles.darker}>{materialItem.manufacturer}</div>
+            <div>{materialItem.color}</div>
             <div className={styles.priceIndicator}>
-              {this.materialItem.priceSign}
+              {materialItem.priceSign}
             </div>
           </div>
         </React.Fragment>
@@ -184,7 +176,6 @@ export default class ItemCard extends React.Component<Props, any> {
   }
 
   render() {
-    this.mapAlgoleaToObject();
     return (
       <React.Fragment>
         <div className={cn("masonry-item")}>
