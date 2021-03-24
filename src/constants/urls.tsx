@@ -7,9 +7,6 @@ export const COLLECTIONS_AND_PALETTES_URL = `/collections`;
 export const CART_URL = `/cart`;
 export const CHECKOUT_DEBUG_URL = `${CHECKOUT_FUNNEL_URL}/debug`; // Used as a debug page
 export const PERSONAL_INFORMATION_URL = `${CHECKOUT_FUNNEL_URL}/information`;
-export const PAYMENT_URL = `${CHECKOUT_FUNNEL_URL}/payment`;
-export const PAYPAL_SUCCESS_URL = `${PAYMENT_URL}/paypal-success`;
-export const PAYPAL_CANCELLED_URL = `${PAYMENT_URL}/paypal-cancelled`;
 export const ORDER_CONFIRMATION_URL = `${CHECKOUT_FUNNEL_URL}/confirmation`;
 
 // User management URLs

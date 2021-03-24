@@ -2,57 +2,70 @@
 @import "styles/global";
 
 .PersonalInformation {
-  --button-height: 40px;
+  --button-height: 50px;
+  --page-background-color: #fff;
 
   @include mobile-media {
-    padding: 0 0 $margin-small-3;
+    padding: 34px 20px;
+    --page-background-color: #f9f7f5;
+    background-color: var(--page-background-color);
   }
 
-  .logo,
-  .breadcrumbs {
-    margin-bottom: var(--vertical-spacing-normal);
+  // Override input here. Reduce the risk of affecting other parts of the app that might've already used the common input.
+  input {
+    font-weight: var(--font-weight-normal);
   }
 
-  .informationContainer {
+  .inputLabel {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: $checkout-primary-color;
+    margin-top: 10px;
+
     @include mobile-media {
-      padding: 0 $margin-small-3;
+      font-size: var(--font-size-xs);
     }
   }
 
-  .expressCheckoutSubtitle {
+  .subtotal {
     text-align: center;
-    margin-bottom: 15px; // This seems to be a random 15px compared to most other spacings...
+    margin-bottom: 30px;
+
+    .label {
+      font-size: var(--font-size-sm);
+      color: $gray-color-user;
+    }
+
+    .value {
+      font-size: var(--font-size-title);
+      font-weight: var(--font-weight-medium);
+    }
   }
 
   .section {
-    padding: var(--vertical-spacing-normal) 0;
-    border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
+    margin-bottom: 30px;
 
     @include mobile-media {
-      padding: $margin-small-3 0;
+      h3 {
+        font-size: var(--font-size-lg);
+      }
     }
 
     .sectionTitleLine {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      margin-bottom: var(--vertical-spacing-normal);
-
-      @include mobile-media {
-        margin-bottom: $margin-small-3;
-      }
+      margin-bottom: 12px;
     }
   }
 
   .expressCheckoutOptions {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: var(--horizontal-spacing-normal);
+    grid-template-columns: 1fr;
+    row-gap: 10px;
 
     @include mobile-media {
-      grid-template-columns: auto;
-      column-gap: 0;
-      row-gap: $margin-small-2;
+      row-gap: 20px;
     }
 
     .expressCheckoutOption {
@@ -72,43 +85,29 @@
         }
       }
 
-      &.applePay {
-        background-color: #0b0b09;
-        color: #fff;
-
-        &:hover {
-          background-color: lighten(#0b0b09, 10%);
-        }
-      }
-
-      &.googlePay {
-        background-color: #000;
-        color: #fff;
-
-        &:hover {
-          background-color: lighten(#000, 10%);
-        }
-      }
-
       .expressCheckoutLogo {
-        height: 18px;
+        height: 20px;
       }
     }
   }
 
-  .expressCheckoutFootnote {
-    text-align: center;
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-normal);
-    color: var(--text-color-light);
-    margin-bottom: var(--vertical-spacing-half);
-    line-height: 1.5;
+  .payWithCard {
+    position: relative;
+    height: 1px;
+    width: 100%;
+    background-color: rgba($checkout-primary-color, 0.1);
+    margin-top: 50px;
+    margin-bottom: 40px;
 
-    @include mobile-media {
-      width: 100%;
-      margin-top: $margin-small-3;
-      line-height: 0;
-      font-size: var(--font-size-sm);
+    .text {
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--page-background-color);
+      padding: 0 18px;
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-medium);
+      color: rgba($gray-color-user, 0.6);
     }
   }
 
@@ -119,7 +118,7 @@
     margin-right: var(--horizontal-spacing-half);
 
     @include mobile-media {
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-md);
     }
   }
 
@@ -131,7 +130,7 @@
     text-decoration: underline;
 
     @include mobile-media {
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-md);
     }
   }
 
@@ -144,6 +143,42 @@
       "contact-info logged-in log-out"
       "user-name user-name user-name"
       "user-email user-email user-email";
+    row-gap: 10px;
+
+    @include mobile-media {
+      grid-template-columns: auto auto;
+      grid-template-areas:
+        "contact-info contact-info"
+        "logged-in log-out"
+        "user-name user-name"
+        "user-email user-email";
+    }
+
+    .contactInfoRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      @include mobile-media {
+        flex-direction: column;
+        align-items: flex-start;
+        .inputLabel {
+          color: rgba($checkout-primary-color, 0.5);
+        }
+
+        .value {
+          font-size: var(--font-size-md);
+        }
+      }
+
+      .inputLabel {
+        margin-top: 0;
+      }
+
+      .value {
+        text-align: right;
+      }
+    }
 
     .contactInfoTitle {
       grid-area: contact-info;
@@ -159,116 +194,36 @@
 
     .logOut {
       grid-area: log-out;
+      @include mobile-media {
+        text-align: right;
+        font-size: var(--font-size-md);
+      }
     }
 
     .userName {
-      color: var(--primary-color);
-      margin-top: $margin-small-3;
       grid-area: user-name;
-
-      @include mobile-media {
-        font-size: var(--font-size-md);
-        margin-top: var(--vertical-spacing-half);
-      }
     }
 
     .userEmail {
-      color: var(--primary-color);
-      margin-top: $margin-small;
       grid-area: user-email;
-
-      @include mobile-media {
-        font-size: var(--font-size-md);
-      }
     }
   }
 
   .createAccountSection {
     display: grid;
     align-content: space-between;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 120px auto;
     grid-template-rows: auto;
     row-gap: var(--vertical-spacing-half);
     column-gap: var(--vertical-spacing-half);
-    grid-template-areas:
-      "first-name last-name"
-      "email email"
-      "password confirm-password";
 
     @include mobile-media {
-      font-size: var(--font-size-xs);
-      grid-template-columns: 1fr;
-      grid-template-areas:
-        "first-name"
-        "last-name"
-        "email"
-        "password"
-        "confirm-password";
-    }
+      grid-template-columns: auto;
+      row-gap: 0;
 
-    .firstName {
-      grid-area: first-name;
-    }
-
-    .lastName {
-      grid-area: last-name;
-    }
-
-    .email {
-      grid-area: email;
-    }
-
-    .password {
-      grid-area: password;
-    }
-
-    .confirmPassword {
-      grid-area: confirm-password;
-    }
-  }
-
-  .shippingMethodSection {
-    .sectionTitle {
-      margin-bottom: var(--vertical-spacing-half);
-    }
-
-    .method {
-      display: flex;
-      justify-content: space-between;
-
-      .methodInfo {
-        display: flex;
-        flex-direction: column;
-
-        .methodName {
-          font-size: var(--font-size-lg);
-          font-weight: var(--font-weight-medium);
-          color: var(--primary-color);
-
-          @include mobile-media {
-            font-size: var(--font-size-sm);
-          }
-        }
-
-        .methodEstimatedDelivery {
-          font-size: var(--font-size-md);
-          font-weight: var(--font-weight-normal);
-          color: var(--text-color-light);
-
-          @include mobile-media {
-            font-size: var(--font-size-sm);
-          }
-        }
-      }
-
-      .methodPrice {
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-medium);
-        color: var(--primary-color);
-
-        @include mobile-media {
-          font-size: var(--font-size-sm);
-        }
+      .inputLabel {
+        margin-top: 10px;
+        margin-bottom: 6px;
       }
     }
   }
@@ -277,17 +232,14 @@
     position: relative;
     margin-bottom: var(--vertical-spacing-normal);
 
-    @include mobile-media {
-      margin-bottom: 0;
-    }
-
     .addressLine {
       font-size: var(--font-size-md);
-      color: var(--primary-color);
-      font-weight: var(--font-weight-normal);
+      color: $checkout-primary-color;
+      font-weight: var(--font-weight-medium);
 
       @include mobile-media {
-        font-size: var(--font-size-sm);
+        color: rgba($checkout-primary-color, 0.5);
+        font-size: var(--font-size-md);
       }
 
       & + .addressLine {
@@ -299,33 +251,108 @@
       }
     }
 
+    .shippingOption {
+      &.selected {
+        .addressLine {
+          color: $checkout-primary-color;
+        }
+      }
+    }
+
     .radioButton {
       margin-right: $margin-small-3;
     }
   }
 
-  .navigationContainer {
+  .billingOption {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    margin-top: 30px;
+    cursor: pointer;
+
+    .checkbox {
+      margin-right: 8px;
+    }
 
     @include mobile-media {
-      flex-flow: column;
-      flex-direction: column-reverse;
+      margin-top: 24px;
     }
   }
 
+  .billingAddress {
+    margin-bottom: 30px;
+  }
+
+  .totalsContainer {
+    border-top: 1px solid rgba($gray-color-user, 0.1);
+    margin-bottom: var(--vertical-spacing-normal);
+
+    .totalLine {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba($gray-color-user, 0.1);
+
+      .label,
+      .value {
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-medium);
+        color: $gray-color-user;
+      }
+
+      .promoCode {
+        color: $gray-color-user;
+      }
+    }
+
+    .grandTotalLine {
+      @extend .totalLine;
+      height: 60px;
+      border-bottom: 0;
+
+      .label,
+      .value {
+        font-size: var(--font-size-xl);
+        color: $checkout-primary-color;
+      }
+    }
+  }
+
+  .payButton {
+    @include blackGradientButton;
+    width: 100%;
+    height: 60px;
+    font-size: var(--font-size-lg);
+
+    &:disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+  }
+
+  .expressCheckoutUsed {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: $checkout-primary-color;
+    margin-top: 10px;
+  }
+
+  .addressForm {
+    --input-border-radius: 5px;
+  }
+
   .loaderContainer {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #fff;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(#fff, 0.8);
     z-index: 2;
 
     .loader {
-      font-size: 40px;
+      font-size: 80px;
     }
   }
 }

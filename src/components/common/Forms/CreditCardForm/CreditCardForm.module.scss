@@ -1,4 +1,5 @@
-@import "styles/global.scss";
+@import "styles/variablesscss.scss";
+@import "styles/mixins.scss";
 
 .creditCardArea {
   display: grid;
@@ -7,53 +8,32 @@
   opacity: 0;
   margin-top: 0;
   grid-template-rows: auto;
-  column-gap: var(--horizontal-spacing-normal);
-  row-gap: var(--horizontal-spacing-normal);
-  grid-template-columns: 2fr 1fr 1fr;
-  grid-template-areas:
-    "card-number expiration cvv"
-    "card-name card-name card-name";
+  column-gap: var(--horizontal-spacing-half);
+  row-gap: var(--horizontal-spacing-half);
+  grid-template-columns: 120px auto;
   transition: max-height 0.35s $ease-in-out, margin-top 0.35s $ease-in-out,
     opacity 0.35s $ease-in-out;
 
-  @include mobile-media {
-    grid-template-columns: 2fr 1fr;
-    grid-template-areas:
-      "card-number card-number"
-      "card-name card-name"
-      "expiration cvv";
-
-    column-gap: $margin-small-2;
-    row-gap: $margin-small-2;
-    font-size: var(--font-size-sm);
-  }
-
   &.visible {
-    max-height: 300px;
+    max-height: 500px;
     opacity: 1;
     margin-top: var(--vertical-spacing-normal);
   }
 
   .cardNumberArea {
-    grid-area: card-number;
     max-height: 500px;
   }
 
-  .expirationArea {
-    grid-area: expiration;
-  }
-
-  .cvvArea {
-    grid-area: cvv;
-  }
-
-  .cardNameArea {
-    grid-area: card-name;
+  .inputLabel {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: $checkout-primary-color;
+    margin-top: 10px;
   }
 
   .input {
     --input-height: 40px;
-    --input-border-radius: 24px;
+    --input-border-radius: 4px;
     position: relative;
     width: 100%;
     height: var(--input-height);
@@ -67,6 +47,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    background-color: #fff;
 
     &.hasError {
       border-color: red;
@@ -83,6 +64,23 @@
     &:focus {
       box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
       border-color: rgba(var(--primary-color-rgb), 0.6);
+    }
+  }
+
+  @include mobile-media {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+
+    .inputLabel {
+      font-size: var(--font-size-xs);
+      margin-bottom: 6px;
+    }
+
+    .inputRow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+      column-gap: 10px;
     }
   }
 }

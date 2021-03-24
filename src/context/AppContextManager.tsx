@@ -247,16 +247,22 @@ export default class AppContextManager extends React.Component<Props> {
     applyCouponToCart: async (couponCode: string) => {
       this.contextState.cartInfoLoading = true;
       this.forceUpdate();
-      const cartId = this.contextState.cart.id;
-      const cartInfo = await applyCouponToCart(
-        this.getFullContext(),
-        cartId,
-        couponCode
-      );
-      console.log("COUPON", cartInfo);
-      this.contextState.cartInfoLoading = false;
-      this.actions.updateCart(cartInfo);
-      return this.contextState.cart;
+      try {
+        const cartId = this.contextState.cart.id;
+        const cartInfo = await applyCouponToCart(
+          this.getFullContext(),
+          cartId,
+          couponCode
+        );
+        console.log("COUPON", cartInfo);
+        this.actions.updateCart(cartInfo);
+        return this.contextState.cart;
+      } catch (e) {
+        throw e;
+      } finally {
+        this.contextState.cartInfoLoading = false;
+        this.forceUpdate();
+      }
     },
 
     removeCouponFromCart: async (couponCode: string) => {
@@ -322,10 +328,16 @@ export default class AppContextManager extends React.Component<Props> {
       return this.contextState.cart;
     },
 
-    createCustomerAddress: async (address: CustomerAddressInput) => {
+    createCustomerAddress: async (
+      address: CustomerAddressInput,
+      isDefault?: boolean
+    ) => {
       this.contextState.customerLoading = true;
       this.forceUpdate();
       try {
+        if (isDefault) {
+          address.default_shipping = true;
+        }
         const resp = await createCustomerAddress(
           this.getFullContext(),
           address

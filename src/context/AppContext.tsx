@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  AddressT,
   CartT,
   CollectionCollaboratorT,
   CollectionT,
@@ -239,7 +240,8 @@ export class AppContextState extends BaseAppContextState {
   async removeCouponFromCart(couponCode: string) {}
 
   async createCustomerAddress(
-    address: CustomerAddressInput
+    address: CustomerAddressInput,
+    isDefault?: boolean
   ): Promise<AddressT> {
     return Promise.resolve({});
   }

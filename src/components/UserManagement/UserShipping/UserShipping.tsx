@@ -15,7 +15,7 @@ import { CustomerAddressInput } from "context/CustomerAPI/models";
 import { AppContext, AppContextState } from "context/AppContext";
 import { ClientError } from "GraphqlClient";
 import Loader from "components/common/Loader/Loader";
-import { AddressT, CustomerT, RegionT } from "constants/types";
+import { AddressT, CustomerT } from "constants/types";
 import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
 import { isOnMobile } from "utils/responsive";
 

@@ -1,9 +1,13 @@
 @import "styles/global";
-@import "styles/variables.scss";
+@import "styles/variablesscss.scss";
 
 .addressForm {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  align-content: space-between;
+  grid-template-columns: 120px auto;
+  grid-template-rows: auto;
+  row-gap: var(--vertical-spacing-half);
+  column-gap: var(--vertical-spacing-half);
   max-height: 0;
   opacity: 0;
   margin-top: 0;
@@ -11,53 +15,77 @@
   transition: max-height 0.35s $ease-in-out, opacity 0.35s $ease-in-out,
     margin-top 0.35s $ease-in-out;
 
+  @include mobile-media {
+    margin-top: $margin-small-3;
+    grid-template-columns: auto;
+    row-gap: 0;
+  }
+
   &.visible {
-    max-height: 500px;
+    max-height: 1000px;
     opacity: 1;
     margin-top: var(--vertical-spacing-half);
     overflow: visible;
-
-    @include mobile-media {
-      margin-top: $margin-small-3;
-    }
   }
 }
 
-.input {
-  margin-bottom: var(--vertical-spacing-half);
-}
-
-.inputLine {
-  display: grid;
-  grid-template-rows: auto;
-  grid-template-columns: auto auto;
-  column-gap: var(--horizontal-spacing-normal);
-  align-items: center;
-
-  @include mobile-media {
-    column-gap: $margin-small-2;
-  }
-}
-
-.zipCodeDescription {
+.inputLabel {
   font-size: var(--font-size-md);
-  font-weight: var(--font-weight-normal);
-  color: var(--primary-color);
-  margin-bottom: var(--vertical-spacing-half);
+  font-weight: var(--font-weight-medium);
+  color: $checkout-primary-color;
+  margin-top: 10px;
 
   @include mobile-media {
-    column-gap: $margin-small-2;
     font-size: var(--font-size-xs);
+    margin-bottom: 6px;
   }
 }
 
-@media (max-width: $tablet-s) {
-  .inputLine {
-    column-gap: var(--horizontal-spacing-half);
+.showAddressContact {
+  text-decoration: underline;
+  font-size: var(--font-size--md);
+  font-weight: var(--font-weight-normal);
+  margin-top: 14px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.stateInput {
+  --input-height: 40px;
+  --input-border-radius: 24px;
+  position: relative;
+  font-family: "IBM Plex Sans", sans-serif;
+
+  width: 100%;
+  height: var(--input-height);
+  border-radius: 4px;
+  padding-left: 10px !important;
+  outline: none;
+  border: 1px solid rgba(var(--primary-color-rgb), 0.1) !important;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+  font-size: var(--font-size-md);
+  transition: border-color 0.1s linear, box-shadow 0.1s linear;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #fff;
+
+  @include mobile-media {
+    font-size: var(--font-size-sm);
   }
 
-  .zipCodeDescription {
-    font-size: var(--font-size-xs);
-    letter-spacing: -0.2px;
+  &:hover {
+    border-color: rgba(var(--primary-color-rgb), 0.4) !important;
+  }
+
+  &:focus {
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+    border-color: rgba(var(--primary-color-rgb), 0.6);
+  }
+
+  :global(.react-dropdown-select-input) {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 14px;
+    border: 0;
   }
 }
