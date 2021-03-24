@@ -598,7 +598,7 @@ export class PersonalInformation extends React.Component<Props, State> {
     if (!value) {
       return def;
     }
-    return `$${value}`;
+    return `$${value.toFixed(2)}`;
   };
 
   renderTotals = () => {
