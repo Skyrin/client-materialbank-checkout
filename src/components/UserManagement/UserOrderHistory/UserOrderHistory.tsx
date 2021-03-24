@@ -15,6 +15,7 @@ import Loader from "components/common/Loader/Loader";
 import { OrderItemT, OrderT } from "constants/types";
 import { isOnMobile } from "../../../utils/responsive";
 import LogoMobile from "../../common/LogoMobile/LogoMobile";
+import { RESTRequest } from "RestClient";
 
 interface Props extends RouteComponentProps {}
 
@@ -36,7 +37,7 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.context.getOrders().then((orders) => {
       orders.sort((a, b) => {
         if (
@@ -53,7 +54,28 @@ export default class UserOrderHistory extends React.Component<Props, State> {
         orders: orders,
       });
     });
+
+    const orderResponse = await this.getOrders(1, 25);
+    console.log("here be da ne orders");
+    console.log(orderResponse);
   }
+
+  getOrders = async (page: number = 1, limit: number = 25) => {
+    const response = await RESTRequest(
+      "POST",
+      "mine/orders",
+      {
+        page: page,
+        limit: limit,
+      },
+      false
+    );
+    const respBody = await response.json();
+    if (response.ok && respBody) {
+      return respBody;
+    }
+    return null;
+  };
 
   loadMore(): void {
     //  TODO: Implement functionality once we have API
