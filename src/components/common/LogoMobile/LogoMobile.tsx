@@ -5,7 +5,6 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   MAIN_SHOP_URL,
   ORDER_CONFIRMATION_URL,
-  PAYMENT_URL,
   PERSONAL_INFORMATION_URL,
 } from "constants/urls";
 
@@ -15,7 +14,6 @@ type Props = RouteComponentProps & {
 
 const BACK_BUTTON_URL_MAPPING = {
   [ORDER_CONFIRMATION_URL]: MAIN_SHOP_URL, // Once order is confirmed, shouldn't be able to go back to the prev pages (i think)
-  [PAYMENT_URL]: PERSONAL_INFORMATION_URL,
   [PERSONAL_INFORMATION_URL]: MAIN_SHOP_URL, // TODO: Update with cart url whenever we figure out who should make it
 };
 

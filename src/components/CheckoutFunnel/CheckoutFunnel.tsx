@@ -1,14 +1,10 @@
 import {
-  CHECKOUT_DEBUG_URL,
   CHECKOUT_FUNNEL_URL,
   ORDER_CONFIRMATION_URL,
-  PAYMENT_URL,
   PERSONAL_INFORMATION_URL,
 } from "constants/urls";
 import * as React from "react";
-import Cart from "components/CheckoutFunnel/Cart/Cart";
 import PersonalInformation from "components/CheckoutFunnel/PersonalInformation/PersonalInformation";
-import PaymentInformation from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import OrderSummary from "components/common/OrderSummary/OrderSummary";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./CheckoutFunnel.module.scss";
@@ -41,12 +37,10 @@ export default class CheckoutFunnel extends React.Component<Props> {
                 from={CHECKOUT_FUNNEL_URL}
                 to={PERSONAL_INFORMATION_URL}
               />
-              <Route path={CHECKOUT_DEBUG_URL} component={Cart} />
               <Route
                 path={PERSONAL_INFORMATION_URL}
                 component={PersonalInformation}
               />
-              <Route path={PAYMENT_URL} component={PaymentInformation} />
               <Route
                 path={ORDER_CONFIRMATION_URL}
                 component={OrderConfirmation}

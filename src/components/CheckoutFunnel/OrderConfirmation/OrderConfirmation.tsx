@@ -8,7 +8,7 @@ import { scrollToTop } from "utils/general";
 import { MAIN_SHOP_URL } from "constants/urls";
 import { AppContext, AppContextState } from "context/AppContext";
 import { get } from "lodash-es";
-import { PaymentOption } from "../PaymentInformation/PaymentInformation";
+import { PaymentOption } from "../PersonalInformation/PersonalInformation";
 import applePayLogo from "assets/images/apple_pay_logo_black.svg";
 import paypalLogo from "assets/images/paypal_logo.svg";
 import Loader from "components/common/Loader/Loader";

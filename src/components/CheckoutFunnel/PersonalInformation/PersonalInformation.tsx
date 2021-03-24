@@ -25,7 +25,6 @@ import {
 } from "context/CustomerAPI/models";
 import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
-import { PaymentOption } from "../PaymentInformation/PaymentInformation";
 import { RESTRequest } from "RestClient";
 import { getAddressId } from "utils/context";
 import CreditCardForm from "components/common/Forms/CreditCardForm/CreditCardForm";
@@ -51,6 +50,14 @@ const contactInfoSchema = yup.object().shape({
     .required("Required")
     .oneOf([yup.ref("password")], "Passwords don't match"),
 });
+
+export enum PaymentOption {
+  ExistingCreditCard = "existing-credit-card",
+  CreditCard = "credit-card",
+  PayPal = "pay-pal",
+  ApplePay = "apple-pay",
+  GooglePay = "google-pay",
+}
 
 type Props = RouteComponentProps;
 
@@ -663,7 +670,7 @@ export class PersonalInformation extends React.Component<Props, State> {
     await this.handleBillingAddress();
     await this.context.setShippingMethod();
 
-    const paymentMethodResponse = await this.context.setPaymentMethod({
+    await this.context.setPaymentMethod({
       cart_id: this.context.cart.id,
       payment_method: {
         code: "paypal_express",
@@ -673,9 +680,6 @@ export class PersonalInformation extends React.Component<Props, State> {
         },
       },
     });
-
-    this.context.setSelectedPaymentOption(PaymentOption.PayPal);
-    console.log("PAYMENT METHOD", paymentMethodResponse);
 
     await this.context.placeOrder();
     this.setState({ isSubmitting: false });
