@@ -3,11 +3,16 @@
 
 .PersonalInformation {
   --button-height: 50px;
+  --page-background-color: #fff;
+
+  @include mobile-media {
+    padding: 34px 20px;
+    --page-background-color: #f9f7f5;
+    background-color: var(--page-background-color);
+  }
 
   // Override input here. Reduce the risk of affecting other parts of the app that might've already used the common input.
   input {
-    border-radius: 5px !important;
-    border: 1px solid $checkout-primary-color;
     font-weight: var(--font-weight-normal);
   }
 
@@ -16,10 +21,35 @@
     font-weight: var(--font-weight-medium);
     color: $checkout-primary-color;
     margin-top: 10px;
+
+    @include mobile-media {
+      font-size: var(--font-size-xs);
+    }
+  }
+
+  .subtotal {
+    text-align: center;
+    margin-bottom: 30px;
+
+    .label {
+      font-size: var(--font-size-sm);
+      color: $gray-color-user;
+    }
+
+    .value {
+      font-size: var(--font-size-title);
+      font-weight: var(--font-weight-medium);
+    }
   }
 
   .section {
     margin-bottom: 30px;
+
+    @include mobile-media {
+      h3 {
+        font-size: var(--font-size-lg);
+      }
+    }
 
     .sectionTitleLine {
       display: flex;
@@ -33,6 +63,10 @@
     display: grid;
     grid-template-columns: 1fr;
     row-gap: 10px;
+
+    @include mobile-media {
+      row-gap: 20px;
+    }
 
     .expressCheckoutOption {
       height: var(--button-height);
@@ -69,7 +103,7 @@
       position: absolute;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: #fff;
+      background-color: var(--page-background-color);
       padding: 0 18px;
       font-size: var(--font-size-md);
       font-weight: var(--font-weight-medium);
@@ -84,7 +118,7 @@
     margin-right: var(--horizontal-spacing-half);
 
     @include mobile-media {
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-md);
     }
   }
 
@@ -96,7 +130,7 @@
     text-decoration: underline;
 
     @include mobile-media {
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-md);
     }
   }
 
@@ -109,6 +143,42 @@
       "contact-info logged-in log-out"
       "user-name user-name user-name"
       "user-email user-email user-email";
+    row-gap: 10px;
+
+    @include mobile-media {
+      grid-template-columns: auto auto;
+      grid-template-areas:
+        "contact-info contact-info"
+        "logged-in log-out"
+        "user-name user-name"
+        "user-email user-email";
+    }
+
+    .contactInfoRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      @include mobile-media {
+        flex-direction: column;
+        align-items: flex-start;
+        .inputLabel {
+          color: rgba($checkout-primary-color, 0.5);
+        }
+
+        .value {
+          font-size: var(--font-size-md);
+        }
+      }
+
+      .inputLabel {
+        margin-top: 0;
+      }
+
+      .value {
+        text-align: right;
+      }
+    }
 
     .contactInfoTitle {
       grid-area: contact-info;
@@ -124,27 +194,18 @@
 
     .logOut {
       grid-area: log-out;
+      @include mobile-media {
+        text-align: right;
+        font-size: var(--font-size-md);
+      }
     }
 
     .userName {
-      color: var(--primary-color);
-      margin-top: $margin-small-3;
       grid-area: user-name;
-
-      @include mobile-media {
-        font-size: var(--font-size-md);
-        margin-top: var(--vertical-spacing-half);
-      }
     }
 
     .userEmail {
-      color: var(--primary-color);
-      margin-top: $margin-small;
       grid-area: user-email;
-
-      @include mobile-media {
-        font-size: var(--font-size-md);
-      }
     }
   }
 
@@ -155,15 +216,21 @@
     grid-template-rows: auto;
     row-gap: var(--vertical-spacing-half);
     column-gap: var(--vertical-spacing-half);
+
+    @include mobile-media {
+      grid-template-columns: auto;
+      row-gap: 0;
+
+      .inputLabel {
+        margin-top: 10px;
+        margin-bottom: 6px;
+      }
+    }
   }
 
   .shippingAddressSection {
     position: relative;
     margin-bottom: var(--vertical-spacing-normal);
-
-    @include mobile-media {
-      margin-bottom: 0;
-    }
 
     .addressLine {
       font-size: var(--font-size-md);
@@ -171,7 +238,8 @@
       font-weight: var(--font-weight-medium);
 
       @include mobile-media {
-        font-size: var(--font-size-sm);
+        color: rgba($checkout-primary-color, 0.5);
+        font-size: var(--font-size-md);
       }
 
       & + .addressLine {
@@ -179,6 +247,14 @@
 
         @include mobile-media {
           margin-top: 0;
+        }
+      }
+    }
+
+    .shippingOption {
+      &.selected {
+        .addressLine {
+          color: $checkout-primary-color;
         }
       }
     }
@@ -197,6 +273,10 @@
     .checkbox {
       margin-right: 8px;
     }
+
+    @include mobile-media {
+      margin-top: 24px;
+    }
   }
 
   .billingAddress {
@@ -211,13 +291,17 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 40px;
+      padding: 10px 0;
       border-bottom: 1px solid rgba($gray-color-user, 0.1);
 
       .label,
       .value {
         font-size: var(--font-size-md);
         font-weight: var(--font-weight-medium);
+        color: $gray-color-user;
+      }
+
+      .promoCode {
         color: $gray-color-user;
       }
     }
@@ -240,19 +324,35 @@
     width: 100%;
     height: 60px;
     font-size: var(--font-size-lg);
+
+    &:disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+  }
+
+  .expressCheckoutUsed {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: $checkout-primary-color;
+    margin-top: 10px;
+  }
+
+  .addressForm {
+    --input-border-radius: 5px;
   }
 
   .loaderContainer {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #fff;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(#fff, 0.8);
     z-index: 2;
 
     .loader {
-      font-size: 40px;
+      font-size: 80px;
     }
   }
 }

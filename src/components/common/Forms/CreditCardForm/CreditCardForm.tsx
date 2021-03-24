@@ -299,10 +299,27 @@ export default class CreditCardForm extends React.Component<Props, State> {
         />
         <div className={styles.inputLabel}>Card Number</div>
         <div id="stripe-card-number" />
-        <div className={styles.inputLabel}>Expiration</div>
-        <div id="stripe-card-expiration" />
-        <div className={styles.inputLabel}>CVV</div>
-        <div id="stripe-card-cvc" />
+        {isOnMobile() ? (
+          <React.Fragment>
+            <div className={styles.inputRow}>
+              <div className={styles.inputCol}>
+                <div className={styles.inputLabel}>Expiration</div>
+                <div id="stripe-card-expiration" />
+              </div>
+              <div className={styles.inputCol}>
+                <div className={styles.inputLabel}>CVV</div>
+                <div id="stripe-card-cvc" />
+              </div>
+            </div>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <div className={styles.inputLabel}>Expiration</div>
+            <div id="stripe-card-expiration" />
+            <div className={styles.inputLabel}>CVV</div>
+            <div id="stripe-card-cvc" />
+          </React.Fragment>
+        )}
       </div>
     );
   };

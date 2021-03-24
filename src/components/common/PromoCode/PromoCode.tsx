@@ -70,7 +70,7 @@ export default class PromoCode extends React.Component<Props, State> {
             this.setState({ isOpen: !this.state.isOpen });
           }}
         >
-          <h4 className={styles.title}>Have a promo code?</h4>
+          <h4 className={styles.title}>Add a promotion code</h4>
           <i
             className={cn("fal", styles.promoCodeChevron, {
               "fa-chevron-up": this.state.isOpen,

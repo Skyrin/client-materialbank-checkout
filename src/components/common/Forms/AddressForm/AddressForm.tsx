@@ -48,6 +48,7 @@ const DEFAULT_FORM_SCHEMA = yup.object().shape({
     .matches(ZIPCODE_REGEX, "Should be 5 digits")
     .required("Required"),
   phone: yup.string().required("Required"),
+  region: yup.string().required("Required"),
 });
 
 type AddressFormErrorsT = {
@@ -75,7 +76,6 @@ type Props = {
 type State = {
   values: AddressFormValuesT;
   errors: AddressFormErrorsT;
-  showNameAndCompany: boolean;
 };
 
 const NO_ERRORS = {
@@ -87,6 +87,7 @@ const NO_ERRORS = {
   city: null,
   zipCode: null,
   phone: null,
+  region: null,
 };
 
 const ZipcodeLookup = SmartyStreetsSDK.usZipcode.Lookup;
@@ -195,6 +196,9 @@ export default class AddressForm extends React.Component<Props, State> {
           ...this.state.values,
           ...values,
         },
+        errors: {
+          ...NO_ERRORS,
+        },
       },
       () => {
         if (validate) {
@@ -254,64 +258,50 @@ export default class AddressForm extends React.Component<Props, State> {
   render() {
     return (
       <React.Fragment>
-        {!this.state.showNameAndCompany && this.props.visible && (
-          <div
-            className={styles.showAddressContact}
-            onClick={() => {
-              this.setState({ showNameAndCompany: true });
-            }}
-          >
-            Add a business, attention, or in care of name
-          </div>
-        )}
         <div
           className={cn(styles.addressForm, this.props.listClassName, {
             [styles.visible]: this.props.visible === true,
           })}
         >
-          {this.state.showNameAndCompany && (
-            <React.Fragment>
-              <div className={styles.inputLabel}>First Name</div>
-              <Input
-                className={cn(styles.input, this.props.inputClassName)}
-                placeholder="John"
-                value={this.state.values.firstName}
-                onChange={(val: string) => {
-                  this.updateField("firstName", val);
-                }}
-                onBlur={() => {
-                  this.validateField("firstName");
-                }}
-                error={this.state.errors.firstName}
-              />
-              <div className={styles.inputLabel}>Last Name</div>
-              <Input
-                className={cn(styles.input, this.props.inputClassName)}
-                placeholder="Doe"
-                value={this.state.values.lastName}
-                onChange={(val: string) => {
-                  this.updateField("lastName", val);
-                }}
-                onBlur={() => {
-                  this.validateField("lastName");
-                }}
-                error={this.state.errors.lastName}
-              />
-              <div className={styles.inputLabel}>Company</div>
-              <Input
-                className={cn(styles.input, this.props.inputClassName)}
-                placeholder="Company"
-                value={this.state.values.company}
-                onChange={(val: string) => {
-                  this.updateField("company", val);
-                }}
-                onBlur={() => {
-                  this.validateField("company");
-                }}
-                error={this.state.errors.company}
-              />
-            </React.Fragment>
-          )}
+          <div className={styles.inputLabel}>First Name</div>
+          <Input
+            className={cn(styles.input, this.props.inputClassName)}
+            placeholder="John"
+            value={this.state.values.firstName}
+            onChange={(val: string) => {
+              this.updateField("firstName", val);
+            }}
+            onBlur={() => {
+              this.validateField("firstName");
+            }}
+            error={this.state.errors.firstName}
+          />
+          <div className={styles.inputLabel}>Last Name</div>
+          <Input
+            className={cn(styles.input, this.props.inputClassName)}
+            placeholder="Doe"
+            value={this.state.values.lastName}
+            onChange={(val: string) => {
+              this.updateField("lastName", val);
+            }}
+            onBlur={() => {
+              this.validateField("lastName");
+            }}
+            error={this.state.errors.lastName}
+          />
+          <div className={styles.inputLabel}>Company</div>
+          <Input
+            className={cn(styles.input, this.props.inputClassName)}
+            placeholder="Company"
+            value={this.state.values.company}
+            onChange={(val: string) => {
+              this.updateField("company", val);
+            }}
+            onBlur={() => {
+              this.validateField("company");
+            }}
+            error={this.state.errors.company}
+          />
           <div className={styles.inputLabel}>Street Address</div>
           {this.props.withAutocomplete ? (
             <AddressInput
@@ -368,7 +358,7 @@ export default class AddressForm extends React.Component<Props, State> {
           <Select
             options={usaStates}
             values={usaStates.filter((state) => {
-              return state.abbreviation === this.state.values.state;
+              return state.abbreviation === this.state.values.region;
             })}
             labelField="abbreviation"
             valueField="abbreviation"
@@ -376,7 +366,7 @@ export default class AddressForm extends React.Component<Props, State> {
             className={styles.stateInput}
             onChange={(value) => {
               // @ts-ignore
-              this.updateField("state", value[0].abbreviation);
+              this.updateField("region", value[0].abbreviation);
             }}
           />
           <div className={styles.inputLabel}>Zip Code</div>

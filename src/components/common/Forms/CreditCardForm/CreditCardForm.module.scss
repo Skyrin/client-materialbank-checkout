@@ -15,7 +15,7 @@
     opacity 0.35s $ease-in-out;
 
   &.visible {
-    max-height: 300px;
+    max-height: 500px;
     opacity: 1;
     margin-top: var(--vertical-spacing-normal);
   }
@@ -47,6 +47,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    background-color: #fff;
 
     &.hasError {
       border-color: red;
@@ -63,6 +64,23 @@
     &:focus {
       box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
       border-color: rgba(var(--primary-color-rgb), 0.6);
+    }
+  }
+
+  @include mobile-media {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+
+    .inputLabel {
+      font-size: var(--font-size-xs);
+      margin-bottom: 6px;
+    }
+
+    .inputRow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+      column-gap: 10px;
     }
   }
 }

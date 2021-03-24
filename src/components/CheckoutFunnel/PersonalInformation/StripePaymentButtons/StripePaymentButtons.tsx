@@ -5,6 +5,7 @@ import applePayLogo from "assets/images/apple_pay_logo.svg";
 import googlePayLogo from "assets/images/google_pay_logo.svg";
 import cn from "classnames";
 import styles from "./StripePaymentButtons.module.scss";
+import { parsePhoneNumber } from "utils/general";
 
 type Props = {
   className?: string;
@@ -17,7 +18,10 @@ type State = {
   stripePaymentMethodId: string;
 };
 
-export default class StripePaymentButtons extends React.Component<Props> {
+export default class StripePaymentButtons extends React.Component<
+  Props,
+  State
+> {
   static contextType = AppContext;
   context!: AppContextState;
 
@@ -26,8 +30,8 @@ export default class StripePaymentButtons extends React.Component<Props> {
   googlePayPaymentRequest: PaymentRequest;
 
   state = {
-    googlePayPossible: true,
-    applePayPossible: true,
+    googlePayPossible: false,
+    applePayPossible: false,
     stripePaymentMethodId: "",
   };
 
@@ -50,8 +54,7 @@ export default class StripePaymentButtons extends React.Component<Props> {
       currency: "usd",
       total: {
         label: "Total",
-        amount:
-          (this.context.cart.prices?.subtotal_including_tax?.value || 0) * 100, // ??????? Is it in cents?
+        amount: (this.context.cart.prices?.grand_total?.value || 0) * 100, // ??????? Is it in cents?
       },
       requestPayerName: true,
       requestPayerEmail: true,

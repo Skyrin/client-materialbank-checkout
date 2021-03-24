@@ -186,14 +186,40 @@ export default class AddressInput extends React.Component<Props, State> {
     }
 
     console.log("SHOULD FETCH", input);
-    const lookup = new AutocompleteProLookup(input);
-    lookup.maxResults = 5;
-    const response = await this.autocompleteClient.send(lookup);
-    console.log("RESPONSE", response);
-    const suggestions = response.result.map((res) => ({
-      text: `${res.streetLine} ${res.secondary}, ${res.city}, ${res.state}`,
-      extra: res,
-    }));
+    let suggestions;
+
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+      suggestions = [
+        {
+          text: "Test Address, New York, NY",
+          extra: {
+            streetLine: "Test Address",
+            city: "New York",
+            state: "NY",
+            zipcode: "10001",
+          },
+        },
+        {
+          text: "Test Address 2, San Francisco, CA",
+          extra: {
+            streetLine: "Test Address 2",
+            city: "San Francisco",
+            state: "CA",
+            zipcode: "94102",
+          },
+        },
+      ];
+    } else {
+      const lookup = new AutocompleteProLookup(input);
+      lookup.maxResults = 5;
+      const response = await this.autocompleteClient.send(lookup);
+      console.log("RESPONSE", response);
+      suggestions = response.result.map((res) => ({
+        text: `${res.streetLine} ${res.secondary}, ${res.city}, ${res.state}`,
+        extra: res,
+      }));
+    }
+
     this.setState({
       suggestions: suggestions,
     });

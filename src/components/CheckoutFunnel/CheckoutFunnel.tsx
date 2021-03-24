@@ -1,4 +1,3 @@
-import Footer from "components/common/Footer/Footer";
 import {
   CHECKOUT_DEBUG_URL,
   CHECKOUT_FUNNEL_URL,
@@ -15,8 +14,6 @@ import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./CheckoutFunnel.module.scss";
 import OrderConfirmation from "components/CheckoutFunnel/OrderConfirmation/OrderConfirmation";
 import { AppContext, AppContextState } from "context/AppContext";
-import Breadcrumbs from "components/common/Breadcrumbs/Breadcrumbs";
-import { BREADCRUMBS_STEPS } from "constants/general";
 import { isOnMobile } from "utils/responsive";
 import LogoMobile from "../common/LogoMobile/LogoMobile";
 import cn from "classnames";
@@ -59,21 +56,7 @@ export default class CheckoutFunnel extends React.Component<Props> {
           {!this.context.confirmedOrderLoading && (
             <OrderSummary className={styles.orderSummary} />
           )}
-          <Switch>
-            {isOnMobile() && (
-              <Route
-                path={[PERSONAL_INFORMATION_URL, PAYMENT_URL]}
-                render={() => (
-                  <Breadcrumbs
-                    steps={BREADCRUMBS_STEPS}
-                    className={styles.breadCrumbs}
-                  />
-                )}
-              />
-            )}
-          </Switch>
         </div>
-        <Footer />
       </React.Fragment>
     );
   }

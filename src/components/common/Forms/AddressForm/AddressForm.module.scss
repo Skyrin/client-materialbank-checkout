@@ -15,15 +15,17 @@
   transition: max-height 0.35s $ease-in-out, opacity 0.35s $ease-in-out,
     margin-top 0.35s $ease-in-out;
 
+  @include mobile-media {
+    margin-top: $margin-small-3;
+    grid-template-columns: auto;
+    row-gap: 0;
+  }
+
   &.visible {
-    max-height: 500px;
+    max-height: 1000px;
     opacity: 1;
     margin-top: var(--vertical-spacing-half);
     overflow: visible;
-
-    @include mobile-media {
-      margin-top: $margin-small-3;
-    }
   }
 }
 
@@ -32,6 +34,11 @@
   font-weight: var(--font-weight-medium);
   color: $checkout-primary-color;
   margin-top: 10px;
+
+  @include mobile-media {
+    font-size: var(--font-size-xs);
+    margin-bottom: 6px;
+  }
 }
 
 .showAddressContact {
@@ -61,6 +68,7 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  background-color: #fff;
 
   @include mobile-media {
     font-size: var(--font-size-sm);

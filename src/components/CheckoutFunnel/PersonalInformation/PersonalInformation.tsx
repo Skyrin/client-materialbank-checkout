@@ -3,7 +3,7 @@ import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PersonalInformation.module.scss";
 import cn from "classnames";
-import { ORDER_CONFIRMATION_URL, PAYMENT_URL } from "constants/urls";
+import { ORDER_CONFIRMATION_URL } from "constants/urls";
 import Input from "components/common/Input/Input";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
@@ -23,16 +23,17 @@ import {
   CreateCustomerInput,
   CustomerAddressInput,
 } from "context/CustomerAPI/models";
-import { parsePhoneNumber, scrollToTop } from "utils/general";
+import { scrollToTop } from "utils/general";
 import Loader from "components/common/Loader/Loader";
 import { PaymentOption } from "../PaymentInformation/PaymentInformation";
-import ButtonLoader from "components/common/ButtonLoader/ButtonLoader";
 import { RESTRequest } from "RestClient";
 import { getAddressId } from "utils/context";
 import CreditCardForm from "components/common/Forms/CreditCardForm/CreditCardForm";
 import Checkbox from "components/common/Checkbox/Checkbox";
 import PaypalExpress from "./PaypalExpress/PaypalExpress";
 import StripePaymentButtons from "./StripePaymentButtons/StripePaymentButtons";
+import { CartAddressInput } from "context/CheckoutAPI/models";
+import PromoCode from "components/common/PromoCode/PromoCode";
 
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
@@ -87,6 +88,8 @@ export class PersonalInformation extends React.Component<Props, State> {
 
   shippingAddressForm?: AddressForm;
   billingAddressForm?: AddressForm;
+
+  creditCardForm?: CreditCardForm;
 
   constructor(props: Props, context: AppContextState) {
     super(props, context);
@@ -194,6 +197,20 @@ export class PersonalInformation extends React.Component<Props, State> {
     }
   };
 
+  renderSubtotal = () => {
+    return (
+      <div className={styles.subtotal}>
+        <div className={styles.label}>SUBTOTAL</div>
+        <div className={styles.value}>
+          {this.renderCurrency(
+            this.context.cart?.prices?.subtotal_including_tax?.value,
+            "-"
+          )}
+        </div>
+      </div>
+    );
+  };
+
   renderExpressCheckoutSection = () => {
     if (!this.context.cart.items || this.context.cart.items.length === 0) {
       return null;
@@ -221,7 +238,9 @@ export class PersonalInformation extends React.Component<Props, State> {
   handleTransactionApproved = (transactionData: Object) => {
     let tokenInfo;
     if (transactionData.paypalExpressInfo) {
-      tokenInfo = transactionData.paypalExpressInfo;
+      tokenInfo = {
+        paypalExpressInfo: transactionData.paypalExpressInfo,
+      };
     } else if (transactionData.stripePaymentMethodId) {
       tokenInfo = {
         stripePaymentMethodId: transactionData.stripePaymentMethodId,
@@ -236,7 +255,11 @@ export class PersonalInformation extends React.Component<Props, State> {
     const customerFields = transactionData.customer;
     const shippingAddressFields = transactionData.shippingAddress;
 
-    if (!this.context.isLoggedIn) {
+    // If user is not logged in or does not have a default shipping address
+    if (
+      !this.context.isLoggedIn ||
+      this.state.selectedShippingAddressId === -1
+    ) {
       this.setState(
         {
           ...this.state,
@@ -255,6 +278,28 @@ export class PersonalInformation extends React.Component<Props, State> {
             },
             true
           );
+        }
+      );
+    } else {
+      this.setState(
+        {
+          ...tokenInfo,
+        },
+        async () => {
+          if (this.state.paypalExpressInfo.token) {
+            this.placeOrderWithPaypal();
+          } else {
+            const addressId = getAddressId(this.context, shippingAddressFields);
+            if (addressId !== -1) {
+              await this.context.setShippingAddress(addressId);
+            } else {
+              const newAddress = await this.createCustomerAddress(
+                shippingAddressFields
+              );
+              await this.context.setShippingAddress(newAddress.id);
+            }
+            this.placeOrderWithStripe(tokenInfo.stripePaymentMethodId, false);
+          }
         }
       );
     }
@@ -293,10 +338,12 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   renderContactInfoSection = () => {
-    const name = `${this.context.customer.firstname} ${this.context.customer.lastname}`;
+    const name = `${this.context.customer.firstname || ""} ${
+      this.context.customer.lastname || ""
+    }`;
     return (
       <div className={cn(styles.contactInfoSection, styles.section)}>
-        <h3 className={styles.contactInfoTitle}>Contact Info</h3>
+        <h3 className={styles.contactInfoTitle}>Your Information</h3>
         <div className={cn(styles.loggedIn, styles.loginHint)}>
           Logged in as&nbsp;
           <span className={styles.loggedInName}>{name}</span>
@@ -309,14 +356,14 @@ export class PersonalInformation extends React.Component<Props, State> {
         >
           Log Out
         </span>
-        <div className={styles.userName}>{name}</div>
-        <div className={styles.userEmail}>{this.context.customer?.email}</div>
-        {this.context.customerLoading && (
-          <Loader
-            containerClassName={styles.loaderContainer}
-            loaderClassName={styles.loader}
-          />
-        )}
+        <div className={cn(styles.contactInfoRow, styles.userName)}>
+          <div className={styles.inputLabel}>Name</div>
+          <div className={styles.value}>{name}</div>
+        </div>
+        <div className={cn(styles.contactInfoRow, styles.userEmail)}>
+          <div className={styles.inputLabel}>Email Address</div>
+          <div className={styles.value}>{this.context.customer?.email}</div>
+        </div>
       </div>
     );
   };
@@ -413,7 +460,14 @@ export class PersonalInformation extends React.Component<Props, State> {
             const cityState = `${address.city}, ${address.region.region_code}, ${address.postcode}`;
             return (
               <div
-                className={cn("row margin-top clickable")}
+                className={cn(
+                  "row margin-top clickable",
+                  styles.shippingOption,
+                  {
+                    [styles.selected]:
+                      address.id === this.state.selectedShippingAddressId,
+                  }
+                )}
                 key={`address_${address.id}`}
                 onClick={() => {
                   this.setState({
@@ -434,27 +488,31 @@ export class PersonalInformation extends React.Component<Props, State> {
               </div>
             );
           })}
-        {this.context.isLoggedIn && (
-          <div
-            className={cn("row margin-top clickable")}
-            onClick={() => {
-              this.setState({
-                selectedShippingAddressId: -1,
-              });
-            }}
-          >
-            <RadioButton
-              className={styles.radioButton}
-              value={this.state.selectedShippingAddressId}
-              option={-1}
-            />
-            <div className={styles.addressLine}>
-              Use a different shipping address
+        {this.context.isLoggedIn &&
+          get(this.context.customer, "addresses.length", 0) > 0 && (
+            <div
+              className={cn("row margin-top clickable", styles.shippingOption, {
+                [styles.selected]: this.state.selectedShippingAddressId === -1,
+              })}
+              onClick={() => {
+                this.setState({
+                  selectedShippingAddressId: -1,
+                });
+              }}
+            >
+              <RadioButton
+                className={styles.radioButton}
+                value={this.state.selectedShippingAddressId}
+                option={-1}
+              />
+              <div className={styles.addressLine}>
+                Use a different shipping address
+              </div>
             </div>
-          </div>
-        )}
+          )}
         <AddressForm
           withAutocomplete
+          className={styles.addressForm}
           visible={
             this.state.selectedShippingAddressId === -1 ||
             !this.context.isLoggedIn
@@ -468,12 +526,6 @@ export class PersonalInformation extends React.Component<Props, State> {
             this.shippingAddressForm = ref;
           }}
         />
-        {this.context.customerLoading && (
-          <Loader
-            containerClassName={styles.loaderContainer}
-            loaderClassName={styles.loader}
-          />
-        )}
       </div>
     );
   };
@@ -482,56 +534,63 @@ export class PersonalInformation extends React.Component<Props, State> {
     return (
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>Payment Information</h3>
-        <CreditCardForm
-          useStripe
-          visible
-          onChange={(newValues: CreditCardFormValuesT) => {
+        {!this.hasPaymentMethod() && (
+          <React.Fragment>
+            <CreditCardForm
+              useStripe
+              visible
+              onChange={(newValues: CreditCardFormValuesT) => {
+                this.setState({
+                  creditCardInfo: newValues,
+                });
+                this.creditCardForm?.validateForm();
+              }}
+              componentRef={(ref) => {
+                this.creditCardForm = ref;
+              }}
+            />
+            <div
+              className={styles.billingOption}
+              onClick={() => {
+                this.setState({
+                  billingSameAsShipping: !this.state.billingSameAsShipping,
+                });
+              }}
+            >
+              <Checkbox
+                className={styles.checkbox}
+                value={this.state.billingSameAsShipping}
+              />
+              <span className={styles.text}>
+                Billing address is the same as shipping
+              </span>
+            </div>
+          </React.Fragment>
+        )}
+        {this.hasPaymentMethod() && (
+          <div className={styles.expressCheckoutUsed}>
+            Express Checkout was used
+          </div>
+        )}
+        <AddressForm
+          withAutocomplete
+          className={styles.billingAddressForm}
+          listClassName={
+            !this.state.billingSameAsShipping
+              ? styles.billingAddress
+              : undefined
+          }
+          visible={!this.state.billingSameAsShipping}
+          onChange={(newValues: AddressFormValuesT) => {
             this.setState({
-              creditCardInfo: newValues,
+              billingAddress: newValues,
             });
-            this.creditCardForm?.validateForm();
           }}
           componentRef={(ref) => {
-            this.creditCardForm = ref;
+            this.billingAddressForm = ref;
           }}
         />
-        <div
-          className={styles.billingOption}
-          onClick={() => {
-            this.setState({
-              billingSameAsShipping: !this.state.billingSameAsShipping,
-            });
-          }}
-        >
-          <Checkbox
-            className={styles.checkbox}
-            value={this.state.billingSameAsShipping}
-          />
-          <span className={styles.text}>
-            Billing address is the same as shipping
-          </span>
-        </div>
       </div>
-    );
-  };
-
-  renderBillingAddress = () => {
-    return (
-      <AddressForm
-        withAutocomplete
-        listClassName={
-          !this.state.billingSameAsShipping ? styles.billingAddress : undefined
-        }
-        visible={!this.state.billingSameAsShipping}
-        onChange={(newValues: AddressFormValuesT) => {
-          this.setState({
-            billingAddress: newValues,
-          });
-        }}
-        componentRef={(ref) => {
-          this.billingAddressForm = ref;
-        }}
-      />
     );
   };
 
@@ -553,6 +612,9 @@ export class PersonalInformation extends React.Component<Props, State> {
               "-"
             )}
           </div>
+        </div>
+        <div className={styles.totalLine}>
+          <PromoCode className={styles.promoCode} />
         </div>
         <div className={styles.totalLine}>
           <div className={styles.label}>Shipping</div>
@@ -598,7 +660,7 @@ export class PersonalInformation extends React.Component<Props, State> {
     this.setState({
       isSubmitting: true,
     });
-    await this.context.setBillingAddress(true);
+    await this.handleBillingAddress();
     await this.context.setShippingMethod();
 
     const paymentMethodResponse = await this.context.setPaymentMethod({
@@ -621,11 +683,11 @@ export class PersonalInformation extends React.Component<Props, State> {
     return;
   };
 
-  placeOrderWithStripe = async () => {
+  placeOrderWithStripe = async (paymentMethodId: string, saveCard: boolean) => {
     this.setState({
       isSubmitting: true,
     });
-    await this.context.setBillingAddress(true);
+    await this.handleBillingAddress();
     await this.context.setShippingMethod();
 
     const response = await RESTRequest(
@@ -635,8 +697,8 @@ export class PersonalInformation extends React.Component<Props, State> {
         paymentMethod: {
           method: "stripe_payments",
           additional_data: {
-            cc_save: false,
-            cc_stripejs_token: this.state.stripePaymentMethodId,
+            cc_save: saveCard,
+            cc_stripejs_token: paymentMethodId,
           },
         },
       }
@@ -646,6 +708,20 @@ export class PersonalInformation extends React.Component<Props, State> {
       sessionStorage.setItem(ORDER_ID_STORAGE_KEY, respBody);
       this.props.history.push(ORDER_CONFIRMATION_URL);
       return;
+    }
+  };
+
+  handleBillingAddress = async () => {
+    if (this.state.billingSameAsShipping) {
+      await this.context.setBillingAddress(true);
+    } else {
+      this.billingAddressForm.validateForm();
+      if (this.billingAddressForm.isValid()) {
+        await this.context.setBillingAddress(
+          false,
+          new CartAddressInput(this.state.billingAddress)
+        );
+      }
     }
   };
 
@@ -666,23 +742,27 @@ export class PersonalInformation extends React.Component<Props, State> {
         addressId = address.id;
       }
       await this.context.setShippingAddress(addressId);
-      await this.context.setShippingMethod();
 
+      // Paypal Express
       if (this.state.paypalExpressInfo.payer_id) {
-        // If we are going through paypal express, set the payment method as well,
-        // place the order and go to the confirmation page
-
         await this.placeOrderWithPaypal();
         return;
       }
 
+      // Google / Apple Pay
       if (this.state.stripePaymentMethodId) {
-        await this.placeOrderWithStripe();
+        await this.placeOrderWithStripe(
+          this.state.stripePaymentMethodId,
+          false
+        );
         return;
       }
 
+      // Stripe Cards
+      const cardPaymentMethod = await this.creditCardForm.createStripePaymentMethod();
+      const token = cardPaymentMethod.id;
+      await this.placeOrderWithStripe(token, true);
       this.setState({ isSubmitting: false });
-      this.props.history.push(PAYMENT_URL);
     } catch (e) {
       if (e.graphqlErrors) {
         for (const err of e.graphqlErrors) {
@@ -712,19 +792,35 @@ export class PersonalInformation extends React.Component<Props, State> {
     const addressInput = new CustomerAddressInput(
       addressFields || this.state.shippingAddress
     );
-    return await this.context.createCustomerAddress(addressInput);
+    return await this.context.createCustomerAddress(addressInput, true);
+  };
+
+  hasPaymentMethod = () => {
+    return (
+      this.state.paypalExpressInfo.token || this.state.stripePaymentMethodId
+    );
   };
 
   render() {
+    const isLoading =
+      this.context.customerLoading ||
+      this.context.cartInfoLoading ||
+      this.state.isSubmitting;
     return (
       <div className={cn("funnel-page", styles.PersonalInformation)}>
+        {isLoading && (
+          <Loader
+            containerClassName={styles.loaderContainer}
+            loaderClassName={styles.loader}
+          />
+        )}
         <div className={styles.informationContainer}>
+          {isOnMobile() && this.renderSubtotal()}
           {this.renderExpressCheckoutSection()}
           {this.context.isLoggedIn && this.renderContactInfoSection()}
           {!this.context.isLoggedIn && this.renderCreateAccountSection()}
           {this.renderShippingAddressSection()}
           {this.renderPaymentInformationSection()}
-          {this.renderBillingAddress()}
           {this.renderTotals()}
           <div className={styles.navigationContainer}>
             <button
@@ -736,14 +832,16 @@ export class PersonalInformation extends React.Component<Props, State> {
                   !contactInfoSchema.isValidSync(this.state.createAccount)) ||
                 (this.state.selectedShippingAddressId === -1 &&
                   this.shippingAddressForm &&
-                  !this.shippingAddressForm.isValid())
+                  !this.shippingAddressForm.isValid()) ||
+                (!this.hasPaymentMethod() &&
+                  this.creditCardForm &&
+                  !this.creditCardForm.isValid())
               }
             >
               {`Pay ${this.renderCurrency(
                 get(this.context.cart, "prices.grand_total.value"),
                 "-"
               )}`}
-              {this.state.isSubmitting && <ButtonLoader />}
             </button>
           </div>
         </div>
