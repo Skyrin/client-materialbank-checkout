@@ -183,8 +183,7 @@ export type PaletteT = {
 };
 
 export type MaterialT = {
-  id?: number;
-  // TODO: Figure out if there's going to be more fields here. Currently, this is all the API returns
+  sku?: string;
 };
 
 export type RoomT = {
