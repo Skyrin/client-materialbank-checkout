@@ -26,7 +26,7 @@ import { CreateCustomerInput } from "context/CustomerAPI/models";
 import CollectionsAndPalettes from "../CollectionsAndPalettes/CollectionsAndPalettes";
 import DeleteCollectionModal from "../common/DeleteCollectionModal/DeleteCollectionModal";
 import { ShareCollectionModal } from "../common/ShareCollectionModal/ShareCollectionModal";
-import { DuplicateCollectionModal } from "../common/DuplicateCollectionModal/DuplicateCollectionModal";
+import DuplicateCollectionModal from "../common/DuplicateCollectionModal/DuplicateCollectionModal";
 import { MakePrivateModal } from "../common/MakePrivateModal/MakePrivateModal";
 
 type State = {
