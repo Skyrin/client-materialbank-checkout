@@ -169,7 +169,7 @@ export default class UserShipping extends React.Component<Props, State> {
                   </div>
                 </div>
 
-                {isOnMobile() && (
+                {isOnMobile() && this.state.editingAddress?.id === address.id && (
                   <MapAddressForm
                     className={cn(styles.mobileEditAddress, {
                       [styles.visible]:
