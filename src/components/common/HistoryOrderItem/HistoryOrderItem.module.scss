@@ -10,13 +10,13 @@
     flex-direction: column;
     border-top: 1px solid $color-user-border;
     border-radius: 0;
-    padding-top: 10px;
+    padding-top: $margin-small-4;
   }
 
   & + .HistoryOrderItem {
     margin-top: calc(var(--vertical-spacing-normal) * 2);
     @include mobile-media {
-      margin-top: 10px;
+      margin-top: $margin-small-4;
     }
   }
 }
@@ -41,10 +41,17 @@
   min-width: 160px;
 
   .brand-model {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-evenly;
     flex: 1;
     height: 100%;
     position: relative;
-    padding-top: var(--vertical-spacing-quarter);
+    padding: $margin-small-3 0;
+
+    @include mobile-media {
+      padding: 0;
+    }
 
     div:first-child {
       @include mobile-media {
@@ -54,19 +61,37 @@
   }
 
   .model {
-    margin-top: 15px;
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-lg);
-    @include mobile-media {
-      font-size: 11px;
-    }
 
-    @media (max-width: 970px) {
-      margin-top: 2px;
+    @include mobile-media {
+      font-size: var(--font-size-sm);
     }
   }
 }
 
+.colorLabel {
+  @include mobile-media {
+    order: -1;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+  }
+}
+
+.pricePerArea {
+  @include mobile-media {
+    order: 1;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+  }
+}
+
+.sample {
+  @include mobile-media {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+  }
+}
 .image {
   height: 85px;
   width: 85px;
@@ -104,7 +129,7 @@
   //  justify-content: center;
   //}
   @include mobile-media {
-    flex-direction: row;
+    flex-direction: column;
     padding-left: 70px;
     margin-top: -15px;
   }
@@ -121,15 +146,11 @@
 }
 
 .shop-button {
+  @include blackGradientButton;
   height: 40px;
-  width: 100%;
-  background-color: transparent;
-  border: 1px solid var(--primary-color);
-  font-weight: var(--font-weight-medium);
-  border-radius: 40px;
-  font-size: var(--font-size-lg);
+
   @include mobile-media {
-    font-size: 14px;
+    width: 100%;
   }
 
   &:hover,

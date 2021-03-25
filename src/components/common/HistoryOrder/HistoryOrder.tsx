@@ -46,15 +46,11 @@ export class HistoryOrder extends React.Component<Props, State> {
   renderMobileOrderInfo(order: OrderT, statusClassName) {
     return (
       <div className={cn(styles["content"], styles["header"], styles["row"])}>
-        <div
-          className={cn(
-            styles["left-container"],
-            styles["container"],
-            styles["placement-date"]
-          )}
-        >
-          <span>Order placed&nbsp;</span>
+        <div className={cn(styles["left-container"], styles["placement-date"])}>
           {this.formatDate(order.order_date)}
+          <div className={cn(styles["light-text"], styles["order-number"])}>
+            Order #{order.number}
+          </div>
         </div>
 
         <div className={cn(styles["middle-container"], styles["container"])}>
@@ -65,17 +61,11 @@ export class HistoryOrder extends React.Component<Props, State> {
             />
             <div className={cn(styles["status-text"])}>{order.status}</div>
           </div>
-          <div className={cn(styles["light-text"], styles["order-number"])}>
-            Order #{order.number}
-          </div>
         </div>
         <div className={cn(styles["right-container"], styles["container"])}>
-          <a className={styles.label} href={"/"}>
-            Get help with this order
-          </a>
-          <a className={cn(styles.label, styles.trackPackage)} href={"/"}>
+          <button className={cn(styles.label, styles.trackPackage)}>
             Track package
-          </a>
+          </button>
         </div>
       </div>
     );
@@ -93,18 +83,12 @@ export class HistoryOrder extends React.Component<Props, State> {
       <div className={cn(styles["HistoryOrder"])}>
         {isOnMobile() && this.renderMobileOrderInfo(order, statusClassName)}
         {!isOnMobile() && (
-          <div
-            className={cn(styles["content"], styles["header"], styles["row"])}
-          >
-            <div
-              className={cn(
-                styles["left-container"],
-                styles["container"],
-                styles["placement-date"]
-              )}
-            >
-              <span>Order placed&nbsp;</span>{" "}
-              {this.formatDate(order.order_date)}
+          <div className={cn(styles["header"], styles["row"])}>
+            <div className={cn(styles["left-container"])}>
+              <div className={styles.placementDateLabel}>ORDER PLACED</div>
+              <div className={styles.placementDateValue}>
+                {this.formatDate(order.order_date)}
+              </div>
             </div>
 
             <div
@@ -115,16 +99,14 @@ export class HistoryOrder extends React.Component<Props, State> {
                 className={cn(styles["status-dot"], styles[statusClassName])}
               />
               <div className={cn(styles["status-text"])}>{order.status}</div>
-              <a className={styles.label} href={"/"}>
-                Track package
-              </a>
+              <button className={styles.trackPackage}>Track package</button>
             </div>
 
-            <div className={cn(styles["right-container"], styles["container"])}>
-              <a className={styles.label} href={"/"}>
+            <div className={cn("row", "center-vertically")}>
+              <a className={styles.orderHelp} href={"/"}>
                 Get help with this order
               </a>
-              <div className={cn(styles["light-text"], styles["order-number"])}>
+              <div className={cn(styles["order-number"])}>
                 Order #{order.number}
               </div>
             </div>
@@ -171,7 +153,7 @@ export class HistoryOrder extends React.Component<Props, State> {
           )}
           onClick={() => this.toggleExpand()}
         >
-          {expanded ? "Hide full order" : "Show full order"}{" "}
+          {expanded ? "Hide full order" : "View full order"}{" "}
           <i className="far fa-chevron-down" />
           {!expanded && order.items.length > itemLimit && (
             <div className={cn(styles["more-items-info"])}>

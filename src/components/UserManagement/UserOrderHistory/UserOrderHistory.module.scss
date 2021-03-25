@@ -1,39 +1,26 @@
 @import "styles/mixins";
 
 .UserOrderHistory {
-  padding: 62px 100px 162px;
+  padding: 0 100px $margin-huge;
 
-  //@media (max-width: 970px) {
-  //  padding: calc(var(--vertical-spacing-normal) * 2)
-  //    calc(var(--vertical-spacing-normal) * 2) 50px;
-  //}
   @include mobile-media {
-    padding: 0;
+    padding: 0 0 $margin-medium 0;
   }
 }
 
+.searchBar {
+  margin-bottom: $margin-small-4;
+}
+
 .load-more-button {
+  @include blackGradientButton;
   display: block;
-  height: 120px;
-  width: 120px;
-  border: 1px solid var(--primary-color);
-  border-radius: 120px;
-  font-size: var(--font-size-sm);
-  margin: 80px auto 0;
-  font-weight: var(--font-weight-medium);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: $margin-large-2;
+
   @include mobile-media {
-    height: 40px;
-    width: calc(100% - 40px);
-    margin: $margin-small-4 auto $margin-medium auto;
-  }
-
-  &:hover,
-  &:focus {
-    background-color: rgba(black, 0.05);
-  }
-
-  &:active {
-    background-color: rgba(black, 0.1);
+    margin-top: $margin-medium;
   }
 }
 
@@ -43,9 +30,10 @@
   left: -5px;
   width: calc(100% + 10px);
   height: calc(100% + 10px);
-  background-color: #fbfbfb;
+  background-color: rgba(#fbfbfb, 0.8);
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: center;
   padding-top: var(--vertical-spacing-normal);
 
   .loader {
