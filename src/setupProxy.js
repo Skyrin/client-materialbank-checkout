@@ -12,7 +12,7 @@ module.exports = function (app) {
   app.use(
     "/collections-api",
     createProxyMiddleware({
-      target: "https://mb-collections.f3labs.com",
+      target: "https://dev-collections.design.shop",
       changeOrigin: true,
       pathRewrite: { "^/collections-api": "" },
     })

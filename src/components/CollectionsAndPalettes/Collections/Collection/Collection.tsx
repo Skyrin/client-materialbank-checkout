@@ -16,10 +16,19 @@ import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreId
 import { isOnMobile } from "../../../../utils/responsive";
 import { get } from "lodash-es";
 import Loader from "components/common/Loader/Loader";
+import { CollaboratorT, CollectionItemT } from "../../../../constants/types";
+
+interface State {
+  commonAreaIsInViewport: boolean;
+  mode: string;
+  display: string;
+  items: CollectionItemT[];
+  person: CollaboratorT[];
+}
 
 type Props = RouteComponentProps;
 
-class Collection extends React.Component<Props, any> {
+class Collection extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
@@ -34,81 +43,69 @@ class Collection extends React.Component<Props, any> {
       commonAreaIsInViewport: false,
       mode: "image",
       display: "everything",
-      card: [
+      items: [
         {
-          type: "room",
-          title1: "Living Room",
-          title2: "Rhonda Roomdesigner",
-          title3: "Scandinavian Oasis",
-          price: null,
-          imagePath:
-            "https://www.mydomaine.com/thmb/MNBaDGmg4IW7tOvl3pxVNpqQ6uE=/2500x3049/filters:fill(auto,1)/DesignbyEmilyHendersonDesignandPhotobySaraLigorria-Tramp_654-b8122ec9f66b4c69a068859958d8db37.jpg",
-        },
-
-        {
-          type: "palette",
-          title1: "Palette",
-          title2: "David Designername",
-          title3: "Textils",
-          price: null,
-          imagePath:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5brHIzPOkAv7A4E5ul_mT5BaCRbykzf1xvA&usqp=CAU",
+          id: 1,
+          collectionId: 58,
+          position: 1,
+          name: "nume",
+          objectId: "1",
+          objectType: "upload",
+          upload: {
+            name: "some_name",
+            url:
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5brHIzPOkAv7A4E5ul_mT5BaCRbykzf1xvA&usqp=CAU",
+          },
+          updatedBy: 92,
+          createdOn: "createdon",
+          updatedOn: "updatedon",
         },
         {
-          type: "sample",
-          title1: "Indusparquet",
-          title2: "Brazilian Pecan Engineered",
-          title3: "$8.95 / sq ft",
-          price: "6",
-          imagePath:
-            "https://www.haro.com/media/custom/produktfinder/parkett/draufsicht/792x865/535575_HARO_PARKETT_Schiffsboden_Wenge_Favorit_Ver.jpg",
+          id: 2,
+          collectionId: 56,
+          position: 2,
+          name: "nume2",
+          objectId: "2",
+          objectType: "upload",
+          upload: {
+            name: "some_name2",
+            url:
+              "https://www.mydomaine.com/thmb/MNBaDGmg4IW7tOvl3pxVNpqQ6uE=/2500x3049/filters:fill(auto,1)/DesignbyEmilyHendersonDesignandPhotobySaraLigorria-Tramp_654-b8122ec9f66b4c69a068859958d8db37.jpg",
+          },
+          updatedBy: 92,
+          createdOn: "createdon2",
+          updatedOn: "updatedon2",
         },
         {
-          type: "room",
-          title1: "Indusparquet",
-          title2: "Brazilian Pecan Engineered",
-          title3: "$8.95 / sq ft",
-          price: "6",
-          imagePath:
-            "https://www.john-lewis.co.uk/wp-content/uploads/2018/09/JLH-10.1443821-2500x3559.jpg",
+          id: 3,
+          collectionId: 56,
+          position: 3,
+          name: "material",
+          objectId: "3",
+          objectType: "material",
+          material: {
+            sku: "100306199",
+          },
+          updatedBy: 92,
+          createdOn: "createdon3",
+          updatedOn: "updatedon3",
         },
         {
-          type: "room",
-          title1: "Indusparquet",
-          title2: "Brazilian Pecan Engineered",
-          title3: "$8.95 / sq ft",
-          price: "6",
-          imagePath:
-            "https://www.thespruce.com/thmb/ygpyRaJpg4ubo3l-sDmiQph9YuQ=/1500x1000/filters:no_upscale():max_bytes(150000):strip_icc()/Scandi1-590ba2563df78c9283f4febf.jpg",
-        },
-        {
-          type: "sample",
-          title1: "Indusparquet",
-          title2: "Brazilian Pecan Engineered",
-          title3: "$8.95 / sq ft",
-          price: "6",
-          imagePath:
-            "https://s.cdnmpro.com/846376239/p/l/5/tapet-albastru-artisan-tiles-rebel-walls~22815.jpg",
-        },
-        {
-          type: "sample",
-          title1: "Indusparquet",
-          title2: "Brazilian Pecan Engineered",
-          title3: "$8.95 / sq ft",
-          price: "6",
-          imagePath:
-            "https://www.thespruce.com/thmb/qbpval5ZAScQyH84n882Q5XKiAo=/4352x3264/smart/filters:no_upscale()/colourful-glazed-rectangular-ceramic-tiles-on-the-exterior-wall-of-a-building-1017505168-175e8d7651074d0eaa21d15fb7ac7019.jpg",
-        },
-        {
-          type: "room",
-          title1: "Indusparquet",
-          title2: "Brazilian Pecan Engineered",
-          title3: "$8.95 / sq ft",
-          price: "6",
-          imagePath:
-            "https://i.pinimg.com/474x/af/61/57/af6157319df8490fa1e6b68946da1ca2.jpg",
+          id: 4,
+          collectionId: 56,
+          position: 4,
+          name: "sample",
+          objectId: "4",
+          objectType: "material",
+          material: {
+            sku: "100067327",
+          },
+          updatedBy: 92,
+          createdOn: "createdon4",
+          updatedOn: "updatedon4",
         },
       ],
+      person: null,
     };
   }
 
@@ -233,8 +230,7 @@ class Collection extends React.Component<Props, any> {
     const collectionItems = get(collection, "items", []);
     const finalItems = collectionItems.length
       ? collectionItems
-      : this.state.card;
-
+      : this.state.items;
     if (!collection.id) {
       return (
         <React.Fragment>
@@ -312,4 +308,5 @@ class Collection extends React.Component<Props, any> {
     );
   }
 }
+
 export default withRouter(Collection);
