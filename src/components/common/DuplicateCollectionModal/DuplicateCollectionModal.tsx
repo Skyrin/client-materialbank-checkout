@@ -62,6 +62,14 @@ class DuplicateCollectionModal extends React.Component<Props, State> {
     return get(collectionPageResult, "params.collection_id");
   };
 
+  submitOnEnter = (e: any) => {
+    if (e.key === "Enter") {
+      this.submit();
+    } else if (e.key === "Escape") {
+      this.closeModal();
+    }
+  };
+
   submit = async () => {
     const collectionId = parseInt(this.getCollectionId());
     if (collectionId) {
@@ -100,15 +108,16 @@ class DuplicateCollectionModal extends React.Component<Props, State> {
             <div className={styles.title}>Duplicate this Collection</div>
             <div className="horizontal-divider-toolbar"></div>
             <span>Collection Name</span>
-
-            <Input
+            <input
               className={styles.inputField}
               placeholder="Collection Name"
               value={this.state.collectionName}
               type="text"
-              onChange={(val: string) => this.setState({ collectionName: val })}
+              onChange={(e: any) =>
+                this.setState({ collectionName: e.target.value })
+              }
+              onKeyDown={this.submitOnEnter}
             />
-
             <div className={styles.buttonsContainer}>
               <div className={styles.createButton} onClick={this.submit}>
                 Create Collection
