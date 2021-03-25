@@ -21,7 +21,7 @@ export const UploadFragment = `
   fileName
   fileType
   blurhash
-  s3Url
+  url
   updatedBy
   createdOn
   updatedOn

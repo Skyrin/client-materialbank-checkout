@@ -55,7 +55,7 @@ export default class ItemCard extends React.Component<Props, any> {
       <React.Fragment>
         <div className={styles.front}>
           <div className={cn(styles.imageContainer)}>
-            <img src={this.props.item.upload.s3Url} alt="" />
+            <img src={this.props.item.upload.url} alt="" />
           </div>
         </div>
       </React.Fragment>
@@ -125,10 +125,10 @@ export default class ItemCard extends React.Component<Props, any> {
     return (
       <React.Fragment>
         <div className={cn(styles.imageContainer, styles.infoMode)}>
-          <img src={this.props.item.upload.s3Url} alt="" />
+          <img src={this.props.item.upload.url} alt="" />
         </div>
         <div className={cn(styles.infoContainer, styles.infoMode)}>
-          <div>{this.props.item.name}</div>
+          <div>{this.props.item.upload.name}</div>
         </div>
       </React.Fragment>
     );

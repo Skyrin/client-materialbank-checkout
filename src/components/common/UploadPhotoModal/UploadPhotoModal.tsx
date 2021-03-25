@@ -104,6 +104,7 @@ class UploadPhotoModal extends React.Component<Props, State> {
         name: this.state.name,
       });
       console.log("UPLOAD PHOTO RESPONSE", resp);
+      await this.context.requestCollection(collectionId);
       await this.context.requestCollections({
         limit: 100,
         offset: 0,

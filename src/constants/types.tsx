@@ -195,7 +195,7 @@ export type CollectionUploadT = {
   fileName?: string;
   fileType?: string;
   blurhash?: string;
-  s3Url?: string;
+  url?: string;
   updatedBy?: string;
   createdOn?: string;
   updatedOn?: string;

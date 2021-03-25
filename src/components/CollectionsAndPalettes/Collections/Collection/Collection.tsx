@@ -53,7 +53,7 @@ class Collection extends React.Component<Props, State> {
           objectType: "upload",
           upload: {
             name: "some_name",
-            s3Url:
+            url:
               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5brHIzPOkAv7A4E5ul_mT5BaCRbykzf1xvA&usqp=CAU",
           },
           updatedBy: 92,
@@ -69,7 +69,7 @@ class Collection extends React.Component<Props, State> {
           objectType: "upload",
           upload: {
             name: "some_name2",
-            s3Url:
+            url:
               "https://www.mydomaine.com/thmb/MNBaDGmg4IW7tOvl3pxVNpqQ6uE=/2500x3049/filters:fill(auto,1)/DesignbyEmilyHendersonDesignandPhotobySaraLigorria-Tramp_654-b8122ec9f66b4c69a068859958d8db37.jpg",
           },
           updatedBy: 92,
