@@ -28,8 +28,6 @@ export default class CheckoutFunnel extends React.Component<Props> {
             [styles.singleColumn]: this.context.confirmedOrderLoading,
           })}
         >
-          {isOnMobile() && <LogoMobile />}
-
           <div className={styles.pageWrapper}>
             <Switch>
               <Redirect

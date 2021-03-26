@@ -7,6 +7,7 @@ import {
   ORDER_CONFIRMATION_URL,
   PERSONAL_INFORMATION_URL,
 } from "constants/urls";
+import Logo from "../Logo/Logo";
 
 type Props = RouteComponentProps & {
   className?: string;
@@ -20,13 +21,9 @@ const BACK_BUTTON_URL_MAPPING = {
 function LogoMobile(props: Props) {
   return (
     <div className={cn(styles.LogoMobile, props.className)}>
-      <a
-        href={BACK_BUTTON_URL_MAPPING[props.location.pathname]}
-        className={cn(styles["back-button"], "far fa-arrow-left")}
-      >
-        {" "}
+      <a className={styles.pageHeader} href="/">
+        <Logo header></Logo>
       </a>
-      <h1>Design Shop</h1>
     </div>
   );
 }

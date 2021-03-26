@@ -30,9 +30,9 @@ export default class UserManagement extends React.Component<any, any> {
     return (
       <React.Fragment>
         <div className={styles.pageContent}>
-          <Link className={styles.pageHeader} to="/">
+          <a className={styles.pageHeader} href="/">
             <Logo header></Logo>
-          </Link>
+          </a>
           <div className={styles.pageWrapper}>
             {this.context.isLoggedIn && (
               <Switch>

@@ -93,8 +93,6 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     return (
       <div>
         <div className={cn(styles["UserOrderHistory"])}>
-          {isOnMobile() && <LogoMobile />}
-
           <UserHeader
             title={UserPages.OrderHistory.name}
             customer={this.context.customer}
