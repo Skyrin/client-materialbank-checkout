@@ -141,3 +141,25 @@ export const renameCollection = async (
   );
   return resp && get(resp, "collectionEdit");
 };
+
+export const duplicateCollection = async (
+  context: AppContextState,
+  collectionId: number,
+  collectionName: string
+) => {
+  const collectionCloneMutation = `
+    mutation collectionClone($id: Int!, $name: String!) {
+      collectionClone(id: $id, name: $name){
+        ${CollectionFragment}
+        }
+      }`;
+  const resp = await collectionsGraphqlRequest(
+    context,
+    collectionCloneMutation,
+    {
+      id: collectionId,
+      name: collectionName,
+    }
+  );
+  return resp && get(resp, "collectionClone");
+};

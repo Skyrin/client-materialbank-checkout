@@ -4,8 +4,11 @@ import cn from "classnames";
 import { AppContext, AppContextState } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
-import { RouteComponentProps } from "react-router-dom";
 import Input from "../Input/Input";
+import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
+import { get } from "lodash-es";
+import { duplicateCollection } from "../../../context/CollectionsAPI/api";
+import { COLLECTION_URL, COLLECTIONS_URL } from "../../../constants/urls";
 
 type State = {
   collectionName: string;
@@ -13,7 +16,7 @@ type State = {
 };
 type Props = RouteComponentProps;
 
-export class DuplicateCollectionModal extends React.Component<Props, State> {
+class DuplicateCollectionModal extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
@@ -51,6 +54,39 @@ export class DuplicateCollectionModal extends React.Component<Props, State> {
   disableWindowsScroll = () => {
     disableBodyScroll(this.modalTarget);
   };
+  getCollectionId = () => {
+    const collectionPageResult = matchPath(this.props.location.pathname, {
+      path: COLLECTION_URL,
+      exact: true,
+    });
+    return get(collectionPageResult, "params.collection_id");
+  };
+
+  submitOnEnter = (e: any) => {
+    if (e.key === "Enter") {
+      this.submit();
+    } else if (e.key === "Escape") {
+      this.closeModal();
+    }
+  };
+
+  submit = async () => {
+    const collectionId = parseInt(this.getCollectionId());
+    if (collectionId) {
+      const resp = await duplicateCollection(
+        this.context,
+        collectionId,
+        this.state.collectionName
+      );
+      console.log("duplicate response", resp);
+      await this.context.requestCollections({
+        limit: 100,
+        offset: 0,
+      });
+      this.closeModal();
+      this.props.history.push(COLLECTIONS_URL);
+    }
+  };
 
   render() {
     return (
@@ -72,17 +108,20 @@ export class DuplicateCollectionModal extends React.Component<Props, State> {
             <div className={styles.title}>Duplicate this Collection</div>
             <div className="horizontal-divider-toolbar"></div>
             <span>Collection Name</span>
-
-            <Input
+            <input
               className={styles.inputField}
               placeholder="Collection Name"
               value={this.state.collectionName}
               type="text"
-              onChange={(val: string) => this.setState({ collectionName: val })}
+              onChange={(e: any) =>
+                this.setState({ collectionName: e.target.value })
+              }
+              onKeyDown={this.submitOnEnter}
             />
-
             <div className={styles.buttonsContainer}>
-              <div className={styles.createButton}>Create Collection</div>
+              <div className={styles.createButton} onClick={this.submit}>
+                Create Collection
+              </div>
               <div className={styles.cancelButton} onClick={this.closeModal}>
                 Cancel
               </div>
@@ -99,3 +138,5 @@ export class DuplicateCollectionModal extends React.Component<Props, State> {
     );
   }
 }
+
+export default withRouter(DuplicateCollectionModal);
