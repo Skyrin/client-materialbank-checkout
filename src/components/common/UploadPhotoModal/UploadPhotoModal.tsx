@@ -99,7 +99,7 @@ class UploadPhotoModal extends React.Component<Props, State> {
     const collectionId = this.getCollectionId();
     if (collectionId) {
       const resp = await uploadPhoto(this.context, this.getCollectionId(), {
-        file: this.state.file,
+        file: this.state.file.split(",")[1],
         fileName: this.state.fileName,
         name: this.state.name,
       });
