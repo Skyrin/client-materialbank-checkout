@@ -53,8 +53,6 @@ export default class PromoCode extends React.Component<Props, State> {
   render() {
     const promoCodes = this.context.cart?.applied_coupons || [];
 
-    console.log(promoCodes);
-
     return (
       <div className={cn(styles.promoCodeContainer, this.props.className)}>
         <div

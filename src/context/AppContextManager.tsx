@@ -442,6 +442,7 @@ export default class AppContextManager extends React.Component<Props> {
       const cartId = this.contextState.cart.id;
       const order = await placeOrder(this.getFullContext(), cartId);
       console.log("PLACED ORDER", order);
+      sessionStorage.removeItem(ORDER_ID_STORAGE_KEY);
       sessionStorage.setItem(ORDER_NUMBER_STORAGE_KEY, order["order_number"]);
       localStorage.removeItem(GUEST_CART_ID_STORAGE_KEY);
       this.contextState.cartInfoLoading = false;
@@ -458,13 +459,16 @@ export default class AppContextManager extends React.Component<Props> {
       // So we need to get the entire list and find it ourselves
       const orderNumber = sessionStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
       let orderId = sessionStorage.getItem(ORDER_ID_STORAGE_KEY);
-      if (orderNumber) {
+      if (orderNumber && !orderId) {
         this.contextState.confirmedOrderLoading = true;
         this.forceUpdate();
         const order = await requestOrder(this.context, orderNumber);
-        console.log("GOT ORDER", order);
-        orderId = order.increment_id;
-        sessionStorage.setItem(ORDER_ID_STORAGE_KEY, orderId);
+        if (order && order.id) {
+          orderId = atob(order.id);
+          console.log("GOT ORDER ID", orderId);
+          sessionStorage.removeItem(ORDER_NUMBER_STORAGE_KEY);
+          sessionStorage.setItem(ORDER_ID_STORAGE_KEY, orderId);
+        }
       }
 
       if (orderId) {

@@ -200,7 +200,6 @@ export const requestOrder = async (
       customer {
         orders(filter: $filter){
           items {
-            increment_id
             ${OrderFragment}
           }
         }

@@ -1,4 +1,9 @@
-import { ORDER_ID_STORAGE_KEY, PASSWORD_REGEX } from "constants/general";
+import {
+  GUEST_CART_ID_STORAGE_KEY,
+  ORDER_ID_STORAGE_KEY,
+  ORDER_NUMBER_STORAGE_KEY,
+  PASSWORD_REGEX,
+} from "constants/general";
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import styles from "./PersonalInformation.module.scss";
@@ -709,7 +714,9 @@ export class PersonalInformation extends React.Component<Props, State> {
     );
     const respBody = await response.json();
     if (response.ok && respBody) {
+      sessionStorage.removeItem(ORDER_NUMBER_STORAGE_KEY);
       sessionStorage.setItem(ORDER_ID_STORAGE_KEY, respBody);
+      localStorage.removeItem(GUEST_CART_ID_STORAGE_KEY);
       this.props.history.push(ORDER_CONFIRMATION_URL);
       return;
     }
