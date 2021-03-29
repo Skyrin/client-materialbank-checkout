@@ -12,6 +12,7 @@ import { deleteItem } from "../../../context/CollectionsAPI/api";
 type State = {
   isLoading: boolean;
 };
+
 type Props = RouteComponentProps;
 
 class DeleteItemModal extends React.Component<Props, State> {
