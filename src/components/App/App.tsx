@@ -25,6 +25,7 @@ import { AccountExistsModal } from "components/common/AccountExistsModal/Account
 import { CreateCustomerInput } from "context/CustomerAPI/models";
 import CollectionsAndPalettes from "../CollectionsAndPalettes/CollectionsAndPalettes";
 import DeleteCollectionModal from "../common/DeleteCollectionModal/DeleteCollectionModal";
+import DeleteItemModal from "../common/DeleteItemModal/DeleteItemModal";
 import { ShareCollectionModal } from "../common/ShareCollectionModal/ShareCollectionModal";
 import DuplicateCollectionModal from "../common/DuplicateCollectionModal/DuplicateCollectionModal";
 import { MakePrivateModal } from "../common/MakePrivateModal/MakePrivateModal";
@@ -111,6 +112,9 @@ class App extends React.Component<any, State> {
         )}
         {this.context.getModalOpen() === Modals.DeleteCollection && (
           <DeleteCollectionModal />
+        )}
+        {this.context.getModalOpen() === Modals.DeleteItem && (
+          <DeleteItemModal />
         )}
         {this.context.getModalOpen() === Modals.MakePrivateCollection && (
           <MakePrivateModal />

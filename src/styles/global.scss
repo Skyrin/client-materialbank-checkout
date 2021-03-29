@@ -150,12 +150,12 @@ h4 {
 
   &.collection {
     width: auto;
-    padding: 10px 25px;
+    padding: 10px 20px;
     background-color: transparent;
     border: 1px solid rgba(1, 1, 1, 0.6);
     color: var(--button-collection-color);
     @include mobile-media {
-      padding: 15px $margin-medium-5;
+      padding: 15px 45px;
       height: 100%;
       border-radius: 30px;
     }

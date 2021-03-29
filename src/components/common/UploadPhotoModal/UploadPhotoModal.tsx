@@ -94,6 +94,14 @@ class UploadPhotoModal extends React.Component<Props, State> {
     return get(collectionPageResult, "params.collection_id");
   };
 
+  submitOnEnter = (e: any) => {
+    if (e.key === "Enter") {
+      this.submit();
+    } else if (e.key === "Escape") {
+      this.closeModal();
+    }
+  };
+
   submit = async () => {
     console.log(this.state);
     const collectionId = this.getCollectionId();
@@ -139,6 +147,7 @@ class UploadPhotoModal extends React.Component<Props, State> {
               type="file"
               name="upload-photo"
               onChange={this.handleImageUpload}
+              onKeyDown={this.submitOnEnter}
             />
             <label
               htmlFor="upload-photo"
