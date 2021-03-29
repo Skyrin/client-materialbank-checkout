@@ -1,17 +1,54 @@
 @import "styles/variablesscss.scss";
 @import "styles/mixins.scss";
+
 .pageWrapper {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
   overflow: hidden;
 }
+
 .pageContent {
   flex-grow: 1;
   padding: $margin-huge $margin-huge-5 117px $margin-huge-5;
   position: relative;
   @include mobile-media {
     padding: 15px;
+  }
+}
+.pageHeader {
+  border-bottom: 1px solid $primary-color-user;
+  padding: 2px $margin-huge-5 2px;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xxl);
+  color: white;
+  background-color: $background-header-color;
+  text-decoration: none;
+  @media (max-width: 520px) {
+    padding: 0;
+  }
+
+  h1 {
+    color: white;
+    font-size: 20px;
+    @media (max-width: 520px) {
+      font-size: 18px;
+    }
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0 !important;
+
+    svg {
+      fill: white !important;
+      height: 2.2rem;
+      @media (max-width: 520px) {
+        height: 1.5rem;
+      }
+    }
   }
 }
 

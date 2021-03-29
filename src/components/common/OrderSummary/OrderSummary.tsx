@@ -70,7 +70,9 @@ class OrderSummary extends React.Component<Props, State> {
   renderLogo = () => {
     return (
       <div className={styles.logoWrapper}>
-        <i className={"far fa-arrow-left"} />
+        <a href="/" className={styles.backArrow}>
+          <i className={"far fa-arrow-left"} />
+        </a>
         <Logo className={styles.logo} circleClassName={styles.circle} header />
       </div>
     );

@@ -6,6 +6,11 @@
   padding: 80px 140px;
   background-color: #f9f7f5;
 
+  .backArrow {
+    display: flex;
+    align-items: center;
+  }
+
   .logoWrapper {
     position: relative;
     display: flex;

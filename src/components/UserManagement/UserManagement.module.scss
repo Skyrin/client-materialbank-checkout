@@ -10,14 +10,37 @@
 
   .pageHeader {
     border-bottom: 1px solid $primary-color-user;
-    padding: $margin-small-4 $margin-huge-5 $margin-small-4;
+    padding: 2px $margin-huge-5 2px;
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-xxl);
     color: white;
     background-color: $background-header-color;
     text-decoration: none;
-    @include mobile-media {
-      display: none;
+    @media (max-width: 520px) {
+      padding: 0;
+    }
+
+    h1 {
+      color: white;
+      font-size: 20px;
+      @media (max-width: 520px) {
+        font-size: 18px;
+      }
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0 !important;
+
+      svg {
+        fill: white !important;
+        height: 2.2rem;
+        @media (max-width: 520px) {
+          height: 1.5rem;
+        }
+      }
     }
   }
 

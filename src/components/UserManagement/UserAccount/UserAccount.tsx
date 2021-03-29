@@ -249,7 +249,6 @@ export default class UserAccount extends React.Component<Props, State> {
   render() {
     return (
       <div className={styles.UserAccount}>
-        {isOnMobile() && <LogoMobile />}
         <UserHeader
           title={UserPages.Account.name}
           customer={this.state.customer}
