@@ -15,6 +15,7 @@ import { isOnMobile } from "utils/responsive";
 import LogoMobile from "../../common/LogoMobile/LogoMobile";
 import { RESTRequest } from "RestClient";
 import { OrderX, ProductX } from "constants/orderTypes";
+import { getSamplePage } from "utils/general";
 
 interface Props extends RouteComponentProps {}
 
@@ -93,13 +94,16 @@ export default class UserOrderHistory extends React.Component<Props, State> {
   addItemToCart(item: ProductX): void {}
 
   openItemOverlay(item: ProductX, order: OrderX): void {
-    this.modalRef.current.open(
-      <OrderItemOverlay
-        order={order}
-        item={item}
-        addToCart={this.addItemToCart}
-      />
-    );
+    // @ts-ignore
+    window.location = getSamplePage(item.sku);
+
+    // this.modalRef.current.open(
+    //   <OrderItemOverlay
+    //     order={order}
+    //     item={item}
+    //     addToCart={this.addItemToCart}
+    //   />
+    // );
   }
 
   render() {
