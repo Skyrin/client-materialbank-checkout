@@ -28,10 +28,22 @@
   grid-template-columns: 1fr 3fr;
   column-gap: 90px;
   align-items: center;
+  @include mobile-media {
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 520px) {
+    display: flex;
+    flex-direction: column;
+    padding: $margin-small-4 0;
+  }
 
   div {
     min-height: 400px;
     max-width: 300px;
+    @media (max-width: 520px) {
+      min-height: 100px;
+      max-width: 100%;
+    }
   }
 
   .empty {
