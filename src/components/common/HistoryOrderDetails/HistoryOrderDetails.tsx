@@ -49,7 +49,7 @@ export function HistoryOrderDetails(props: Props) {
         </div>
         <div className={cn(styles["row"])}>{deliveryAddress.street1}</div>
         <div className={cn(styles["row"])}>
-          {deliveryAddress.city}, {"deliveryAddress.region"}{" "}
+          {deliveryAddress.city}, {deliveryAddress.state}{" "}
           {deliveryAddress.postalCode}
         </div>
         <div className={cn(styles["row"])}>{deliveryAddress.country}</div>
@@ -62,7 +62,7 @@ export function HistoryOrderDetails(props: Props) {
           </div>
           <div className={cn(styles["row"])}>{billingAddress.street1}</div>
           <div className={cn(styles["row"])}>
-            {billingAddress.city}, {"billingAddress.region"}{" "}
+            {billingAddress.city}, {billingAddress.state}{" "}
             {billingAddress.postalCode}
           </div>
           <div className={cn(styles["row"])}>{billingAddress.country}</div>
