@@ -144,7 +144,7 @@ export default class UserOrderHistory extends React.Component<Props, State> {
           )}
           <Modal ref={this.modalRef} />
         </div>
-        {this.context.isOrdersLoading() && (
+        {(this.context.customerLoading || this.context.isOrdersLoading()) && (
           <Loader
             containerClassName={styles.loaderContainer}
             loaderClassName={styles.loader}

@@ -5,6 +5,8 @@ import { getSamplePage, parseCurrency } from "utils/general";
 import { AppContext, AppContextState } from "context/AppContext";
 import { isOnMobile } from "utils/responsive";
 import { OrderX, ProductX } from "constants/orderTypes";
+import { get } from "lodash-es";
+import PriceIndicator from "components/common/PriceIndicator/PriceIndicator";
 
 interface Props {
   item?: Item;
@@ -33,8 +35,10 @@ export class HistoryOrderItem extends React.Component<Props> {
   render() {
     const item = this.props.itemT;
     const order = this.props.order;
-    // const algoliaProduct = this.context.productsCache.getProduct(item.sku);
-    // const color = get(algoliaProduct, "data.color", "orderItem.color");
+    const algoliaProduct = this.context.productsCache.getProduct(item.sku);
+    const priceSign = get(algoliaProduct, "data.price_sign");
+    console.log("product");
+    console.log(algoliaProduct);
     // const imageUrl = get(
     //   algoliaProduct,
     //   "data.thumbnail_url",
@@ -120,15 +124,22 @@ export class HistoryOrderItem extends React.Component<Props> {
               {parseCurrency(order.currency)}
               {item.price} / {"sample"}
             </div>
-            <div
-              className={cn(
-                styles["label"],
-                "font-size-sm",
-                "text-color-xlight"
-              )}
-            >
-              {parseCurrency(order.currency)}
-              {item.unitCost} / {item.unitOfMeasure}
+            <div className="row center-vertically">
+              <PriceIndicator
+                className={styles.priceIndicator}
+                maxPrice={3}
+                priceValue={(3 * priceSign?.length) / 5}
+              />
+              <div
+                className={cn(
+                  styles["label"],
+                  "font-size-sm",
+                  "text-color-xlight"
+                )}
+              >
+                {parseCurrency(order.currency)}
+                {item.unitCost} / {item.unitOfMeasure}
+              </div>
             </div>
           </div>
         )}

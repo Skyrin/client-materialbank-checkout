@@ -96,10 +96,12 @@ export class HistoryOrder extends React.Component<Props, State> {
               className={cn(styles["middle-container"], styles["container"])}
             >
               {/* TODO: When API available: Handle actual statuses. Also change classes in the css file */}
-              <div
-                className={cn(styles["status-dot"], styles[statusClassName])}
-              />
-              <div className={cn(styles["status-text"])}>{order.status}</div>
+              <div className={styles.containerStatus}>
+                <div
+                  className={cn(styles["status-dot"], styles[statusClassName])}
+                />
+                <div className={cn(styles["status-text"])}>{order.status}</div>
+              </div>
               <button className={styles.trackPackage}>Track package</button>
             </div>
 
