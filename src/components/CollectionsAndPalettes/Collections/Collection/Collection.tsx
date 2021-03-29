@@ -166,8 +166,6 @@ class Collection extends React.Component<Props, State> {
   }
 
   render() {
-    const uploads = [];
-    const materials = [];
     const collection = this.getCollection();
     const collectionItems = get(collection, "items", []);
     const finalItems = collectionItems.length
