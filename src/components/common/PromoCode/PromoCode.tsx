@@ -13,7 +13,6 @@ type State = {
   promoCode: string;
   promoCodeError: string | null;
   isOpen: boolean;
-  promoCodes: string[];
 };
 
 export default class PromoCode extends React.Component<Props, State> {
@@ -24,22 +23,19 @@ export default class PromoCode extends React.Component<Props, State> {
     promoCode: "",
     promoCodeError: null,
     isOpen: false,
-    promoCodes: [],
   };
 
   applyCoupon = async () => {
     console.log("APPLY PROMO CODE", this.state.promoCode);
     try {
       await this.context.applyCouponToCart(this.state.promoCode);
+      this.setState({
+        promoCode: "",
+      });
     } catch (e) {
       console.log("ERROR IN PROMO CODE COMPONENT", e);
       console.log(e.graphqlErrors);
       this.setState({ promoCodeError: e.graphqlErrors[0].message });
-    } finally {
-      this.setState({
-        promoCode: "",
-        promoCodes: [...this.state.promoCodes, this.state.promoCode],
-      });
     }
   };
 
@@ -51,17 +47,14 @@ export default class PromoCode extends React.Component<Props, State> {
       console.log("ERROR IN PROMO CODE COMPONENT", e);
       console.log(e.graphqlErrors);
       this.setState({ promoCodeError: e.graphqlErrors[0].message });
-    } finally {
-      const newCodes = [...this.state.promoCodes].filter(
-        (pc) => pc !== promoCode
-      );
-      this.setState({
-        promoCodes: newCodes,
-      });
     }
   };
 
   render() {
+    const promoCodes = this.context.cart?.applied_coupons || [];
+
+    console.log(promoCodes);
+
     return (
       <div className={cn(styles.promoCodeContainer, this.props.className)}>
         <div
@@ -79,7 +72,7 @@ export default class PromoCode extends React.Component<Props, State> {
           />
         </div>
 
-        {this.state.promoCodes.length === 0 && (
+        {promoCodes.length === 0 && (
           <Input
             className={cn(styles.promoCodeInput, {
               [styles.visible]: this.state.isOpen,
@@ -95,13 +88,13 @@ export default class PromoCode extends React.Component<Props, State> {
           />
         )}
 
-        {this.state.promoCodes.length > 0 && (
+        {promoCodes.length > 0 && (
           <div className={styles.promoCodes}>
-            {this.state.promoCodes.map((pc) => (
+            {promoCodes.map((pc) => (
               <div className={styles.promoCode} key={`promo_code_${pc}`}>
                 <div className={styles.codeWrapper}>
                   <i className={cn("far", "fa-tags", styles.couponIcon)} />
-                  <span className={styles.code}>{pc}</span>
+                  <span className={styles.code}>{pc.code}</span>
                 </div>
                 <i
                   className={cn("far", "fa-times", styles.removeCodeIcon)}

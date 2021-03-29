@@ -1,54 +1,19 @@
 @import "styles/mixins.scss";
+@import "styles/variablesscss";
 
-$card-height: 100px;
+$card-height: 140px;
 
 .RecommendationCard {
-  box-shadow: shadow($shadow-size-sm, $shadow-color-normal);
-  border-radius: var(--card-border-radius-nm);
-  height: $card-height;
   width: 100%;
-  display: flex;
-  position: relative;
-  overflow: hidden;
+  height: 100%;
+  object-fit: cover;
+  box-shadow: shadow($shadow-size-sm, $shadow-color-normal);
+  border-radius: 5px;
+  border: 1px solid rgba($checkout-primary-color, 0.1);
   transition: box-shadow 0.1s linear;
   cursor: pointer;
 
   &:hover {
     box-shadow: shadow($shadow-size-lg, $shadow-color-normal);
   }
-}
-
-.image {
-  height: 100%;
-  width: $card-height;
-  max-width: calc(100% - 110px);
-  background-image: url("../../../assets/images/Fill.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  border-top-left-radius: inherit;
-  border-bottom-left-radius: inherit;
-}
-
-.content {
-  padding: 10px 15px 10px 10px;
-  flex: 1;
-}
-
-.type {
-  font-size: var(--font-size-xs);
-  color: var(--text-color-light);
-}
-
-.title {
-  font-size: var(--font-size-sm);
-  margin-top: 5px;
-  font-weight: var(--font-weight-medium);
-  white-space: pre-wrap;
-}
-
-.color {
-  font-size: var(--font-size-sm);
-  color: rgba(var(--primary-color-rgb), 0.6);
-  line-height: 1.33;
 }

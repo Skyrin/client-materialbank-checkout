@@ -131,8 +131,6 @@ export default class UserBilling extends React.Component<Props, State> {
   render() {
     return (
       <div className={styles.UserBilling}>
-        {isOnMobile() && <LogoMobile />}
-
         <UserHeader
           title={UserPages.Billing.name}
           customer={this.state.customer}

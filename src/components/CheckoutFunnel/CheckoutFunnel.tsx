@@ -29,7 +29,9 @@ export default class CheckoutFunnel extends React.Component<Props> {
           })}
         >
           {isOnMobile() && <LogoMobile />}
-
+          {!this.context.confirmedOrderLoading && (
+            <OrderSummary className={styles.orderSummary} />
+          )}
           <div className={styles.pageWrapper}>
             <Switch>
               <Redirect
@@ -47,9 +49,6 @@ export default class CheckoutFunnel extends React.Component<Props> {
               />
             </Switch>
           </div>
-          {!this.context.confirmedOrderLoading && (
-            <OrderSummary className={styles.orderSummary} />
-          )}
         </div>
       </React.Fragment>
     );

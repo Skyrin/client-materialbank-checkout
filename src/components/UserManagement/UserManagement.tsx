@@ -14,6 +14,7 @@ import styles from "./UserManagement.module.scss";
 import UserOrderHistory from "./UserOrderHistory/UserOrderHistory";
 import UserShipping from "./UserShipping/UserShipping";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
+import Logo from "../common/Logo/Logo";
 
 export default class UserManagement extends React.Component<any, any> {
   static contextType = AppContext;
@@ -29,9 +30,9 @@ export default class UserManagement extends React.Component<any, any> {
     return (
       <React.Fragment>
         <div className={styles.pageContent}>
-          <a className={styles.pageHeader} href="/">
-            design.shop
-          </a>
+          <div className={styles.pageHeader}>
+            <Logo header></Logo>
+          </div>
           <div className={styles.pageWrapper}>
             {this.context.isLoggedIn && (
               <Switch>
@@ -51,7 +52,6 @@ export default class UserManagement extends React.Component<any, any> {
             )}
           </div>
         </div>
-        <Footer />
       </React.Fragment>
     );
   }
