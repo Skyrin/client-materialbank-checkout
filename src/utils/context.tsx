@@ -1,6 +1,7 @@
 // General utils for some common context operations
 
-import { AddressT } from "constants/types";
+import { getRegionFromName } from "constants/regions";
+import { AddressT, OrderAddressT, OrderItemT, OrderT } from "constants/types";
 import { AppContextState } from "context/AppContext";
 import { isEqual } from "lodash";
 
@@ -32,4 +33,70 @@ export const getAddressId = (context: AppContextState, address: AddressT) => {
     return foundAddress.id;
   }
   return -1;
+};
+
+export const parseRESTAddress = (restAddress: any) => {
+  const result: OrderAddressT = {};
+  result.id = restAddress.id;
+  result.firstname = restAddress.firstname;
+  result.lastname = restAddress.lastname;
+  result.city = restAddress.city;
+  result.company = restAddress.company;
+  result.postcode = restAddress.postalCode;
+  result.street = [restAddress.street1, restAddress.street2].filter((c) => c);
+  result.telephone = restAddress.phone;
+  result.region = getRegionFromName(restAddress.state).code;
+  return result;
+};
+
+export const parseRESTOrderItem = (restProduct: any) => {
+  const result: OrderItemT = {};
+  result.product_sku = restProduct.sku;
+  result.product_name = restProduct.name;
+  result.id = restProduct.id;
+  result.product_sale_price = {
+    currency: "USD",
+    value: restProduct.price,
+  };
+  result.quantity_invoiced = parseInt(restProduct.qtyInvoiced, 10);
+  result.quantity_ordered = parseInt(restProduct.qtyOrdered, 10);
+  return result;
+};
+
+export const parseRESTOrder = (restOrder: any) => {
+  const result: OrderT = {};
+  result.number = restOrder.number;
+  result.order_date = restOrder.createdAt;
+  result.status = restOrder.status;
+  const restBillingAddress = restOrder.address.find(
+    (addr) => addr.type === "billing"
+  );
+  result.billing_address = parseRESTAddress(restBillingAddress);
+  const restShippingAddress = restOrder.address.find(
+    (addr) => addr.type === "shipping"
+  );
+  result.shipping_address = parseRESTAddress(restShippingAddress);
+  result.payment = restOrder.payment;
+  result.total = {
+    grand_total: {
+      currency: "USD",
+      value: parseInt(restOrder.total, 10),
+    },
+    subtotal: {
+      currency: "USD",
+      value: parseInt(restOrder.subtotal, 10),
+    },
+    total_shipping: {
+      currency: "USD",
+      value: parseInt(restOrder.shipping, 10),
+    },
+    total_tax: {
+      currency: "USD",
+      value: parseInt(restOrder.tax, 10),
+    },
+  };
+  result.items = (restOrder.products || []).map((prod) =>
+    parseRESTOrderItem(prod)
+  );
+  return result;
 };

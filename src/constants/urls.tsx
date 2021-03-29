@@ -21,7 +21,7 @@ export const COLLECTIONS_URL = `${COLLECTIONS_AND_PALETTES_URL}/my-collections`;
 export const PALETTES_URL = `${COLLECTIONS_AND_PALETTES_URL}/palettes`;
 export const COLLECTION_URL = `${COLLECTIONS_URL}/:collection_id`;
 
-export const goToStorefront = (path?: string) => {
+export const goToStorefront = (path?: string = "") => {
   // Use this to go to the storefront in order to trigger the storefront app to reload
   // Might not need this eventually, but for now we need to re-initialize it so that it can create a new cart
   // after we complete a checkout

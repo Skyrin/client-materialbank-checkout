@@ -6,6 +6,10 @@
   grid-template-areas: "order-summary page-wrapper";
   flex-grow: 1;
 
+  @include mobile-media {
+    background-color: #f9f7f5;
+  }
+
   &.singleColumn {
     grid-template-columns: auto;
     grid-template-areas: "page-wrapper";
@@ -14,6 +18,11 @@
   .pageWrapper {
     grid-area: page-wrapper;
     box-shadow: -6px 0 12px 0 rgba(0, 0, 0, 0.08);
+    z-index: 1;
+
+    @include mobile-media {
+      box-shadow: none;
+    }
   }
 
   .orderSummary {

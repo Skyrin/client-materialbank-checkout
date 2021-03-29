@@ -5,6 +5,7 @@ import {
   CartAppliedCouponsFragment,
   CartBillingAddressFragment,
   CartFragment,
+  CartPricesFragment,
   CartSelectedPaymentMethod,
   CartShippingAddressesFragment,
 } from "./fragments";
@@ -49,6 +50,7 @@ export const applyCouponToCart = async (
       applyCouponToCart(input: $input) {
         cart {
           ${CartAppliedCouponsFragment}
+          ${CartPricesFragment}
         }
       }
     }
@@ -74,6 +76,7 @@ export const removeCouponFromCart = async (
       removeCouponFromCart(input: $input) {
         cart {
           ${CartAppliedCouponsFragment}
+          ${CartPricesFragment}
         }
       }
     }
@@ -355,6 +358,34 @@ export const createPaypalTokenForCart = async (
       variables
     );
     return response["createPaypalExpressToken"];
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const updateCartItems = async (
+  context: AppContextState,
+  cartId: string,
+  cartItems: any
+) => {
+  const UpdateCartItemsMutation = `
+    mutation updateCartItems($input: UpdateCartItemsInput!) {
+      updateCartItems(input: $input) {
+        cart {
+          ${CartFragment}
+        }
+      }
+    }
+  `;
+  try {
+    const response = await graphqlRequest(context, UpdateCartItemsMutation, {
+      input: {
+        cart_id: cartId,
+        cart_items: cartItems,
+      },
+    });
+    return response["updateCartItems"]["cart"];
   } catch (e) {
     console.error(e);
     throw e;

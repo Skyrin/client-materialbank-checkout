@@ -5,19 +5,11 @@ import {
   COLLECTION_URL,
 } from "constants/urls";
 import * as React from "react";
-import {
-  Link,
-  Redirect,
-  Route,
-  RouteComponentProps,
-  Switch,
-} from "react-router-dom";
+import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./CollectionsAndPalettes.module.scss";
 import Collections from "./Collections/Collections";
 import Palettes from "./Palettes/Palettes";
 import CollectionsToolbar from "./common/CollectionsToolbar/CollectionsToolbar";
-import CollectionsHeader from "./common/CollectionsHeader/CollectionsHeader";
-import CollectionsFooter from "./common/CollectionsFooter/CollectionsFooter";
 import Collection from "./Collections/Collection/Collection";
 import ExploreTags from "./common/ExploreTags/ExploreTags";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
@@ -80,9 +72,9 @@ export default class CollectionsAndPalettes extends React.Component<
     return (
       <React.Fragment>
         <div className={styles.pageWrapper}>
-          <Link className={styles.pageHeader} to="/">
+          <div className={styles.pageHeader}>
             <Logo header></Logo>
-          </Link>
+          </div>
           {this.context.isLoggedIn ? (
             <div className={styles.pageContent}>
               <Switch>

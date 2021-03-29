@@ -270,6 +270,25 @@ export const getRegionFromId = (id: number) => {
   return result;
 };
 
+export const getRegionFromName = (name: string) => {
+  let result = {
+    id: 43,
+    code: "NY",
+    name: "New York",
+  }; // Default
+  forOwn(REGIONS, (regionInfo, regionCode) => {
+    if (name === regionInfo.name) {
+      result = {
+        id: regionInfo.id,
+        code: regionCode,
+        name: regionInfo.name,
+      };
+      return false; // Exit forOwn
+    }
+  });
+  return result;
+};
+
 export const getRegionFromCode = (code: string) => {
   return {
     ...REGIONS[code],
