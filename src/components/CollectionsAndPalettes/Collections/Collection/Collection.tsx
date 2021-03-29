@@ -247,9 +247,9 @@ class Collection extends React.Component<Props, State> {
                   })}
                 </Masonry>
               </ResponsiveMasonry>
-              <AddToCartButton
-                commonAreaIsInViewport={this.state.commonAreaIsInViewport}
-              />
+              {/*<AddToCartButton*/}
+              {/*  commonAreaIsInViewport={this.state.commonAreaIsInViewport}*/}
+              {/*/>*/}
             </React.Fragment>
           )}
           {finalItems.length < 1 && (
