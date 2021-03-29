@@ -7,9 +7,9 @@ import {
   Item,
 } from "components/common/HistoryOrderItem/HistoryOrderItem";
 import { HistoryOrderDetails } from "components/common/HistoryOrderDetails/HistoryOrderDetails";
-import { OrderItemT, OrderT } from "constants/types";
 import { isOnMobile } from "utils/responsive";
 import { OrderX, ProductX } from "constants/orderTypes";
+import { random } from "lodash-es";
 
 interface Props {
   order?: {
@@ -127,7 +127,7 @@ export class HistoryOrder extends React.Component<Props, State> {
                   itemT={item}
                   order={order}
                   onClick={() => this.props.shopItem(item)}
-                  key={item.sku}
+                  key={order.id + item.sku + random(1, order.products.length)}
                 />
               ))
             : order.products
@@ -137,7 +137,7 @@ export class HistoryOrder extends React.Component<Props, State> {
                     order={order}
                     itemT={item}
                     onClick={() => this.props.shopItem(item)}
-                    key={item.sku}
+                    key={item.sku + random(1, order.products.length)}
                   />
                 ))}
         </div>

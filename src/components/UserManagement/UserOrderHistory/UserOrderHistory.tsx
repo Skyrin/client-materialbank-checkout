@@ -7,13 +7,11 @@ import { SearchBar } from "components/common/SearchBar/SearchBar";
 import { HistoryOrder } from "components/common/HistoryOrder/HistoryOrder";
 import cn from "classnames";
 import styles from "./UserOrderHistory.module.scss";
-import { DateTime } from "luxon";
 import { OrderItemOverlay } from "components/common/OrderItemOverlay/OrderItemOverlay";
 import { Modal } from "components/common/Modal/Modal";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
-import { OrderItemT, OrderT } from "constants/types";
-import { isOnMobile } from "../../../utils/responsive";
+import { isOnMobile } from "utils/responsive";
 import LogoMobile from "../../common/LogoMobile/LogoMobile";
 import { RESTRequest } from "RestClient";
 import { OrderX, ProductX } from "constants/orderTypes";
@@ -21,7 +19,6 @@ import { OrderX, ProductX } from "constants/orderTypes";
 interface Props extends RouteComponentProps {}
 
 type State = {
-  orders: OrderT[];
   ordersX: OrderX[];
 };
 
@@ -35,7 +32,6 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     super(props);
     this.modalRef = React.createRef();
     this.state = {
-      orders: [],
       ordersX: [],
     };
   }
@@ -68,6 +64,7 @@ export default class UserOrderHistory extends React.Component<Props, State> {
       });
     }
 
+    console.log(orderResponse);
     this.context.setOrdersLoading(false);
     this.forceUpdate();
   }

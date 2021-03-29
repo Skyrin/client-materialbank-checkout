@@ -1,11 +1,8 @@
 import React from "react";
 import cn from "classnames";
 import styles from "./HistoryOrderItem.module.scss";
-import { OrderItemT } from "constants/types";
 import { getSamplePage, parseCurrency } from "utils/general";
 import { AppContext, AppContextState } from "context/AppContext";
-import { get } from "lodash-es";
-import imagePlaceholder from "assets/images/Fill.png";
 import { isOnMobile } from "utils/responsive";
 import { OrderX, ProductX } from "constants/orderTypes";
 
@@ -36,19 +33,19 @@ export class HistoryOrderItem extends React.Component<Props> {
   render() {
     const item = this.props.itemT;
     const order = this.props.order;
-    const algoliaProduct = this.context.productsCache.getProduct(item.sku);
-    const color = get(algoliaProduct, "data.color", "orderItem.color");
-    const imageUrl = get(
-      algoliaProduct,
-      "data.thumbnail_url",
-      imagePlaceholder
-    );
+    // const algoliaProduct = this.context.productsCache.getProduct(item.sku);
+    // const color = get(algoliaProduct, "data.color", "orderItem.color");
+    // const imageUrl = get(
+    //   algoliaProduct,
+    //   "data.thumbnail_url",
+    //   imagePlaceholder
+    // );
     const sampleUrl = getSamplePage(item.sku);
     return (
       <div className={cn(styles["HistoryOrderItem"])}>
         <div className={cn(styles["left-container"])}>
           <a href={sampleUrl}>
-            <img src={imageUrl} alt="" className={styles["image"]} />
+            <img src={item.imageUrl} alt="" className={styles["image"]} />
           </a>
           <div className={cn(styles["brand-model"])}>
             {!isOnMobile() && (
@@ -59,7 +56,7 @@ export class HistoryOrderItem extends React.Component<Props> {
                   "text-color-xlight"
                 )}
               >
-                {item.sku}
+                {item.manufacturer}
               </div>
             )}
 
@@ -78,7 +75,7 @@ export class HistoryOrderItem extends React.Component<Props> {
                 styles.colorLabel
               )}
             >
-              {color}
+              {item.color}
             </div>
 
             {isOnMobile() && (
@@ -91,7 +88,7 @@ export class HistoryOrderItem extends React.Component<Props> {
                 )}
               >
                 {parseCurrency(order.currency)}
-                {item.price} / {item.unitOfMeasure}
+                {item.price} / {"sample"}
               </div>
             )}
 
@@ -105,7 +102,7 @@ export class HistoryOrderItem extends React.Component<Props> {
                 )}
               >
                 {parseCurrency(order.currency)}
-                {item.price} / {item.unitOfMeasure}
+                {item.unitCost} / {item.unitOfMeasure}
               </div>
             )}
           </div>
@@ -121,7 +118,7 @@ export class HistoryOrderItem extends React.Component<Props> {
               )}
             >
               {parseCurrency(order.currency)}
-              {item.price} / {item.unitOfMeasure}
+              {item.price} / {"sample"}
             </div>
             <div
               className={cn(
@@ -131,7 +128,7 @@ export class HistoryOrderItem extends React.Component<Props> {
               )}
             >
               {parseCurrency(order.currency)}
-              {item.price} / {item.unitOfMeasure}
+              {item.unitCost} / {item.unitOfMeasure}
             </div>
           </div>
         )}
