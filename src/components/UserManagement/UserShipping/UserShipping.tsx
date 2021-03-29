@@ -169,7 +169,7 @@ export default class UserShipping extends React.Component<Props, State> {
                   </div>
                 </div>
 
-                {isOnMobile() && (
+                {isOnMobile() && this.state.editingAddress?.id === address.id && (
                   <MapAddressForm
                     className={cn(styles.mobileEditAddress, {
                       [styles.visible]:
@@ -197,12 +197,14 @@ export default class UserShipping extends React.Component<Props, State> {
                     }}
                   />
                 )}
-                {this.state.editAddressNetworkError && (
-                  <ErrorLabel
-                    className={styles.errorCreateAddress}
-                    errorText={this.state.editAddressNetworkError}
-                  />
-                )}
+                {this.state.editAddressNetworkError &&
+                  this.state.editingAddress?.id === address.id &&
+                  isOnMobile() && (
+                    <ErrorLabel
+                      className={styles.errorCreateAddress}
+                      errorText={this.state.editAddressNetworkError}
+                    />
+                  )}
               </div>
             );
           })}
@@ -343,6 +345,7 @@ export default class UserShipping extends React.Component<Props, State> {
       aptNumber: addressValues.addressLine2 || "",
       zipCode: addressValues.zipcode || "",
       default_shipping: addressValues.default,
+      default_billing: addressValues.default,
     };
 
     const addressInput = new CustomerAddressInput(addressFields);
@@ -393,10 +396,12 @@ export default class UserShipping extends React.Component<Props, State> {
     if (address.id !== this.state.editingAddress?.id) {
       this.setState({
         editingAddress: address,
+        editAddressNetworkError: null,
       });
     } else {
       this.setState({
         editingAddress: null,
+        editAddressNetworkError: null,
       });
     }
     if (!isOnMobile()) {
@@ -411,6 +416,7 @@ export default class UserShipping extends React.Component<Props, State> {
   closeModal = () => {
     this.setState({
       editingAddress: null,
+      editAddressNetworkError: null,
     });
     this.enableWindowScroll();
   };

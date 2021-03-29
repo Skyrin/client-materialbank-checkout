@@ -139,7 +139,7 @@ export const createCustomerAddress = async (
 
   try {
     const resp = await graphqlRequest(context, Mutation, {
-      input: { ...address, default_billing: true },
+      input: { ...address },
     });
     return resp["createCustomerAddress"];
   } catch (error) {
@@ -163,7 +163,7 @@ export const updateCustomerAddress = async (
   try {
     const resp = await graphqlRequest(context, Mutation, {
       id: id,
-      input: { ...address, default_billing: true },
+      input: { ...address },
     });
     return resp;
   } catch (error) {
