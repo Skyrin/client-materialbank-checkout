@@ -11,7 +11,6 @@ import { deleteItem } from "../../../context/CollectionsAPI/api";
 
 type State = {
   isLoading: boolean;
-  itemId: number;
 };
 type Props = RouteComponentProps;
 
@@ -25,7 +24,6 @@ class DeleteItemModal extends React.Component<Props, State> {
 
     this.state = {
       isLoading: false,
-      itemId: null,
     };
   }
 
@@ -40,9 +38,6 @@ class DeleteItemModal extends React.Component<Props, State> {
   componentDidMount() {
     this.modalTarget = document.querySelector("#deleteItemId");
     this.disableWindowsScroll();
-    this.context.getItemId().then((itemId: any) => {
-      this.setState({ itemId });
-    });
   }
 
   componentWillUnmount() {
@@ -66,12 +61,13 @@ class DeleteItemModal extends React.Component<Props, State> {
   };
 
   submit = async (e: any) => {
+    const modalParams = this.context.getModalParams();
     const collectionId = parseInt(this.getCollectionId());
     if (collectionId) {
       const resp = await deleteItem(
         this.context,
         collectionId,
-        this.context.itemId
+        modalParams.collectionItemId
       );
       console.log("rename response", resp);
       await this.context.requestCollection(collectionId);

@@ -43,7 +43,6 @@ export enum Modals {
 }
 
 abstract class BaseAppContextState {
-  private internalItemId?: number;
   private internalCollaborators?: CollectionCollaboratorT = {};
   private internalCart?: CartT = {};
   private internalCartInfoLoading?: boolean = false;
@@ -75,14 +74,6 @@ abstract class BaseAppContextState {
 
   public set collaborators(newCollaborators) {
     this.internalCollaborators = newCollaborators;
-  }
-
-  public get itemId() {
-    return cloneDeep(this.internalItemId);
-  }
-
-  public set itemId(newItemId) {
-    this.internalItemId = newItemId;
   }
 
   public productsCache?: ProductsCache;
@@ -247,10 +238,6 @@ export class AppContextState extends BaseAppContextState {
   storeCollaborators(newCollaborator) {}
 
   async getCollaborators() {}
-
-  storeItemId(newItemId) {}
-
-  async getItemId() {}
 
   updateCart(newCart: CartT) {}
 

@@ -86,12 +86,6 @@ export default class AppContextManager extends React.Component<Props> {
     getCollaborators: async () => {
       return this.contextState.collaborators;
     },
-    storeItemId: (item: number) => {
-      this.contextState.itemId = item;
-    },
-    getItemId: async () => {
-      return this.contextState.itemId;
-    },
 
     updateCart: (newCart: CartT) => {
       this.contextState.cart = mergeWith(

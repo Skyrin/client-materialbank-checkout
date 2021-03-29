@@ -33,8 +33,9 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
   };
 
   deleteItem = () => {
-    this.context.storeItemId(this.props.item.id);
-    this.context.openModal(Modals.DeleteItem);
+    this.context.openModal(Modals.DeleteItem, {
+      collectionItemId: this.props.item.id,
+    });
   };
 
   mapAlgoliaToObject(): any {

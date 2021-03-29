@@ -71,7 +71,6 @@ class DuplicateCollectionModal extends React.Component<Props, State> {
   };
 
   submit = async () => {
-    const modalParams = this.context.getModalParams();
     const collectionId = parseInt(this.getCollectionId());
     if (collectionId) {
       const resp = await duplicateCollection(
