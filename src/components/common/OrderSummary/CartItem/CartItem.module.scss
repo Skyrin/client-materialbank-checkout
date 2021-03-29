@@ -1,13 +1,21 @@
 @import "styles/mixins";
+@import "styles/variablesscss";
 
 .CartItem {
-  --image-size: 60px;
+  --image-size: 100px;
 
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   padding: var(--vertical-spacing-normal) 0;
-  border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
+
+  &:first-of-type {
+    padding-top: 0;
+  }
+
+  &:last-of-type {
+    padding-bottom: 0;
+  }
 
   .itemInfo {
     display: flex;
@@ -15,25 +23,33 @@
     .image {
       width: var(--image-size);
       height: var(--image-size);
-      margin-right: 16px;
-      object-fit: contain;
+      margin-right: 20px;
+      object-fit: cover;
+      border: 1px solid rgba($checkout-primary-color, 0.1);
+      border-radius: 5px;
     }
 
     .infoContainer {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
 
-      .lightText {
-        font-size: var(--font-size-sm);
-        color: rgba(var(--primary-color-rgb), 0.6);
-        line-height: 1.33;
-      }
+      .info {
+        display: flex;
+        flex-direction: column;
 
-      .boldText {
-        font-size: var(--font-size-md);
-        font-weight: var(--font-weight-medium);
-        color: var(--primary-color);
-        line-height: 1.43;
+        .lightText {
+          font-size: var(--font-size-md);
+          color: rgba(var(--primary-color-rgb), 0.6);
+          line-height: 1.33;
+        }
+
+        .boldText {
+          font-size: var(--font-size-lg);
+          font-weight: var(--font-weight-medium);
+          color: $checkout-primary-color;
+          line-height: 1.43;
+        }
       }
     }
   }
@@ -44,17 +60,40 @@
     justify-content: space-between;
     align-items: flex-end;
     flex-shrink: 0;
+    padding-top: 18px;
 
     .price {
       font-size: var(--font-size-lg);
       font-weight: var(--font-weight-medium);
-      color: rgba(var(--primary-color-rgb), 0.6);
+      color: $checkout-primary-color;
     }
+  }
 
-    .quantity {
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-medium);
-      color: rgba(var(--primary-color-rgb), 0.6);
+  .quantity {
+    justify-self: flex-end;
+    display: grid;
+    grid-template-columns: min-content min-content min-content;
+    place-items: center;
+    column-gap: 10px;
+
+    .quantityButton {
+      display: grid;
+      place-items: center;
+      padding-bottom: 3px;
+      font-size: 24px;
+      line-height: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid rgba($checkout-primary-color, 0.1);
+      background-color: #fff;
+      cursor: pointer;
+      transition: background-color 0.1s linear;
+      user-select: none;
+
+      &:hover {
+        background-color: rgba($checkout-primary-color, 0.1);
+      }
     }
   }
 

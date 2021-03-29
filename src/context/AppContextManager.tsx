@@ -20,6 +20,7 @@ import {
   setPaymentMethod,
   setShippingAddressOnCart,
   setShippingMethodOnCart,
+  updateCartItems,
 } from "./CheckoutAPI/api";
 import { CartAddressInput } from "./CheckoutAPI/models";
 import {
@@ -57,6 +58,8 @@ import {
 } from "./CollectionsAPI/api";
 import { ProductsCache } from "./ProductsCache";
 import { algoliaProducts } from "algolia";
+import { RESTRequest } from "RestClient";
+import { parseRESTOrder } from "utils/context";
 
 type Props = {
   children: React.ReactNode;
@@ -454,29 +457,28 @@ export default class AppContextManager extends React.Component<Props> {
       // There is no way of retrieving the order directly by id
       // So we need to get the entire list and find it ourselves
       const orderNumber = sessionStorage.getItem(ORDER_NUMBER_STORAGE_KEY);
-      const orderId = sessionStorage.getItem(ORDER_ID_STORAGE_KEY);
+      let orderId = sessionStorage.getItem(ORDER_ID_STORAGE_KEY);
       if (orderNumber) {
         this.contextState.confirmedOrderLoading = true;
         this.forceUpdate();
         const order = await requestOrder(this.context, orderNumber);
         console.log("GOT ORDER", order);
-        this.contextState.confirmedOrderLoading = false;
-        this.actions.updateConfirmedOrder(order);
-        return this.contextState.confirmedOrder;
+        orderId = order.increment_id;
+        sessionStorage.setItem(ORDER_ID_STORAGE_KEY, orderId);
       }
 
       if (orderId) {
         this.contextState.confirmedOrderLoading = true;
         this.forceUpdate();
-        const orders = await getCustomerOrders(this.context);
-        const foundOrder = orders.items.find(
-          (order) => orderId === atob(order.id)
+        const orderResponse = await RESTRequest(
+          "GET",
+          `mine/orders/${orderId}`
         );
-        if (foundOrder) {
-          this.contextState.confirmedOrderLoading = false;
-          this.actions.updateConfirmedOrder(foundOrder);
-          return this.contextState.confirmedOrder;
-        }
+        const order = (await orderResponse.json())[0].order;
+        console.log("ORDER FROM REST", order);
+        this.contextState.confirmedOrderLoading = false;
+        this.actions.updateConfirmedOrder(parseRESTOrder(order));
+        return this.contextState.confirmedOrder;
       }
     },
 
@@ -572,6 +574,34 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.recommendedProductSKUs = recommendedSkus;
       this.contextState.requestRecommendedProductSKUsLoading = false;
       this.forceUpdate();
+    },
+
+    setOrderSummaryOpen: (newValue: boolean) => {
+      this.contextState.orderSummaryOpen = newValue;
+      this.forceUpdate();
+    },
+
+    changeCartItemQuantity: async (sku: string, newQuantity: number) => {
+      const currentCartItems = this.contextState.cart.items || [];
+      const foundItem = currentCartItems.find(
+        (item) => item.product?.sku === sku
+      );
+      if (foundItem) {
+        this.contextState.updatingCartInfo = true;
+        this.forceUpdate();
+        const newCart = await updateCartItems(
+          this.getFullContext(),
+          this.contextState.cart.id,
+          [
+            {
+              cart_item_uid: foundItem.uid,
+              quantity: newQuantity,
+            },
+          ]
+        );
+        this.contextState.updatingCartInfo = false;
+        this.actions.updateCart(newCart);
+      }
     },
   };
 

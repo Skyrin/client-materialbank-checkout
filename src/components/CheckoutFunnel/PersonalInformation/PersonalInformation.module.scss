@@ -112,6 +112,7 @@
     font-weight: var(--font-weight-medium);
     color: var(--text-color-slight);
     margin-right: var(--horizontal-spacing-half);
+    text-align: right;
 
     @include mobile-media {
       font-size: var(--font-size-md);
@@ -345,7 +346,7 @@
     width: 100vw;
     height: 100vh;
     background-color: rgba(#fff, 0.8);
-    z-index: 2;
+    z-index: 2000; // Needed to cover the Paypal Express button
 
     .loader {
       font-size: 80px;

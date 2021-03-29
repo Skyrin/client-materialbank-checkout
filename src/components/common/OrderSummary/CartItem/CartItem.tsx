@@ -13,6 +13,20 @@ export default class CartItem extends React.Component<Props> {
   static contextType = AppContext;
   context!: AppContextState;
 
+  reduceQuantity = () => {
+    this.context.changeCartItemQuantity(
+      this.props.cartItem.product.sku,
+      this.props.cartItem.quantity - 1
+    );
+  };
+
+  increaseQuantity = () => {
+    this.context.changeCartItemQuantity(
+      this.props.cartItem.product.sku,
+      this.props.cartItem.quantity + 1
+    );
+  };
+
   render() {
     const cartItem = this.props.cartItem;
     const algoliaProduct = this.context.productsCache.getProduct(
@@ -41,20 +55,34 @@ export default class CartItem extends React.Component<Props> {
             <img className={styles.image} alt="" src={imageUrl} />
           </a>
           <div className={styles.infoContainer}>
-            <span className={styles.lightText}>{manufacturer}</span>
-            <a href={sampleUrl} className={styles.boldText}>
-              {cartItem.product?.name}
-            </a>
-            {color && <span className={styles.lightText}>{color}</span>}
+            <div className={styles.info}>
+              <span className={styles.lightText}>{manufacturer}</span>
+              <a href={sampleUrl} className={styles.boldText}>
+                {cartItem.product?.name}
+              </a>
+              {color && <span className={styles.lightText}>{color}</span>}
+            </div>
+            <span className={styles.quantity}>
+              <div
+                className={styles.quantityButton}
+                onClick={this.reduceQuantity}
+              >
+                -
+              </div>
+              {cartItem.quantity}
+              <div
+                className={styles.quantityButton}
+                onClick={this.increaseQuantity}
+              >
+                +
+              </div>
+            </span>
           </div>
         </div>
         <div className={styles.priceContainer}>
           <span className={styles.price}>{`$${
             cartItem.prices?.row_total_including_tax?.value || ""
           }`}</span>
-          <span
-            className={styles.quantity}
-          >{`Quantity: ${cartItem.quantity}`}</span>
         </div>
       </div>
     );
