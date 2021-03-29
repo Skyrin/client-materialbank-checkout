@@ -2,25 +2,40 @@
 
 .LogoMobile {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   position: relative;
-  justify-content: center;
   height: 40px;
-  border-bottom: 1px solid var(--color-separator);
-  background-color: white;
+  background-color: #f9f7f5;
   z-index: 1;
-  --circle-size: 60px;
+  padding: 0 20px;
 
   h1 {
     font-size: var(--font-size-nm);
   }
 }
 
+.logoWrapper {
+  display: flex;
+  align-items: center;
+
+  .circle {
+    width: 20px;
+    height: 20px;
+  }
+
+  h1 {
+    display: none;
+  }
+}
+
 .back-button {
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
   font-size: var(--font-size-md);
   text-decoration: none;
+  margin-right: 10px;
+}
+
+.orderSummaryText {
+  font-size: var(--font-size-sm);
+  text-decoration: underline;
 }

@@ -47,6 +47,7 @@ abstract class BaseAppContextState {
   private internalCollaborators?: CollectionCollaboratorT = {};
   private internalCart?: CartT = {};
   private internalCartInfoLoading?: boolean = false;
+  private internalUpdatingCartInfo?: boolean = false;
   private internalCustomer?: CustomerT = {};
   private internalCustomerLoading?: boolean = false;
   private internalConfirmedOrder?: OrderT = {};
@@ -65,6 +66,8 @@ abstract class BaseAppContextState {
 
   private internalRecommendedProductSKUs: string[] = [];
   private internalRecommendedProductSKUsLoading: boolean = false;
+
+  private internalOrderSummaryOpen: boolean = false;
 
   public get collaborators() {
     return cloneDeep(this.internalCollaborators);
@@ -98,6 +101,14 @@ abstract class BaseAppContextState {
 
   public set cartInfoLoading(newValue: boolean) {
     this.internalCartInfoLoading = newValue;
+  }
+
+  public get updatingCartInfo() {
+    return this.internalUpdatingCartInfo;
+  }
+
+  public set updatingCartInfo(newValue: boolean) {
+    this.internalUpdatingCartInfo = newValue;
   }
 
   public get isLoggedIn() {
@@ -217,6 +228,14 @@ abstract class BaseAppContextState {
   public set recommendedProductSKUsLoading(isLoading: boolean) {
     this.internalRecommendedProductSKUsLoading = isLoading;
   }
+
+  public get orderSummaryOpen() {
+    return this.internalOrderSummaryOpen;
+  }
+
+  public set orderSummaryOpen(newValue: boolean) {
+    this.internalOrderSummaryOpen = newValue;
+  }
 }
 
 /**
@@ -328,6 +347,10 @@ export class AppContextState extends BaseAppContextState {
   ): Promise<string[]> {
     return Promise.resolve([]);
   }
+
+  setOrderSummaryOpen(newValue: boolean) {}
+
+  async changeCartItemQuantity(sku: string, newQuantity: number) {}
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);

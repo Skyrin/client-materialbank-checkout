@@ -19,11 +19,13 @@ export type CartT = {
 
 export type OrderT = {
   number?: string;
+  increment_id?: number;
   order_date?: string;
   status?: string;
   billing_address?: OrderAddressT;
   shipping_address?: OrderAddressT;
   paymentMethods?: { type: string; name: string }[];
+  payment?: any; // I'm not yet sure what could be here, so just leave it as any
   total?: {
     grand_total?: PriceT;
     subtotal?: PriceT;
@@ -53,6 +55,7 @@ export type OrderItemOptionT = {
 
 export type CartItemT = {
   id?: string;
+  uid?: string;
   prices?: {
     price?: PriceT;
     row_total?: PriceT;

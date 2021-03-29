@@ -1,211 +1,92 @@
 @import "styles/variablesscss.scss";
+@import "styles/mixins.scss";
 
 .OrderConfirmation {
   position: relative;
-}
 
-.logo {
-  margin-bottom: var(--vertical-spacing-normal);
-}
-
-.confirmation-text {
-  margin-top: 60px;
-}
-
-.confirmation-text-row + .confirmation-text-row {
-  margin-bottom: 10px;
-}
-
-.pill {
-  padding: 10px 20px;
-  text-align: center;
-  background-color: rgba(var(--primary-color-rgb), 0.1);
-  border-radius: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  i {
-    margin-right: 10px;
-  }
-}
-
-.section-title {
-  font-weight: var(--font-weight-medium);
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  margin-top: 70px;
-  border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1);
-}
-
-.customer-info-grid {
-  display: flex;
-  flex-wrap: wrap;
-  color: var(--primary-color);
-  margin-top: 10px;
-  justify-content: space-between;
-
-  .customer-info-column {
-    display: flex;
-    flex-flow: column;
-    min-width: 50%;
+  @include mobile-media {
+    padding: 20px;
+    background-color: #f9f7f5;
   }
 
-  .info-cell {
-    min-height: 80px;
-    white-space: nowrap;
-    margin: 0 calc(var(--horizontal-spacing-normal) * 3)
-      calc(var(--horizontal-spacing-normal) * 3) 0;
-  }
-
-  .cell-title {
-    margin-bottom: 15px;
-    font-size: var(--font-size-xl);
+  .title {
+    font-size: var(--font-size-title);
     font-weight: var(--font-weight-medium);
-  }
+    color: $checkout-primary-color;
+    margin-bottom: 15px;
 
-  .card-img {
-    width: 58px;
-    height: 37px;
-    background-image: url("../../../assets/images/visa-card.png");
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    display: inline-block;
-    margin-right: 15px;
-  }
-
-  .applePay {
-    height: 20px;
-  }
-
-  .paypal {
-    height: 20px;
-  }
-
-  .text-row + .text-row {
-    margin-top: 5px;
-  }
-
-  .text-row {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-
-    span {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-  }
-}
-
-.bottom-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 90px;
-  margin-bottom: 50px;
-  flex-wrap: wrap;
-
-  .contact-us {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    margin-right: 20px;
-
-    .chat-icon {
-      font-size: 36px;
-      color: var(--text-color-light);
-      margin-right: 10px;
-    }
-
-    a {
-      margin-left: 5px;
+    @include mobile-media {
+      font-size: var(--font-size-lg);
     }
   }
 
-  .back-to-shopping {
-    margin-bottom: 20px;
-  }
-}
+  .totalsContainer {
+    border-top: 1px solid rgba($gray-color-user, 0.1);
+    margin-bottom: var(--vertical-spacing-normal);
 
-.loaderContainer {
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding-top: var(--vertical-spacing-normal);
+    .totalLine {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba($gray-color-user, 0.1);
 
-  .loader {
-    font-size: 60px;
-  }
-}
-
-// Responsiveness ------------------------------------------------------------
-
-@media (max-width: $mobile-width) {
-  .OrderConfirmation {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-  .confirmation-text {
-    margin-top: 0;
-  }
-
-  .recommendations-container {
-    display: none;
-  }
-
-  .confirmation-text-row {
-    margin-bottom: 15px !important;
-  }
-
-  .pill {
-    font-size: var(--font-size-xs);
-  }
-
-  .section-title {
-    font-size: var(--font-size-md);
-    margin-top: var(--vertical-spacing-normal);
-    margin-bottom: 0;
-  }
-
-  .customer-info-grid {
-    grid-column-gap: 20px;
-    grid-row-gap: var(--vertical-spacing-normal);
-
-    .info-cell {
-      margin: 0 var(--horizontal-spacing-half) var(--horizontal-spacing-half) 0;
-    }
-
-    .cell-title {
-      font-size: var(--font-size-sm);
-      margin-bottom: 10px;
-    }
-
-    .text-row {
-      font-size: var(--font-size-sm);
-    }
-  }
-
-  .bottom-actions {
-    flex-flow: column-reverse;
-    align-items: center;
-    margin-top: 40px;
-    margin-bottom: 40px;
-
-    .contact-us {
-      margin-right: 0;
-      font-size: var(--font-size-sm);
-
-      .chat-icon {
-        font-size: 20px;
+      .label,
+      .value {
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-medium);
+        color: $gray-color-user;
       }
+
+      .promoCode {
+        color: $gray-color-user;
+      }
+    }
+
+    .grandTotalLine {
+      @extend .totalLine;
+      height: 60px;
+      border-bottom: 0;
+
+      .label,
+      .value {
+        font-size: var(--font-size-xl);
+        color: $checkout-primary-color;
+      }
+    }
+  }
+
+  .buttonsContainer {
+    display: grid;
+    grid-template-columns: auto;
+    row-gap: 20px;
+
+    .goToAccount {
+      @include grayGradientButton;
+      width: 100%;
+      height: 60px;
+      font-size: var(--font-size-lg);
+    }
+
+    .backToShop {
+      @include blackGradientButton;
+      width: 100%;
+      height: 60px;
+      font-size: var(--font-size-lg);
+    }
+  }
+
+  .loaderContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(#fff, 0.8);
+    z-index: 2000;
+
+    .loader {
+      font-size: 80px;
     }
   }
 }

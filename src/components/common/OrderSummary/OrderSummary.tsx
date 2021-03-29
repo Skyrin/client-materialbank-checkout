@@ -9,14 +9,20 @@ import Loader from "../Loader/Loader";
 import { RouteComponentProps, withRouter, matchPath } from "react-router-dom";
 import { ORDER_CONFIRMATION_URL } from "constants/urls";
 import OrderItem from "./OrderItem/OrderItem";
-import { isEmpty, isEqual } from "lodash-es";
+import { isEmpty, isEqual, get } from "lodash-es";
 import { getSamplePage } from "utils/general";
+import Logo from "../Logo/Logo";
+import { DateTime } from "luxon";
+import fedexLogo from "assets/images/fedex_logo.svg";
 
 type Props = RouteComponentProps & {
   className?: string;
 };
+
 type State = {
-  isOpen: boolean;
+  showShippingInfo: boolean;
+  showOrderItems: boolean;
+  showPaymentInfo: boolean;
 };
 
 class OrderSummary extends React.Component<Props, State> {
@@ -25,7 +31,9 @@ class OrderSummary extends React.Component<Props, State> {
   oldContext!: AppContextState;
 
   state = {
-    isOpen: false,
+    showShippingInfo: !isOnMobile(),
+    showOrderItems: false,
+    showPaymentInfo: !isOnMobile(),
   };
 
   componentDidMount() {
@@ -45,39 +53,41 @@ class OrderSummary extends React.Component<Props, State> {
         const oldSkus = (oldCart.items || []).map((item) => item.product.sku);
         const newSkus = newCart.items.map((item) => item.product.sku);
         if (!isEqual(oldSkus, newSkus) && newSkus.length) {
-          this.context.requestRecommendedProductSKUs(2);
+          this.context.requestRecommendedProductSKUs(6);
         }
       }
     }
     this.oldContext = this.context;
   };
 
-  renderSummaryHeader = () => {
-    const cart = this.context.cart;
-    const confirmedOrder = this.context.confirmedOrder;
+  renderCurrency = (value?: number, def?: string) => {
+    if (!value) {
+      return def;
+    }
+    return `$${value.toFixed(2)}`;
+  };
 
-    const total = this.isOnConfirmationPage()
-      ? confirmedOrder?.total?.subtotal?.value || 0
-      : cart?.prices?.subtotal_including_tax?.value || 0;
-
+  renderLogo = () => {
     return (
-      <div
-        className={styles.summaryHeader}
-        onClick={() => {
-          this.setState({ isOpen: !this.state.isOpen });
-        }}
-      >
-        <div className={styles.text}>
-          <i className={cn("fas fa-shopping-cart", styles.cartIcon)} />
-          {this.state.isOpen ? "Hide order summary" : "Show order summary"}
-          <i
-            className={cn("far", styles.chevron, {
-              "fa-angle-up": this.state.isOpen,
-              "fa-angle-down": !this.state.isOpen,
-            })}
-          />
+      <div className={styles.logoWrapper}>
+        <a href="/" className={styles.backArrow}>
+          <i className={"far fa-arrow-left"} />
+        </a>
+        <Logo className={styles.logo} circleClassName={styles.circle} header />
+      </div>
+    );
+  };
+
+  renderSubtotal = () => {
+    return (
+      <div className={styles.subtotalWrapper}>
+        <div className={styles.label}>SUBTOTAL</div>
+        <div className={styles.value}>
+          {this.renderCurrency(
+            this.context.cart?.prices?.subtotal_including_tax?.value,
+            "-"
+          )}
         </div>
-        <span className={styles.total}>{`$${total}`}</span>
       </div>
     );
   };
@@ -112,43 +122,206 @@ class OrderSummary extends React.Component<Props, State> {
     );
   };
 
-  renderAddedGiftsSection = () => {
-    return (
-      <div className={styles.addedGiftsContainer}>
-        <div className={styles.giftsContainer}>
-          <RecommendationCard title="Table Magazine Issue #45" type={2} added />
-        </div>
-      </div>
-    );
-  };
-
-  renderPricesSection = () => {
-    const cart = this.context.cart;
-    const confirmedOrder = this.context.confirmedOrder;
-
-    const subtotal = this.isOnConfirmationPage()
-      ? confirmedOrder?.total?.subtotal?.value || 0
-      : cart?.prices?.subtotal_including_tax?.value || 0;
-
-    return (
-      <div className={styles.pricesContainer}>
-        <div className={styles.priceLine}>
-          <span>Subtotal</span>
-          <span>{`$${subtotal}`}</span>
-        </div>
-        <div className={styles.priceLine}>
-          <span>Shipping</span>
-          <span>FREE</span>
-        </div>
-      </div>
-    );
-  };
-
   isOnConfirmationPage = () => {
     return !!matchPath(this.props.location.pathname, {
       path: ORDER_CONFIRMATION_URL,
       exact: true,
     });
+  };
+
+  renderOrderInfo = () => {
+    const order = this.context.confirmedOrder;
+    return (
+      <div className={cn(styles.section, styles.orderInfoContainer)}>
+        <div className={styles.orderNumber}>{`Order #${order.number}`}</div>
+        <div className={styles.thanks}>
+          Thanks for your order, {this.context.customer.firstname}!
+        </div>
+        <div className={styles.confirmation}>
+          Your order is confirmed. We'll send an email to{" "}
+          {this.context.customer.email} when your order has shipped.
+        </div>
+      </div>
+    );
+  };
+
+  renderShippingInfo = () => {
+    const order = this.context.confirmedOrder;
+    const shippingAddress = get(order, "shipping_address", {});
+
+    return (
+      <div className={cn(styles.section, styles.shippingInfoContainer)}>
+        <div
+          className={styles.header}
+          onClick={() => {
+            this.setState({ showShippingInfo: !this.state.showShippingInfo });
+          }}
+        >
+          <div className={styles.title}>Delivery Details</div>
+          <i
+            className={cn(
+              "far",
+              styles.chevron,
+              this.state.showShippingInfo ? "fa-chevron-up" : "fa-chevron-down"
+            )}
+          />
+        </div>
+        <div
+          className={cn(styles.content, {
+            [styles.collapsed]: !this.state.showShippingInfo,
+          })}
+        >
+          <div className={styles.deliveryInfo}>
+            <div className={styles.deliverTo}>
+              <div className={styles.subtitle}>Deliver to</div>
+              <div
+                className={styles.value}
+              >{`${this.context.customer.firstname} ${this.context.customer.lastname}`}</div>
+              <div className={styles.value}>{this.context.customer.email}</div>
+            </div>
+            <div className={styles.shippingAddress}>
+              <div className={styles.subtitle}>Shipping Address</div>
+              <div
+                className={styles.value}
+              >{`${shippingAddress.firstname} ${shippingAddress.lastname}`}</div>
+              <div className={styles.value}>
+                {(shippingAddress.street || []).join(", ")}
+              </div>
+              <div className={styles.value}>
+                {[
+                  shippingAddress.city,
+                  shippingAddress.region,
+                  shippingAddress.postcode,
+                ]
+                  .filter((c) => c)
+                  .join(", ")}
+              </div>
+            </div>
+          </div>
+          <div className={styles.shippingMethod}>
+            <div className={styles.subtitle}>Shipping Method</div>
+            <img src={fedexLogo} alt="FedEx" className={styles.fedexLogo} />
+            <div className={styles.value}>
+              FREE FedEx Overnight: Scheduled delivery tomorrow,{" "}
+              {DateTime.local().plus({ days: 1 }).toFormat("MMMM d")}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  renderOrderItems = () => {
+    const items = this.context.confirmedOrder.items || [];
+
+    return (
+      <div className={cn(styles.section, styles.productsContainer)}>
+        <div
+          className={styles.header}
+          onClick={() => {
+            this.setState({ showOrderItems: !this.state.showOrderItems });
+          }}
+        >
+          <div className={styles.title}>
+            Order Summary (
+            {this.renderCurrency(
+              this.context.confirmedOrder.total?.subtotal?.value,
+              "-"
+            )}
+            )
+          </div>
+          <i
+            className={cn(
+              "far",
+              styles.chevron,
+              this.state.showOrderItems ? "fa-chevron-up" : "fa-chevron-down"
+            )}
+          />
+        </div>
+        <div
+          className={cn(styles.content, {
+            [styles.collapsed]: !this.state.showOrderItems,
+          })}
+        >
+          <div className={styles.list}>
+            {items.map((item) => (
+              <OrderItem key={item.id} orderItem={item} />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  renderPaymentMethod = () => {
+    const payment = this.context.confirmedOrder?.payment || {};
+    if (payment.type === "Credit Card") {
+      return (
+        <React.Fragment>
+          <div className={styles.value}>{`Card number: ${(
+            payment.cardType || ""
+          ).toUpperCase()} ****${payment.last4}`}</div>
+          <div className={styles.value}>{`Expiration: ${payment.expires}`}</div>
+          <div className={styles.value}>{`Amount: ${this.renderCurrency(
+            this.context.confirmedOrder?.total?.grand_total?.value
+          )}`}</div>
+        </React.Fragment>
+      );
+    }
+  };
+
+  renderPaymentInfo = () => {
+    const payment = this.context.confirmedOrder?.payment || {};
+    const billingAddress = this.context.confirmedOrder?.billing_address || {};
+    return (
+      <div className={cn(styles.section, styles.paymentInfoContainer)}>
+        <div
+          className={styles.header}
+          onClick={() => {
+            this.setState({ showPaymentInfo: !this.state.showPaymentInfo });
+          }}
+        >
+          <div className={styles.title}>Payment Information</div>
+          <i
+            className={cn(
+              "far",
+              styles.chevron,
+              this.state.showPaymentInfo ? "fa-chevron-up" : "fa-chevron-down"
+            )}
+          />
+        </div>
+        <div
+          className={cn(styles.content, {
+            [styles.collapsed]: !this.state.showPaymentInfo,
+          })}
+        >
+          <div className={styles.paymentInfo}>
+            <div className={styles.paymentMethod}>
+              <div className={styles.subtitle}>{payment.type}</div>
+              {this.renderPaymentMethod()}
+            </div>
+            <div className={styles.billingAddress}>
+              <div className={styles.subtitle}>Billing Address</div>
+              <div
+                className={styles.value}
+              >{`${billingAddress.firstname} ${billingAddress.lastname}`}</div>
+              <div className={styles.value}>
+                {(billingAddress.street || []).join(", ")}
+              </div>
+              <div className={styles.value}>
+                {[
+                  billingAddress.city,
+                  billingAddress.region,
+                  billingAddress.postcode,
+                ]
+                  .filter((c) => c)
+                  .join(", ")}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   render() {
@@ -159,46 +332,41 @@ class OrderSummary extends React.Component<Props, State> {
       ? confirmedOrder?.items || []
       : cart?.items || [];
 
-    const total = this.isOnConfirmationPage()
-      ? confirmedOrder?.total?.subtotal?.value || 0
-      : cart?.prices?.subtotal_including_tax?.value || 0;
-
     return (
       <div
         className={cn(styles.OrderSummary, this.props.className, {
-          [styles.collapsed]: !this.state.isOpen,
+          [styles.collapsed]: !this.context.orderSummaryOpen,
         })}
       >
-        <h3 className={styles.title}>Order Summary</h3>
-        {isOnMobile() && this.renderSummaryHeader()}
-
-        <div className={styles.orderSummaryContainer}>
-          <div className={styles.itemsContainer}>
-            {items.map((item: any) => (
-              <React.Fragment key={item.id}>
-                {this.isOnConfirmationPage() ? (
-                  <OrderItem orderItem={item} />
-                ) : (
-                  <CartItem cartItem={item} />
-                )}
-              </React.Fragment>
-            ))}
-          </div>
+        <div className={styles.contentWrapper}>
+          {!isOnMobile() && this.renderLogo()}
           {!isOnMobile() &&
             !this.isOnConfirmationPage() &&
-            this.renderRecommendationSection()}
-          {this.renderPricesSection()}
-          <div className={styles.totalContainer}>
-            <span>Total</span>
-            <span>{`$${total}`}</span>
-          </div>
-
-          {(this.context.cartInfoLoading ||
-            this.context.confirmedOrderLoading) && (
-            <Loader
-              containerClassName={styles.loaderContainer}
-              loaderClassName={styles.loader}
-            />
+            this.renderSubtotal()}
+          {this.isOnConfirmationPage() && this.renderOrderInfo()}
+          {this.isOnConfirmationPage() && this.renderShippingInfo()}
+          {this.isOnConfirmationPage() && this.renderOrderItems()}
+          {this.isOnConfirmationPage() && this.renderPaymentInfo()}
+          {!this.isOnConfirmationPage() && (
+            <div className={styles.orderSummaryContainer}>
+              <div className={styles.itemsContainer}>
+                {items.map((item: any) => (
+                  <React.Fragment key={item.id}>
+                    <CartItem cartItem={item} />
+                  </React.Fragment>
+                ))}
+              </div>
+              {!isOnMobile() &&
+                !this.isOnConfirmationPage() &&
+                this.renderRecommendationSection()}
+              {(this.context.cartInfoLoading ||
+                this.context.updatingCartInfo) && (
+                <Loader
+                  containerClassName={styles.loaderContainer}
+                  loaderClassName={styles.loader}
+                />
+              )}
+            </div>
           )}
         </div>
       </div>
