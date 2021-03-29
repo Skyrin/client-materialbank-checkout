@@ -2,18 +2,41 @@ import * as React from "react";
 import cn from "classnames";
 import styles from "../../common/ItemCard/ItemCard.module.scss";
 import { CollectionItemT } from "../../../../constants/types";
-import { AppContext, AppContextState } from "../../../../context/AppContext";
+import {
+  AppContext,
+  AppContextState,
+  Modals,
+} from "../../../../context/AppContext";
 import { get } from "lodash-es";
+import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
+import { COLLECTION_URL } from "../../../../constants/urls";
+import { deleteItem } from "../../../../context/CollectionsAPI/api";
 
-interface Props {
+interface ItemProps {
   mode: any;
   item: CollectionItemT;
 }
 
-export default class ItemCard extends React.Component<Props, any> {
+type Props = RouteComponentProps;
+
+class ItemCard extends React.Component<Props & ItemProps, any> {
   static contextType = AppContext;
   context!: AppContextState;
   materialItem: any;
+
+  getCollectionId = () => {
+    const collectionPageResult = matchPath(this.props.location.pathname, {
+      path: COLLECTION_URL,
+      exact: true,
+    });
+    return get(collectionPageResult, "params.collection_id");
+  };
+
+  deleteItem = () => {
+    this.context.openModal(Modals.DeleteItem, {
+      collectionItemId: this.props.item.id,
+    });
+  };
 
   mapAlgoliaToObject(): any {
     let material = null;
@@ -93,19 +116,16 @@ export default class ItemCard extends React.Component<Props, any> {
       <React.Fragment>
         <div className={styles.imageContainer}>
           {this.props.item.objectType === "upload" && (
-            <img src={this.props.item.upload.s3Url} alt="" />
+            <img src={this.props.item.upload.url} alt="" />
           )}
           {this.props.item.objectType === "material" && (
             <img src={materialItem.imageUrl} alt="" />
           )}
-          <div className={cn(styles.delete, styles.editButton)}>
+          <div
+            onClick={this.deleteItem}
+            className={cn(styles.delete, styles.editButton)}
+          >
             <i className="fal fa-trash"></i>
-          </div>
-          <div className={cn(styles.move, styles.editButton)}>
-            <i className="fal fa-arrows"></i>
-          </div>
-          <div className={cn(styles.duplicate, styles.editButton)}>
-            <i className="fal fa-copy"></i>
           </div>
         </div>
       </React.Fragment>
@@ -177,7 +197,7 @@ export default class ItemCard extends React.Component<Props, any> {
   render() {
     return (
       <React.Fragment>
-        <div className={cn("masonry-item")}>
+        <div>
           <div
             className={cn(
               styles.itemCard,
@@ -191,3 +211,5 @@ export default class ItemCard extends React.Component<Props, any> {
     );
   }
 }
+
+export default withRouter(ItemCard);

@@ -163,3 +163,19 @@ export const duplicateCollection = async (
   );
   return resp && get(resp, "collectionClone");
 };
+
+export const deleteItem = async (
+  context: AppContextState,
+  collectionId: number,
+  itemId: number
+) => {
+  const collectionRemoveItem = `
+    mutation collectionRemoveItem($collectionId: Int!, $itemId: Int!) {
+      collectionRemoveItem(collectionId: $collectionId, itemId: $itemId)
+      }`;
+  const resp = await collectionsGraphqlRequest(context, collectionRemoveItem, {
+    collectionId: collectionId,
+    itemId: itemId,
+  });
+  return resp && get(resp, "collectionRemoveItem");
+};

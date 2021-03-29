@@ -35,6 +35,7 @@ export enum Modals {
   UploadPhoto = "upload-photo",
   CreateCollection = "create-collection",
   DeleteCollection = "delete-collection",
+  DeleteItem = "delete-item",
   ShareCollection = "share-collection",
   DuplicateCollection = "duplicate-collection",
   MakePrivateCollection = "make-private-collection",
@@ -62,7 +63,7 @@ abstract class BaseAppContextState {
   private modalParams?: Object = {};
   private internalOrdersLoading?: boolean = false;
 
-  private internalRecommendedProductSKUs: strng[] = [];
+  private internalRecommendedProductSKUs: string[] = [];
   private internalRecommendedProductSKUsLoading: boolean = false;
 
   private internalOrderSummaryOpen: boolean = false;

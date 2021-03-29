@@ -7,6 +7,7 @@ import UploadCard from "../../common/UploadCard/UploadCard";
 import AddToCartButton from "components/CollectionsAndPalettes/common/AddToCartButton/AddToCartButton";
 import styles from "components/CollectionsAndPalettes/Collections/Collection/Collection.module.scss";
 import cn from "classnames";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import {
   AppContext,
   AppContextState,
@@ -43,68 +44,7 @@ class Collection extends React.Component<Props, State> {
       commonAreaIsInViewport: false,
       mode: "image",
       display: "everything",
-      items: [
-        {
-          id: 1,
-          collectionId: 58,
-          position: 1,
-          name: "nume",
-          objectId: "1",
-          objectType: "upload",
-          upload: {
-            name: "some_name",
-            url:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5brHIzPOkAv7A4E5ul_mT5BaCRbykzf1xvA&usqp=CAU",
-          },
-          updatedBy: 92,
-          createdOn: "createdon",
-          updatedOn: "updatedon",
-        },
-        {
-          id: 2,
-          collectionId: 56,
-          position: 2,
-          name: "nume2",
-          objectId: "2",
-          objectType: "upload",
-          upload: {
-            name: "some_name2",
-            url:
-              "https://www.mydomaine.com/thmb/MNBaDGmg4IW7tOvl3pxVNpqQ6uE=/2500x3049/filters:fill(auto,1)/DesignbyEmilyHendersonDesignandPhotobySaraLigorria-Tramp_654-b8122ec9f66b4c69a068859958d8db37.jpg",
-          },
-          updatedBy: 92,
-          createdOn: "createdon2",
-          updatedOn: "updatedon2",
-        },
-        {
-          id: 3,
-          collectionId: 56,
-          position: 3,
-          name: "material",
-          objectId: "3",
-          objectType: "material",
-          material: {
-            sku: "100306199",
-          },
-          updatedBy: 92,
-          createdOn: "createdon3",
-          updatedOn: "updatedon3",
-        },
-        {
-          id: 4,
-          collectionId: 56,
-          position: 4,
-          name: "sample",
-          objectId: "4",
-          objectType: "material",
-          material: {
-            sku: "100067327",
-          },
-          updatedBy: 92,
-          createdOn: "createdon4",
-          updatedOn: "updatedon4",
-        },
-      ],
+      items: [],
       person: null,
     };
   }
@@ -273,33 +213,62 @@ class Collection extends React.Component<Props, State> {
           toggleMode={this.toggleMode}
         />
         <div
-          className={cn(
-            "masonry-container",
-            !finalItems.length ? styles.emptyCollection : ""
-          )}
+          style={{ position: "relative" }}
+          className={!finalItems.length ? styles.emptyCollection : ""}
         >
-          <UploadCard
-            caption={
-              !isOnMobile()
-                ? "Upload a photo or drag & drop here "
-                : "Upload a photo"
-            }
-            onClick={this.uploadPhoto}
-          />
-          {!finalItems.length && (
-            <div className={styles.empty}>
-              You have not added anything to this collection yet!
-            </div>
+          {finalItems.length > 0 && (
+            <React.Fragment>
+              <ResponsiveMasonry
+                columnsCountBreakPoints={{
+                  350: 1,
+                  400: 2,
+                  650: 3,
+                  920: 4,
+                  1080: 4,
+                }}
+              >
+                <Masonry columnsCount={4} gutter="20px">
+                  <UploadCard
+                    caption={
+                      !isOnMobile()
+                        ? "Upload a photo or drag & drop here "
+                        : "Upload a photo"
+                    }
+                    onClick={this.uploadPhoto}
+                  />
+                  {finalItems.map((item: any, index: number) => {
+                    return (
+                      <ItemCard
+                        key={index}
+                        mode={this.state.mode}
+                        item={item}
+                      />
+                    );
+                  })}
+                </Masonry>
+              </ResponsiveMasonry>
+              {/*<AddToCartButton*/}
+              {/*  commonAreaIsInViewport={this.state.commonAreaIsInViewport}*/}
+              {/*/>*/}
+            </React.Fragment>
           )}
-          {finalItems.map((item: any, index: number) => {
-            return <ItemCard key={index} mode={this.state.mode} item={item} />;
-          })}
-          {finalItems.length && (
-            <AddToCartButton
-              commonAreaIsInViewport={this.state.commonAreaIsInViewport}
-            />
+          {finalItems.length < 1 && (
+            <React.Fragment>
+              <UploadCard
+                caption={
+                  !isOnMobile()
+                    ? "Upload a photo or drag & drop here "
+                    : "Upload a photo"
+                }
+                onClick={this.uploadPhoto}
+              />
+              <div className={styles.empty}>
+                You have not added anything to this collection yet!
+              </div>
+            </React.Fragment>
           )}
         </div>
+
         {/*The commonArea element is added here in order to keep the AddToCart Button inside the Collection Cards container, also decide its position*/}
         <div className={"commonArea"}>
           <MoreIdeas />

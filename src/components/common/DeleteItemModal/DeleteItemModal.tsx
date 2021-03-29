@@ -1,4 +1,4 @@
-import styles from "./DeleteCollectionModal.module.scss";
+import styles from "./DeleteItemModal.module.scss";
 import React from "react";
 import cn from "classnames";
 import { AppContext, AppContextState } from "context/AppContext";
@@ -7,14 +7,15 @@ import Loader from "components/common/Loader/Loader";
 import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
 import { get } from "lodash-es";
 import { COLLECTION_URL, COLLECTIONS_URL } from "../../../constants/urls";
-import { deleteCollection } from "../../../context/CollectionsAPI/api";
+import { deleteItem } from "../../../context/CollectionsAPI/api";
 
 type State = {
   isLoading: boolean;
 };
+
 type Props = RouteComponentProps;
 
-class DeleteCollectionModal extends React.Component<Props, State> {
+class DeleteItemModal extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
@@ -36,7 +37,7 @@ class DeleteCollectionModal extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    this.modalTarget = document.querySelector("#deleteCollectionId");
+    this.modalTarget = document.querySelector("#deleteItemId");
     this.disableWindowsScroll();
   }
 
@@ -60,17 +61,22 @@ class DeleteCollectionModal extends React.Component<Props, State> {
     return get(collectionPageResult, "params.collection_id");
   };
 
-  submit = async () => {
+  submit = async (e: any) => {
+    const modalParams = this.context.getModalParams();
     const collectionId = parseInt(this.getCollectionId());
     if (collectionId) {
-      const resp = await deleteCollection(this.context, collectionId);
-      console.log("delete response", resp);
+      const resp = await deleteItem(
+        this.context,
+        collectionId,
+        modalParams.collectionItemId
+      );
+      console.log("rename response", resp);
+      await this.context.requestCollection(collectionId);
       await this.context.requestCollections({
         limit: 100,
         offset: 0,
       });
-      this.closeModal();
-      this.props.history.push(COLLECTIONS_URL);
+      this.context.closeModal();
     }
   };
 
@@ -92,12 +98,12 @@ class DeleteCollectionModal extends React.Component<Props, State> {
           </div>
           <div className={styles.modalContent}>
             <div className={styles.title}>
-              Are you sure you want to delete {this.context.collection.name} ?
+              Are you sure you want to delete lll?
             </div>
             <div className="horizontal-divider-toolbar"></div>
             <div className={styles.buttonsContainer}>
               <div className={styles.createButton} onClick={this.submit}>
-                Delete Collection
+                Delete Item
               </div>
               <div className={styles.cancelButton} onClick={this.closeModal}>
                 Cancel
@@ -116,4 +122,4 @@ class DeleteCollectionModal extends React.Component<Props, State> {
   }
 }
 
-export default withRouter(DeleteCollectionModal);
+export default withRouter(DeleteItemModal);
