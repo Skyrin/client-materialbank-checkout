@@ -9,6 +9,7 @@ import {
 import { HistoryOrderDetails } from "components/common/HistoryOrderDetails/HistoryOrderDetails";
 import { OrderItemT, OrderT } from "constants/types";
 import { isOnMobile } from "utils/responsive";
+import { OrderX, ProductX } from "constants/orderTypes";
 
 interface Props {
   order?: {
@@ -20,8 +21,8 @@ interface Props {
     items: Item[];
     details: any;
   };
-  orderT: OrderT;
-  shopItem?: (item: OrderItemT) => any;
+  orderT: OrderX;
+  shopItem?: (item: ProductX) => any;
 }
 
 interface State {
@@ -43,11 +44,11 @@ export class HistoryOrder extends React.Component<Props, State> {
     return dateTime.toFormat("MMMM dd, yyyy");
   };
 
-  renderMobileOrderInfo(order: OrderT, statusClassName) {
+  renderMobileOrderInfo(order: OrderX, statusClassName) {
     return (
       <div className={cn(styles["content"], styles["header"], styles["row"])}>
         <div className={cn(styles["left-container"], styles["placement-date"])}>
-          {this.formatDate(order.order_date)}
+          {this.formatDate(order.createdAt)}
           <div className={cn(styles["light-text"], styles["order-number"])}>
             Order #{order.number}
           </div>
@@ -87,7 +88,7 @@ export class HistoryOrder extends React.Component<Props, State> {
             <div className={cn(styles["left-container"])}>
               <div className={styles.placementDateLabel}>ORDER PLACED</div>
               <div className={styles.placementDateValue}>
-                {this.formatDate(order.order_date)}
+                {this.formatDate(order.createdAt)}
               </div>
             </div>
 
@@ -121,27 +122,29 @@ export class HistoryOrder extends React.Component<Props, State> {
           )}
         >
           {expanded
-            ? order.items.map((item) => (
+            ? order.products.map((item) => (
                 <HistoryOrderItem
                   itemT={item}
+                  order={order}
                   onClick={() => this.props.shopItem(item)}
-                  key={item.product_sku}
+                  key={item.sku}
                 />
               ))
-            : order.items
+            : order.products
                 .slice(0, itemLimit)
                 .map((item) => (
                   <HistoryOrderItem
+                    order={order}
                     itemT={item}
                     onClick={() => this.props.shopItem(item)}
-                    key={item.product_sku}
+                    key={item.sku}
                   />
                 ))}
         </div>
 
         {expanded && (
           <div className={cn(styles["content"], styles["order-details"])}>
-            <HistoryOrderDetails orderT={order} />
+            <HistoryOrderDetails orderX={order} />
           </div>
         )}
 
@@ -155,9 +158,9 @@ export class HistoryOrder extends React.Component<Props, State> {
         >
           {expanded ? "Hide full order" : "View full order"}{" "}
           <i className="far fa-chevron-down" />
-          {!expanded && order.items.length > itemLimit && (
+          {!expanded && order.products.length > itemLimit && (
             <div className={cn(styles["more-items-info"])}>
-              + {order.items.length - itemLimit} more items
+              + {order.products.length - itemLimit} more items
             </div>
           )}
         </button>

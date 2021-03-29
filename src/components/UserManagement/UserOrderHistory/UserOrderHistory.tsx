@@ -16,11 +16,13 @@ import { OrderItemT, OrderT } from "constants/types";
 import { isOnMobile } from "../../../utils/responsive";
 import LogoMobile from "../../common/LogoMobile/LogoMobile";
 import { RESTRequest } from "RestClient";
+import { OrderX, ProductX } from "constants/orderTypes";
 
 interface Props extends RouteComponentProps {}
 
 type State = {
   orders: OrderT[];
+  ordersX: OrderX[];
 };
 
 export default class UserOrderHistory extends React.Component<Props, State> {
@@ -34,30 +36,40 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     this.modalRef = React.createRef();
     this.state = {
       orders: [],
+      ordersX: [],
     };
   }
 
   async componentDidMount() {
-    this.context.getOrders().then((orders) => {
-      orders.sort((a, b) => {
-        if (
-          DateTime.fromSQL(a.order_date).valueOf() >=
-          DateTime.fromSQL(b.order_date).valueOf()
-        ) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
+    // this.context.getOrders().then((orders) => {
+    //   orders.sort((a, b) => {
+    //     if (
+    //       DateTime.fromSQL(a.order_date).valueOf() >=
+    //       DateTime.fromSQL(b.order_date).valueOf()
+    //     ) {
+    //       return -1;
+    //     } else {
+    //       return 0;
+    //     }
+    //   });
+    //
+    //   this.setState({
+    //     orders: orders,
+    //   });
+    // });
 
-      this.setState({
-        orders: orders,
-      });
-    });
-
+    this.context.setOrdersLoading(true);
+    this.forceUpdate();
     const orderResponse = await this.getOrders(1, 25);
-    console.log("here be da ne orders");
-    console.log(orderResponse);
+
+    if (orderResponse) {
+      this.setState({
+        ordersX: orderResponse[0].result,
+      });
+    }
+
+    this.context.setOrdersLoading(false);
+    this.forceUpdate();
   }
 
   getOrders = async (page: number = 1, limit: number = 25) => {
@@ -81,11 +93,15 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     //  TODO: Implement functionality once we have API
   }
 
-  addItemToCart(item: OrderItemT): void {}
+  addItemToCart(item: ProductX): void {}
 
-  openItemOverlay(item: OrderItemT): void {
+  openItemOverlay(item: ProductX, order: OrderX): void {
     this.modalRef.current.open(
-      <OrderItemOverlay item={item} addToCart={this.addItemToCart} />
+      <OrderItemOverlay
+        order={order}
+        item={item}
+        addToCart={this.addItemToCart}
+      />
     );
   }
 
@@ -109,11 +125,11 @@ export default class UserOrderHistory extends React.Component<Props, State> {
             }
           />
 
-          {this.state.orders.map((order) => (
+          {this.state.ordersX.map((order) => (
             <HistoryOrder
               key={order.number}
               orderT={order}
-              shopItem={(item) => this.openItemOverlay(item)}
+              shopItem={(item) => this.openItemOverlay(item, order)}
             />
           ))}
 

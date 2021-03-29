@@ -3,6 +3,7 @@ import cn from "classnames";
 import styles from "./HistoryOrderDetails.module.scss";
 import { OrderT } from "constants/types";
 import { parseCurrency } from "utils/general";
+import { OrderX } from "constants/orderTypes";
 
 interface Props {
   details?: {
@@ -11,7 +12,7 @@ interface Props {
     paymentDetails: PaymentDetails;
   };
 
-  orderT: OrderT;
+  orderX: OrderX;
 }
 
 interface Address {
@@ -36,9 +37,8 @@ interface PaymentDetails {
 export function HistoryOrderDetails(props: Props) {
   // const { deliveryAddress, billingAddress, paymentDetails } = props.details;
 
-  const deliveryAddress = props.orderT.shipping_address;
-  const billingAddress = props.orderT.billing_address;
-  const paymentDetails = props.orderT.total;
+  const deliveryAddress = props.orderX.address[1];
+  const billingAddress = props.orderX.address[0];
 
   return (
     <div className={cn(styles["HistoryOrderDetails"])}>
@@ -47,12 +47,12 @@ export function HistoryOrderDetails(props: Props) {
         <div className={cn(styles["row"])}>
           {deliveryAddress.firstname} {deliveryAddress.lastname}
         </div>
-        <div className={cn(styles["row"])}>{deliveryAddress.street}</div>
+        <div className={cn(styles["row"])}>{deliveryAddress.street1}</div>
         <div className={cn(styles["row"])}>
-          {deliveryAddress.city}, {deliveryAddress.region}{" "}
-          {deliveryAddress.postcode}
+          {deliveryAddress.city}, {"deliveryAddress.region"}{" "}
+          {deliveryAddress.postalCode}
         </div>
-        <div className={cn(styles["row"])}>{deliveryAddress.country_code}</div>
+        <div className={cn(styles["row"])}>{deliveryAddress.country}</div>
       </div>
       <div className={cn(styles["wrap"])}>
         <div className={cn(styles["container"], styles["billing"])}>
@@ -60,43 +60,42 @@ export function HistoryOrderDetails(props: Props) {
           <div className={cn(styles["row"])}>
             {billingAddress.firstname} {billingAddress.lastname}
           </div>
-          <div className={cn(styles["row"])}>{billingAddress.street}</div>
+          <div className={cn(styles["row"])}>{billingAddress.street1}</div>
           <div className={cn(styles["row"])}>
-            {billingAddress.city}, {billingAddress.region}{" "}
-            {billingAddress.postcode}
+            {billingAddress.city}, {"billingAddress.region"}{" "}
+            {billingAddress.postalCode}
           </div>
-          <div className={cn(styles["row"])}>{billingAddress.country_code}</div>
+          <div className={cn(styles["row"])}>{billingAddress.country}</div>
         </div>
         <div className={cn(styles["container"], styles["payment"])}>
           <div className={cn(styles["title"])}>Payment</div>
           <div className={cn(styles["row"])}>
             <span className={cn(styles["label"])}>Subtotal</span>
             <span className={cn(styles["value"])}>
-              {parseCurrency(paymentDetails.subtotal.currency)}
-              {props.orderT.total.subtotal.value}
+              {parseCurrency(props.orderX.currency)}
+              {props.orderX.subtotal}
             </span>
           </div>
           <div className={cn(styles["row"])}>
             <span className={cn(styles["label"])}>Shipping</span>
             <span className={cn(styles["value"])}>
-              {paymentDetails?.total_shipping?.value
-                ? parseCurrency(paymentDetails.total_shipping.currency) +
-                  paymentDetails.total_shipping.value
+              {props?.orderX?.shipping
+                ? parseCurrency(props.orderX.currency) + props?.orderX.shipping
                 : "FREE"}
             </span>
           </div>
           <div className={cn(styles["row"])}>
             <span className={cn(styles["label"])}>Sales Tax</span>
             <span className={cn(styles["value"])}>
-              {parseCurrency(paymentDetails.total_tax.currency)}
-              {paymentDetails.total_tax.value}
+              {parseCurrency(props.orderX.currency)}
+              {props.orderX.tax}
             </span>
           </div>
           <div className={cn(styles["row"])}>
             <span className={cn(styles["label"])}>Total</span>
             <span className={cn(styles["value"])}>
-              {parseCurrency(paymentDetails.grand_total.currency)}
-              {paymentDetails.grand_total.value}
+              {parseCurrency(props.orderX.total)}
+              {props.orderX.total}
             </span>
           </div>
 

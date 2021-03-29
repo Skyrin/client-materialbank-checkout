@@ -7,11 +7,13 @@ import { AppContext, AppContextState } from "context/AppContext";
 import { get } from "lodash-es";
 import imagePlaceholder from "assets/images/Fill.png";
 import { isOnMobile } from "utils/responsive";
+import { OrderX, ProductX } from "constants/orderTypes";
 
 interface Props {
   item?: Item;
   onClick?: (...params: any) => any;
-  itemT: OrderItemT;
+  itemT: ProductX;
+  order: OrderX;
 }
 
 export interface Item {
@@ -33,16 +35,15 @@ export class HistoryOrderItem extends React.Component<Props> {
 
   render() {
     const item = this.props.itemT;
-    const algoliaProduct = this.context.productsCache.getProduct(
-      item.product_sku
-    );
+    const order = this.props.order;
+    const algoliaProduct = this.context.productsCache.getProduct(item.sku);
     const color = get(algoliaProduct, "data.color", "orderItem.color");
     const imageUrl = get(
       algoliaProduct,
       "data.thumbnail_url",
       imagePlaceholder
     );
-    const sampleUrl = getSamplePage(item.product_sku);
+    const sampleUrl = getSamplePage(item.sku);
     return (
       <div className={cn(styles["HistoryOrderItem"])}>
         <div className={cn(styles["left-container"])}>
@@ -58,7 +59,7 @@ export class HistoryOrderItem extends React.Component<Props> {
                   "text-color-xlight"
                 )}
               >
-                {item.product_sku}
+                {item.sku}
               </div>
             )}
 
@@ -66,7 +67,7 @@ export class HistoryOrderItem extends React.Component<Props> {
               href={sampleUrl}
               className={cn(styles["model"], "font-weight-medium")}
             >
-              {item.product_name}
+              {item.name}
             </a>
 
             <div
@@ -89,8 +90,8 @@ export class HistoryOrderItem extends React.Component<Props> {
                   styles.pricePerArea
                 )}
               >
-                {parseCurrency(item.product_sale_price.currency)}
-                {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
+                {parseCurrency(order.currency)}
+                {item.price} / {item.unitOfMeasure}
               </div>
             )}
 
@@ -103,8 +104,8 @@ export class HistoryOrderItem extends React.Component<Props> {
                   styles.sample
                 )}
               >
-                {parseCurrency(item.product_sale_price.currency)}
-                {item.product_sale_price.value} / sample
+                {parseCurrency(order.currency)}
+                {item.price} / {item.unitOfMeasure}
               </div>
             )}
           </div>
@@ -119,8 +120,8 @@ export class HistoryOrderItem extends React.Component<Props> {
                 "text-color-xlight"
               )}
             >
-              {parseCurrency(item.product_sale_price.currency)}
-              {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
+              {parseCurrency(order.currency)}
+              {item.price} / {item.unitOfMeasure}
             </div>
             <div
               className={cn(
@@ -129,8 +130,8 @@ export class HistoryOrderItem extends React.Component<Props> {
                 "text-color-xlight"
               )}
             >
-              {parseCurrency(item.product_sale_price.currency)}
-              {item.product_sale_price.value} / sample
+              {parseCurrency(order.currency)}
+              {item.price} / {item.unitOfMeasure}
             </div>
           </div>
         )}
