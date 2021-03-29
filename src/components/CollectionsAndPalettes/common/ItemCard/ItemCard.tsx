@@ -10,7 +10,6 @@ import {
 import { get } from "lodash-es";
 import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
 import { COLLECTION_URL } from "../../../../constants/urls";
-import { deleteItem } from "../../../../context/CollectionsAPI/api";
 
 interface ItemProps {
   mode: any;
