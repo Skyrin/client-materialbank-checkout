@@ -92,7 +92,7 @@ class DeleteCollectionModal extends React.Component<Props, State> {
           </div>
           <div className={styles.modalContent}>
             <div className={styles.title}>
-              Are you sure you want to delete this collection?
+              Are you sure you want to delete {this.context.collection.name} ?
             </div>
             <div className="horizontal-divider-toolbar"></div>
             <div className={styles.buttonsContainer}>
