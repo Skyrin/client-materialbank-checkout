@@ -3,9 +3,19 @@
 
 $card-height: 140px;
 
+.wrapper {
+  width: 100%;
+  padding-top: 100%; // This makes the wrapper be a square
+  position: relative;
+}
+
 .RecommendationCard {
+  // Reposition the images absolutely to fill the square wrapper
+  position: absolute;
   width: 100%;
   height: 100%;
+  top: 0;
+  left: 0;
   object-fit: cover;
   box-shadow: shadow($shadow-size-sm, $shadow-color-normal);
   border-radius: 5px;

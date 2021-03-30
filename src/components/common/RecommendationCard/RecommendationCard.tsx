@@ -11,11 +11,13 @@ type Props = {
 export function RecommendationCard(props: Props) {
   const image = props.product.thumbnail_url;
   return (
-    <img
-      className={styles.RecommendationCard}
-      onClick={props.onClick}
-      src={image}
-      alt=""
-    />
+    <div className={styles.wrapper}>
+      <img
+        className={styles.RecommendationCard}
+        onClick={props.onClick}
+        src={image}
+        alt=""
+      />
+    </div>
   );
 }
