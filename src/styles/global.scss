@@ -399,3 +399,14 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     margin-top: $margin-small-4;
   }
 }
+
+.twoImg {
+  display: grid;
+  grid-template-rows: 50% 50%;
+  grid-template-columns: 100%;
+}
+.multipleImg {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 50% 50%;
+}

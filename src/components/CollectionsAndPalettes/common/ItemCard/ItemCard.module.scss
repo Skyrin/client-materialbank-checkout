@@ -5,6 +5,24 @@
   --number-of-cards: 4;
   --lateral-padding: 100px;
   --masonry-spacing: 20px;
+  height: 100% !important;
+
+  &.collectionCard {
+    height: 410px !important;
+    display: grid;
+    grid-template-rows: 85% 15%;
+
+    img {
+      min-height: calc(
+        (
+            (
+                100vw - (2 * var(--lateral-padding)) -
+                  ((var(--number-of-cards) - 1) * var(--masonry-spacing))
+              ) / var(--number-of-cards)
+          ) * 3 / 6
+      ) !important;
+    }
+  }
 
   @media (max-width: 970px) {
     --lateral-padding: 15px;
@@ -154,6 +172,8 @@
     border-radius: var(--card-border-radius-bg);
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+    background: white;
+
     &.privateCard {
       flex-direction: column;
       row-gap: 5px;
