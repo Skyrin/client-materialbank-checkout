@@ -37,8 +37,8 @@ export class HistoryOrderItem extends React.Component<Props> {
     const order = this.props.order;
     const algoliaProduct = this.context.productsCache.getProduct(item.sku);
     const priceSign = get(algoliaProduct, "data.price_sign");
-    console.log("product");
-    console.log(algoliaProduct);
+    // console.log("product");
+    // console.log(algoliaProduct);
     // const imageUrl = get(
     //   algoliaProduct,
     //   "data.thumbnail_url",
