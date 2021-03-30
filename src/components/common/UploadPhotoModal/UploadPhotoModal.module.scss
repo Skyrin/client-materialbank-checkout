@@ -93,7 +93,6 @@ span {
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  column-gap: $margin-medium;
   margin-top: $margin-medium;
 
   .createButton {
@@ -101,6 +100,7 @@ span {
     background-color: black;
     color: white;
     padding: 15px 14px;
+    margin-right: $margin-medium;
 
     &:hover {
       background-color: lighten(black, 30%);
