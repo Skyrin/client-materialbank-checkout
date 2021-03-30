@@ -84,16 +84,16 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
             `${this.state.isOpened ? styles.opened : styles.closed}`
           )}
         >
-          <a
+          <span
             onClick={() => {
               this.setState({ isRenameMode: !this.state.isRenameMode });
             }}
           >
             Rename
-          </a>
-          <a onClick={this.duplicateCollection}>Duplicate Collection</a>
-          <a onClick={this.makePrivateCollection}>Make Private </a>
-          <a onClick={this.deleteCollection}>Delete </a>
+          </span>
+          <span onClick={this.duplicateCollection}>Duplicate Collection</span>
+          <span onClick={this.makePrivateCollection}>Make Private </span>
+          <span onClick={this.deleteCollection}>Delete </span>
         </div>
       </React.Fragment>
     );
@@ -204,11 +204,11 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
             ) : (
               <div className={styles.title}>{this.state.title}</div>
             )}
-            <a
+            <span
               onClick={() => this.setState({ isOpened: !this.state.isOpened })}
             >
               {this.props.isCollection && this.renderCollectionsEditDropdown()}
-            </a>
+            </span>
           </div>
           {this.props.isCollection && (
             <div className={styles.collaborators}>
@@ -216,22 +216,22 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
                 this.renderCollectionCollaborators()
               ) : (
                 <div className={styles.collaborators}>
-                  <a>Share this collection</a>
-                  <a onClick={this.shareCollection}>
+                  <span>Share this collection</span>
+                  <span onClick={this.shareCollection}>
                     <i className="fas fa-share contributors-share"></i>
-                  </a>
+                  </span>
                 </div>
               )}
             </div>
           )}
           {this.props.isCollection && (
             <React.Fragment>
-              <a
+              <span
                 className={styles.floatingShare}
                 onClick={this.shareCollection}
               >
                 <i className="fas fa-share contributors-share"></i>
-              </a>
+              </span>
             </React.Fragment>
           )}
         </div>

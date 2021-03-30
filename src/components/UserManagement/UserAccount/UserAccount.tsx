@@ -9,7 +9,6 @@ import cn from "classnames";
 import ResetPasswordForm from "components/common/Forms/ResetPasswordForm/ResetPasswordForm";
 import UpdateProfileForm from "components/common/Forms/UpdateProfileForm/UpdateProfileForm";
 import { isOnMobile } from "utils/responsive";
-import LogoMobile from "../../common/LogoMobile/LogoMobile";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
 import { UpdateCustomerInput } from "context/CustomerAPI/models";

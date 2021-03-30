@@ -6,7 +6,7 @@ import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
 import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
 import { get } from "lodash-es";
-import { COLLECTION_URL, COLLECTIONS_URL } from "../../../constants/urls";
+import { COLLECTION_URL } from "../../../constants/urls";
 import { deleteItem } from "../../../context/CollectionsAPI/api";
 
 type State = {

@@ -1,7 +1,6 @@
 import React from "react";
 import cn from "classnames";
 import styles from "./HistoryOrderDetails.module.scss";
-import { OrderT } from "constants/types";
 import { parseCurrency, parsePrice } from "utils/general";
 import { OrderX } from "constants/orderTypes";
 
