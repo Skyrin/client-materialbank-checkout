@@ -80,19 +80,19 @@ export const parseRESTOrder = (restOrder: any) => {
   result.total = {
     grand_total: {
       currency: "USD",
-      value: parseInt(restOrder.total, 10),
+      value: parseFloat(restOrder.total),
     },
     subtotal: {
       currency: "USD",
-      value: parseInt(restOrder.subtotal, 10),
+      value: parseFloat(restOrder.subtotal),
     },
     total_shipping: {
       currency: "USD",
-      value: parseInt(restOrder.shipping, 10),
+      value: parseFloat(restOrder.shipping),
     },
     total_tax: {
       currency: "USD",
-      value: parseInt(restOrder.tax, 10),
+      value: parseFloat(restOrder.tax),
     },
   };
   result.items = (restOrder.products || []).map((prod) =>
