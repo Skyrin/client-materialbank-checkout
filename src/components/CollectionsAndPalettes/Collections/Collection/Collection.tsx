@@ -195,14 +195,7 @@ class Collection extends React.Component<Props, State> {
         <CollectionsToolbar
           title={collection.name || "collection.name"}
           isCollection
-          buttons={[
-            "everything",
-            "palettes",
-            "materials",
-            "rooms",
-            "your uploads",
-            "price",
-          ]}
+          buttons={["everything", "materials", "your uploads"]}
           collaborators={
             this.state.person &&
             this.state.person.map((person: any) => person.imagePath)
@@ -236,15 +229,23 @@ class Collection extends React.Component<Props, State> {
                     }
                     onClick={this.uploadPhoto}
                   />
-                  {finalItems.map((item: any, index: number) => {
-                    return (
-                      <ItemCard
-                        key={index}
-                        mode={this.state.mode}
-                        item={item}
-                      />
-                    );
-                  })}
+                  {finalItems
+                    .filter(
+                      (item) =>
+                        this.state.display.includes(item.objectType) ||
+                        this.state.display === "everything"
+                    )
+                    .map((item: any, index: number) => {
+                      return (
+                        <React.Fragment>
+                          <ItemCard
+                            key={index}
+                            mode={this.state.mode}
+                            item={item}
+                          />
+                        </React.Fragment>
+                      );
+                    })}
                 </Masonry>
               </ResponsiveMasonry>
               {/*<AddToCartButton*/}
