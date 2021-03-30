@@ -24,6 +24,14 @@ export const parseCurrency = (stringCurrency: string) => {
   }
 };
 
+export const parsePrice = (stringPrice: string) => {
+  let price = parseFloat(stringPrice);
+  return price.toLocaleString("en-US", {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  });
+};
+
 export const getSamplePage = (sku: string) => {
   return `${MAIN_SHOP_URL}sample/${sku}`;
 };

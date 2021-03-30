@@ -113,11 +113,12 @@
 .middle-container {
   display: flex;
   align-items: center;
+  justify-content: space-around;
 
   .label {
-    flex: 1;
-    white-space: nowrap;
-    margin-right: var(--horizontal-spacing-half);
+    //flex: 1;
+    //white-space: nowrap;
+    //margin-right: var(--horizontal-spacing-half);
     @include mobile-media {
       font-size: 10px;
     }
@@ -161,4 +162,8 @@
   &:active {
     background-color: rgba(black, 0.1);
   }
+}
+
+.priceIndicator {
+  margin-right: $margin-small-2;
 }

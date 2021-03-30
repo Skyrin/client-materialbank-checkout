@@ -3,15 +3,18 @@ import cn from "classnames";
 import styles from "./OrderItemOverlay.module.scss";
 import { OrderItemT } from "constants/types";
 import { parseCurrency } from "utils/general";
+import { OrderX, ProductX } from "constants/orderTypes";
 
 interface Props {
-  item: OrderItemT;
+  item: ProductX;
+  order: OrderX;
   close?: () => any;
-  addToCart: (item: OrderItemT) => any;
+  addToCart: (item: ProductX) => any;
 }
 
 export function OrderItemOverlay(props: Props) {
   const item = props.item;
+  const order = props.order;
   return (
     <div className={cn(styles["OrderItemOverlay"])}>
       <button className={cn(styles["x-button"])} onClick={props.close}>
@@ -21,14 +24,13 @@ export function OrderItemOverlay(props: Props) {
         <div className={cn(styles["image"])} />
         <div className={cn(styles["title-price"])}>
           <div className={cn(styles["title"], "font-weight-medium")}>
-            Where to buy {item.product_sku} {item.product_name} in{" "}
-            {"item.color"}
+            Where to buy {item.sku} {item.name} in {"item.color"}
           </div>
           <div className="row center-vertically margin-top-half">
             <div className={styles.priceIndicator}>$$$$$</div>
             <div className={cn(styles["price"], "font-size-sm")}>
-              {parseCurrency(item.product_sale_price.currency)}
-              {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
+              {parseCurrency(order.currency)}
+              {item.price} / {item.unitOfMeasure}
             </div>
           </div>
         </div>
@@ -69,8 +71,8 @@ export function OrderItemOverlay(props: Props) {
             </span>
           </div>
           <span className={styles.addCartPrice}>
-            {parseCurrency(item.product_sale_price.currency)}
-            {item.product_sale_price.value}
+            {parseCurrency(order.currency)}
+            {item.total}
           </span>
         </button>
       </div>

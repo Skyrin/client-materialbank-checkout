@@ -1,17 +1,18 @@
 import React from "react";
 import cn from "classnames";
 import styles from "./HistoryOrderItem.module.scss";
-import { OrderItemT } from "constants/types";
 import { getSamplePage, parseCurrency } from "utils/general";
 import { AppContext, AppContextState } from "context/AppContext";
-import { get } from "lodash-es";
-import imagePlaceholder from "assets/images/Fill.png";
 import { isOnMobile } from "utils/responsive";
+import { OrderX, ProductX } from "constants/orderTypes";
+import { get } from "lodash-es";
+import PriceIndicator from "components/common/PriceIndicator/PriceIndicator";
 
 interface Props {
   item?: Item;
   onClick?: (...params: any) => any;
-  itemT: OrderItemT;
+  itemT: ProductX;
+  order: OrderX;
 }
 
 export interface Item {
@@ -33,21 +34,22 @@ export class HistoryOrderItem extends React.Component<Props> {
 
   render() {
     const item = this.props.itemT;
-    const algoliaProduct = this.context.productsCache.getProduct(
-      item.product_sku
-    );
-    const color = get(algoliaProduct, "data.color", "orderItem.color");
-    const imageUrl = get(
-      algoliaProduct,
-      "data.thumbnail_url",
-      imagePlaceholder
-    );
-    const sampleUrl = getSamplePage(item.product_sku);
+    const order = this.props.order;
+    const algoliaProduct = this.context.productsCache.getProduct(item.sku);
+    const priceSign = get(algoliaProduct, "data.price_sign");
+    // console.log("product");
+    // console.log(algoliaProduct);
+    // const imageUrl = get(
+    //   algoliaProduct,
+    //   "data.thumbnail_url",
+    //   imagePlaceholder
+    // );
+    const sampleUrl = getSamplePage(item.sku);
     return (
       <div className={cn(styles["HistoryOrderItem"])}>
         <div className={cn(styles["left-container"])}>
           <a href={sampleUrl}>
-            <img src={imageUrl} alt="" className={styles["image"]} />
+            <img src={item.imageUrl} alt="" className={styles["image"]} />
           </a>
           <div className={cn(styles["brand-model"])}>
             {!isOnMobile() && (
@@ -58,7 +60,7 @@ export class HistoryOrderItem extends React.Component<Props> {
                   "text-color-xlight"
                 )}
               >
-                {item.product_sku}
+                {item.manufacturer}
               </div>
             )}
 
@@ -66,7 +68,7 @@ export class HistoryOrderItem extends React.Component<Props> {
               href={sampleUrl}
               className={cn(styles["model"], "font-weight-medium")}
             >
-              {item.product_name}
+              {item.name}
             </a>
 
             <div
@@ -77,7 +79,7 @@ export class HistoryOrderItem extends React.Component<Props> {
                 styles.colorLabel
               )}
             >
-              {color}
+              {item.color}
             </div>
 
             {isOnMobile() && (
@@ -89,8 +91,8 @@ export class HistoryOrderItem extends React.Component<Props> {
                   styles.pricePerArea
                 )}
               >
-                {parseCurrency(item.product_sale_price.currency)}
-                {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
+                {parseCurrency(order.currency)}
+                {item.price} / {"sample"}
               </div>
             )}
 
@@ -103,8 +105,8 @@ export class HistoryOrderItem extends React.Component<Props> {
                   styles.sample
                 )}
               >
-                {parseCurrency(item.product_sale_price.currency)}
-                {item.product_sale_price.value} / sample
+                {parseCurrency(order.currency)}
+                {item.unitCost} / {item.unitOfMeasure}
               </div>
             )}
           </div>
@@ -119,18 +121,25 @@ export class HistoryOrderItem extends React.Component<Props> {
                 "text-color-xlight"
               )}
             >
-              {parseCurrency(item.product_sale_price.currency)}
-              {item.product_sale_price.value} / {"item.areaMeasurementUnit"}
+              {parseCurrency(order.currency)}
+              {item.price} / {"sample"}
             </div>
-            <div
-              className={cn(
-                styles["label"],
-                "font-size-sm",
-                "text-color-xlight"
-              )}
-            >
-              {parseCurrency(item.product_sale_price.currency)}
-              {item.product_sale_price.value} / sample
+            <div className="row center-vertically">
+              <PriceIndicator
+                className={styles.priceIndicator}
+                maxPrice={3}
+                priceValue={(3 * priceSign?.length) / 5}
+              />
+              <div
+                className={cn(
+                  styles["label"],
+                  "font-size-sm",
+                  "text-color-xlight"
+                )}
+              >
+                {parseCurrency(order.currency)}
+                {item.unitCost} / {item.unitOfMeasure}
+              </div>
             </div>
           </div>
         )}

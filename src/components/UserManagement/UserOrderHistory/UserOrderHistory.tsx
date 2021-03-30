@@ -7,20 +7,20 @@ import { SearchBar } from "components/common/SearchBar/SearchBar";
 import { HistoryOrder } from "components/common/HistoryOrder/HistoryOrder";
 import cn from "classnames";
 import styles from "./UserOrderHistory.module.scss";
-import { DateTime } from "luxon";
 import { OrderItemOverlay } from "components/common/OrderItemOverlay/OrderItemOverlay";
 import { Modal } from "components/common/Modal/Modal";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
-import { OrderItemT, OrderT } from "constants/types";
-import { isOnMobile } from "../../../utils/responsive";
+import { isOnMobile } from "utils/responsive";
 import LogoMobile from "../../common/LogoMobile/LogoMobile";
 import { RESTRequest } from "RestClient";
+import { OrderX, ProductX } from "constants/orderTypes";
+import { getSamplePage } from "utils/general";
 
 interface Props extends RouteComponentProps {}
 
 type State = {
-  orders: OrderT[];
+  ordersX: OrderX[];
 };
 
 export default class UserOrderHistory extends React.Component<Props, State> {
@@ -33,31 +33,41 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     super(props);
     this.modalRef = React.createRef();
     this.state = {
-      orders: [],
+      ordersX: [],
     };
   }
 
   async componentDidMount() {
-    this.context.getOrders().then((orders) => {
-      orders.sort((a, b) => {
-        if (
-          DateTime.fromSQL(a.order_date).valueOf() >=
-          DateTime.fromSQL(b.order_date).valueOf()
-        ) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
+    // this.context.getOrders().then((orders) => {
+    //   orders.sort((a, b) => {
+    //     if (
+    //       DateTime.fromSQL(a.order_date).valueOf() >=
+    //       DateTime.fromSQL(b.order_date).valueOf()
+    //     ) {
+    //       return -1;
+    //     } else {
+    //       return 0;
+    //     }
+    //   });
+    //
+    //   this.setState({
+    //     orders: orders,
+    //   });
+    // });
 
-      this.setState({
-        orders: orders,
-      });
-    });
-
+    this.context.setOrdersLoading(true);
+    this.forceUpdate();
     const orderResponse = await this.getOrders(1, 25);
-    console.log("here be da ne orders");
+
+    if (orderResponse) {
+      this.setState({
+        ordersX: orderResponse[0].result,
+      });
+    }
+
     console.log(orderResponse);
+    this.context.setOrdersLoading(false);
+    this.forceUpdate();
   }
 
   getOrders = async (page: number = 1, limit: number = 25) => {
@@ -81,12 +91,19 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     //  TODO: Implement functionality once we have API
   }
 
-  addItemToCart(item: OrderItemT): void {}
+  addItemToCart(item: ProductX): void {}
 
-  openItemOverlay(item: OrderItemT): void {
-    this.modalRef.current.open(
-      <OrderItemOverlay item={item} addToCart={this.addItemToCart} />
-    );
+  openItemOverlay(item: ProductX, order: OrderX): void {
+    // @ts-ignore
+    window.location = getSamplePage(item.sku);
+
+    // this.modalRef.current.open(
+    //   <OrderItemOverlay
+    //     order={order}
+    //     item={item}
+    //     addToCart={this.addItemToCart}
+    //   />
+    // );
   }
 
   render() {
@@ -107,11 +124,11 @@ export default class UserOrderHistory extends React.Component<Props, State> {
             }
           />
 
-          {this.state.orders.map((order) => (
+          {this.state.ordersX.map((order) => (
             <HistoryOrder
               key={order.number}
               orderT={order}
-              shopItem={(item) => this.openItemOverlay(item)}
+              shopItem={(item) => this.openItemOverlay(item, order)}
             />
           ))}
 
@@ -125,7 +142,7 @@ export default class UserOrderHistory extends React.Component<Props, State> {
           )}
           <Modal ref={this.modalRef} />
         </div>
-        {this.context.isOrdersLoading() && (
+        {(this.context.customerLoading || this.context.isOrdersLoading()) && (
           <Loader
             containerClassName={styles.loaderContainer}
             loaderClassName={styles.loader}
