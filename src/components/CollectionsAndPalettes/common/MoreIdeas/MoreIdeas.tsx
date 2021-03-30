@@ -3,8 +3,6 @@ import styles from "components/CollectionsAndPalettes/common/MoreIdeas/MoreIdeas
 import cn from "classnames";
 import ItemCard from "../ItemCard/ItemCard";
 import RoundButtons from "../RoundButtons/RoundButtons";
-import UploadCard from "../UploadCard/UploadCard";
-import { isOnMobile } from "../../../../utils/responsive";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 type Props = {

@@ -16,7 +16,6 @@ import CreditCard, { CreditCardType } from "models/CreditCard";
 import EditCreditCardForm, {
   CreditCardFormValuesT,
 } from "components/common/Forms/EditCreditCardForm/EditCreditCardForm";
-import LogoMobile from "../../common/LogoMobile/LogoMobile";
 import { isOnMobile } from "../../../utils/responsive";
 import { CustomerT } from "constants/types";
 import { AppContext, AppContextState } from "context/AppContext";

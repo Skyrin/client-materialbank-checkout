@@ -47,11 +47,11 @@ export default class Collaborators extends React.Component<Props, any> {
                 <img src={collaborator} alt="" />
               ))}
             {this.props.collaborators.length - this.maxNoCollaborators > 0 && (
-              <a className={styles.numberToShow}>+{this.numberToShow}</a>
+              <span className={styles.numberToShow}>+{this.numberToShow}</span>
             )}
-            <a onClick={this.shareCollection}>
+            <span onClick={this.shareCollection}>
               <i className="fas fa-share contributors-share"></i>
-            </a>
+            </span>
           </div>
         )}
       </React.Fragment>

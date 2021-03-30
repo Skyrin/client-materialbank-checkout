@@ -6,6 +6,7 @@ import googlePayLogo from "assets/images/google_pay_logo.svg";
 import cn from "classnames";
 import styles from "./StripePaymentButtons.module.scss";
 import { parsePhoneNumber } from "utils/general";
+import { isEqual, get } from "lodash-es";
 
 type Props = {
   className?: string;
@@ -16,6 +17,7 @@ type State = {
   googlePayPossible: boolean;
   applePayPossible: boolean;
   stripePaymentMethodId: string;
+  stripeInitialized: boolean;
 };
 
 export default class StripePaymentButtons extends React.Component<
@@ -24,20 +26,46 @@ export default class StripePaymentButtons extends React.Component<
 > {
   static contextType = AppContext;
   context!: AppContextState;
+  oldContext!: AppContextState;
 
   stripe: Stripe;
   applePayPaymentRequest: PaymentRequest;
   googlePayPaymentRequest: PaymentRequest;
 
-  state = {
-    googlePayPossible: false,
-    applePayPossible: false,
-    stripePaymentMethodId: "",
-  };
+  constructor(props: Props, context: AppContextState) {
+    super(props);
+    this.oldContext = context;
+    this.state = {
+      googlePayPossible: false,
+      applePayPossible: false,
+      stripePaymentMethodId: "",
+      stripeInitialized: false,
+    };
+  }
 
   componentDidMount() {
     this.initStripe();
   }
+
+  componentDidUpdate = (prevProps: Props, prevState: State) => {
+    if (!isEqual(this.oldContext, this.context)) {
+      const oldGrandTotal = get(
+        this.oldContext,
+        "cart.prices.grand_total.value",
+        0
+      );
+      const newGrandTotal = get(this.context, "cart.prices.grand_total.value");
+
+      if (
+        this.state.stripeInitialized &&
+        newGrandTotal &&
+        newGrandTotal !== oldGrandTotal
+      ) {
+        this.updateStripeTotal();
+      }
+    }
+    this.oldContext = this.context;
+  };
 
   initStripe = async () => {
     // If we don't have cart data, retry stripe after 0.5s
@@ -76,6 +104,15 @@ export default class StripePaymentButtons extends React.Component<
       ...paymentRequestOptions,
       wallets: ["googlePay", "browserCard"],
     });
+
+    await this.updatePaymentOptionAvailability();
+
+    this.setState({
+      stripeInitialized: true,
+    });
+  };
+
+  updatePaymentOptionAvailability = async () => {
     const applePayPossible = !!(await this.applePayPaymentRequest.canMakePayment());
     const googlePayPossible = !!(await this.googlePayPaymentRequest.canMakePayment());
 
@@ -100,6 +137,20 @@ export default class StripePaymentButtons extends React.Component<
       applePayPossible: applePayPossible,
       googlePayPossible: googlePayPossible,
     });
+  };
+
+  updateStripeTotal = () => {
+    const updateOptions = {
+      total: {
+        label: "Total",
+        amount: (this.context.cart.prices?.grand_total?.value || 0) * 100,
+      },
+    };
+
+    this.applePayPaymentRequest.update(updateOptions);
+    this.googlePayPaymentRequest.update(updateOptions);
+
+    this.updatePaymentOptionAvailability();
   };
 
   handleStripePaymentMethod = async (

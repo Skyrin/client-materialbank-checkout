@@ -1,4 +1,3 @@
-import Footer from "components/common/Footer/Footer";
 import {
   USER_ACCOUNT_URL,
   USER_BILLING_URL,
@@ -7,7 +6,7 @@ import {
   USER_SHIPPING_URL,
 } from "constants/urls";
 import * as React from "react";
-import { Link, Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import UserAccount from "./UserAccount/UserAccount";
 import UserBilling from "./UserBilling/UserBilling";
 import styles from "./UserManagement.module.scss";

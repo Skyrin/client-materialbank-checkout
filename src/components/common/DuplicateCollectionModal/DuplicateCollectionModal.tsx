@@ -4,7 +4,6 @@ import cn from "classnames";
 import { AppContext, AppContextState } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
-import Input from "../Input/Input";
 import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
 import { get } from "lodash-es";
 import { duplicateCollection } from "../../../context/CollectionsAPI/api";

@@ -4,9 +4,7 @@ import { COLLECTIONS_URL } from "../../../../constants/urls";
 import ItemCard from "../../common/ItemCard/ItemCard";
 import CollectionsToolbar from "../../common/CollectionsToolbar/CollectionsToolbar";
 import UploadCard from "../../common/UploadCard/UploadCard";
-import AddToCartButton from "components/CollectionsAndPalettes/common/AddToCartButton/AddToCartButton";
 import styles from "components/CollectionsAndPalettes/Collections/Collection/Collection.module.scss";
-import cn from "classnames";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import {
   AppContext,
@@ -210,7 +208,7 @@ class Collection extends React.Component<Props, State> {
           className={!finalItems.length ? styles.emptyCollection : ""}
         >
           {finalItems.length > 0 && (
-            <React.Fragment>
+            <div className={styles.masonryWrapper}>
               <ResponsiveMasonry
                 columnsCountBreakPoints={{
                   350: 1,
@@ -251,7 +249,7 @@ class Collection extends React.Component<Props, State> {
               {/*<AddToCartButton*/}
               {/*  commonAreaIsInViewport={this.state.commonAreaIsInViewport}*/}
               {/*/>*/}
-            </React.Fragment>
+            </div>
           )}
           {finalItems.length < 1 && (
             <React.Fragment>

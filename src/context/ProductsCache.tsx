@@ -26,11 +26,6 @@ export class ProductsCache {
     if (this.products.has(sku)) {
       return this.products.get(sku);
     }
-    console.log(
-      "[PRODUCT CACHE] ENTERED GET PRODUCT WITH:",
-      sku,
-      ", WAS NOT IN CACHE"
-    );
     this.enqueueSku(sku);
 
     // Return the product (loading for now)
@@ -39,7 +34,6 @@ export class ProductsCache {
 
   // This function will only return when the products have been fetched
   getProductsAsync = async (skus: string[]) => {
-    console.log("[PRODUCT CACHE] ENTERED GET ASYNC WITH:", skus);
     const missingSkus = skus.filter(
       (sku) => !this.products.has(sku) || !this.products.get(sku).data
     );
@@ -71,7 +65,6 @@ export class ProductsCache {
     });
     if (!this.isBatching) {
       this.isBatching = true;
-      console.log("[PRODUCT CACHE] STARTED BATCHING PROCESS");
       window.setTimeout(() => {
         this.fetchProducts();
       }, BATCHING_DURATION);
@@ -104,7 +97,6 @@ export class ProductsCache {
         data: product,
       });
     });
-    console.log("[PRODUCT CACHE] CALLING FETCH CALLBACKS");
     this.fetchCallbacks.forEach((callback) => callback());
     this.fetchCallbacks = [];
     this.productsFetchedCallback();
