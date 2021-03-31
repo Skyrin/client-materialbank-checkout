@@ -3,7 +3,7 @@ import * as React from "react";
 import styles from "../../common/ItemCard/ItemCard.module.scss";
 import Collaborators from "../Collaborators/Collaborators";
 import cn from "classnames";
-import { forEach, get } from "lodash-es";
+import { get } from "lodash-es";
 
 interface Props {
   collection: CollectionT;
@@ -19,7 +19,6 @@ export default class ItemCard extends React.Component<Props, any> {
   };
 
   getImagePath = (item) => {
-    const { collection } = this.props;
     if (item.upload) {
       return item.upload.url;
     } else if (item.material) {
@@ -31,6 +30,8 @@ export default class ItemCard extends React.Component<Props, any> {
         "data.thumbnail_url",
         "https://dev.design.shop/static/version1613493863/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/image.jpg"
       );
+    } else if (JSON.parse(item.json).type === "room" || "palette") {
+      return JSON.parse(item.json).imageUrl;
     }
   };
 
