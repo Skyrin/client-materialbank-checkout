@@ -186,6 +186,7 @@
   right: 0;
   bottom: 0;
   background: rgba(white, 0.8);
+  z-index: 2;
 
   &.visible {
     display: flex;
@@ -237,6 +238,7 @@
   justify-content: center;
   align-items: center;
   padding-top: var(--vertical-spacing-normal);
+  z-index: 2;
 
   .loader {
     font-size: 40px;
