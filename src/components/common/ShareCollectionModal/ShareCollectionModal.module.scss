@@ -180,13 +180,13 @@ span {
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  column-gap: $margin-medium;
   margin-top: $margin-medium;
   @include mobile-media {
     margin-top: 10px;
   }
 
   .createButton {
+    margin-right: $margin-medium;
     cursor: pointer;
     background-color: black;
     color: white;

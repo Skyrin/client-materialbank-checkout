@@ -98,7 +98,7 @@ class DeleteItemModal extends React.Component<Props, State> {
           </div>
           <div className={styles.modalContent}>
             <div className={styles.title}>
-              Are you sure you want to delete lll?
+              Are you sure you want to delete this item?
             </div>
             <div className="horizontal-divider-toolbar"></div>
             <div className={styles.buttonsContainer}>
