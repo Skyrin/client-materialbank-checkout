@@ -4,7 +4,11 @@ import UserHeader, {
   UserPages,
 } from "components/UserManagement/UserHeader/UserHeader";
 import styles from "./UserShipping.module.scss";
-import MapAddressForm from "components/common/Forms/MapAddressForm/MapAddressForm";
+import MapAddressForm, {
+  AddressFormErrorsT,
+  AddressFormValuesT,
+  DEFAULT_ADDRESS_VALUES,
+} from "components/common/Forms/MapAddressForm/MapAddressForm";
 import {
   disableBodyScroll,
   enableBodyScroll,
@@ -18,41 +22,6 @@ import Loader from "components/common/Loader/Loader";
 import { AddressT, CustomerT } from "constants/types";
 import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
 import { isOnMobile } from "utils/responsive";
-
-export const DEFAULT_ADDRESS_VALUES: AddressFormValuesT = {
-  nickname: "",
-  firstName: "",
-  lastName: "",
-  addressLine1: "",
-  addressLine2: "",
-  city: "",
-  state: "",
-  zipcode: "",
-  default: false,
-};
-
-export type AddressFormValuesT = {
-  nickname: string;
-  firstName: string;
-  lastName: string;
-  addressLine1: string;
-  addressLine2: string;
-  city: string;
-  state: string;
-  zipcode: string;
-  default: boolean;
-};
-
-export type AddressFormErrorsT = {
-  nickname: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  addressLine1: string | null;
-  addressLine2: string | null;
-  city: string | null;
-  state: string | null;
-  zipcode: string | null;
-};
 
 type Props = RouteComponentProps;
 
@@ -95,14 +64,14 @@ export default class UserShipping extends React.Component<Props, State> {
       addresses: [],
       customer: null,
       errors: {
-        nickname: null,
+        company: null,
         firstName: null,
         lastName: null,
-        addressLine1: null,
-        addressLine2: null,
+        address: null,
+        aptNumber: null,
         city: null,
-        state: null,
-        zipcode: null,
+        region: null,
+        zipCode: null,
       },
       editingAddress: null,
       createAddressNetworkError: "",
@@ -336,14 +305,7 @@ export default class UserShipping extends React.Component<Props, State> {
     });
 
     const addressFields = {
-      company: addressValues.nickname,
-      firstName: addressValues.firstName || "",
-      lastName: addressValues.lastName || "",
-      city: addressValues.city || "",
-      region: addressValues.state || "",
-      address: addressValues.addressLine1 || "",
-      aptNumber: addressValues.addressLine2 || "",
-      zipCode: addressValues.zipcode || "",
+      ...addressValues,
       default_shipping: addressValues.default,
       default_billing: addressValues.default,
     };

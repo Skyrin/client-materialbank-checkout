@@ -9,50 +9,63 @@ import Select from "react-dropdown-select";
 import usaStates from "models/usaStates.json";
 import styled from "@emotion/styled";
 import { AddressT } from "constants/types";
+import AddressInput from "components/common/Input/AddressInput/AddressInput";
 
 const addAddressSchema = yup.object().shape({
-  nickname: yup.string().required("Required"),
+  company: yup.string().required("Required"),
   firstName: yup.string().required("Required"),
   lastName: yup.string().required("Required"),
-  addressLine1: yup.string().required("Required"),
+  address: yup.string().required("Required"),
   city: yup.string().required("Required"),
-  state: yup.string().required("Required"),
-  zipcode: yup.string().required("Required"),
+  region: yup.string().required("Required"),
+  zipCode: yup.string().required("Required"),
 });
 
 export const DEFAULT_ADDRESS_VALUES: AddressFormValuesT = {
-  nickname: "",
+  company: "",
   firstName: "",
   lastName: "",
-  addressLine1: "",
-  addressLine2: "",
+  address: "",
+  aptNumber: "",
   city: "",
-  state: usaStates[0].abbreviation,
-  zipcode: "",
+  region: usaStates[0].abbreviation,
+  zipCode: "",
   default: false,
 };
 
 export type AddressFormValuesT = {
-  nickname: string;
+  company: string;
   firstName: string;
   lastName: string;
-  addressLine1: string;
-  addressLine2: string;
+  address: string;
+  aptNumber: string;
   city: string;
-  state: string;
-  zipcode: string;
+  region: string;
+  zipCode: string;
   default: boolean;
 };
 
 export type AddressFormErrorsT = {
-  nickname: string | null;
+  company: string | null;
   firstName: string | null;
   lastName: string | null;
-  addressLine1: string | null;
-  addressLine2: string | null;
+  address: string | null;
+  aptNumber: string | null;
   city: string | null;
-  state: string | null;
-  zipcode: string | null;
+  region: string | null;
+  zipCode: string | null;
+};
+
+const NO_ERRORS = {
+  firstName: null,
+  lastName: null,
+  company: null,
+  address: null,
+  aptNumber: null,
+  city: null,
+  zipCode: null,
+  phone: null,
+  region: null,
 };
 
 type Props = {
@@ -72,20 +85,22 @@ type State = {
 };
 
 export default class MapAddressForm extends React.Component<Props, State> {
+  addressInputRef: AddressInput;
+
   constructor(props) {
     super(props);
     let initialValues: AddressFormValuesT = DEFAULT_ADDRESS_VALUES;
 
     if (props.editAddress) {
       initialValues = {
-        nickname: props.editAddress.company,
+        company: props.editAddress.company,
         firstName: props.editAddress.firstname,
         lastName: props.editAddress.lastname,
-        addressLine1: props.editAddress.street[0],
-        addressLine2: props.editAddress.street[1],
+        address: props.editAddress.street[0],
+        aptNumber: props.editAddress.street[1],
         city: props.editAddress.city,
-        state: props.editAddress.region.region_code,
-        zipcode: props.editAddress.postcode,
+        region: props.editAddress.region.region_code,
+        zipCode: props.editAddress.postcode,
         default: props.editAddress.default_shipping,
       };
     }
@@ -94,14 +109,14 @@ export default class MapAddressForm extends React.Component<Props, State> {
       values: initialValues,
       editMode: !!this.props.initialValues,
       errors: {
-        nickname: null,
+        company: null,
         firstName: null,
         lastName: null,
-        addressLine1: null,
-        addressLine2: null,
+        address: null,
+        aptNumber: null,
         city: null,
-        state: null,
-        zipcode: null,
+        region: null,
+        zipCode: null,
       },
     };
 
@@ -118,7 +133,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
             [styles.editing]: this.props.editAddress,
           })}
         >
-          {this.props.editAddress && `Editing "${this.state.values.nickname}"`}
+          {this.props.editAddress && `Editing "${this.state.values.company}"`}
           {!this.props.editAddress && "Add a New Address"}
         </div>
         <div className={styles.addressForm}>
@@ -126,11 +141,11 @@ export default class MapAddressForm extends React.Component<Props, State> {
             <div className={styles.inputHint}>Nickname</div>
             <Input
               placeholder="My house"
-              value={this.state.values.nickname}
-              error={this.state.errors.nickname}
+              value={this.state.values.company}
+              error={this.state.errors.company}
               userInputStyle={true}
               onChange={(val: string) => {
-                this.updateFieldForm("nickname", val);
+                this.updateFieldForm("company", val);
               }}
             />
           </div>
@@ -163,13 +178,25 @@ export default class MapAddressForm extends React.Component<Props, State> {
 
           <div className={styles.address1}>
             <div className={styles.inputHint}>Address Line 1</div>
-            <Input
-              placeholder="123 Street Name"
-              value={this.state.values.addressLine1}
-              error={this.state.errors.addressLine1}
-              userInputStyle={true}
-              onChange={(val: string) => {
-                this.updateFieldForm("addressLine1", val);
+            {/*<Input*/}
+            {/*  placeholder="123 Street Name"*/}
+            {/*  value={this.state.values.address}*/}
+            {/*  error={this.state.errors.address}*/}
+            {/*  userInputStyle={true}*/}
+            {/*  onChange={(val: string) => {*/}
+            {/*    this.updateFieldForm("address", val);*/}
+            {/*  }}*/}
+            {/*/>*/}
+
+            <AddressInput
+              componentRef={(input) => {
+                this.addressInputRef = input;
+              }}
+              // className={cn(styles.input, this.props.inputClassName)}
+              initialValue={this.state.values.address}
+              placeholder="123 Example Street"
+              onAddressSelected={(addressInfo) => {
+                this.updateValues(addressInfo);
               }}
             />
           </div>
@@ -178,11 +205,11 @@ export default class MapAddressForm extends React.Component<Props, State> {
             <div className={styles.inputHint}>Address Line 2</div>
             <Input
               placeholder="Apt. #22A"
-              value={this.state.values.addressLine2}
-              error={this.state.errors.addressLine2}
+              value={this.state.values.aptNumber}
+              error={this.state.errors.aptNumber}
               userInputStyle={true}
               onChange={(val: string) => {
-                this.updateFieldForm("addressLine2", val);
+                this.updateFieldForm("aptNumber", val);
               }}
             />
           </div>
@@ -205,7 +232,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
             <StyledSelect
               options={usaStates}
               values={usaStates.filter((state) => {
-                return state.abbreviation === this.state.values.state;
+                return state?.abbreviation === this.state.values.region;
               })}
               labelField="abbreviation"
               valueField="abbreviation"
@@ -213,7 +240,7 @@ export default class MapAddressForm extends React.Component<Props, State> {
               className={styles.dropDownStyle}
               onChange={(value) => {
                 // @ts-ignore
-                this.updateFieldForm("state", value[0].abbreviation);
+                this.updateFieldForm("region", value[0]?.abbreviation);
               }}
             />
           </div>
@@ -222,8 +249,8 @@ export default class MapAddressForm extends React.Component<Props, State> {
             <div className={styles.inputHint}>Zip Code</div>
             <Input
               placeholder="XXXXX-XXXX"
-              value={this.state.values.zipcode}
-              error={this.state.errors.zipcode}
+              value={this.state.values.zipCode}
+              error={this.state.errors.zipCode}
               userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("zipcode", val);
@@ -289,6 +316,20 @@ export default class MapAddressForm extends React.Component<Props, State> {
         [fieldName]: null,
       },
     });
+  };
+
+  updateValues = (values: AddressFormValuesT) => {
+    console.log(values);
+    this.setState({
+      values: {
+        ...this.state.values,
+        ...values,
+      },
+      errors: {
+        ...NO_ERRORS,
+      },
+    });
+    this.addressInputRef.updateValue(values.address);
   };
 
   saveClicked = () => {
