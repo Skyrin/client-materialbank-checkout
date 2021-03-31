@@ -2,7 +2,7 @@ import GoogleLogin from "react-google-login";
 import React from "react";
 
 const clientId =
-  "436309153549-c40ouqns46cb7k8tkpuva6ts9fa0krpv.apps.googleusercontent.com";
+  "86276352424-1vrsegskhdhdduvfvnk45mkofbac46tp.apps.googleusercontent.com";
 
 type Props = {
   className?: string;
