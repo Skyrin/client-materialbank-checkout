@@ -35,6 +35,7 @@ interface ToolbarProps {
   collaborators?: any;
   toggleMode?: any;
   toggleDisplay?: any;
+  filter?: boolean;
 }
 
 type Props = RouteComponentProps;
@@ -104,14 +105,15 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
   };
 
   onClickButtonRedirect = (button: string) => {
-    const redirectURLS = {
-      collections: COLLECTIONS_URL,
-      palettes: PALETTES_URL,
-    };
-    const currentURL = this.props.history.location.pathname;
-
-    if (redirectURLS[button] === currentURL) return;
-    else this.props.history.push(redirectURLS[button]);
+    if (!this.props.filter) {
+      const redirectURLS = {
+        collections: COLLECTIONS_URL,
+        palettes: PALETTES_URL,
+      };
+      const currentURL = this.props.history.location.pathname;
+      if (redirectURLS[button] === currentURL) return;
+      else this.props.history.push(redirectURLS[button]);
+    }
   };
 
   getCollectionId = () => {

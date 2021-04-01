@@ -197,7 +197,9 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
           <img src={hotspotItem.imageUrl} alt="" />
         </div>
         <div className={cn(styles.infoContainer, styles.infoMode)}>
-          <div>{hotspotItem.name}</div>
+          <div className={styles.darker}>{hotspotItem.name}</div>
+          <div className={styles.darker}>{hotspotItem.color}</div>
+          <div>{hotspotItem.description}</div>
         </div>
       </React.Fragment>
     );

@@ -96,7 +96,6 @@ class UploadPhotoModal extends React.Component<Props, State> {
 
   submitOnEnter = (e: any) => {
     if (e.key === "Enter" && this.state.file) {
-      console.log("enter");
       this.submit();
     } else if (e.key === "Escape") {
       this.closeModal();
@@ -104,7 +103,6 @@ class UploadPhotoModal extends React.Component<Props, State> {
   };
 
   submit = async () => {
-    console.log(this.state);
     const collectionId = this.getCollectionId();
     if (collectionId) {
       const resp = await uploadPhoto(this.context, this.getCollectionId(), {
