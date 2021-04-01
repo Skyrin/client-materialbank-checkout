@@ -191,9 +191,6 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
     if (this.props.item.json) {
       hotspotItem = JSON.parse(this.props.item.json);
     } else return;
-    console.log(hotspotItem, "hp");
-    let markers = hotspotItem.markers;
-    console.log(markers, "mk");
     return (
       <React.Fragment>
         <div className={cn(styles.imageContainer, styles.infoMode)}>
@@ -247,7 +244,6 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
   }
 
   render() {
-    console.log(this.props.item.json);
     return (
       <React.Fragment>
         <div>
