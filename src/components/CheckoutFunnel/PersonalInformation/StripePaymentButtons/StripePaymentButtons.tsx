@@ -1,12 +1,19 @@
 import { AppContext, AppContextState } from "context/AppContext";
 import * as React from "react";
-import { loadStripe, PaymentRequest, Stripe } from "@stripe/stripe-js";
+import {
+  loadStripe,
+  PaymentRequest,
+  PaymentRequestShippingAddressEvent,
+  Stripe,
+} from "@stripe/stripe-js";
 import applePayLogo from "assets/images/apple_pay_logo.svg";
 import googlePayLogo from "assets/images/google_pay_logo.svg";
 import cn from "classnames";
 import styles from "./StripePaymentButtons.module.scss";
 import { parsePhoneNumber } from "utils/general";
 import { isEqual, get } from "lodash-es";
+import { RESTRequest } from "RestClient";
+import { getRegionFromName } from "constants/regions";
 
 type Props = {
   className?: string;
@@ -88,14 +95,8 @@ export default class StripePaymentButtons extends React.Component<
       requestPayerEmail: true,
       requestPayerPhone: true,
       requestShipping: true,
-      shippingOptions: [
-        {
-          id: "fedex",
-          label: "FedEx Priority Overnight",
-          amount: 0,
-        },
-      ],
     };
+
     this.applePayPaymentRequest = this.stripe.paymentRequest({
       ...paymentRequestOptions,
       wallets: ["applePay"],
@@ -121,12 +122,20 @@ export default class StripePaymentButtons extends React.Component<
         "paymentmethod",
         this.handleStripePaymentMethod
       );
+      this.applePayPaymentRequest.on(
+        "shippingaddresschange",
+        this.handleStripeShippingAddressChange
+      );
     }
 
     if (googlePayPossible) {
       this.googlePayPaymentRequest.on(
         "paymentmethod",
         this.handleStripePaymentMethod
+      );
+      this.googlePayPaymentRequest.on(
+        "shippingaddresschange",
+        this.handleStripeShippingAddressChange
       );
     }
 
@@ -161,9 +170,6 @@ export default class StripePaymentButtons extends React.Component<
     console.log("GOT EVENT", event);
 
     const [firstName, lastName] = (restOfEvent.payerName || "").split(" ");
-    const [shippingFirstName, shippingLastName] = (
-      restOfEvent.shippingAddress?.recipient || ""
-    ).split(" ");
 
     complete("success");
     this.props.onTransactionApproved({
@@ -183,6 +189,40 @@ export default class StripePaymentButtons extends React.Component<
         zipCode: restOfEvent.shippingAddress?.postalCode || "",
         phone: parsePhoneNumber(restOfEvent.shippingAddress?.phone || ""),
       },
+    });
+  };
+
+  handleStripeShippingAddressChange = async (
+    event: PaymentRequestShippingAddressEvent
+  ) => {
+    const { updateWith, shippingAddress } = event;
+    const cartId = this.context.cart.id;
+    const [shippingFirstName, shippingLastName] = (
+      shippingAddress.recipient || ""
+    ).split(" ");
+    const region = getRegionFromName(shippingAddress.region);
+    const estimatedShippingResponse = await RESTRequest(
+      "POST",
+      `guest-carts/${cartId}/estimate-shipping-methods`,
+      {
+        address: {
+          firstname: shippingFirstName,
+          lastname: shippingLastName,
+          city: shippingAddress.city,
+          region: region.name,
+          region_code: region.code,
+          region_id: region.id,
+          street: shippingAddress.addressLine,
+          postcode: shippingAddress.postalCode,
+          telephone: shippingAddress.phone,
+          country_id: "US",
+        },
+      }
+    );
+    const estimatedShipping = await estimatedShippingResponse.json();
+    console.log("ESTMATED SHIPPING RESPONSE", estimatedShipping);
+    updateWith({
+      status: "success",
     });
   };
 
