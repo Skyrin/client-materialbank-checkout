@@ -101,6 +101,7 @@ export const setShippingAddressOnCart = async (
       setShippingAddressesOnCart(input: $input) {
         cart {
           ${CartShippingAddressesFragment}
+          ${CartPricesFragment}
         }
       }
     }
@@ -294,6 +295,7 @@ export const setShippingMethodOnCart = async (
       setShippingMethodsOnCart(input: $input) {
         cart {
           ${CartShippingAddressesFragment}
+          ${CartPricesFragment}
         }
       }
     }

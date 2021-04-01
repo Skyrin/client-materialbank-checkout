@@ -1,12 +1,20 @@
 import { AppContext, AppContextState } from "context/AppContext";
 import * as React from "react";
-import { loadStripe, PaymentRequest, Stripe } from "@stripe/stripe-js";
+import {
+  loadStripe,
+  PaymentRequest,
+  PaymentRequestShippingAddressEvent,
+  PaymentRequestPaymentMethodEvent,
+  Stripe,
+} from "@stripe/stripe-js";
 import applePayLogo from "assets/images/apple_pay_logo.svg";
 import googlePayLogo from "assets/images/google_pay_logo.svg";
 import cn from "classnames";
 import styles from "./StripePaymentButtons.module.scss";
 import { parsePhoneNumber } from "utils/general";
 import { isEqual, get } from "lodash-es";
+import { RESTRequest } from "RestClient";
+import { getRegionFromName } from "constants/regions";
 
 type Props = {
   className?: string;
@@ -77,25 +85,39 @@ export default class StripePaymentButtons extends React.Component<
     this.stripe = await loadStripe(
       "pk_test_51I1F3fCnVrIUZxgWfN53yuaDE2trsJ1rFx7g1Nj44m3SMaCdKPuK1q7fm2IaBMnk0pB2lJsy4q0b2EP1NgiUcUaS00wwKh2Q54"
     );
+
+    console.log("CART", this.context.cart);
+    const shipping =
+      get(
+        this.context.cart,
+        "shipping_addresses[0].selected_shipping_method.amount.value",
+        0
+      ) * 100;
+    const subtotal =
+      get(this.context.cart, "prices.subtotal_including_tax.value", 0) * 100;
     const paymentRequestOptions = {
       country: "US",
       currency: "usd",
+      displayItems: [
+        {
+          label: "Subtotal",
+          amount: subtotal,
+        },
+        {
+          label: "Shipping",
+          amount: shipping,
+        },
+      ].filter((item) => item.amount !== 0),
       total: {
         label: "Total",
-        amount: (this.context.cart.prices?.grand_total?.value || 0) * 100, // ??????? Is it in cents?
+        amount: subtotal + shipping,
       },
       requestPayerName: true,
       requestPayerEmail: true,
       requestPayerPhone: true,
       requestShipping: true,
-      shippingOptions: [
-        {
-          id: "fedex",
-          label: "FedEx Priority Overnight",
-          amount: 0,
-        },
-      ],
     };
+
     this.applePayPaymentRequest = this.stripe.paymentRequest({
       ...paymentRequestOptions,
       wallets: ["applePay"],
@@ -121,12 +143,20 @@ export default class StripePaymentButtons extends React.Component<
         "paymentmethod",
         this.handleStripePaymentMethod
       );
+      this.applePayPaymentRequest.on(
+        "shippingaddresschange",
+        this.handleStripeShippingAddressChange
+      );
     }
 
     if (googlePayPossible) {
       this.googlePayPaymentRequest.on(
         "paymentmethod",
         this.handleStripePaymentMethod
+      );
+      this.googlePayPaymentRequest.on(
+        "shippingaddresschange",
+        this.handleStripeShippingAddressChange
       );
     }
 
@@ -140,10 +170,28 @@ export default class StripePaymentButtons extends React.Component<
   };
 
   updateStripeTotal = () => {
+    const shipping =
+      get(
+        this.context.cart,
+        "shipping_addresses[0].selected_shipping_method.amount.value",
+        0
+      ) * 100;
+    const subtotal =
+      get(this.context.cart, "prices.subtotal_including_tax.value", 0) * 100;
     const updateOptions = {
+      displayItems: [
+        {
+          label: "Subtotal",
+          amount: subtotal,
+        },
+        {
+          label: "Shipping",
+          amount: shipping,
+        },
+      ].filter((item) => item.amount !== 0),
       total: {
         label: "Total",
-        amount: (this.context.cart.prices?.grand_total?.value || 0) * 100,
+        amount: subtotal + shipping,
       },
     };
 
@@ -161,6 +209,7 @@ export default class StripePaymentButtons extends React.Component<
     console.log("GOT EVENT", event);
 
     const [firstName, lastName] = (restOfEvent.payerName || "").split(" ");
+
     const [shippingFirstName, shippingLastName] = (
       restOfEvent.shippingAddress?.recipient || ""
     ).split(" ");
@@ -182,6 +231,70 @@ export default class StripePaymentButtons extends React.Component<
         aptNumber: (restOfEvent.shippingAddress?.addressLine || [])[1] || "",
         zipCode: restOfEvent.shippingAddress?.postalCode || "",
         phone: parsePhoneNumber(restOfEvent.shippingAddress?.phone || ""),
+      },
+    });
+  };
+
+  handleStripeShippingAddressChange = async (
+    event: PaymentRequestShippingAddressEvent
+  ) => {
+    const { updateWith, shippingAddress } = event;
+    const cartId = this.context.cart.id;
+    const [shippingFirstName, shippingLastName] = (
+      shippingAddress.recipient || ""
+    ).split(" ");
+    const region = getRegionFromName(shippingAddress.region);
+    const estimatedShippingResponse = await RESTRequest(
+      "POST",
+      `guest-carts/${cartId}/estimate-shipping-methods`,
+      {
+        address: {
+          firstname: shippingFirstName,
+          lastname: shippingLastName,
+          city: shippingAddress.city,
+          region: region.name,
+          region_code: region.code,
+          region_id: region.id,
+          street: shippingAddress.addressLine,
+          postcode: shippingAddress.postalCode,
+          telephone: shippingAddress.phone,
+          country_id: "US",
+        },
+      }
+    );
+    const estimatedShipping = await estimatedShippingResponse.json();
+    const flatrate =
+      (estimatedShipping || []).find(
+        (option) => option.method_code === "flatrate"
+      ) || {};
+
+    const subtotal =
+      (this.context.cart?.prices?.subtotal_including_tax?.value || 0) * 100;
+    const shipping = (flatrate.amount || 0) * 100;
+
+    updateWith({
+      status: "success",
+      shippingOptions: [
+        {
+          id: "fedex",
+          label: "FedEx Priority Overnight",
+          detail: "",
+          amount: shipping,
+        },
+      ],
+      displayItems: [
+        {
+          label: "Subtotal",
+          amount: subtotal,
+        },
+        {
+          label: "Shipping",
+          amount: shipping,
+        },
+      ],
+      total: {
+        label: "Total",
+        amount: subtotal + shipping,
       },
     });
   };

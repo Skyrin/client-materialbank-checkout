@@ -131,26 +131,48 @@ export default class AppContextManager extends React.Component<Props> {
     requestCartInfo: async (cartId?: string) => {
       this.contextState.cartInfoLoading = true;
       this.forceUpdate();
-      let cartInfo = {};
+      let cartInfo: CartT = {};
       if (this.contextState.isLoggedIn) {
         try {
           cartInfo = await requestCustomerCartInfo(this.getFullContext());
+          if (cartInfo) {
+            this.actions.updateCart(cartInfo);
+          }
+          if (cartInfo.items && cartInfo.items.length) {
+            if (
+              !cartInfo.shipping_addresses ||
+              !cartInfo.shipping_addresses.length
+            ) {
+              const defaultShipping = this.contextState.customer
+                .default_shipping;
+              if (defaultShipping) {
+                await this.actions.setShippingAddress(
+                  parseInt(defaultShipping)
+                );
+              }
+            }
+            if (
+              !get(cartInfo, "shipping_addresses[0].selected_shipping_method")
+            ) {
+              await this.actions.setShippingMethod();
+            }
+          }
+          this.contextState.cartInfoLoading = false;
+          this.forceUpdate();
+          return this.contextState.cart;
         } catch (e) {
-          console.log("error ");
+          console.log("error", e);
         }
       } else {
         cartInfo = await requestGuestCartInfo(
           this.getFullContext(),
           cartId || ""
         );
-      }
-      console.log("GOT CART INFO", cartInfo);
-      this.contextState.cartInfoLoading = false;
-      if (cartInfo) {
-        this.actions.updateCart(cartInfo);
-        return this.contextState.cart;
-      } else {
-        console.log("error ");
+        this.contextState.cartInfoLoading = false;
+        if (cartInfo) {
+          this.actions.updateCart(cartInfo);
+          return this.contextState.cart;
+        }
       }
     },
 
