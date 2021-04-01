@@ -193,7 +193,7 @@ class Collection extends React.Component<Props, State> {
         <CollectionsToolbar
           title={collection.name || "collection.name"}
           isCollection
-          buttons={["everything", "materials", "your uploads"]}
+          buttons={["everything", "materials", "your uploads", "hotspots"]}
           collaborators={
             this.state.person &&
             this.state.person.map((person: any) => person.imagePath)

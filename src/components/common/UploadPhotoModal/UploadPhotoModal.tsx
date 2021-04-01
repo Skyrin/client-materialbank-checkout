@@ -95,7 +95,8 @@ class UploadPhotoModal extends React.Component<Props, State> {
   };
 
   submitOnEnter = (e: any) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && this.state.file) {
+      console.log("enter");
       this.submit();
     } else if (e.key === "Escape") {
       this.closeModal();
@@ -147,8 +148,8 @@ class UploadPhotoModal extends React.Component<Props, State> {
               type="file"
               name="upload-photo"
               onChange={this.handleImageUpload}
-              onKeyDown={this.submitOnEnter}
             />
+
             <label
               htmlFor="upload-photo"
               className={cn(
@@ -162,14 +163,14 @@ class UploadPhotoModal extends React.Component<Props, State> {
             <img className={styles.preview} src={this.state.fileUrl} alt="" />
             <span>Image Name</span>
 
-            <Input
+            <input
               className={styles.inputField}
               placeholder="Image Name"
               value={this.state.name}
               type="text"
-              onChange={(val: string) => this.setState({ name: val })}
+              onChange={(e: any) => this.setState({ name: e.target.value })}
+              onKeyDown={this.submitOnEnter}
             />
-
             <div className={styles.buttonsContainer}>
               <div className={styles.createButton} onClick={this.submit}>
                 Upload Photo

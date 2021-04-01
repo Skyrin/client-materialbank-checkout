@@ -191,3 +191,10 @@
     }
   }
 }
+
+.marker {
+  position: absolute;
+  color: white;
+  border: 8px solid rgba(black, 0.2);
+  border-radius: 100%;
+}

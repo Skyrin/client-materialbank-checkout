@@ -52,6 +52,14 @@ export class CreateCollectionModal extends React.Component<Props, State> {
     disableBodyScroll(this.modalTarget);
   };
 
+  submitOnEnter = (e: any) => {
+    if (e.key === "Enter") {
+      this.createCollection();
+    } else if (e.key === "Escape") {
+      this.closeModal();
+    }
+  };
+
   createCollection = async () => {
     await this.context.createCollection({
       name: this.state.collectionName,
@@ -80,15 +88,16 @@ export class CreateCollectionModal extends React.Component<Props, State> {
             <div className={styles.title}>Create a Collection</div>
             <div className="horizontal-divider-toolbar"></div>
             <span>Collection Name</span>
-
-            <Input
+            <input
               className={styles.inputField}
               placeholder="Collection Name"
               value={this.state.collectionName}
               type="text"
-              onChange={(val: string) => this.setState({ collectionName: val })}
+              onChange={(e: any) =>
+                this.setState({ collectionName: e.target.value })
+              }
+              onKeyDown={this.submitOnEnter}
             />
-
             <div className={styles.buttonsContainer}>
               <div
                 className={styles.createButton}
