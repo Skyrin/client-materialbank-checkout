@@ -2,6 +2,9 @@
 @import "styles/mixins.scss";
 
 .UserShipping {
+  max-width: 1458px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 0 100px 162px;
   overflow: hidden;
   @include mobile-media {

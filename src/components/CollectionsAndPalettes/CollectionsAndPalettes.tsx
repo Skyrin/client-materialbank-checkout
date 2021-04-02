@@ -73,7 +73,9 @@ export default class CollectionsAndPalettes extends React.Component<
       <React.Fragment>
         <div className={styles.pageWrapper}>
           <div className={styles.pageHeader}>
-            <Logo header></Logo>
+            <div className={styles.pageHeaderWrapper}>
+              <Logo header circleClassName={styles.logoCircle}></Logo>
+            </div>
           </div>
           {this.context.isLoggedIn ? (
             <div className={styles.pageContent}>
