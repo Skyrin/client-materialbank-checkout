@@ -12,7 +12,8 @@ import amexIcon from "assets/images/amex_icon.svg";
 import visaIcon from "assets/images/visa_icon.svg";
 import masterCardIcon from "assets/images/master_card_icon.svg";
 import creditCardIcon from "assets/images/credit_card_icon.svg";
-import CreditCard, { CreditCardType } from "models/CreditCard";
+import CreditCard from "models/CreditCard";
+// import CreditCard, { CreditCardType } from "models/CreditCard";
 import EditCreditCardForm, {
   CreditCardFormValuesT,
 } from "components/common/Forms/EditCreditCardForm/EditCreditCardForm";
@@ -20,6 +21,7 @@ import { isOnMobile } from "../../../utils/responsive";
 import { CustomerT } from "constants/types";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
+import { RESTRequest } from "../../../RestClient";
 
 type Props = RouteComponentProps;
 
@@ -33,21 +35,29 @@ export default class UserBilling extends React.Component<Props, State> {
   context!: AppContextState;
 
   addCreditCardForm?: EditCreditCardForm;
+  private card: any;
 
   constructor(props) {
     super(props);
     this.state = {
-      paymentMethods: mockPayments.map((payment) => new PaymentMethod(payment)),
+      paymentMethods: [],
+      // paymentMethods: mockPayments.map((payment) => new PaymentMethod(payment)),
       customer: null,
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.context.requestCurrentCustomer().then((value) => {
       this.setState({
         customer: value,
       });
     });
+    const response = await RESTRequest(
+      "GET",
+      "customers/me/stored-payment-methods"
+    );
+    const methods = await response.json();
+    this.setState({ paymentMethods: methods });
   }
 
   renderMobilePaymentRow(paymentMethod, index) {
@@ -59,15 +69,12 @@ export default class UserBilling extends React.Component<Props, State> {
             alt=""
             className={styles.creditCardIcon}
           />
-
           <div className={styles.creditCardNumber}>
-            {paymentMethod.creditCard.getShortObfuscatedNumber()}
+            xxxx xxxx xxxx {paymentMethod.last4}
           </div>
-
           {paymentMethod.isDefault && (
             <div className={styles.defaultPayment}>DEFAULT</div>
           )}
-
           <button
             className={cn(styles.editButton, {
               [styles.editMode]: paymentMethod.isOpen,
@@ -98,15 +105,14 @@ export default class UserBilling extends React.Component<Props, State> {
           className={styles.creditCardIcon}
         />
         <div className={styles.creditCardNumber}>
-          {paymentMethod.creditCard.getObfuscatedNumber()}
+          xxxx xxxx xxxx {paymentMethod.last4}
         </div>
         <div className={styles.fullName}>
-          {paymentMethod.creditCard.name}
+          {paymentMethod.expires}
           {paymentMethod.isDefault && (
             <div className={styles.defaultPayment}>DEFAULT</div>
           )}
         </div>
-
         <button
           className={cn(styles.editButton, {
             [styles.editMode]: paymentMethod.isOpen,
@@ -135,29 +141,22 @@ export default class UserBilling extends React.Component<Props, State> {
           customer={this.state.customer}
         />
         <div className={styles.pageContent}>
-          {this.state.paymentMethods.map(
-            (paymentMethod: PaymentMethod, index) => {
-              return (
-                <div key={paymentMethod.id} className={styles.paymentCell}>
-                  {isOnMobile() &&
-                    this.renderMobilePaymentRow(paymentMethod, index)}
-                  {!isOnMobile() &&
-                    this.renderDesktopPaymentRow(paymentMethod, index)}
-                  {/*  {paymentMethod.isOpen && (*/}
-                  {/*  <div className="horizontal-divider" />*/}
-                  {/*)}*/}
+          {this.state.paymentMethods.map((pay, index) => {
+            return (
+              <div key={pay.id} className={styles.paymentCell}>
+                {isOnMobile() && this.renderMobilePaymentRow(pay, index)}
+                {!isOnMobile() && this.renderDesktopPaymentRow(pay, index)}
+                {pay.isOpen && <div className="horizontal-divider" />}
 
-                  {/*{paymentMethod.isOpen && (*/}
+                {pay.isOpen && (
                   <EditCreditCardForm
                     initialValues={{
-                      id: paymentMethod.id,
-                      creditCardNumber: paymentMethod.creditCard.number,
-                      creditCardName: paymentMethod.creditCard.name,
-                      cardDate: paymentMethod.creditCard.expiration,
-                      cardCVV: paymentMethod.creditCard.cvv,
-                      isDefault: paymentMethod.isDefault,
+                      isDefault: false,
+                      id: pay.id,
+                      expires: pay.expires,
+                      last4: pay.last4,
                     }}
-                    visible={paymentMethod.isOpen}
+                    visible={pay.isOpen}
                     onSave={(values) => {
                       this.savePayment(values);
                     }}
@@ -171,11 +170,10 @@ export default class UserBilling extends React.Component<Props, State> {
                       this.makeDefault(id);
                     }}
                   />
-                  {/*)}*/}
-                </div>
-              );
-            }
-          )}
+                )}
+              </div>
+            );
+          })}
           <div className={styles.addCreditCardContainer}>
             <EditCreditCardForm
               visible={true}
@@ -227,6 +225,7 @@ export default class UserBilling extends React.Component<Props, State> {
       expiration: creditCardValues.cardDate,
       cvv: creditCardValues.cardCVV,
     });
+
     if (creditCardValues.id) {
       const newPaymentMethods = this.state.paymentMethods.map(
         (paymentMethod) => {
@@ -295,17 +294,14 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   getCreditCardIcon(paymentMethod: PaymentMethod) {
-    switch (paymentMethod.creditCard.getCreditCardBrand()) {
-      case CreditCardType.AmericanExpress:
-        return amexIcon;
-      case CreditCardType.MasterCard:
-        return masterCardIcon;
-      case CreditCardType.Visa:
+    switch (paymentMethod.cardType) {
+      case "Visa":
         return visaIcon;
-      case CreditCardType.Diners:
-      case CreditCardType.Discover:
-      case CreditCardType.JCB:
-      case CreditCardType.Unknown:
+      case "AmericanExpress":
+        return amexIcon;
+      case "MasterCard":
+        return masterCardIcon;
+      default:
         return creditCardIcon;
     }
   }

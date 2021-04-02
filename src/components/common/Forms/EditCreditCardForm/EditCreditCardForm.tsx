@@ -6,10 +6,8 @@ import * as yup from "yup";
 import { extractErrors } from "utils/forms";
 
 import {
-  cardNumberInputFormatter,
   cardNumberInputParser,
   digitsOnlyInputParser,
-  expirationDateInputFormatter,
   expirationDateInputParser,
 } from "components/common/Input/utils";
 import { isOnMobile } from "utils/responsive";
@@ -38,10 +36,12 @@ export const DEFAULT_CREDIT_CARD_FORM_VALUES: CreditCardFormValuesT = {
 
 export type CreditCardFormValuesT = {
   id: string;
-  creditCardNumber: string;
-  creditCardName: string;
-  cardDate: string;
-  cardCVV: string;
+  creditCardNumber?: string;
+  creditCardName?: string;
+  cardDate?: string;
+  cardCVV?: string;
+  expires?: string;
+  last4?: string;
   isDefault: boolean;
 };
 
@@ -104,8 +104,11 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
           <div className={styles.cardNumber}>
             <div className={styles.inputHint}>Card Number</div>
             <Input
-              placeholder="xxxx xxxx xxxx xxxx"
-              formatter={cardNumberInputFormatter}
+              placeholder={
+                this.props.initialValues
+                  ? `xxxx xxxx xxxx ${this.props.initialValues.last4}`
+                  : "xxxx xxxx xxxx xxxx"
+              }
               parser={cardNumberInputParser}
               userInputStyle={true}
               value={this.state.values.creditCardNumber}
@@ -132,11 +135,14 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
           <div className={styles.cardExpiration}>
             <div className={styles.inputHint}>Expiration</div>
             <Input
-              placeholder="MM / YY"
+              placeholder={
+                this.props.initialValues
+                  ? this.props.initialValues.expires
+                  : "MM / YY"
+              }
               value={this.state.values.cardDate}
               error={this.state.errors.cardDate}
               userInputStyle={true}
-              formatter={expirationDateInputFormatter}
               parser={expirationDateInputParser}
               inputMode="numeric"
               onChange={(val: string) => {

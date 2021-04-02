@@ -1,9 +1,9 @@
 import Input from "components/common/Input/Input";
 import {
-  cardNumberInputFormatter,
+  // cardNumberInputFormatter,
   cardNumberInputParser,
   digitsOnlyInputParser,
-  expirationDateInputFormatter,
+  // expirationDateInputFormatter,
   expirationDateInputParser,
 } from "components/common/Input/utils";
 import * as React from "react";
@@ -344,7 +344,7 @@ export default class CreditCardForm extends React.Component<Props, State> {
           onBlur={() => {
             this.validateField("creditCardNumber");
           }}
-          formatter={cardNumberInputFormatter}
+          // formatter={cardNumberInputFormatter}
           parser={cardNumberInputParser}
           error={this.state.errors.creditCardNumber}
           placeholder="Card Number"
@@ -359,7 +359,7 @@ export default class CreditCardForm extends React.Component<Props, State> {
           onBlur={() => {
             this.validateField("cardDate");
           }}
-          formatter={expirationDateInputFormatter}
+          // formatter={expirationDateInputFormatter}
           parser={expirationDateInputParser}
           error={this.state.errors.cardDate}
           placeholder="Expiration (MM/YR)"
