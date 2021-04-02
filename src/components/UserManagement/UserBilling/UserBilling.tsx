@@ -79,6 +79,7 @@ export default class UserBilling extends React.Component<Props, State> {
               this.editPayment(index);
             }}
           >
+            {" "}
             Edit
             <i
               className={cn("far fa-angle-down", styles.chevron, {
