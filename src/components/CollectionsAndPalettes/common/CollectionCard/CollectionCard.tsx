@@ -4,12 +4,16 @@ import styles from "../../common/ItemCard/ItemCard.module.scss";
 import Collaborators from "../Collaborators/Collaborators";
 import cn from "classnames";
 import { get } from "lodash-es";
+import { AppContext, AppContextState } from "../../../../context/AppContext";
 
 interface Props {
   collection: CollectionT;
 }
 
 export default class ItemCard extends React.Component<Props, any> {
+  static contextType = AppContext;
+  context!: AppContextState;
+
   renderVisibility = () => {
     const { collection } = this.props;
     if (collection.isPublic) {
@@ -54,6 +58,7 @@ export default class ItemCard extends React.Component<Props, any> {
                 key={collectionItem.id}
                 src={this.getImagePath(collectionItem)}
                 className={styles.image}
+                alt=""
               />
             );
           })}

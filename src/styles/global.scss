@@ -402,11 +402,27 @@ $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
 .twoImg {
   display: grid;
-  grid-template-rows: 50% 50%;
+  grid-template-rows: 1fr 1fr;
   grid-template-columns: 100%;
+
+  img {
+    min-width: 100%;
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+  }
 }
 .multipleImg {
   display: grid;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: 50% 50%;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+
+  img {
+    min-width: 100%;
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+  }
 }
