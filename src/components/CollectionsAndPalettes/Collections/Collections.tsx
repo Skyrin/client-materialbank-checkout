@@ -12,13 +12,10 @@ export default class Collections extends React.Component<any, any> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
+
   createCollection = () => {
     this.context.openModal(Modals.CreateCollection);
   };
-
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (
