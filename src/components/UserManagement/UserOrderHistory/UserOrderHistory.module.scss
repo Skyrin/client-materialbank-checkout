@@ -1,6 +1,9 @@
 @import "styles/mixins";
 
 .UserOrderHistory {
+  max-width: 1458px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 0 100px $margin-huge;
 
   @include mobile-media {

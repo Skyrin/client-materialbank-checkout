@@ -1,9 +1,10 @@
 @import "styles/mixins.scss";
+@import "styles/variablesscss.scss";
 
 .container {
   --checkbox-size: 16px;
   --checkbox-color: var(--color-purple);
-  --checkbox-color-black: #5f5b57;
+  --checkbox-color-black: #111111;
   --checkbox-color-h: 244;
   --checkbox-color-s: 94%;
   --checkbox-color-l: 66%;

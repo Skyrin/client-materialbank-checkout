@@ -2,6 +2,9 @@
 @import "styles/mixins";
 
 .UserAccount {
+  max-width: 1458px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 0 100px 162px;
   @include mobile-media {
     padding: 0;

@@ -10,14 +10,14 @@
   grid-template-rows: auto;
   column-gap: var(--horizontal-spacing-half);
   row-gap: var(--horizontal-spacing-half);
-  grid-template-columns: 120px auto;
+  grid-template-columns: 140px auto;
   transition: max-height 0.35s $ease-in-out, margin-top 0.35s $ease-in-out,
     opacity 0.35s $ease-in-out;
 
   &.visible {
     max-height: 500px;
     opacity: 1;
-    margin-top: var(--vertical-spacing-normal);
+    margin-top: var(--vertical-spacing-half);
   }
 
   .cardNumberArea {
