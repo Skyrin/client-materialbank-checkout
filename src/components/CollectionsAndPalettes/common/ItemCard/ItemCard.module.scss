@@ -9,18 +9,19 @@
 
   &.collectionCard {
     height: 410px !important;
+    position: relative;
     display: grid;
     grid-template-rows: 85% 15%;
 
     img {
-      min-height: calc(
-        (
-            (
-                100vw - (2 * var(--lateral-padding)) -
-                  ((var(--number-of-cards) - 1) * var(--masonry-spacing))
-              ) / var(--number-of-cards)
-          ) * 3 / 6
-      ) !important;
+      object-fit: cover;
+      min-width: 100% !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
+      min-height: 100% !important;
+      height: unset !important;
+      width: 100% !important;
+      margin: 0 !important;
     }
   }
 
@@ -119,7 +120,7 @@
       min-height: calc(
         (
             (
-                100vw - (2 * var(--lateral-padding)) -
+                min(100vw, 1258px) - (2 * var(--lateral-padding)) -
                   ((var(--number-of-cards) - 1) * var(--masonry-spacing))
               ) / var(--number-of-cards)
           ) * 5 / 6
@@ -127,7 +128,7 @@
       max-height: calc(
         (
             (
-                100vw - (2 * var(--lateral-padding)) -
+                min(100vw, 1258px) - (2 * var(--lateral-padding)) -
                   ((var(--number-of-cards) - 1) * var(--masonry-spacing))
               ) / var(--number-of-cards)
           ) * 2
