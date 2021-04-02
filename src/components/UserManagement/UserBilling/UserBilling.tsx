@@ -148,7 +148,7 @@ export default class UserBilling extends React.Component<Props, State> {
                   <EditCreditCardForm
                     initialValues={{
                       isDefault: false,
-                      id: pay.id,
+                      id: pay.token,
                       expires: pay.expires,
                       last4: pay.last4,
                     }}
@@ -156,14 +156,14 @@ export default class UserBilling extends React.Component<Props, State> {
                     onSave={(values) => {
                       this.savePayment(values);
                     }}
-                    onCancel={(id: string) => {
-                      this.cancelSave(id);
+                    onCancel={(token: string) => {
+                      this.cancelSave(token);
                     }}
-                    onDelete={(id: string) => {
-                      this.deleteCard(id);
+                    onDelete={(token: string) => {
+                      this.deleteCard(token);
                     }}
-                    onSetDefault={(id: string) => {
-                      this.makeDefault(id);
+                    onSetDefault={(token: string) => {
+                      this.makeDefault(token);
                     }}
                   />
                 )}
@@ -176,11 +176,11 @@ export default class UserBilling extends React.Component<Props, State> {
               onSave={(values) => {
                 this.savePayment(values);
               }}
-              onCancel={(id: string) => {
-                this.cancelSave(id);
+              onCancel={(token: string) => {
+                this.cancelSave(token);
               }}
-              onDelete={(id: string) => {
-                this.deleteCard(id);
+              onDelete={(token: string) => {
+                this.deleteCard(token);
               }}
               componentRef={(ref) => {
                 this.addCreditCardForm = ref;
@@ -216,16 +216,17 @@ export default class UserBilling extends React.Component<Props, State> {
 
   savePayment(creditCardValues: CreditCardFormValuesT) {
     const creditCard = new CreditCard({
-      number: creditCardValues.creditCardNumber,
-      name: creditCardValues.creditCardName,
-      expiration: creditCardValues.cardDate,
-      cvv: creditCardValues.cardCVV,
+      // number: creditCardValues.creditCardNumber,
+      // name: creditCardValues.creditCardName,
+      expiration: creditCardValues.expires,
+      last4: creditCardValues.last4,
+      // cvv: creditCardValues.cardCVV,
     });
 
-    if (creditCardValues.id) {
+    if (creditCardValues.token) {
       const newPaymentMethods = this.state.paymentMethods.map(
         (paymentMethod) => {
-          if (paymentMethod.id === creditCardValues.id) {
+          if (paymentMethod.token === creditCardValues.token) {
             paymentMethod.creditCard = creditCard;
           }
           return paymentMethod;
@@ -236,12 +237,12 @@ export default class UserBilling extends React.Component<Props, State> {
       });
       this.editPayment(
         newPaymentMethods.findIndex(
-          (paymentMethod) => paymentMethod.id === creditCardValues.id
+          (paymentMethod) => paymentMethod.token === creditCardValues.token
         )
       );
     } else {
       const newPaymentMethod = new PaymentMethod();
-      newPaymentMethod.id = String(Math.random());
+      newPaymentMethod.token = String(Math.random());
       newPaymentMethod.creditCard = creditCard;
 
       const newPaymentMethods = this.state.paymentMethods;
@@ -255,34 +256,33 @@ export default class UserBilling extends React.Component<Props, State> {
     }
   }
 
-  cancelSave(id: string) {
-    if (id) {
+  cancelSave(token: string) {
+    if (token) {
       this.editPayment(
         this.state.paymentMethods.findIndex(
-          (paymentMethod) => paymentMethod.id === id
+          (paymentMethod) => paymentMethod.token === token
         )
       );
     }
   }
 
-  deleteCard(id: string) {
+  deleteCard(token: string) {
     const newPayments = this.state.paymentMethods.filter(
-      (payment) => payment.id !== id
+      (payment) => payment.token !== token
     );
     this.setState({
       paymentMethods: newPayments,
     });
   }
 
-  makeDefault(id: string) {
+  makeDefault(token: string) {
     let paymentMethods = this.state.paymentMethods;
-
     paymentMethods = paymentMethods.map((paymentMethod) => ({
       ...paymentMethod,
       isDefault: false,
     }));
 
-    paymentMethods.find((payment) => payment.id === id).isDefault = true;
+    paymentMethods.find((payment) => payment.token === token).isDefault = true;
 
     this.setState({
       paymentMethods: paymentMethods,

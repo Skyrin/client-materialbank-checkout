@@ -41,6 +41,7 @@ export type CreditCardFormValuesT = {
   cardDate?: string;
   cardCVV?: string;
   expires?: string;
+  token?: string;
   last4?: string;
   isDefault: boolean;
 };
