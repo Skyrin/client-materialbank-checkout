@@ -78,7 +78,7 @@ export default class UserBilling extends React.Component<Props, State> {
           >
             Edit
             <i
-              className={cn("far fa-angle-up", styles.chevron, {
+              className={cn("far fa-angle-down", styles.chevron, {
                 [styles.chevronUp]: paymentMethod.isOpen,
                 [styles.chevronDown]: !paymentMethod.isOpen,
               })}
@@ -117,7 +117,7 @@ export default class UserBilling extends React.Component<Props, State> {
         >
           Edit
           <i
-            className={cn("far fa-angle-up", styles.chevron, {
+            className={cn("far fa-angle-down", styles.chevron, {
               [styles.chevronUp]: paymentMethod.isOpen,
               [styles.chevronDown]: !paymentMethod.isOpen,
             })}
