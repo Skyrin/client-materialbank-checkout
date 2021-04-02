@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router-dom";
 import UserHeader, {
   UserPages,
 } from "components/UserManagement/UserHeader/UserHeader";
-import mockPayments from "models/paymentMethodMock.json";
 import PaymentMethod from "models/PaymentMethod";
 import styles from "./UserBilling.module.scss";
 import cn from "classnames";
@@ -13,7 +12,6 @@ import visaIcon from "assets/images/visa_icon.svg";
 import masterCardIcon from "assets/images/master_card_icon.svg";
 import creditCardIcon from "assets/images/credit_card_icon.svg";
 import CreditCard from "models/CreditCard";
-// import CreditCard, { CreditCardType } from "models/CreditCard";
 import EditCreditCardForm, {
   CreditCardFormValuesT,
 } from "components/common/Forms/EditCreditCardForm/EditCreditCardForm";
@@ -35,13 +33,11 @@ export default class UserBilling extends React.Component<Props, State> {
   context!: AppContextState;
 
   addCreditCardForm?: EditCreditCardForm;
-  private card: any;
 
   constructor(props) {
     super(props);
     this.state = {
       paymentMethods: [],
-      // paymentMethods: mockPayments.map((payment) => new PaymentMethod(payment)),
       customer: null,
     };
   }
