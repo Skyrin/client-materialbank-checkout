@@ -32,7 +32,6 @@ export default class CartItem extends React.Component<Props> {
     const algoliaProduct = this.context.productsCache.getProduct(
       cartItem.product.sku
     );
-    const color = get(algoliaProduct, "data.color", "cartItem.color");
     const manufacturer = get(
       algoliaProduct,
       "data.manufacturer",
@@ -60,7 +59,6 @@ export default class CartItem extends React.Component<Props> {
               <a href={sampleUrl} className={styles.boldText}>
                 {cartItem.product?.name}
               </a>
-              {color && <span className={styles.lightText}>{color}</span>}
             </div>
             <span className={styles.quantity}>
               <div

@@ -7,7 +7,11 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: var(--vertical-spacing-normal) 0;
+  padding: 0;
+
+  &:not(:last-of-type) {
+    margin-bottom: 40px;
+  }
 
   &:first-of-type {
     padding-top: 0;
@@ -19,11 +23,13 @@
 
   .itemInfo {
     display: flex;
+    height: var(--image-size);
 
     .image {
       width: var(--image-size);
       height: var(--image-size);
       margin-right: 20px;
+      box-sizing: content-box;
       object-fit: cover;
       border: 1px solid rgba($checkout-primary-color, 0.1);
       border-radius: 5px;
@@ -40,15 +46,15 @@
 
         .lightText {
           font-size: var(--font-size-md);
-          color: rgba(var(--primary-color-rgb), 0.6);
-          line-height: 1.33;
+          color: #615c58;
+          line-height: 20px;
         }
 
         .boldText {
           font-size: var(--font-size-lg);
           font-weight: var(--font-weight-medium);
           color: $checkout-primary-color;
-          line-height: 1.43;
+          line-height: 24px;
         }
       }
     }
@@ -75,6 +81,8 @@
     grid-template-columns: min-content min-content min-content;
     place-items: center;
     column-gap: 10px;
+    font-weight: var(--font-weight-normal);
+    color: #615c58;
 
     .quantityButton {
       display: grid;
@@ -98,12 +106,16 @@
   }
 
   @include mobile-media {
-    --image-size: 60px;
+    --image-size: 80px;
     padding: 10px 0;
+
+    &:not(:last-of-type) {
+      margin-bottom: 20px;
+    }
 
     .itemInfo {
       .image {
-        margin-right: 10px;
+        margin-right: 20px;
       }
 
       .infoContainer {

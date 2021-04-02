@@ -369,7 +369,7 @@ export class PersonalInformation extends React.Component<Props, State> {
           Log Out
         </span>
         <div className={cn(styles.contactInfoRow, styles.userName)}>
-          <div className={styles.inputLabel}>Name</div>
+          <div className={styles.inputLabel}>Full Name</div>
           <div className={styles.value}>{name}</div>
         </div>
         <div className={cn(styles.contactInfoRow, styles.userEmail)}>
@@ -570,6 +570,7 @@ export class PersonalInformation extends React.Component<Props, State> {
               }}
             >
               <Checkbox
+                black
                 className={styles.checkbox}
                 value={this.state.billingSameAsShipping}
               />
