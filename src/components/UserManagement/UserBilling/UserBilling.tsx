@@ -138,22 +138,24 @@ export default class UserBilling extends React.Component<Props, State> {
           customer={this.state.customer}
         />
         <div className={styles.pageContent}>
-          {this.state.paymentMethods.map((pay, index) => {
+          {this.state.paymentMethods.map((paymentMethod, index) => {
             return (
-              <div key={pay.id} className={styles.paymentCell}>
-                {isOnMobile() && this.renderMobilePaymentRow(pay, index)}
-                {!isOnMobile() && this.renderDesktopPaymentRow(pay, index)}
-                {pay.isOpen && <div className="horizontal-divider" />}
+              <div key={paymentMethod.id} className={styles.paymentCell}>
+                {isOnMobile() &&
+                  this.renderMobilePaymentRow(paymentMethod, index)}
+                {!isOnMobile() &&
+                  this.renderDesktopPaymentRow(paymentMethod, index)}
+                {paymentMethod.isOpen && <div className="horizontal-divider" />}
 
-                {pay.isOpen && (
+                {paymentMethod.isOpen && (
                   <EditCreditCardForm
                     initialValues={{
                       isDefault: false,
-                      id: pay.token,
-                      expires: pay.expires,
-                      last4: pay.last4,
+                      id: paymentMethod.token,
+                      expires: paymentMethod.expires,
+                      last4: paymentMethod.last4,
                     }}
-                    visible={pay.isOpen}
+                    visible={paymentMethod.isOpen}
                     onSave={(values) => {
                       this.savePayment(values);
                     }}
