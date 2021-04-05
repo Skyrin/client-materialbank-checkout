@@ -100,10 +100,6 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
     if (this.props.initialValues) {
       placeholder = `xxxx xxxx xxxx ${this.props.initialValues.last4}`;
     }
-    // if (this.state.values.creditCardNumber && this.props.initialValues.last4) {
-    //   placeholder = 'tactu'
-    //   placeholder = `xxxx xxxx xxxx ${this.state.values.creditCardNumber}`
-    // }
     console.log(this.props, this.state.values, placeholder);
     return (
       <div
@@ -118,13 +114,7 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
           <div className={styles.cardNumber}>
             <div className={styles.inputHint}>Card Number</div>
             <Input
-              placeholder={
-                // if( this.props.initialValues
-                //    ? `xxxx xxxx xxxx ${this.props.initialValues.last4}`
-                //    : "xxxx xxxx xxxx xxxx"
-                //  this.state.values ? `xxxx xxxx xxxx ${this.state.values.creditCardNumber}`
-                placeholder
-              }
+              placeholder={placeholder}
               formatter={cardNumberInputFormatter}
               parser={cardNumberInputParser}
               inputMode="numeric"
@@ -259,7 +249,6 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
         [fieldName]: null,
       },
     });
-    console.log(this.state.values);
   };
 
   validateCreditCard = () => {

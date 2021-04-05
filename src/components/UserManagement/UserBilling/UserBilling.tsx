@@ -57,6 +57,7 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   renderMobilePaymentRow(paymentMethod, index) {
+    let updatedPayment = this.state.paymentMethods[index];
     return (
       <div className={styles.paymentRow}>
         <div className={styles.creditCardDetails}>
@@ -66,7 +67,10 @@ export default class UserBilling extends React.Component<Props, State> {
             className={styles.creditCardIcon}
           />
           <div className={styles.creditCardNumber}>
-            xxxx xxxx xxxx {paymentMethod.last4}
+            xxxx xxxx xxxx
+            {updatedPayment.creditCard
+              ? updatedPayment.creditCard.creditCardNumber.substr(-4)
+              : paymentMethod.last4}
           </div>
           {paymentMethod.isDefault && (
             <div className={styles.defaultPayment}>DEFAULT</div>
@@ -95,7 +99,6 @@ export default class UserBilling extends React.Component<Props, State> {
 
   renderDesktopPaymentRow(paymentMethod, index) {
     let updatedPayment = this.state.paymentMethods[index];
-    console.log(updatedPayment, paymentMethod);
     return (
       <div className={styles.paymentRow}>
         <img
@@ -104,7 +107,7 @@ export default class UserBilling extends React.Component<Props, State> {
           className={styles.creditCardIcon}
         />
         <div className={styles.creditCardNumber}>
-          xxxx xxxx xxxx{" "}
+          xxxx xxxx xxxx
           {updatedPayment.creditCard
             ? updatedPayment.creditCard.creditCardNumber.substr(-4)
             : paymentMethod.last4}
@@ -240,7 +243,6 @@ export default class UserBilling extends React.Component<Props, State> {
         }
       );
       this.setState({
-        // paymentMethods: newPaymentMethods,
         paymentMethods: creditCardValues,
       });
       this.editPayment(
@@ -261,7 +263,6 @@ export default class UserBilling extends React.Component<Props, State> {
       this.setState({
         paymentMethods: newPaymentMethods,
       });
-      console.log(this.state.paymentMethods);
     }
   }
 
