@@ -6,8 +6,10 @@ import * as yup from "yup";
 import { extractErrors } from "utils/forms";
 
 import {
+  cardNumberInputFormatter,
   cardNumberInputParser,
   digitsOnlyInputParser,
+  expirationDateInputFormatter,
   expirationDateInputParser,
 } from "components/common/Input/utils";
 import { isOnMobile } from "utils/responsive";
@@ -92,6 +94,17 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
   }
 
   render() {
+    console.log(this.state.values.creditCardNumber);
+    console.log(this.props.initialValues);
+    let placeholder = "xxxx xxxx xxxx xxxx";
+    if (this.props.initialValues) {
+      placeholder = `xxxx xxxx xxxx ${this.props.initialValues.last4}`;
+    }
+    // if (this.state.values.creditCardNumber && this.props.initialValues.last4) {
+    //   placeholder = 'tactu'
+    //   placeholder = `xxxx xxxx xxxx ${this.state.values.creditCardNumber}`
+    // }
+    console.log(this.props, this.state.values, placeholder);
     return (
       <div
         className={cn(styles.EditCreditCardForm, {
@@ -106,11 +119,15 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
             <div className={styles.inputHint}>Card Number</div>
             <Input
               placeholder={
-                this.props.initialValues
-                  ? `xxxx xxxx xxxx ${this.props.initialValues.last4}`
-                  : "xxxx xxxx xxxx xxxx"
+                // if( this.props.initialValues
+                //    ? `xxxx xxxx xxxx ${this.props.initialValues.last4}`
+                //    : "xxxx xxxx xxxx xxxx"
+                //  this.state.values ? `xxxx xxxx xxxx ${this.state.values.creditCardNumber}`
+                placeholder
               }
+              formatter={cardNumberInputFormatter}
               parser={cardNumberInputParser}
+              inputMode="numeric"
               userInputStyle={true}
               value={this.state.values.creditCardNumber}
               error={this.state.errors.creditCardNumber}
@@ -144,6 +161,7 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
               value={this.state.values.cardDate}
               error={this.state.errors.cardDate}
               userInputStyle={true}
+              formatter={expirationDateInputFormatter}
               parser={expirationDateInputParser}
               inputMode="numeric"
               onChange={(val: string) => {
@@ -241,6 +259,7 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
         [fieldName]: null,
       },
     });
+    console.log(this.state.values);
   };
 
   validateCreditCard = () => {
