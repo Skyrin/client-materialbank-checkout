@@ -60,6 +60,7 @@ import { ProductsCache } from "./ProductsCache";
 import { algoliaProducts } from "algolia";
 import { RESTRequest } from "RestClient";
 import { parseRESTOrder } from "utils/context";
+import { getRegionFromCode } from "../constants/regions";
 
 type Props = {
   children: React.ReactNode;
@@ -168,6 +169,33 @@ export default class AppContextManager extends React.Component<Props> {
           this.getFullContext(),
           cartId || ""
         );
+        if (cartInfo.items && cartInfo.items.length) {
+          const region = getRegionFromCode("NY");
+          const estimatedShippingResponse = await RESTRequest(
+            "POST",
+            `guest-carts/${cartId}/estimate-shipping-methods`,
+            {
+              address: {
+                firstname: "mock",
+                lastname: "mock",
+                city: "New York",
+                region: region.name,
+                region_code: region.code,
+                region_id: region.id,
+                street: ["mock"],
+                postcode: "10001",
+                telephone: "2025550133",
+                country_id: "US",
+              },
+            }
+          );
+          const estimatedShipping = await estimatedShippingResponse.json();
+          const flatrate =
+            (estimatedShipping || []).find(
+              (option) => option.method_code === "flatrate"
+            ) || {};
+          cartInfo.estimated_shipping_cost = flatrate.amount || 0;
+        }
         this.contextState.cartInfoLoading = false;
         if (cartInfo) {
           this.actions.updateCart(cartInfo);

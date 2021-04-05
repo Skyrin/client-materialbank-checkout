@@ -5,6 +5,7 @@ export type CartT = {
   id?: string;
   items?: CartItemT[];
   prices?: {
+    discounts?: DiscountT[];
     grand_total?: PriceT;
     subtotal_including_tax?: PriceT;
     subtotal_excluding_tax?: PriceT;
@@ -15,6 +16,12 @@ export type CartT = {
   available_payment_methods?: PaymentMethodT;
   selected_payment_method?: SelectedPaymentMethodT;
   applied_coupons?: CouponT;
+  estimated_shipping_cost?: number; // WARNING: This is a local field. It might not be present in all circumstances.
+};
+
+export type DiscountT = {
+  amount?: PriceT;
+  label?: string;
 };
 
 export type OrderT = {
