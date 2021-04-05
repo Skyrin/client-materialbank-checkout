@@ -288,7 +288,7 @@ export const placeOrder = async (context: AppContextState, cartId: string) => {
 export const setShippingMethodOnCart = async (
   context: AppContextState,
   cartId: string,
-  shippingMethod: string = "flatrate"
+  shippingMethod?: string
 ) => {
   const SetShippingMethodsOnCartMutation = `
     mutation setShippingMethodsOnCart($input: SetShippingMethodsOnCartInput!) {
@@ -301,6 +301,17 @@ export const setShippingMethodOnCart = async (
     }
   `;
 
+  const availableShippingMethods = get(
+    context,
+    "cart.shipping_addresses[0].available_shipping_methods",
+    []
+  );
+  const defaultShipping = availableShippingMethods.find(
+    (met) => met.method_code === "freeshipping"
+  )
+    ? "freeshipping"
+    : "flatrate";
+
   try {
     const setShippingMethodsResponse = await graphqlRequest(
       context,
@@ -310,8 +321,8 @@ export const setShippingMethodOnCart = async (
           cart_id: cartId,
           shipping_methods: [
             {
-              method_code: shippingMethod,
-              carrier_code: shippingMethod,
+              method_code: shippingMethod || defaultShipping,
+              carrier_code: shippingMethod || defaultShipping,
             },
           ],
         },

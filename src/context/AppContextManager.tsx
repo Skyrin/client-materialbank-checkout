@@ -190,11 +190,19 @@ export default class AppContextManager extends React.Component<Props> {
             }
           );
           const estimatedShipping = await estimatedShippingResponse.json();
+          const freeShipping =
+            (estimatedShipping || []).find(
+              (option) => option.method_code === "freeshipping"
+            ) || {};
           const flatrate =
             (estimatedShipping || []).find(
               (option) => option.method_code === "flatrate"
             ) || {};
-          cartInfo.estimated_shipping_cost = flatrate.amount || 0;
+          if (freeShipping && freeShipping.amount !== undefined) {
+            cartInfo.estimated_shipping_cost = 0;
+          } else {
+            cartInfo.estimated_shipping_cost = flatrate.amount || 0;
+          }
         }
         this.contextState.cartInfoLoading = false;
         if (cartInfo) {

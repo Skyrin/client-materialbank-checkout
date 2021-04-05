@@ -67,13 +67,22 @@ export default class PaypalExpress extends React.Component<Props> {
     );
     const estimatedShipping = await estimatedShippingResponse.json();
     console.log("ESTIMATED SHIPPING RESP", estimatedShipping);
+    const freeShipping =
+      (estimatedShipping || []).find(
+        (option) => option.method_code === "freeshipping"
+      ) || {};
     const flatrate =
       (estimatedShipping || []).find(
         (option) => option.method_code === "flatrate"
       ) || {};
     const subtotalNoDiscounts =
       this.context.cart?.prices?.subtotal_including_tax?.value || 0;
-    const shipping = flatrate.amount || 0;
+    let shipping;
+    if (freeShipping && freeShipping.amount !== undefined) {
+      shipping = 0;
+    } else {
+      shipping = flatrate.amount || 0;
+    }
     const discounts = this.context.cart?.prices?.discounts || [];
     const totalDiscounts = discounts
       .map((d) => d.amount.value)
