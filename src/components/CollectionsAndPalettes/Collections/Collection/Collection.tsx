@@ -183,7 +183,6 @@ class Collection extends React.Component<Props, State> {
         </React.Fragment>
       );
     }
-
     return (
       <React.Fragment>
         <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
@@ -193,7 +192,14 @@ class Collection extends React.Component<Props, State> {
         <CollectionsToolbar
           title={collection.name || "collection.name"}
           isCollection
-          buttons={["everything", "materials", "your uploads"]}
+          filter
+          buttons={[
+            "everything",
+            "materials",
+            "your uploads",
+            "rooms",
+            "palettes",
+          ]}
           collaborators={
             this.state.person &&
             this.state.person.map((person: any) => person.imagePath)
@@ -231,6 +237,10 @@ class Collection extends React.Component<Props, State> {
                     .filter(
                       (item) =>
                         this.state.display.includes(item.objectType) ||
+                        (item.json &&
+                          this.state.display.includes(
+                            JSON.parse(item.json).type
+                          )) ||
                         this.state.display === "everything"
                     )
                     .map((item: any, index: number) => {
