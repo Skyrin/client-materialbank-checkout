@@ -615,6 +615,16 @@ export class PersonalInformation extends React.Component<Props, State> {
   };
 
   renderTotals = () => {
+    let grandTotal = get(this.context.cart, "prices.grand_total.value");
+    const estimatedShippingCost = this.context.cart.estimated_shipping_cost;
+    const cartShippingCost = get(
+      this.context.cart,
+      "shipping_addresses[0].selected_shipping_method.amount.value"
+    );
+    const shippingCost = cartShippingCost || estimatedShippingCost;
+    if (estimatedShippingCost && !cartShippingCost) {
+      grandTotal += estimatedShippingCost;
+    }
     return (
       <div className={styles.totalsContainer}>
         <div className={styles.totalLine}>
@@ -632,13 +642,7 @@ export class PersonalInformation extends React.Component<Props, State> {
         <div className={styles.totalLine}>
           <div className={styles.label}>Shipping</div>
           <div className={styles.value}>
-            {this.renderCurrency(
-              get(
-                this.context.cart,
-                "shipping_addresses[0].selected_shipping_method.amount.value"
-              ),
-              "-"
-            )}
+            {this.renderCurrency(shippingCost, "-")}
           </div>
         </div>
         <div className={styles.totalLine}>
@@ -658,10 +662,7 @@ export class PersonalInformation extends React.Component<Props, State> {
         <div className={styles.grandTotalLine}>
           <div className={styles.label}>Total</div>
           <div className={styles.value}>
-            {this.renderCurrency(
-              get(this.context.cart, "prices.grand_total.value"),
-              "-"
-            )}
+            {this.renderCurrency(grandTotal, "-")}
           </div>
         </div>
       </div>
@@ -818,6 +819,16 @@ export class PersonalInformation extends React.Component<Props, State> {
       this.context.customerLoading ||
       this.context.cartInfoLoading ||
       this.state.isSubmitting;
+
+    let grandTotal = get(this.context.cart, "prices.grand_total.value");
+    const estimatedShippingCost = this.context.cart.estimated_shipping_cost;
+    const cartShippingCost = get(
+      this.context.cart,
+      "shipping_addresses[0].selected_shipping_method.amount.value"
+    );
+    if (estimatedShippingCost && !cartShippingCost) {
+      grandTotal += estimatedShippingCost;
+    }
     return (
       <div className={cn("funnel-page", styles.PersonalInformation)}>
         {isLoading && (
@@ -850,10 +861,7 @@ export class PersonalInformation extends React.Component<Props, State> {
                   !this.creditCardForm.isValid())
               }
             >
-              {`Pay ${this.renderCurrency(
-                get(this.context.cart, "prices.grand_total.value"),
-                "-"
-              )}`}
+              {`Pay ${this.renderCurrency(grandTotal, "-")}`}
             </button>
           </div>
         </div>

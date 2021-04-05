@@ -87,14 +87,22 @@ export default class StripePaymentButtons extends React.Component<
     );
 
     console.log("CART", this.context.cart);
-    const shipping =
+    const cartShipping =
       get(
         this.context.cart,
         "shipping_addresses[0].selected_shipping_method.amount.value",
         0
       ) * 100;
-    const subtotal =
-      get(this.context.cart, "prices.subtotal_including_tax.value", 0) * 100;
+    const estimatedShipping =
+      (this.context.cart.estimated_shipping_cost || 0) * 100;
+    const shipping = cartShipping || estimatedShipping;
+    const subtotalNoDiscounts =
+      (this.context.cart?.prices?.subtotal_including_tax?.value || 0) * 100;
+    const discounts = this.context.cart?.prices?.discounts || [];
+    const totalDiscounts = discounts
+      .map((d) => d.amount.value)
+      .reduce((acc, val) => acc + val * 100, 0);
+    const subtotal = subtotalNoDiscounts - totalDiscounts;
     const paymentRequestOptions = {
       country: "US",
       currency: "usd",
@@ -170,14 +178,22 @@ export default class StripePaymentButtons extends React.Component<
   };
 
   updateStripeTotal = () => {
-    const shipping =
+    const cartShipping =
       get(
         this.context.cart,
         "shipping_addresses[0].selected_shipping_method.amount.value",
         0
       ) * 100;
-    const subtotal =
-      get(this.context.cart, "prices.subtotal_including_tax.value", 0) * 100;
+    const estimatedShipping =
+      (this.context.cart.estimated_shipping_cost || 0) * 100;
+    const shipping = cartShipping || estimatedShipping;
+    const subtotalNoDiscounts =
+      (this.context.cart?.prices?.subtotal_including_tax?.value || 0) * 100;
+    const discounts = this.context.cart?.prices?.discounts || [];
+    const totalDiscounts = discounts
+      .map((d) => d.amount.value)
+      .reduce((acc, val) => acc + val * 100, 0);
+    const subtotal = subtotalNoDiscounts - totalDiscounts;
     const updateOptions = {
       displayItems: [
         {
@@ -268,10 +284,14 @@ export default class StripePaymentButtons extends React.Component<
         (option) => option.method_code === "flatrate"
       ) || {};
 
-    const subtotal =
+    const subtotalNoDiscounts =
       (this.context.cart?.prices?.subtotal_including_tax?.value || 0) * 100;
     const shipping = (flatrate.amount || 0) * 100;
-
+    const discounts = this.context.cart?.prices?.discounts || [];
+    const totalDiscounts = discounts
+      .map((d) => d.amount.value)
+      .reduce((acc, val) => acc + val * 100, 0);
+    const subtotal = subtotalNoDiscounts - totalDiscounts;
     updateWith({
       status: "success",
       shippingOptions: [

@@ -15,6 +15,12 @@ export const CartAddressFragment = `
 
 export const CartPricesFragment = `
   prices {
+    discounts {
+      amount {
+        value
+      }
+      label
+    }
     subtotal_including_tax {
       value
     }
