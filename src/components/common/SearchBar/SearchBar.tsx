@@ -5,11 +5,10 @@ import cn from "classnames";
 
 type Props = {
   placeholder: string;
-  onSearchChange: Function;
   className?: string;
   collectionHeader?: boolean;
+  onSubmitSearch?: Function;
 };
-
 export function SearchBar(props: Props) {
   return (
     <div
@@ -28,8 +27,8 @@ export function SearchBar(props: Props) {
         type="text"
         className={styles.searchInput}
         placeholder={props.placeholder}
-        onChange={(event) => {
-          props.onSearchChange(event.target.value);
+        onKeyDown={(event) => {
+          props.onSubmitSearch(event);
         }}
       />
     </div>
