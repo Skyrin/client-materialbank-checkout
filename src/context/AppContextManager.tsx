@@ -217,6 +217,13 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
       const customer = await requestCurrentCustomer(this.getFullContext());
       console.log("GOT CUSTOMER", customer);
+      const storedPaymentMethodsResponse = await RESTRequest(
+        "GET",
+        "customers/me/stored-payment-methods"
+      );
+      const storedPaymentMethods = await storedPaymentMethodsResponse.json();
+      console.log("GOT STORED PAYMENT METHODS", storedPaymentMethods);
+      this.contextState.storedPaymentMethods = storedPaymentMethods;
       this.contextState.customerLoading = false;
       this.actions.updateCustomer(customer);
       return this.contextState.customer;
@@ -255,6 +262,7 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.isLoggedIn = false; // Change directly here so we don't trigger 2 updates
       this.contextState.customer = {};
       this.contextState.cart = {};
+      this.contextState.storedPaymentMethods = [];
       this.forceUpdate();
     },
 

@@ -269,3 +269,14 @@ export type CachedProductT = {
   loading: boolean;
   data?: AlgoliaProductT;
 };
+
+export type StoredPaymentMethodT = {
+  method?: string;
+  fingerprint?: string;
+  name?: string;
+  type?: string;
+  last4: string;
+  expires?: string;
+  cardType?: string;
+  token?: string;
+};
