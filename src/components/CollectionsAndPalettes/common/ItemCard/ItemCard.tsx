@@ -198,8 +198,8 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
         </div>
         <div className={cn(styles.infoContainer, styles.infoMode)}>
           <div className={styles.darker}>{hotspotItem.name}</div>
-          <div className={styles.darker}>{hotspotItem.color}</div>
-          <div>{hotspotItem.description}</div>
+          <div className={styles.darker}>Design Shop</div>
+          <div>{hotspotItem.createdOn.split("T").shift()}</div>
         </div>
       </React.Fragment>
     );
