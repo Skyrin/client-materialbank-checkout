@@ -5,7 +5,6 @@ import { AppContext, AppContextState } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
 import { RouteComponentProps } from "react-router-dom";
-import Input from "../Input/Input";
 
 type State = {
   collectionName: string;

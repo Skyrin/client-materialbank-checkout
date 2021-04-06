@@ -6,6 +6,7 @@ import {
   CollectionT,
   CustomerT,
   OrderT,
+  StoredPaymentMethodT,
 } from "constants/types";
 import { cloneDeep } from "lodash-es";
 import { CartAddressInput } from "./CheckoutAPI/models";
@@ -14,7 +15,6 @@ import {
   CustomerAddressInput,
   UpdateCustomerInput,
 } from "./CustomerAPI/models";
-import { PaymentOption } from "components/CheckoutFunnel/PaymentInformation/PaymentInformation";
 import { AUTH_TOKEN_STORAGE_KEY } from "constants/general";
 import {
   CollectionsQueryInput,
@@ -49,12 +49,12 @@ abstract class BaseAppContextState {
   private internalUpdatingCartInfo?: boolean = false;
   private internalCustomer?: CustomerT = {};
   private internalCustomerLoading?: boolean = false;
+  private internalStoredPaymentMethods?: StoredPaymentMethodT[] = [];
   private internalConfirmedOrder?: OrderT = {};
   private internalConfirmedOrderLoading: boolean = false;
   private internalIsLoggedIn?: boolean = !!localStorage.getItem(
     AUTH_TOKEN_STORAGE_KEY
   );
-  private internalSelectedPaymentOption?: PaymentOption;
   private internalCollections?: CollectionT[] = [];
   private internalCollectionsLoading: boolean = false;
   private internalCollection?: CollectionT = {};
@@ -140,12 +140,12 @@ abstract class BaseAppContextState {
     this.internalCustomerLoading = newValue;
   }
 
-  public get selectedPaymentOption() {
-    return this.internalSelectedPaymentOption;
+  public get storedPaymentMethods() {
+    return cloneDeep(this.internalStoredPaymentMethods);
   }
 
-  public set selectedPaymentOption(newValue: PaymentOption) {
-    this.internalSelectedPaymentOption = newValue;
+  public set storedPaymentMethods(newMethods: StoredPaymentMethodT[]) {
+    this.internalStoredPaymentMethods = cloneDeep(newMethods);
   }
 
   public get confirmedOrder() {
@@ -244,8 +244,6 @@ export class AppContextState extends BaseAppContextState {
   updateCustomer(newCustomer: CustomerT) {}
 
   setLoggedIn(newValue: boolean) {}
-
-  setSelectedPaymentOption(newValue: PaymentOption) {}
 
   async requestCartInfo(cartId?: string) {}
 
