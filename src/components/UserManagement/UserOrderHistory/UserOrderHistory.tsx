@@ -121,13 +121,11 @@ export default class UserOrderHistory extends React.Component<Props, State> {
   }
 
   submitSearch = async (evt) => {
-    if (evt.key === "Enter") {
-      const searchResponse = await this.getSearchObj(evt.target.value, 1, 25);
-      if (searchResponse) {
-        this.setState({
-          searchItems: searchResponse[0].result,
-        });
-      }
+    const searchResponse = await this.getSearchObj(evt.target.value, 1, 25);
+    if (searchResponse) {
+      this.setState({
+        searchItems: searchResponse[0].result,
+      });
     }
   };
 

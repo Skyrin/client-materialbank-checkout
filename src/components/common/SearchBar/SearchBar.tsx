@@ -9,6 +9,7 @@ type Props = {
   collectionHeader?: boolean;
   onSubmitSearch?: Function;
 };
+
 export function SearchBar(props: Props) {
   return (
     <div
@@ -28,7 +29,9 @@ export function SearchBar(props: Props) {
         className={styles.searchInput}
         placeholder={props.placeholder}
         onKeyDown={(event) => {
-          props.onSubmitSearch(event);
+          if (event.key === "Enter") {
+            props.onSubmitSearch(event);
+          }
         }}
       />
     </div>
