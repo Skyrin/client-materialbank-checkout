@@ -152,8 +152,22 @@ export default class AppContextManager extends React.Component<Props> {
                 );
               }
             }
+            const availableShippingMethods = get(
+              cartInfo,
+              "shipping_addresses[0].available_shipping_methods",
+              []
+            );
+            const hasFreeShippingAvailable = !!availableShippingMethods.find(
+              (m) => m.method_code === "freeshipping"
+            );
+            const currentShippingMethod = get(
+              cartInfo,
+              "shipping_addresses[0].selected_shipping_method.method_code"
+            );
             if (
-              !get(cartInfo, "shipping_addresses[0].selected_shipping_method")
+              !currentShippingMethod ||
+              (hasFreeShippingAvailable &&
+                currentShippingMethod !== "freeshipping")
             ) {
               await this.actions.setShippingMethod();
             }
@@ -659,7 +673,7 @@ export default class AppContextManager extends React.Component<Props> {
       if (foundItem) {
         this.contextState.updatingCartInfo = true;
         this.forceUpdate();
-        const newCart = await updateCartItems(
+        let newCart = await updateCartItems(
           this.getFullContext(),
           this.contextState.cart.id,
           [
@@ -669,8 +683,30 @@ export default class AppContextManager extends React.Component<Props> {
             },
           ]
         );
-        this.contextState.updatingCartInfo = false;
         this.actions.updateCart(newCart);
+        const hasShippingAddress = !!get(newCart, "shipping_addresses[0]");
+        const availableShippingMethods = get(
+          newCart,
+          "shipping_addresses[0].available_shipping_methods",
+          []
+        );
+        const hasFreeShippingAvailable = !!availableShippingMethods.find(
+          (m) => m.method_code === "freeshipping"
+        );
+        const currentShippingMethod = get(
+          newCart,
+          "shipping_addresses[0].selected_shipping_method.method_code"
+        );
+        if (
+          hasShippingAddress &&
+          (!currentShippingMethod ||
+            (hasFreeShippingAvailable &&
+              currentShippingMethod !== "freeshipping"))
+        ) {
+          await this.actions.setShippingMethod();
+        }
+        this.contextState.updatingCartInfo = false;
+        this.forceUpdate();
       }
     },
   };
