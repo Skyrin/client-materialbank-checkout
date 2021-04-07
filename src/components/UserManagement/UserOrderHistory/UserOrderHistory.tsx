@@ -18,6 +18,7 @@ interface Props extends RouteComponentProps {}
 
 type State = {
   ordersX: OrderX[];
+  searchItems: any;
 };
 
 export default class UserOrderHistory extends React.Component<Props, State> {
@@ -31,6 +32,7 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     this.modalRef = React.createRef();
     this.state = {
       ordersX: [],
+      searchItems: [],
     };
   }
 
@@ -55,14 +57,11 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     this.context.setOrdersLoading(true);
     this.forceUpdate();
     const orderResponse = await this.getOrders(1, 25);
-
     if (orderResponse) {
       this.setState({
         ordersX: orderResponse[0].result,
       });
     }
-
-    console.log(orderResponse);
     this.context.setOrdersLoading(false);
     this.forceUpdate();
   }
@@ -80,6 +79,24 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     const respBody = await response.json();
     if (response.ok && respBody) {
       return respBody;
+    }
+    return null;
+  };
+
+  getSearchObj = async (q: string, page: number = 1, limit: number = 25) => {
+    const response = await RESTRequest(
+      "POST",
+      "mine/orders",
+      {
+        q: q, // optional Order Number
+        page: page,
+        limit: limit,
+      },
+      false
+    );
+    const resp = await response.json();
+    if (response.ok && resp) {
+      return resp;
     }
     return null;
   };
@@ -103,7 +120,21 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     // );
   }
 
+  submitSearch = async (evt) => {
+    const searchResponse = await this.getSearchObj(evt.target.value, 1, 25);
+    if (searchResponse) {
+      this.setState({
+        searchItems: searchResponse[0].result,
+      });
+    }
+  };
+
   render() {
+    let displayOrderItems = [...this.state.ordersX];
+    if (this.state.searchItems.length > 0) {
+      displayOrderItems = this.state.searchItems;
+      this.canLoadMore = false;
+    }
     return (
       <div>
         <div className={cn(styles["UserOrderHistory"])}>
@@ -114,14 +145,14 @@ export default class UserOrderHistory extends React.Component<Props, State> {
               <SearchBar
                 placeholder={"Search of order history"}
                 className={styles.searchBar}
-                onSearchChange={(value: string) => {
-                  console.log(value);
+                onSubmitSearch={(evt: any) => {
+                  this.submitSearch(evt);
                 }}
               />
             }
           />
 
-          {this.state.ordersX.map((order) => (
+          {displayOrderItems.map((order) => (
             <HistoryOrder
               key={order.number}
               orderT={order}
