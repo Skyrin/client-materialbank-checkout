@@ -1,4 +1,5 @@
 import { MAIN_SHOP_URL } from "constants/urls";
+import { OrderX } from "../constants/orderTypes";
 
 export const scrollToTop = () => {
   window.requestAnimationFrame(() => {
@@ -34,4 +35,13 @@ export const parsePrice = (stringPrice: string) => {
 
 export const getSamplePage = (sku: string) => {
   return `${MAIN_SHOP_URL}sample/${sku}`;
+};
+
+export const getTrackingUrl = (trackingCode: string) => {
+  return `https://www.fedex.com/fedextrack/?action=track&trackingnumber=${trackingCode}&cntry_code=us&locale=en_US`;
+};
+
+export const isTrackingPackageButtonDisabled = (order: OrderX) => {
+  //TODO update when we know the available statuses
+  return order.status === "shipped";
 };

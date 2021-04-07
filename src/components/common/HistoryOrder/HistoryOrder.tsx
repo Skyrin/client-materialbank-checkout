@@ -10,6 +10,10 @@ import { HistoryOrderDetails } from "components/common/HistoryOrderDetails/Histo
 import { isOnMobile } from "utils/responsive";
 import { OrderX, ProductX } from "constants/orderTypes";
 import { random } from "lodash-es";
+import {
+  getTrackingUrl,
+  isTrackingPackageButtonDisabled,
+} from "../../../utils/general";
 
 interface Props {
   order?: {
@@ -64,9 +68,16 @@ export class HistoryOrder extends React.Component<Props, State> {
           </div>
         </div>
         <div className={cn(styles["right-container"], styles["container"])}>
-          <button className={cn(styles.label, styles.trackPackage)}>
-            Track package
-          </button>
+          {isTrackingPackageButtonDisabled(order) && (
+            <button
+              onClick={() =>
+                window.open(getTrackingUrl(order.shipment.tracking), "_blank")
+              }
+              className={cn(styles.label, styles.trackPackage)}
+            >
+              Track package
+            </button>
+          )}
         </div>
       </div>
     );
@@ -102,7 +113,19 @@ export class HistoryOrder extends React.Component<Props, State> {
                 />
                 <div className={cn(styles["status-text"])}>{order.status}</div>
               </div>
-              <button className={styles.trackPackage}>Track package</button>
+              {isTrackingPackageButtonDisabled(order) && (
+                <button
+                  onClick={() =>
+                    window.open(
+                      getTrackingUrl(order.shipment.tracking),
+                      "_blank"
+                    )
+                  }
+                  className={cn(styles.trackPackage)}
+                >
+                  Track package
+                </button>
+              )}
             </div>
 
             <div className={cn("row", "center-vertically")}>
