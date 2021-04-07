@@ -204,8 +204,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
         </div>
         <div className={cn(styles.infoContainer, styles.infoMode)}>
           <div className={styles.darker}>{hotspotItem.name}</div>
-          <div className={styles.darker}>Design Shop</div>
-          <div>{this.formatDate(hotspotItem.createdOn)}</div>
+          <div>Design Shop, {this.formatDate(hotspotItem.createdOn)}</div>
         </div>
       </React.Fragment>
     );
