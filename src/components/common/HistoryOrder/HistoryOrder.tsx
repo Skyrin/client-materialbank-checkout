@@ -68,7 +68,7 @@ export class HistoryOrder extends React.Component<Props, State> {
           </div>
         </div>
         <div className={cn(styles["right-container"], styles["container"])}>
-          {isTrackingPackageButtonDisabled(order) && (
+          {order.shipment.tracking && (
             <button
               onClick={() =>
                 window.open(getTrackingUrl(order.shipment.tracking), "_blank")
@@ -113,7 +113,7 @@ export class HistoryOrder extends React.Component<Props, State> {
                 />
                 <div className={cn(styles["status-text"])}>{order.status}</div>
               </div>
-              {isTrackingPackageButtonDisabled(order) && (
+              {order.shipment.tracking && (
                 <button
                   onClick={() =>
                     window.open(

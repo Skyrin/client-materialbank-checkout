@@ -40,8 +40,3 @@ export const getSamplePage = (sku: string) => {
 export const getTrackingUrl = (trackingCode: string) => {
   return `https://www.fedex.com/fedextrack/?action=track&trackingnumber=${trackingCode}&cntry_code=us&locale=en_US`;
 };
-
-export const isTrackingPackageButtonDisabled = (order: OrderX) => {
-  //TODO update when we know the available statuses
-  return order.status === "shipped";
-};
