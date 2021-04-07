@@ -1,18 +1,22 @@
 export default class CreditCard {
+  name: string;
   cardType: string;
   expires: string;
   last4: string;
   method: string;
   token: string;
   type: string;
+  fingerprint: string;
 
   constructor(obj?: any) {
     this.cardType = obj?.cardType;
+    this.name = obj?.name;
     this.expires = obj?.expires;
     this.last4 = obj?.last4;
     this.method = obj?.method;
     this.token = obj?.token;
     this.type = obj?.type;
+    this.fingerprint = obj?.fingerprint;
   }
 }
 //

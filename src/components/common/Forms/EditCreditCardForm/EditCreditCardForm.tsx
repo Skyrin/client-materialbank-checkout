@@ -94,13 +94,10 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.state.values.creditCardNumber);
-    console.log(this.props.initialValues);
     let placeholder = "xxxx xxxx xxxx xxxx";
     if (this.props.initialValues) {
       placeholder = `xxxx xxxx xxxx ${this.props.initialValues.last4}`;
     }
-    console.log(this.props, this.state.values, placeholder);
     return (
       <div
         className={cn(styles.EditCreditCardForm, {

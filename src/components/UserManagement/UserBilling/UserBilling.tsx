@@ -48,12 +48,8 @@ export default class UserBilling extends React.Component<Props, State> {
         customer: value,
       });
     });
-    const response = await RESTRequest(
-      "GET",
-      "customers/me/stored-payment-methods"
-    );
-    const methods = await response.json();
-    this.setState({ paymentMethods: methods });
+    const storedPaymentMethods = this.context.storedPaymentMethods;
+    this.setState({ paymentMethods: storedPaymentMethods });
   }
 
   renderMobilePaymentRow(paymentMethod, index) {
@@ -107,15 +103,15 @@ export default class UserBilling extends React.Component<Props, State> {
           className={styles.creditCardIcon}
         />
         <div className={styles.creditCardNumber}>
-          xxxx xxxx xxxx
+          xxxx xxxx xxxx {}
           {updatedPayment.creditCard
             ? updatedPayment.creditCard.creditCardNumber.substr(-4)
             : paymentMethod.last4}
         </div>
         <div className={styles.fullName}>
           {updatedPayment.creditCard
-            ? updatedPayment.creditCard.cardDate.match(/.{1,2}/g).join("/20")
-            : paymentMethod.expires}
+            ? updatedPayment.creditCard.creditCardName
+            : paymentMethod.name}
           {paymentMethod.isDefault && (
             <div className={styles.defaultPayment}>DEFAULT</div>
           )}
