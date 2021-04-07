@@ -10,6 +10,7 @@ import {
 import { get } from "lodash-es";
 import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
 import { COLLECTION_URL } from "../../../../constants/urls";
+import { DateTime } from "luxon";
 
 interface ItemProps {
   mode: any;
@@ -22,6 +23,11 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
   static contextType = AppContext;
   context!: AppContextState;
   materialItem: any;
+
+  formatDate = (stringDate: string): string => {
+    const date = DateTime.fromISO(stringDate);
+    return date.toFormat("MMMM dd, yyyy");
+  };
 
   getCollectionId = () => {
     const collectionPageResult = matchPath(this.props.location.pathname, {
@@ -198,8 +204,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
         </div>
         <div className={cn(styles.infoContainer, styles.infoMode)}>
           <div className={styles.darker}>{hotspotItem.name}</div>
-          <div className={styles.darker}>{hotspotItem.color}</div>
-          <div>{hotspotItem.description}</div>
+          <div>Design Shop, {this.formatDate(hotspotItem.createdOn)}</div>
         </div>
       </React.Fragment>
     );
