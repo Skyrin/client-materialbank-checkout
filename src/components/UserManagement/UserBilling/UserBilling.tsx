@@ -19,7 +19,6 @@ import { isOnMobile } from "../../../utils/responsive";
 import { CustomerT } from "constants/types";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
-import { RESTRequest } from "../../../RestClient";
 
 type Props = RouteComponentProps;
 
@@ -33,6 +32,7 @@ export default class UserBilling extends React.Component<Props, State> {
   context!: AppContextState;
 
   addCreditCardForm?: EditCreditCardForm;
+  paymentMethods: any;
 
   constructor(props) {
     super(props);
@@ -48,12 +48,10 @@ export default class UserBilling extends React.Component<Props, State> {
         customer: value,
       });
     });
-    const storedPaymentMethods = this.context.storedPaymentMethods;
-    this.setState({ paymentMethods: storedPaymentMethods });
   }
 
   renderMobilePaymentRow(paymentMethod, index) {
-    let updatedPayment = this.state.paymentMethods[index];
+    let updatedPayment = this.paymentMethods[index];
     return (
       <div className={styles.paymentRow}>
         <div className={styles.creditCardDetails}>
@@ -94,7 +92,7 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   renderDesktopPaymentRow(paymentMethod, index) {
-    let updatedPayment = this.state.paymentMethods[index];
+    let updatedPayment = this.paymentMethods[index];
     return (
       <div className={styles.paymentRow}>
         <img
@@ -137,6 +135,12 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   render() {
+    const storedPaymentMethods = this.context.storedPaymentMethods;
+    if (this.state.paymentMethods.length > 0) {
+      this.paymentMethods = this.state.paymentMethods;
+    } else {
+      this.paymentMethods = storedPaymentMethods;
+    }
     return (
       <div className={styles.UserBilling}>
         <UserHeader
@@ -144,7 +148,7 @@ export default class UserBilling extends React.Component<Props, State> {
           customer={this.state.customer}
         />
         <div className={styles.pageContent}>
-          {this.state.paymentMethods.map((paymentMethod, index) => {
+          {this.paymentMethods.map((paymentMethod, index) => {
             return (
               <div key={paymentMethod.id} className={styles.paymentCell}>
                 {isOnMobile() &&
@@ -207,14 +211,12 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   editPayment(index: any) {
-    const paymentMethods = this.state.paymentMethods.map(
-      (paymentMethod, itIndex) => {
-        if (itIndex !== index) {
-          paymentMethod.isOpen = false;
-        }
-        return paymentMethod;
+    const paymentMethods = this.paymentMethods.map((paymentMethod, itIndex) => {
+      if (itIndex !== index) {
+        paymentMethod.isOpen = false;
       }
-    );
+      return paymentMethod;
+    });
     paymentMethods[index].isOpen = !paymentMethods[index].isOpen;
     this.setState({
       paymentMethods: paymentMethods,
@@ -230,14 +232,12 @@ export default class UserBilling extends React.Component<Props, State> {
       cvv: creditCardValues.cardCVV,
     });
     if (creditCardValues.id) {
-      const newPaymentMethods = this.state.paymentMethods.map(
-        (paymentMethod) => {
-          if (paymentMethod.token === creditCardValues.id) {
-            paymentMethod.creditCard = creditCardValues;
-          }
-          return paymentMethod;
+      const newPaymentMethods = this.paymentMethods.map((paymentMethod) => {
+        if (paymentMethod.token === creditCardValues.id) {
+          paymentMethod.creditCard = creditCardValues;
         }
-      );
+        return paymentMethod;
+      });
       this.setState({
         paymentMethods: creditCardValues,
       });
@@ -251,7 +251,7 @@ export default class UserBilling extends React.Component<Props, State> {
       newPaymentMethod.token = String(Math.random());
       newPaymentMethod.creditCard = creditCardValues;
 
-      const newPaymentMethods = this.state.paymentMethods;
+      const newPaymentMethods = this.paymentMethods;
       newPaymentMethods.push(newPaymentMethod);
 
       this.addCreditCardForm.resetForm();
@@ -265,7 +265,7 @@ export default class UserBilling extends React.Component<Props, State> {
   cancelSave(token: string) {
     if (token) {
       this.editPayment(
-        this.state.paymentMethods.findIndex(
+        this.paymentMethods.findIndex(
           (paymentMethod) => paymentMethod.token === token
         )
       );
@@ -273,7 +273,7 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   deleteCard(token: string) {
-    const newPayments = this.state.paymentMethods.filter(
+    const newPayments = this.paymentMethods.filter(
       (payment) => payment.token !== token
     );
     this.setState({
@@ -282,7 +282,7 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   makeDefault(token: string) {
-    let paymentMethods = this.state.paymentMethods;
+    let paymentMethods = this.paymentMethods;
     paymentMethods = paymentMethods.map((paymentMethod) => ({
       ...paymentMethod,
       isDefault: false,
