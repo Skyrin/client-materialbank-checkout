@@ -299,7 +299,7 @@ export default class UserBilling extends React.Component<Props, State> {
     switch (paymentMethod.cardType) {
       case "Visa":
         return visaIcon;
-      case "AmericanExpress":
+      case "American Express":
         return amexIcon;
       case "MasterCard":
         return masterCardIcon;
