@@ -152,8 +152,22 @@ export default class AppContextManager extends React.Component<Props> {
                 );
               }
             }
+            const availableShippingMethods = get(
+              cartInfo,
+              "shipping_addresses[0].available_shipping_methods",
+              []
+            );
+            const hasFreeShippingAvailable = !!availableShippingMethods.find(
+              (m) => m.method_code === "freeshipping"
+            );
+            const currentShippingMethod = get(
+              cartInfo,
+              "shipping_addresses[0].selected_shipping_method.method_code"
+            );
             if (
-              !get(cartInfo, "shipping_addresses[0].selected_shipping_method")
+              !currentShippingMethod ||
+              (hasFreeShippingAvailable &&
+                currentShippingMethod !== "freeshipping")
             ) {
               await this.actions.setShippingMethod();
             }
@@ -190,11 +204,19 @@ export default class AppContextManager extends React.Component<Props> {
             }
           );
           const estimatedShipping = await estimatedShippingResponse.json();
+          const freeShipping =
+            (estimatedShipping || []).find(
+              (option) => option.method_code === "freeshipping"
+            ) || {};
           const flatrate =
             (estimatedShipping || []).find(
               (option) => option.method_code === "flatrate"
             ) || {};
-          cartInfo.estimated_shipping_cost = flatrate.amount || 0;
+          if (freeShipping && freeShipping.amount !== undefined) {
+            cartInfo.estimated_shipping_cost = 0;
+          } else {
+            cartInfo.estimated_shipping_cost = flatrate.amount || 0;
+          }
         }
         this.contextState.cartInfoLoading = false;
         if (cartInfo) {
@@ -209,6 +231,13 @@ export default class AppContextManager extends React.Component<Props> {
       this.forceUpdate();
       const customer = await requestCurrentCustomer(this.getFullContext());
       console.log("GOT CUSTOMER", customer);
+      const storedPaymentMethodsResponse = await RESTRequest(
+        "GET",
+        "customers/me/stored-payment-methods"
+      );
+      const storedPaymentMethods = await storedPaymentMethodsResponse.json();
+      console.log("GOT STORED PAYMENT METHODS", storedPaymentMethods);
+      this.contextState.storedPaymentMethods = storedPaymentMethods;
       this.contextState.customerLoading = false;
       this.actions.updateCustomer(customer);
       return this.contextState.customer;
@@ -247,6 +276,7 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.isLoggedIn = false; // Change directly here so we don't trigger 2 updates
       this.contextState.customer = {};
       this.contextState.cart = {};
+      this.contextState.storedPaymentMethods = [];
       this.forceUpdate();
     },
 
@@ -643,7 +673,7 @@ export default class AppContextManager extends React.Component<Props> {
       if (foundItem) {
         this.contextState.updatingCartInfo = true;
         this.forceUpdate();
-        const newCart = await updateCartItems(
+        let newCart = await updateCartItems(
           this.getFullContext(),
           this.contextState.cart.id,
           [
@@ -653,8 +683,30 @@ export default class AppContextManager extends React.Component<Props> {
             },
           ]
         );
-        this.contextState.updatingCartInfo = false;
         this.actions.updateCart(newCart);
+        const hasShippingAddress = !!get(newCart, "shipping_addresses[0]");
+        const availableShippingMethods = get(
+          newCart,
+          "shipping_addresses[0].available_shipping_methods",
+          []
+        );
+        const hasFreeShippingAvailable = !!availableShippingMethods.find(
+          (m) => m.method_code === "freeshipping"
+        );
+        const currentShippingMethod = get(
+          newCart,
+          "shipping_addresses[0].selected_shipping_method.method_code"
+        );
+        if (
+          hasShippingAddress &&
+          (!currentShippingMethod ||
+            (hasFreeShippingAvailable &&
+              currentShippingMethod !== "freeshipping"))
+        ) {
+          await this.actions.setShippingMethod();
+        }
+        this.contextState.updatingCartInfo = false;
+        this.forceUpdate();
       }
     },
   };

@@ -39,6 +39,11 @@ import StripePaymentButtons from "./StripePaymentButtons/StripePaymentButtons";
 import { CartAddressInput } from "context/CheckoutAPI/models";
 import PromoCode from "components/common/PromoCode/PromoCode";
 
+import amexIcon from "assets/images/amex_icon.svg";
+import visaIcon from "assets/images/visa_icon.svg";
+import masterCardIcon from "assets/images/master_card_icon.svg";
+import creditCardIcon from "assets/images/credit_card_icon.svg";
+
 const contactInfoSchema = yup.object().shape({
   firstname: yup.string().required("Required"),
   lastname: yup.string().required("Required"),
@@ -542,49 +547,108 @@ export class PersonalInformation extends React.Component<Props, State> {
     );
   };
 
+  getCreditCardIcon = (creditType: string) => {
+    const type = creditType.toUpperCase();
+    switch (type) {
+      case "VISA":
+        return visaIcon;
+      case "MASTERCARD":
+        return masterCardIcon;
+      case "AMEX":
+        return amexIcon;
+      default:
+        return creditCardIcon;
+    }
+  };
+
   renderPaymentInformationSection = () => {
+    const storedPaymentMethods = this.context.storedPaymentMethods;
+    const hasStoredPaymentMethods = storedPaymentMethods.length > 0;
+
     return (
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>Payment Information</h3>
-        {!this.hasPaymentMethod() && (
-          <React.Fragment>
-            <CreditCardForm
-              useStripe
-              visible
-              onChange={(newValues: CreditCardFormValuesT) => {
-                this.setState({
-                  creditCardInfo: newValues,
-                });
-                this.creditCardForm?.validateForm();
-              }}
-              componentRef={(ref) => {
-                this.creditCardForm = ref;
-              }}
-            />
-            <div
-              className={styles.billingOption}
-              onClick={() => {
-                this.setState({
-                  billingSameAsShipping: !this.state.billingSameAsShipping,
-                });
-              }}
-            >
-              <Checkbox
-                black
-                className={styles.checkbox}
-                value={this.state.billingSameAsShipping}
-              />
-              <span className={styles.text}>
-                Billing address is the same as shipping
-              </span>
-            </div>
-          </React.Fragment>
-        )}
+
         {this.hasPaymentMethod() && (
           <div className={styles.expressCheckoutUsed}>
             Express Checkout was used
           </div>
         )}
+
+        {!this.hasPaymentMethod() && hasStoredPaymentMethods && (
+          <div className={styles.paymentMethods}>
+            {storedPaymentMethods.map((pm) => (
+              <div
+                className={cn(styles.paymentMethod, {
+                  [styles.selected]:
+                    this.state.stripePaymentMethodId === pm.token,
+                })}
+                key={pm.token}
+                onClick={() => {
+                  this.setState({ stripePaymentMethodId: pm.token });
+                }}
+              >
+                <RadioButton
+                  className={styles.radioButton}
+                  value={this.state.stripePaymentMethodId}
+                  option={pm.token}
+                />
+                <div className={styles.cardInfo}>
+                  <img
+                    src={this.getCreditCardIcon(pm.cardType)}
+                    className={styles.cardIcon}
+                    alt=""
+                  />
+                  {`${pm.cardType.toUpperCase()} ending in *${pm.last4}`}
+                </div>
+              </div>
+            ))}
+            <div
+              className={cn(styles.paymentMethod, {
+                [styles.selected]: this.state.stripePaymentMethodId === "",
+              })}
+              onClick={() => {
+                this.setState({ stripePaymentMethodId: "" });
+              }}
+            >
+              <RadioButton
+                className={styles.radioButton}
+                value={this.state.stripePaymentMethodId}
+                option={""}
+              />
+              Use a different payment method
+            </div>
+          </div>
+        )}
+
+        <CreditCardForm
+          useStripe
+          visible={!this.state.stripePaymentMethodId}
+          onChange={() => {
+            this.creditCardForm?.validateForm();
+          }}
+          componentRef={(ref) => {
+            this.creditCardForm = ref;
+          }}
+        />
+
+        <div
+          className={styles.billingOption}
+          onClick={() => {
+            this.setState({
+              billingSameAsShipping: !this.state.billingSameAsShipping,
+            });
+          }}
+        >
+          <Checkbox
+            black
+            className={styles.checkbox}
+            value={this.state.billingSameAsShipping}
+          />
+          <span className={styles.text}>
+            Billing address is the same as shipping
+          </span>
+        </div>
         <AddressForm
           withAutocomplete
           className={styles.billingAddressForm}
@@ -810,7 +874,11 @@ export class PersonalInformation extends React.Component<Props, State> {
 
   hasPaymentMethod = () => {
     return (
-      this.state.paypalExpressInfo.token || this.state.stripePaymentMethodId
+      this.state.paypalExpressInfo.token ||
+      (this.state.stripePaymentMethodId &&
+        !this.context.storedPaymentMethods.find(
+          (pm) => pm.token === this.state.stripePaymentMethodId
+        ))
     );
   };
 
@@ -857,6 +925,7 @@ export class PersonalInformation extends React.Component<Props, State> {
                   this.shippingAddressForm &&
                   !this.shippingAddressForm.isValid()) ||
                 (!this.hasPaymentMethod() &&
+                  !this.state.stripePaymentMethodId &&
                   this.creditCardForm &&
                   !this.creditCardForm.isValid())
               }

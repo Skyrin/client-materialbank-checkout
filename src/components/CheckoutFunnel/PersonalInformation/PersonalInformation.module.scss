@@ -299,6 +299,41 @@
     }
   }
 
+  .paymentMethods {
+    margin-top: 12px;
+
+    .paymentMethod {
+      display: grid;
+      grid-template-columns: min-content auto;
+      column-gap: 14px;
+      align-items: center;
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-medium);
+      color: #615c58;
+      transition: color 0.1s linear;
+      cursor: pointer;
+
+      &:not(:last-of-type) {
+        margin-bottom: 20px;
+      }
+
+      &.selected {
+        color: $checkout-primary-color;
+      }
+
+      .cardInfo {
+        display: grid;
+        grid-template-columns: min-content auto;
+        column-gap: 10px;
+        align-items: center;
+
+        .cardIcon {
+          height: 21px;
+        }
+      }
+    }
+  }
+
   .billingOption {
     display: flex;
     align-items: center;
