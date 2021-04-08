@@ -6,7 +6,7 @@ export const expirationDateInputParser = (value: string) => {
 };
 
 export const expirationDateInputFormatter = (value: string) => {
-  if (value.length >= 2) {
+  if (value && value.length >= 2) {
     return value.substr(0, 2) + " / " + value.substr(2, 2);
   }
   return value;
@@ -21,11 +21,13 @@ export const cardNumberInputParser = (value: string) => {
 };
 
 export const cardNumberInputFormatter = (value: string) => {
-  const groups = value.match(/.{1,4}/g) || [];
-  if (groups.length < 4 && value.length % 4 === 0 && value.length > 0) {
-    return groups.join(" - ") + " - ";
-  }
-  return groups.join(" - ");
+  if (/^-?\d+$/.test(value)) {
+    const groups = value.match(/.{1,4}/g) || [];
+    if (groups.length < 4 && value.length % 4 === 0 && value.length > 0) {
+      return groups.join(" - ") + " - ";
+    }
+    return groups.join(" - ");
+  } else return (value = "");
 };
 
 export const digitsOnlyInputParser = (value: string) => {

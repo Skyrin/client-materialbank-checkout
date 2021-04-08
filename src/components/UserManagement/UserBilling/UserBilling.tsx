@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router-dom";
 import UserHeader, {
   UserPages,
 } from "components/UserManagement/UserHeader/UserHeader";
-import mockPayments from "models/paymentMethodMock.json";
 import PaymentMethod from "models/PaymentMethod";
 import styles from "./UserBilling.module.scss";
 import cn from "classnames";
@@ -12,7 +11,7 @@ import amexIcon from "assets/images/amex_icon.svg";
 import visaIcon from "assets/images/visa_icon.svg";
 import masterCardIcon from "assets/images/master_card_icon.svg";
 import creditCardIcon from "assets/images/credit_card_icon.svg";
-import CreditCard, { CreditCardType } from "models/CreditCard";
+import CreditCard from "models/CreditCard";
 import EditCreditCardForm, {
   CreditCardFormValuesT,
 } from "components/common/Forms/EditCreditCardForm/EditCreditCardForm";
@@ -33,16 +32,17 @@ export default class UserBilling extends React.Component<Props, State> {
   context!: AppContextState;
 
   addCreditCardForm?: EditCreditCardForm;
+  paymentMethods: any;
 
   constructor(props) {
     super(props);
     this.state = {
-      paymentMethods: mockPayments.map((payment) => new PaymentMethod(payment)),
+      paymentMethods: [],
       customer: null,
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.context.requestCurrentCustomer().then((value) => {
       this.setState({
         customer: value,
@@ -51,6 +51,7 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   renderMobilePaymentRow(paymentMethod, index) {
+    let updatedPayment = this.paymentMethods[index];
     return (
       <div className={styles.paymentRow}>
         <div className={styles.creditCardDetails}>
@@ -59,15 +60,15 @@ export default class UserBilling extends React.Component<Props, State> {
             alt=""
             className={styles.creditCardIcon}
           />
-
           <div className={styles.creditCardNumber}>
-            {paymentMethod.creditCard.getShortObfuscatedNumber()}
+            xxxx xxxx xxxx
+            {updatedPayment.creditCard
+              ? updatedPayment.creditCard.creditCardNumber.substr(-4)
+              : paymentMethod.last4}
           </div>
-
           {paymentMethod.isDefault && (
             <div className={styles.defaultPayment}>DEFAULT</div>
           )}
-
           <button
             className={cn(styles.editButton, {
               [styles.editMode]: paymentMethod.isOpen,
@@ -76,6 +77,7 @@ export default class UserBilling extends React.Component<Props, State> {
               this.editPayment(index);
             }}
           >
+            {" "}
             Edit
             <i
               className={cn("far fa-angle-down", styles.chevron, {
@@ -90,6 +92,7 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   renderDesktopPaymentRow(paymentMethod, index) {
+    let updatedPayment = this.paymentMethods[index];
     return (
       <div className={styles.paymentRow}>
         <img
@@ -98,15 +101,19 @@ export default class UserBilling extends React.Component<Props, State> {
           className={styles.creditCardIcon}
         />
         <div className={styles.creditCardNumber}>
-          {paymentMethod.creditCard.getObfuscatedNumber()}
+          xxxx xxxx xxxx {}
+          {updatedPayment.creditCard
+            ? updatedPayment.creditCard.creditCardNumber.substr(-4)
+            : paymentMethod.last4}
         </div>
         <div className={styles.fullName}>
-          {paymentMethod.creditCard.name}
+          {updatedPayment.creditCard
+            ? updatedPayment.creditCard.creditCardName
+            : paymentMethod.name}
           {paymentMethod.isDefault && (
             <div className={styles.defaultPayment}>DEFAULT</div>
           )}
         </div>
-
         <button
           className={cn(styles.editButton, {
             [styles.editMode]: paymentMethod.isOpen,
@@ -128,6 +135,12 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   render() {
+    const storedPaymentMethods = this.context.storedPaymentMethods;
+    if (this.state.paymentMethods.length > 0) {
+      this.paymentMethods = this.state.paymentMethods;
+    } else {
+      this.paymentMethods = storedPaymentMethods;
+    }
     return (
       <div className={styles.UserBilling}>
         <UserHeader
@@ -135,58 +148,51 @@ export default class UserBilling extends React.Component<Props, State> {
           customer={this.state.customer}
         />
         <div className={styles.pageContent}>
-          {this.state.paymentMethods.map(
-            (paymentMethod: PaymentMethod, index) => {
-              return (
-                <div key={paymentMethod.id} className={styles.paymentCell}>
-                  {isOnMobile() &&
-                    this.renderMobilePaymentRow(paymentMethod, index)}
-                  {!isOnMobile() &&
-                    this.renderDesktopPaymentRow(paymentMethod, index)}
-                  {/*  {paymentMethod.isOpen && (*/}
-                  {/*  <div className="horizontal-divider" />*/}
-                  {/*)}*/}
-
-                  {/*{paymentMethod.isOpen && (*/}
+          {this.paymentMethods.map((paymentMethod, index) => {
+            return (
+              <div key={paymentMethod.id} className={styles.paymentCell}>
+                {isOnMobile() &&
+                  this.renderMobilePaymentRow(paymentMethod, index)}
+                {!isOnMobile() &&
+                  this.renderDesktopPaymentRow(paymentMethod, index)}
+                {paymentMethod.isOpen && <div className="horizontal-divider" />}
+                {paymentMethod.isOpen && (
                   <EditCreditCardForm
                     initialValues={{
-                      id: paymentMethod.id,
-                      creditCardNumber: paymentMethod.creditCard.number,
-                      creditCardName: paymentMethod.creditCard.name,
-                      cardDate: paymentMethod.creditCard.expiration,
-                      cardCVV: paymentMethod.creditCard.cvv,
-                      isDefault: paymentMethod.isDefault,
+                      isDefault: false,
+                      id: paymentMethod.token,
+                      expires: paymentMethod.expires,
+                      last4: paymentMethod.last4,
                     }}
                     visible={paymentMethod.isOpen}
                     onSave={(values) => {
                       this.savePayment(values);
                     }}
-                    onCancel={(id: string) => {
-                      this.cancelSave(id);
+                    onCancel={(token: string) => {
+                      this.cancelSave(token);
                     }}
-                    onDelete={(id: string) => {
-                      this.deleteCard(id);
+                    onDelete={(token: string) => {
+                      this.deleteCard(token);
                     }}
-                    onSetDefault={(id: string) => {
-                      this.makeDefault(id);
+                    onSetDefault={(token: string) => {
+                      this.makeDefault(token);
                     }}
                   />
-                  {/*)}*/}
-                </div>
-              );
-            }
-          )}
+                )}
+              </div>
+            );
+          })}
           <div className={styles.addCreditCardContainer}>
             <EditCreditCardForm
               visible={true}
               onSave={(values) => {
                 this.savePayment(values);
               }}
-              onCancel={(id: string) => {
-                this.cancelSave(id);
+              onCancel={(token: string) => {
+                this.cancelSave(token);
               }}
-              onDelete={(id: string) => {
-                this.deleteCard(id);
+              onDelete={(token: string) => {
+                this.deleteCard(token);
               }}
               componentRef={(ref) => {
                 this.addCreditCardForm = ref;
@@ -204,17 +210,14 @@ export default class UserBilling extends React.Component<Props, State> {
     );
   }
 
-  editPayment(index: number) {
-    const paymentMethods = this.state.paymentMethods.map(
-      (paymentMethod, itIndex) => {
-        if (itIndex !== index) {
-          paymentMethod.isOpen = false;
-        }
-        return paymentMethod;
+  editPayment(index: any) {
+    const paymentMethods = this.paymentMethods.map((paymentMethod, itIndex) => {
+      if (itIndex !== index) {
+        paymentMethod.isOpen = false;
       }
-    );
+      return paymentMethod;
+    });
     paymentMethods[index].isOpen = !paymentMethods[index].isOpen;
-
     this.setState({
       paymentMethods: paymentMethods,
     });
@@ -224,32 +227,31 @@ export default class UserBilling extends React.Component<Props, State> {
     const creditCard = new CreditCard({
       number: creditCardValues.creditCardNumber,
       name: creditCardValues.creditCardName,
-      expiration: creditCardValues.cardDate,
+      expiration: creditCardValues.expires,
+      last4: creditCardValues.last4,
       cvv: creditCardValues.cardCVV,
     });
     if (creditCardValues.id) {
-      const newPaymentMethods = this.state.paymentMethods.map(
-        (paymentMethod) => {
-          if (paymentMethod.id === creditCardValues.id) {
-            paymentMethod.creditCard = creditCard;
-          }
-          return paymentMethod;
+      const newPaymentMethods = this.paymentMethods.map((paymentMethod) => {
+        if (paymentMethod.token === creditCardValues.id) {
+          paymentMethod.creditCard = creditCardValues;
         }
-      );
+        return paymentMethod;
+      });
       this.setState({
-        paymentMethods: newPaymentMethods,
+        paymentMethods: creditCardValues,
       });
       this.editPayment(
         newPaymentMethods.findIndex(
-          (paymentMethod) => paymentMethod.id === creditCardValues.id
+          (paymentMethod) => paymentMethod.token === creditCardValues.id
         )
       );
     } else {
       const newPaymentMethod = new PaymentMethod();
-      newPaymentMethod.id = String(Math.random());
-      newPaymentMethod.creditCard = creditCard;
+      newPaymentMethod.token = String(Math.random());
+      newPaymentMethod.creditCard = creditCardValues;
 
-      const newPaymentMethods = this.state.paymentMethods;
+      const newPaymentMethods = this.paymentMethods;
       newPaymentMethods.push(newPaymentMethod);
 
       this.addCreditCardForm.resetForm();
@@ -260,34 +262,33 @@ export default class UserBilling extends React.Component<Props, State> {
     }
   }
 
-  cancelSave(id: string) {
-    if (id) {
+  cancelSave(token: string) {
+    if (token) {
       this.editPayment(
-        this.state.paymentMethods.findIndex(
-          (paymentMethod) => paymentMethod.id === id
+        this.paymentMethods.findIndex(
+          (paymentMethod) => paymentMethod.token === token
         )
       );
     }
   }
 
-  deleteCard(id: string) {
-    const newPayments = this.state.paymentMethods.filter(
-      (payment) => payment.id !== id
+  deleteCard(token: string) {
+    const newPayments = this.paymentMethods.filter(
+      (payment) => payment.token !== token
     );
     this.setState({
       paymentMethods: newPayments,
     });
   }
 
-  makeDefault(id: string) {
-    let paymentMethods = this.state.paymentMethods;
-
+  makeDefault(token: string) {
+    let paymentMethods = this.paymentMethods;
     paymentMethods = paymentMethods.map((paymentMethod) => ({
       ...paymentMethod,
       isDefault: false,
     }));
 
-    paymentMethods.find((payment) => payment.id === id).isDefault = true;
+    paymentMethods.find((payment) => payment.token === token).isDefault = true;
 
     this.setState({
       paymentMethods: paymentMethods,
@@ -295,17 +296,14 @@ export default class UserBilling extends React.Component<Props, State> {
   }
 
   getCreditCardIcon(paymentMethod: PaymentMethod) {
-    switch (paymentMethod.creditCard.getCreditCardBrand()) {
-      case CreditCardType.AmericanExpress:
-        return amexIcon;
-      case CreditCardType.MasterCard:
-        return masterCardIcon;
-      case CreditCardType.Visa:
+    switch (paymentMethod.cardType) {
+      case "Visa":
         return visaIcon;
-      case CreditCardType.Diners:
-      case CreditCardType.Discover:
-      case CreditCardType.JCB:
-      case CreditCardType.Unknown:
+      case "American Express":
+        return amexIcon;
+      case "MasterCard":
+        return masterCardIcon;
+      default:
         return creditCardIcon;
     }
   }

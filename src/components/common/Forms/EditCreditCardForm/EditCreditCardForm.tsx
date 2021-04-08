@@ -38,10 +38,13 @@ export const DEFAULT_CREDIT_CARD_FORM_VALUES: CreditCardFormValuesT = {
 
 export type CreditCardFormValuesT = {
   id: string;
-  creditCardNumber: string;
-  creditCardName: string;
-  cardDate: string;
-  cardCVV: string;
+  creditCardNumber?: string;
+  creditCardName?: string;
+  cardDate?: string;
+  cardCVV?: string;
+  expires?: string;
+  token?: string;
+  last4?: string;
   isDefault: boolean;
 };
 
@@ -91,6 +94,10 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
   }
 
   render() {
+    let placeholder = "xxxx xxxx xxxx xxxx";
+    if (this.props.initialValues) {
+      placeholder = `xxxx xxxx xxxx ${this.props.initialValues.last4}`;
+    }
     return (
       <div
         className={cn(styles.EditCreditCardForm, {
@@ -104,9 +111,10 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
           <div className={styles.cardNumber}>
             <div className={styles.inputHint}>Card Number</div>
             <Input
-              placeholder="xxxx xxxx xxxx xxxx"
+              placeholder={placeholder}
               formatter={cardNumberInputFormatter}
               parser={cardNumberInputParser}
+              inputMode="numeric"
               userInputStyle={true}
               value={this.state.values.creditCardNumber}
               error={this.state.errors.creditCardNumber}
@@ -132,7 +140,11 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
           <div className={styles.cardExpiration}>
             <div className={styles.inputHint}>Expiration</div>
             <Input
-              placeholder="MM / YY"
+              placeholder={
+                this.props.initialValues
+                  ? this.props.initialValues.expires
+                  : "MM / YY"
+              }
               value={this.state.values.cardDate}
               error={this.state.errors.cardDate}
               userInputStyle={true}
