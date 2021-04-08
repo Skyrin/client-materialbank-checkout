@@ -133,6 +133,11 @@
               ) / var(--number-of-cards)
           ) * 2
       );
+
+      &.infoImage {
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+      }
     }
 
     .sampleCart {
@@ -173,6 +178,7 @@
     border-radius: var(--card-border-radius-bg);
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+
     &.privateCard {
       flex-direction: column;
       row-gap: 5px;
@@ -186,7 +192,11 @@
       position: absolute;
       background-color: white;
       bottom: 0;
-      width: 100%;
+      //width: 100%;
+      margin-bottom: -1px;
+      border: 2px solid white;
+      width: 101%;
+      right: -1px;
     }
 
     .textContainer {

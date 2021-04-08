@@ -183,7 +183,11 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
     return (
       <React.Fragment>
         <div className={cn(styles.imageContainer, styles.infoMode)}>
-          <img src={this.props.item.upload.url} alt="" />
+          <img
+            className={styles.infoImage}
+            src={this.props.item.upload.url}
+            alt=""
+          />
         </div>
         <div className={cn(styles.infoContainer, styles.infoMode)}>
           <div>{this.props.item.upload.name}</div>
@@ -200,7 +204,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
     return (
       <React.Fragment>
         <div className={cn(styles.imageContainer, styles.infoMode)}>
-          <img src={hotspotItem.imageUrl} alt="" />
+          <img className={styles.infoImage} src={hotspotItem.imageUrl} alt="" />
         </div>
         <div className={cn(styles.infoContainer, styles.infoMode)}>
           <div className={styles.darker}>{hotspotItem.name}</div>
@@ -216,7 +220,11 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
       <React.Fragment>
         <React.Fragment>
           <div className={styles.imageContainer}>
-            <img src={materialItem.imageUrl} alt="" />
+            <img
+              className={styles.infoImage}
+              src={materialItem.imageUrl}
+              alt=""
+            />
             <div className={styles.sampleCart}>
               <i
                 className={cn("far", "fa-cart-arrow-down", styles.addCartIcon)}
