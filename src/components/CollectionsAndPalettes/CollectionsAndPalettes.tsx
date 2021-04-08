@@ -3,6 +3,7 @@ import {
   PALETTES_URL,
   COLLECTIONS_AND_PALETTES_URL,
   COLLECTION_URL,
+  ACCEPT_INVITATION_URL,
 } from "constants/urls";
 import * as React from "react";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
@@ -14,6 +15,7 @@ import Collection from "./Collections/Collection/Collection";
 import ExploreTags from "./common/ExploreTags/ExploreTags";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 import Logo from "../common/Logo/Logo";
+import AcceptInvitation from "./Collections/AcceptInvitation/AcceptInvitation";
 
 type Props = RouteComponentProps;
 
@@ -126,6 +128,13 @@ export default class CollectionsAndPalettes extends React.Component<
                         <Palettes />
                       </React.Fragment>
                     );
+                  }}
+                />
+                <Route
+                  exact
+                  path={ACCEPT_INVITATION_URL}
+                  render={() => {
+                    return <AcceptInvitation history={this.props.history} />;
                   }}
                 />
               </Switch>

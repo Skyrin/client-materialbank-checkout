@@ -20,6 +20,7 @@ export const COLLECTION_ID = ":collection_id";
 export const COLLECTIONS_URL = `${COLLECTIONS_AND_PALETTES_URL}/my-collections`;
 export const PALETTES_URL = `${COLLECTIONS_AND_PALETTES_URL}/palettes`;
 export const COLLECTION_URL = `${COLLECTIONS_URL}/:collection_id`;
+export const ACCEPT_INVITATION_URL = `${COLLECTIONS_AND_PALETTES_URL}/accept-invitation`;
 
 export const goToStorefront = (path?: string = "") => {
   // Use this to go to the storefront in order to trigger the storefront app to reload
