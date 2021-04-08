@@ -1,7 +1,7 @@
 import * as React from "react";
 import { AppContext, AppContextState } from "../../../../context/AppContext";
 import { acceptInvitation } from "../../../../context/CollectionsAPI/api";
-import { COLLECTIONS_URL } from "../../../../constants/urls";
+import { COLLECTIONS_URL, goToStorefront } from "../../../../constants/urls";
 
 export default class AcceptInvitation extends React.Component<any, any> {
   static contextType = AppContext;
@@ -19,7 +19,7 @@ export default class AcceptInvitation extends React.Component<any, any> {
       console.log("accept invite response", resp);
       this.props.history.push(COLLECTIONS_URL);
     } else {
-      this.props.history.push("/");
+      goToStorefront();
     }
   }
 
