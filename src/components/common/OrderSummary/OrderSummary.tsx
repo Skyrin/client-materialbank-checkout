@@ -1,7 +1,7 @@
 import * as React from "react";
 import CartItem from "./CartItem/CartItem";
 import styles from "./OrderSummary.module.scss";
-import { AppContext, AppContextState } from "context/AppContext";
+import { AppContext, AppContextState, Modals } from "context/AppContext";
 import { isOnMobile } from "utils/responsive";
 import cn from "classnames";
 import { RecommendationCard } from "../RecommendationCard/RecommendationCard";
@@ -10,7 +10,6 @@ import { RouteComponentProps, withRouter, matchPath } from "react-router-dom";
 import { ORDER_CONFIRMATION_URL } from "constants/urls";
 import OrderItem from "./OrderItem/OrderItem";
 import { isEmpty, isEqual, get } from "lodash-es";
-import { getSamplePage } from "utils/general";
 import Logo from "../Logo/Logo";
 import { DateTime } from "luxon";
 import fedexLogo from "assets/images/fedex_logo.svg";
@@ -113,7 +112,9 @@ class OrderSummary extends React.Component<Props, State> {
               key={`recommendation_${product.sku}`}
               product={product}
               onClick={() => {
-                window.location = getSamplePage(product.sku);
+                this.context.openModal(Modals.AddSample, {
+                  productSku: product.sku,
+                });
               }}
             />
           ))}
@@ -356,8 +357,7 @@ class OrderSummary extends React.Component<Props, State> {
                   </React.Fragment>
                 ))}
               </div>
-              {!isOnMobile() &&
-                !this.isOnConfirmationPage() &&
+              {!this.isOnConfirmationPage() &&
                 this.renderRecommendationSection()}
               {(this.context.cartInfoLoading ||
                 this.context.updatingCartInfo) && (

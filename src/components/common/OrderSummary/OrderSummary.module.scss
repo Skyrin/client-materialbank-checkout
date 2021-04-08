@@ -108,6 +108,10 @@
       font-size: var(--font-size-xl);
       font-weight: var(--font-weight-medium);
       color: $checkout-primary-color;
+
+      @include mobile-media {
+        font-size: var(--font-size-lg);
+      }
     }
   }
 

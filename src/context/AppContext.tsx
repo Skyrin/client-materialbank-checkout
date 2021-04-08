@@ -39,6 +39,7 @@ export enum Modals {
   ShareCollection = "share-collection",
   DuplicateCollection = "duplicate-collection",
   MakePrivateCollection = "make-private-collection",
+  AddSample = "add-sample",
   None = "none",
 }
 
@@ -294,7 +295,9 @@ export class AppContextState extends BaseAppContextState {
 
   logout() {}
 
-  openModal(modal: Modals) {}
+  openModal(modal: Modals, modalParams: Object = {}) {}
+
+  closeModal() {}
 
   async createTestCart() {}
 
