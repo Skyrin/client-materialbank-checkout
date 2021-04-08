@@ -179,3 +179,23 @@ export const deleteItem = async (
   });
   return resp && get(resp, "collectionRemoveItem");
 };
+
+export const acceptInvitation = async (
+  context: AppContextState,
+  id: number,
+  token: string
+) => {
+  const collectionAcceptInvitation = `
+    mutation collectionAcceptInvitation($id: Int!, $token: String!) {
+      collectionAcceptInvitation(id: $id, token: $token)
+      }`;
+  const resp = await collectionsGraphqlRequest(
+    context,
+    collectionAcceptInvitation,
+    {
+      id: id,
+      token: token,
+    }
+  );
+  return resp && get(resp, "collectionAcceptInvitation");
+};
