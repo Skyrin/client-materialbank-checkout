@@ -110,6 +110,7 @@ class Collection extends React.Component<Props, State> {
         imagePath:
           "https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg?size=626&ext=jpg",
         email: "name.@gmail.com",
+        access: "write",
       },
       {
         id: 3,
@@ -120,6 +121,7 @@ class Collection extends React.Component<Props, State> {
         imagePath:
           "https://i.pinimg.com/originals/9c/a9/b2/9ca9b293ed52b3a124b802449eb653d0.jpg",
         email: "name@gmail.com",
+        access: "write",
       },
       {
         id: 4,
@@ -130,6 +132,7 @@ class Collection extends React.Component<Props, State> {
         imagePath:
           "https://www.adobe.com/content/dam/cc/us/en/creativecloud/photography/discover/portrait-photography/CODERED_B1_portrait_photography-P4a_438x447.jpg.img.jpg",
         email: "name@gmail.com",
+        access: "read",
       },
       {
         id: 5,
@@ -140,6 +143,7 @@ class Collection extends React.Component<Props, State> {
         imagePath:
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWRntDjXs_RggTSWM4AdHwTQ4ppLL44GLoFw&usqp=CAU",
         email: "name@gmail.com",
+        access: "read",
       },
     ];
     this.context.storeCollaborators(collaborators);

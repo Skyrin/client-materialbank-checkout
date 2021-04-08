@@ -26,7 +26,7 @@ import { CreateCustomerInput } from "context/CustomerAPI/models";
 import CollectionsAndPalettes from "../CollectionsAndPalettes/CollectionsAndPalettes";
 import DeleteCollectionModal from "../common/DeleteCollectionModal/DeleteCollectionModal";
 import DeleteItemModal from "../common/DeleteItemModal/DeleteItemModal";
-import { ShareCollectionModal } from "../common/ShareCollectionModal/ShareCollectionModal";
+import ShareCollectionModal from "../common/ShareCollectionModal/ShareCollectionModal";
 import DuplicateCollectionModal from "../common/DuplicateCollectionModal/DuplicateCollectionModal";
 import { MakePrivateModal } from "../common/MakePrivateModal/MakePrivateModal";
 import { AddSampleModal } from "components/common/AddSampleModal/AddSampleModal";
