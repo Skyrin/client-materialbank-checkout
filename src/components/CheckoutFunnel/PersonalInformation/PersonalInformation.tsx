@@ -927,7 +927,10 @@ export class PersonalInformation extends React.Component<Props, State> {
                 (!this.hasPaymentMethod() &&
                   !this.state.stripePaymentMethodId &&
                   this.creditCardForm &&
-                  !this.creditCardForm.isValid())
+                  !this.creditCardForm.isValid()) ||
+                (!this.state.billingSameAsShipping &&
+                  this.billingAddressForm &&
+                  !this.billingAddressForm.isValid())
               }
             >
               {`Pay ${this.renderCurrency(grandTotal, "-")}`}
