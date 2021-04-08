@@ -258,11 +258,17 @@ export type CollectionT = {
 export type AlgoliaProductT = {
   sku?: string;
   name?: string;
+  description?: string;
   color?: string;
   manufacturer?: string;
   price_sign?: string;
   image_url?: string;
   thumbnail_url?: string;
+  price?: {
+    USD?: {
+      default?: number;
+    };
+  };
 };
 
 export type CachedProductT = {

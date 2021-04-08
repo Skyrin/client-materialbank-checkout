@@ -29,6 +29,7 @@ import DeleteItemModal from "../common/DeleteItemModal/DeleteItemModal";
 import { ShareCollectionModal } from "../common/ShareCollectionModal/ShareCollectionModal";
 import DuplicateCollectionModal from "../common/DuplicateCollectionModal/DuplicateCollectionModal";
 import { MakePrivateModal } from "../common/MakePrivateModal/MakePrivateModal";
+import { AddSampleModal } from "components/common/AddSampleModal/AddSampleModal";
 
 type State = {
   createCustomerInput: CreateCustomerInput;
@@ -135,6 +136,7 @@ class App extends React.Component<any, State> {
             createCustomerInput={this.state.createCustomerInput}
           />
         )}
+        {this.context.getModalOpen() === Modals.AddSample && <AddSampleModal />}
 
         {/* Hidden icons that should make the browser pre-load the webfonts for fas(FontAwesome Solid) and far(FontAwesome Regular) */}
         <i className={cn("fas fa-star", styles.hiddenIcon)} />
