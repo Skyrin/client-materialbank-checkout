@@ -14,6 +14,7 @@ import { DateTime } from "luxon";
 interface ItemProps {
   mode: any;
   item: any;
+  recommended?: boolean;
 }
 
 type Props = RouteComponentProps;
@@ -172,8 +173,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
     return (
       <React.Fragment>
         {this.props.item.objectType === "upload" && this.renderUploadInfo()}
-        {this.props.item.objectType === "material" ||
-          (this.props.item.sku && this.renderMaterialInfo())}
+        {this.props.item.objectType === "material" && this.renderMaterialInfo()}
         {hotspotItem && hotspotItem.type === "room" && this.renderHotspotInfo()}
       </React.Fragment>
     );
@@ -214,18 +214,14 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
     );
   };
 
-  renderMaterialInfo = () => {
-    let materialItem = this.mapAlgoliaToObject();
+  renderMaterialRecommended = () => {
+    let materialItem = this.props.item;
     return (
       <React.Fragment>
         <div className={styles.imageContainer}>
           <img
             className={styles.infoImage}
-            src={
-              this.props.item.sku
-                ? this.props.item.image_url
-                : materialItem.imageUrl
-            }
+            src={materialItem.image_url}
             alt=""
           />
           <div className={styles.sampleCart}>
@@ -238,22 +234,38 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
           </div>
         </div>
         <div className={cn(styles.infoContainer, styles.infoMode)}>
-          <div className={styles.darker}>
-            {this.props.item.sku ? this.props.item.name : materialItem.name}
+          <div className={styles.darker}>{materialItem.name}</div>
+          <div className={styles.darker}>{materialItem.manufacturer}</div>
+          <div>{materialItem.color}</div>
+          <div className={styles.priceIndicator}>{materialItem.price_sign}</div>
+        </div>
+      </React.Fragment>
+    );
+  };
+  renderMaterialInfo = () => {
+    let materialItem = this.mapAlgoliaToObject();
+    return (
+      <React.Fragment>
+        <div className={styles.imageContainer}>
+          <img
+            className={styles.infoImage}
+            src={materialItem.imageUrl}
+            alt=""
+          />
+          <div className={styles.sampleCart}>
+            <i
+              className={cn("far", "fa-cart-arrow-down", styles.addCartIcon)}
+            />
+            <span className={cn(styles["button-text"], styles.sampleText)}>
+              Sample
+            </span>
           </div>
-          <div className={styles.darker}>
-            {this.props.item.sku
-              ? this.props.item.manufacturer
-              : materialItem.manufacturer}
-          </div>
-          <div>
-            {this.props.item.sku ? this.props.item.color : materialItem.color}
-          </div>
-          <div className={styles.priceIndicator}>
-            {this.props.item.sku
-              ? this.props.item.price_sign
-              : materialItem.priceSign}
-          </div>
+        </div>
+        <div className={cn(styles.infoContainer, styles.infoMode)}>
+          <div className={styles.darker}>{materialItem.name}</div>
+          <div className={styles.darker}>{materialItem.manufacturer}</div>
+          <div>{materialItem.color}</div>
+          <div className={styles.priceIndicator}>{materialItem.priceSign}</div>
         </div>
       </React.Fragment>
     );
@@ -281,6 +293,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
             )}
           >
             {this.renderSwitch(this.props.mode)}
+            {this.props.recommended && this.renderMaterialRecommended()}
           </div>
         </div>
       </React.Fragment>

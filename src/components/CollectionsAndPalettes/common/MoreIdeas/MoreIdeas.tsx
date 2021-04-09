@@ -28,14 +28,19 @@ export default class MoreIdeas extends React.Component<Props, any> {
       (p) => p.product_sku
     );
     console.log("recommended_skus", recommendedSKUs);
-    await this.context.requestRecommendedProductSKUs(10, recommendedSKUs);
+    if (recommendedSKUs.length) {
+      await this.context.requestRecommendedProductSKUs(10, recommendedSKUs);
+    }
   }
 
   render() {
-    const recommendations = this.context.recommendedProductSKUs
-      .map((sku) => this.context.productsCache.getProduct(sku))
-      .filter((p) => !p.loading)
-      .map((p) => p.data);
+    let recommendations;
+    if (this.props.collectionMaterials) {
+      recommendations = this.context.recommendedProductSKUs
+        .map((sku) => this.context.productsCache.getProduct(sku))
+        .filter((p) => !p.loading)
+        .map((p) => p.data);
+    }
     const headerText =
       this.props.headerText || "More ideas for this collection";
     if (recommendations.length) {
@@ -57,7 +62,12 @@ export default class MoreIdeas extends React.Component<Props, any> {
                 .slice(0, this.state.maxCards)
                 .map((item: any, index: number) => {
                   return (
-                    <ItemCard key={index} mode={this.state.mode} item={item} />
+                    <ItemCard
+                      recommended
+                      key={index}
+                      mode={this.state.mode}
+                      item={item}
+                    />
                   );
                 })}
             </Masonry>
