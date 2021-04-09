@@ -94,84 +94,85 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
   }
 
   render() {
-    let placeholder = "xxxx xxxx xxxx xxxx";
-    if (this.props.initialValues) {
-      placeholder = `xxxx xxxx xxxx ${this.props.initialValues.last4}`;
-    }
     return (
       <div
-        className={cn(styles.EditCreditCardForm, {
-          [styles.visible]: this.props.visible === true,
-        })}
+        className={cn(
+          styles.EditCreditCardForm,
+          this.state.editMode ? styles.editDefault : "",
+          {
+            [styles.visible]: this.props.visible === true,
+          }
+        )}
       >
         <div className={styles.title}>
-          {this.state.editMode ? "Edit this Card" : "Add a New Card"}
+          {this.state.editMode ? "" : "Add a New Card"}
         </div>
-        <div className={styles.form}>
-          <div className={styles.cardNumber}>
-            <div className={styles.inputHint}>Card Number</div>
-            <Input
-              placeholder={placeholder}
-              formatter={cardNumberInputFormatter}
-              parser={cardNumberInputParser}
-              inputMode="numeric"
-              userInputStyle={true}
-              value={this.state.values.creditCardNumber}
-              error={this.state.errors.creditCardNumber}
-              onChange={(val: string) => {
-                this.updateFieldForm("creditCardNumber", val);
-              }}
-            />
-          </div>
+        {!this.state.editMode && (
+          <React.Fragment>
+            <div className={styles.form}>
+              <div className={styles.cardNumber}>
+                <div className={styles.inputHint}>Card Number</div>
+                <Input
+                  placeholder={"xxxx xxxx xxxx xxxx"}
+                  formatter={cardNumberInputFormatter}
+                  parser={cardNumberInputParser}
+                  inputMode="numeric"
+                  userInputStyle={true}
+                  value={this.state.values.creditCardNumber}
+                  error={this.state.errors.creditCardNumber}
+                  onChange={(val: string) => {
+                    this.updateFieldForm("creditCardNumber", val);
+                  }}
+                />
+              </div>
 
-          <div className={styles.cardName}>
-            <div className={styles.inputHint}>Name on Card</div>
-            <Input
-              placeholder="First M. Last"
-              value={this.state.values.creditCardName}
-              error={this.state.errors.creditCardName}
-              userInputStyle={true}
-              onChange={(val: string) => {
-                this.updateFieldForm("creditCardName", val);
-              }}
-            />
-          </div>
+              <div className={styles.cardName}>
+                <div className={styles.inputHint}>Name on Card</div>
+                <Input
+                  placeholder="First M. Last"
+                  value={this.state.values.creditCardName}
+                  error={this.state.errors.creditCardName}
+                  userInputStyle={true}
+                  onChange={(val: string) => {
+                    this.updateFieldForm("creditCardName", val);
+                  }}
+                />
+              </div>
 
-          <div className={styles.cardExpiration}>
-            <div className={styles.inputHint}>Expiration</div>
-            <Input
-              placeholder={
-                this.props.initialValues
-                  ? this.props.initialValues.expires
-                  : "MM / YY"
-              }
-              value={this.state.values.cardDate}
-              error={this.state.errors.cardDate}
-              userInputStyle={true}
-              formatter={expirationDateInputFormatter}
-              parser={expirationDateInputParser}
-              inputMode="numeric"
-              onChange={(val: string) => {
-                this.updateFieldForm("cardDate", val);
-              }}
-            />
-          </div>
+              <div className={styles.cardExpiration}>
+                <div className={styles.inputHint}>Expiration</div>
+                <Input
+                  placeholder={"MM / YY"}
+                  value={this.state.values.cardDate}
+                  error={this.state.errors.cardDate}
+                  userInputStyle={true}
+                  formatter={expirationDateInputFormatter}
+                  parser={expirationDateInputParser}
+                  inputMode="numeric"
+                  onChange={(val: string) => {
+                    this.updateFieldForm("cardDate", val);
+                  }}
+                />
+              </div>
 
-          <div className={styles.cardCvv}>
-            <div className={styles.inputHint}>CVV</div>
-            <Input
-              placeholder="xxx"
-              value={this.state.values.cardCVV}
-              error={this.state.errors.cardCVV}
-              userInputStyle={true}
-              parser={digitsOnlyInputParser}
-              inputMode="numeric"
-              onChange={(val: string) => {
-                this.updateFieldForm("cardCVV", val);
-              }}
-            />
-          </div>
-        </div>
+              <div className={styles.cardCvv}>
+                <div className={styles.inputHint}>CVV</div>
+                <Input
+                  placeholder="xxx"
+                  value={this.state.values.cardCVV}
+                  error={this.state.errors.cardCVV}
+                  userInputStyle={true}
+                  parser={digitsOnlyInputParser}
+                  inputMode="numeric"
+                  onChange={(val: string) => {
+                    this.updateFieldForm("cardCVV", val);
+                  }}
+                />
+              </div>
+            </div>
+          </React.Fragment>
+        )}
+
         {this.state.editMode && (
           <div className={styles.deleteButtonContainer}>
             <button
@@ -205,13 +206,22 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
                   Set as default
                 </button>
               )}
-
-            <button className={styles.cancelButton} onClick={this.cancelClick}>
-              Cancel
-            </button>
-            <button className={styles.saveChanges} onClick={this.saveChanges}>
-              Save Changes
-            </button>
+            {!this.state.editMode && (
+              <React.Fragment>
+                <button
+                  className={styles.cancelButton}
+                  onClick={this.cancelClick}
+                >
+                  Cancel
+                </button>
+                <button
+                  className={styles.saveChanges}
+                  onClick={this.saveChanges}
+                >
+                  Save Changes
+                </button>
+              </React.Fragment>
+            )}
           </div>
         </div>
       </div>

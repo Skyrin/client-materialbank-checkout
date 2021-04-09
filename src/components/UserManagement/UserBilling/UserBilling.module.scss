@@ -75,6 +75,9 @@
       padding: $margin-small-4 $margin-small-2;
       img {
         margin-right: $margin-medium;
+        @include mobile-media {
+          margin-right: $margin-small;
+        }
       }
     }
 
