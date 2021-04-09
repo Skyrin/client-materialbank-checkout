@@ -46,7 +46,7 @@ export default class Collections extends React.Component<any, any> {
             </React.Fragment>
           )}
         </div>
-        <MoreIdeas headerText="More ideas for you" />
+        {/*<MoreIdeas headerText="More ideas for you" />*/}
       </React.Fragment>
     );
   }
