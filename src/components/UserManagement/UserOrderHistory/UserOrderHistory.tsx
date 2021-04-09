@@ -67,15 +67,10 @@ export default class UserOrderHistory extends React.Component<Props, State> {
   }
 
   getOrders = async (page: number = 1, limit: number = 25) => {
-    const response = await RESTRequest(
-      "POST",
-      "mine/orders",
-      {
-        page: page,
-        limit: limit,
-      },
-      false
-    );
+    const response = await RESTRequest("POST", "mine/orders", {
+      page: page,
+      limit: limit,
+    });
     const respBody = await response.json();
     if (response.ok && respBody) {
       return respBody;
@@ -84,16 +79,11 @@ export default class UserOrderHistory extends React.Component<Props, State> {
   };
 
   getSearchObj = async (q: string, page: number = 1, limit: number = 25) => {
-    const response = await RESTRequest(
-      "POST",
-      "mine/orders",
-      {
-        q: q, // optional Order Number
-        page: page,
-        limit: limit,
-      },
-      false
-    );
+    const response = await RESTRequest("POST", "mine/orders", {
+      q: q, // optional Order Number
+      page: page,
+      limit: limit,
+    });
     const resp = await response.json();
     if (response.ok && resp) {
       return resp;

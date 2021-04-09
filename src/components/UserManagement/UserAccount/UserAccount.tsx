@@ -18,6 +18,7 @@ import LoginGoogle from "components/common/LoginGoogle/LoginGoogle";
 import LoginFacebook from "components/common/LoginFacebook/LoginFacebook";
 import { CustomerT } from "constants/types";
 import { RESTRequest } from "RestClient";
+import { get } from "lodash";
 
 type Props = RouteComponentProps;
 
@@ -59,7 +60,19 @@ export default class UserAccount extends React.Component<Props, State> {
       });
       this.updateProfileForm.newCustomerValues(value);
     });
+    this.fetchCustomerImage();
   }
+
+  fetchCustomerImage = async () => {
+    const customerResp = await RESTRequest("GET", "customers/me");
+    const customer = await customerResp.json();
+    const profileImageUrl = get(customer, "extension_attributes.profile_image");
+    if (profileImageUrl) {
+      this.setState({
+        fileUrl: profileImageUrl,
+      });
+    }
+  };
 
   renderResetPasswordSection = () => {
     return (
@@ -283,49 +296,41 @@ export default class UserAccount extends React.Component<Props, State> {
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = () => {
-      console.log("FILE1", reader.result);
-
-      this.setState({
-        file: reader.result,
-        fileUrl: URL.createObjectURL(e.target.files[0]),
-        fileName: e.target.files[0].name,
-      });
-
-      this.uploadPhoto();
+      this.setState(
+        {
+          file: reader.result,
+          fileUrl: URL.createObjectURL(e.target.files[0]),
+          fileName: e.target.files[0].name,
+        },
+        () => {
+          this.uploadPhoto();
+        }
+      );
     };
-    //
-    // console.log("FILE", e.target.files[0]);
-    // console.log("base64", base64);
-    //
-    // this.setState({
-    //   file: base64,
-    //   fileUrl: URL.createObjectURL(e.target.files[0]),
-    //   fileName: e.target.files[0].name,
-    // });
-
-    // await this.uploadPhoto();
   };
 
   uploadPhoto = async () => {
     const base64result = this.state.file.split(",")[1];
+    const imageMetadata = this.state.file.split(",")[0];
+    const imageTypeMatch = imageMetadata.match(/data:([a-zA-Z/]+);/);
+    const imageType = imageTypeMatch[1];
     const customer = {
       customer: {
         attribute_code: "profile_image",
         value: {
-          name: "test.jpg",
-          base64EncodedData:
-            "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",
+          name: this.state.fileName,
+          type: imageType,
+          base64EncodedData: base64result,
         },
       },
     };
 
-    console.log(customer);
+    console.log("IMAGE UPLOAD BODY", customer);
 
     const response = await RESTRequest(
       "POST",
       "customers/profile-image",
-      customer,
-      false
+      customer
     );
     const respBody = await response.json();
     console.log("UPLOADED");
@@ -336,13 +341,28 @@ export default class UserAccount extends React.Component<Props, State> {
     return null;
   };
 
-  removePhoto() {
+  removePhoto = async () => {
     this.setState({
       file: null,
       fileUrl: "",
       fileName: "",
     });
-  }
+    // const params = {
+    //   customer: {
+    //     attribute_code: "profile_image",
+    //     value: {}
+    //   }
+    // };
+    // console.log('IMAGE REMOVE BODY', params);
+
+    // const response = await RESTRequest(
+    //   "DELETE",
+    //   "customers/profile-image",
+    // )
+    // const respBody = await response.json();
+    // console.log("REMOVED");
+    // console.log(respBody)
+  };
 
   saveNewPasswordClick = (currentPassword: string, newPassword?: string) => {
     this.setState({
