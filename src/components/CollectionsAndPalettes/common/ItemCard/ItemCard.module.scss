@@ -123,7 +123,7 @@
                 min(100vw, 1258px) - (2 * var(--lateral-padding)) -
                   ((var(--number-of-cards) - 1) * var(--masonry-spacing))
               ) / var(--number-of-cards)
-          ) * 5 / 6
+          ) * 6 / 5
       );
       max-height: calc(
         (
@@ -138,6 +138,26 @@
         border-bottom-left-radius: 30px;
         border-bottom-right-radius: 30px;
       }
+    }
+    .SKUimg {
+      height: calc(
+        (
+            (
+                min(100vw, 1258px) - (2 * var(--lateral-padding)) -
+                  ((var(--number-of-cards) - 1) * var(--masonry-spacing))
+              ) / var(--number-of-cards)
+          ) * 7 / 5
+      );
+    }
+    .paletteImg {
+      height: calc(
+        (
+            (
+                min(100vw, 1258px) - (2 * var(--lateral-padding)) -
+                  ((var(--number-of-cards) - 1) * var(--masonry-spacing))
+              ) / var(--number-of-cards)
+          ) * 8 / 5
+      );
     }
 
     .sampleCart {

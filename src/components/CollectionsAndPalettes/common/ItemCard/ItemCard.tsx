@@ -95,7 +95,11 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
     return (
       <React.Fragment>
         <div className={styles.imageContainer}>
-          <img src={materialItem.imageUrl} alt="" />
+          <img
+            className={cn(styles.infoImage, styles.SKUimg)}
+            src={materialItem.imageUrl}
+            alt=""
+          />
           <div className={styles.priceIndicator}>{materialItem.priceSign}</div>
         </div>
       </React.Fragment>
@@ -111,7 +115,13 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
       <React.Fragment>
         <div className={styles.front}>
           <div className={cn(styles.imageContainer)}>
-            <img src={hotspotItem.imageUrl} alt="" />
+            <img
+              className={
+                hotspotItem.type === "room" ? styles.roomImg : styles.paletteImg
+              }
+              src={hotspotItem.imageUrl}
+              alt=""
+            />
           </div>
         </div>
       </React.Fragment>
@@ -149,7 +159,11 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
             <img src={this.props.item.upload.url} alt="" />
           )}
           {this.props.item.objectType === "material" && (
-            <img src={materialItem.imageUrl} alt="" />
+            <img
+              className={cn(styles.infoImage, styles.SKUimg)}
+              src={materialItem.imageUrl}
+              alt=""
+            />
           )}
           {hotspotItem.type === "room" && (
             <img src={hotspotItem.imageUrl} alt="" />
@@ -221,7 +235,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
         <React.Fragment>
           <div className={styles.imageContainer}>
             <img
-              className={styles.infoImage}
+              className={cn(styles.infoImage, styles.SKUimg)}
               src={materialItem.imageUrl}
               alt=""
             />
