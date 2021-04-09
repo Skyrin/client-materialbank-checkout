@@ -17,12 +17,16 @@ import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
 import LoginGoogle from "components/common/LoginGoogle/LoginGoogle";
 import LoginFacebook from "components/common/LoginFacebook/LoginFacebook";
 import { CustomerT } from "constants/types";
+import { RESTRequest } from "RestClient";
+import { get } from "lodash";
 
 type Props = RouteComponentProps;
 
 type State = {
   showErrors: boolean;
-  profileImageUrl: any;
+  file: any;
+  fileUrl: string;
+  fileName: string;
   resetPasswordNetworkError: string;
   updateProfileNetworkError: string;
   customer: CustomerT;
@@ -31,7 +35,9 @@ type State = {
 export default class UserAccount extends React.Component<Props, State> {
   state = {
     showErrors: false,
-    profileImageUrl: null,
+    file: null,
+    fileUrl: "",
+    fileName: "",
     resetPasswordNetworkError: "",
     updateProfileNetworkError: "",
     customer: null,
@@ -43,7 +49,7 @@ export default class UserAccount extends React.Component<Props, State> {
 
   constructor(props) {
     super(props);
-    this.onFileSelected = this.onFileSelected.bind(this);
+    this.handleImageUpload = this.handleImageUpload.bind(this);
     this.removePhoto = this.removePhoto.bind(this);
   }
 
@@ -54,7 +60,19 @@ export default class UserAccount extends React.Component<Props, State> {
       });
       this.updateProfileForm.newCustomerValues(value);
     });
+    this.fetchCustomerImage();
   }
+
+  fetchCustomerImage = async () => {
+    const customerResp = await RESTRequest("GET", "customers/me");
+    const customer = await customerResp.json();
+    const profileImageUrl = get(customer, "extension_attributes.profile_image");
+    if (profileImageUrl) {
+      this.setState({
+        fileUrl: profileImageUrl,
+      });
+    }
+  };
 
   renderResetPasswordSection = () => {
     return (
@@ -86,11 +104,7 @@ export default class UserAccount extends React.Component<Props, State> {
         <div className={cn(styles.userImageRow)}>
           <div className={"row center-vertically"}>
             <img
-              src={
-                this.state.profileImageUrl
-                  ? this.state.profileImageUrl
-                  : imagePlaceholder
-              }
+              src={this.state.fileUrl ? this.state.fileUrl : imagePlaceholder}
               className={styles.userImage}
               alt=""
             />
@@ -110,7 +124,7 @@ export default class UserAccount extends React.Component<Props, State> {
               id={"cameraUpload"}
               type={"file"}
               accept={"image/*"}
-              onChange={this.onFileSelected}
+              onChange={this.handleImageUpload}
             />
             <button className={styles.editImageButton}>
               <label className={styles.uploadLabel} htmlFor={"cameraUpload"}>
@@ -267,21 +281,88 @@ export default class UserAccount extends React.Component<Props, State> {
     );
   }
 
-  onFileSelected(event) {
-    const reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
-    reader.onload = (_event) => {
-      this.setState({
-        profileImageUrl: reader.result,
-      });
-    };
-  }
-
-  removePhoto() {
-    this.setState({
-      profileImageUrl: null,
+  toBase64 = (file: File) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
     });
-  }
+  };
+
+  handleImageUpload = async (e: any) => {
+    // const base64 = await this.toBase64(e.target.files[0]);
+
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onload = () => {
+      this.setState(
+        {
+          file: reader.result,
+          fileUrl: URL.createObjectURL(e.target.files[0]),
+          fileName: e.target.files[0].name,
+        },
+        () => {
+          this.uploadPhoto();
+        }
+      );
+    };
+  };
+
+  uploadPhoto = async () => {
+    const base64result = this.state.file.split(",")[1];
+    const imageMetadata = this.state.file.split(",")[0];
+    const imageTypeMatch = imageMetadata.match(/data:([a-zA-Z/]+);/);
+    const imageType = imageTypeMatch[1];
+    const customer = {
+      customer: {
+        attribute_code: "profile_image",
+        value: {
+          name: this.state.fileName,
+          type: imageType,
+          base64EncodedData: base64result,
+        },
+      },
+    };
+
+    console.log("IMAGE UPLOAD BODY", customer);
+
+    const response = await RESTRequest(
+      "POST",
+      "customers/profile-image",
+      customer
+    );
+    const respBody = await response.json();
+    console.log("UPLOADED");
+    console.log(respBody);
+    if (response.ok && respBody) {
+      return respBody;
+    }
+    return null;
+  };
+
+  removePhoto = async () => {
+    this.setState({
+      file: null,
+      fileUrl: "",
+      fileName: "",
+    });
+    // const params = {
+    //   customer: {
+    //     attribute_code: "profile_image",
+    //     value: {}
+    //   }
+    // };
+    // console.log('IMAGE REMOVE BODY', params);
+
+    // const response = await RESTRequest(
+    //   "DELETE",
+    //   "customers/profile-image",
+    // )
+    // const respBody = await response.json();
+    // console.log("REMOVED");
+    // console.log(respBody)
+  };
 
   saveNewPasswordClick = (currentPassword: string, newPassword?: string) => {
     this.setState({
