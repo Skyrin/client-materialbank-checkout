@@ -173,55 +173,19 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
           </React.Fragment>
         )}
 
-        {this.state.editMode && (
-          <div className={styles.deleteButtonContainer}>
-            <button
-              className={styles.deleteButton}
-              onClick={() => this.props.onDelete(this.state.values.id)}
-            >
-              Delete this card
-            </button>
-
-            {isOnMobile() &&
-              this.state.editMode &&
-              !this.props.initialValues.isDefault && (
-                <button
-                  className={styles.setDefaultButton}
-                  onClick={() => this.props.onSetDefault(this.state.values.id)}
-                >
-                  Set as default
-                </button>
-              )}
-          </div>
-        )}
         <div className={styles.buttons}>
           <div className={styles.formButtonsEdit}>
-            {!isOnMobile() &&
-              this.state.editMode &&
-              !this.props.initialValues.isDefault && (
-                <button
-                  className={styles.setDefaultButton}
-                  onClick={() => this.props.onSetDefault(this.state.values.id)}
-                >
-                  Set as default
-                </button>
-              )}
-            {!this.state.editMode && (
-              <React.Fragment>
-                <button
-                  className={styles.cancelButton}
-                  onClick={this.cancelClick}
-                >
-                  Cancel
-                </button>
-                <button
-                  className={styles.saveChanges}
-                  onClick={this.saveChanges}
-                >
-                  Save Changes
-                </button>
-              </React.Fragment>
-            )}
+            <React.Fragment>
+              <button
+                className={styles.cancelButton}
+                onClick={this.cancelClick}
+              >
+                Cancel
+              </button>
+              <button className={styles.saveChanges} onClick={this.saveChanges}>
+                Save Changes
+              </button>
+            </React.Fragment>
           </div>
         </div>
       </div>

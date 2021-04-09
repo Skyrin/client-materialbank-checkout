@@ -5,8 +5,6 @@ import UserHeader, {
 } from "components/UserManagement/UserHeader/UserHeader";
 import PaymentMethod from "models/PaymentMethod";
 import styles from "./UserBilling.module.scss";
-import cn from "classnames";
-
 import amexIcon from "assets/images/amex_icon.svg";
 import visaIcon from "assets/images/visa_icon.svg";
 import masterCardIcon from "assets/images/master_card_icon.svg";
@@ -69,22 +67,19 @@ export default class UserBilling extends React.Component<Props, State> {
           {paymentMethod.isDefault && (
             <div className={styles.defaultPayment}>DEFAULT</div>
           )}
+        </div>
+        <div className={styles.deleteButtonContainer}>
           <button
-            className={cn(styles.editButton, {
-              [styles.editMode]: paymentMethod.isOpen,
-            })}
-            onClick={() => {
-              this.editPayment(index);
-            }}
+            className={styles.deleteButton}
+            onClick={() => this.deleteCard(paymentMethod.token)}
           >
-            {" "}
-            Edit
-            <i
-              className={cn("far fa-angle-down", styles.chevron, {
-                [styles.chevronUp]: paymentMethod.isOpen,
-                [styles.chevronDown]: !paymentMethod.isOpen,
-              })}
-            />
+            Delete this card
+          </button>
+          <button
+            className={styles.setDefaultButton}
+            onClick={() => this.makeDefault(paymentMethod.token)}
+          >
+            Set as default
           </button>
         </div>
       </div>
@@ -114,22 +109,20 @@ export default class UserBilling extends React.Component<Props, State> {
             <div className={styles.defaultPayment}>DEFAULT</div>
           )}
         </div>
-        <button
-          className={cn(styles.editButton, {
-            [styles.editMode]: paymentMethod.isOpen,
-          })}
-          onClick={() => {
-            this.editPayment(index);
-          }}
-        >
-          Edit
-          <i
-            className={cn("far fa-angle-down", styles.chevron, {
-              [styles.chevronUp]: paymentMethod.isOpen,
-              [styles.chevronDown]: !paymentMethod.isOpen,
-            })}
-          />
-        </button>
+        <div className={styles.deleteButtonContainer}>
+          <button
+            className={styles.deleteButton}
+            onClick={() => this.deleteCard(paymentMethod.token)}
+          >
+            Delete this card
+          </button>
+          <button
+            className={styles.setDefaultButton}
+            onClick={() => this.makeDefault(paymentMethod.token)}
+          >
+            Set as default
+          </button>
+        </div>
       </div>
     );
   }
