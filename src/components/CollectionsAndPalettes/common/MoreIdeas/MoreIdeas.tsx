@@ -25,7 +25,7 @@ export default class MoreIdeas extends React.Component<Props, any> {
 
   async componentDidMount() {
     const recommendedSKUs = this.props.collectionMaterials.map(
-      (p) => p.product_sku
+      (p) => p.material.sku
     );
     console.log("recommended_skus", recommendedSKUs);
     if (recommendedSKUs.length) {

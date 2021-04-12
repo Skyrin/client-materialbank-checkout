@@ -169,6 +169,7 @@ class Collection extends React.Component<Props, State> {
     const finalItems = collectionItems.length
       ? collectionItems
       : this.state.items;
+    let materials = finalItems.filter((item) => item.objectType === "material");
     if (!collection.id) {
       return (
         <React.Fragment>
@@ -279,13 +280,15 @@ class Collection extends React.Component<Props, State> {
         </div>
 
         {/*The commonArea element is added here in order to keep the AddToCart Button inside the Collection Cards container, also decide its position*/}
-        <div className={"commonArea"}>
-          <MoreIdeas
-            collectionMaterials={finalItems.filter(
-              (item) => item.objectType === "material"
-            )}
-          />
-        </div>
+        {materials.length > 0 && (
+          <div className={"commonArea"}>
+            <MoreIdeas
+              collectionMaterials={finalItems.filter(
+                (item) => item.objectType === "material"
+              )}
+            />
+          </div>
+        )}
       </React.Fragment>
     );
   }
