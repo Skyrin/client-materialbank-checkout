@@ -130,6 +130,9 @@ export default class AppContextManager extends React.Component<Props> {
     },
 
     requestCartInfo: async (cartId?: string) => {
+      if (!cartId) {
+        cartId = this.contextState.cart?.id || "";
+      }
       this.contextState.cartInfoLoading = true;
       this.forceUpdate();
       let cartInfo: CartT = {};
