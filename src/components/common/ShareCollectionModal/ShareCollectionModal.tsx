@@ -5,7 +5,6 @@ import { AppContext, AppContextState } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
 import Input from "../Input/Input";
-import Checkbox from "../Checkbox/Checkbox";
 import { CollaboratorT } from "../../../constants/types";
 import { sendInvitation } from "../../../context/CollectionsAPI/api";
 import { COLLECTION_URL } from "../../../constants/urls";
@@ -113,6 +112,7 @@ class ShareCollectionModal extends React.Component<Props, State> {
         this.state.access
       );
       console.log("send invite response", resp);
+      this.closeModal();
     }
   };
 
