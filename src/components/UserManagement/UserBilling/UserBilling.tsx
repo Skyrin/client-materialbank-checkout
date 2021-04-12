@@ -17,6 +17,7 @@ import { isOnMobile } from "../../../utils/responsive";
 import { CustomerT } from "constants/types";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
+import { RESTRequest } from "../../../RestClient";
 
 type Props = RouteComponentProps;
 
@@ -35,7 +36,7 @@ export default class UserBilling extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      paymentMethods: [],
+      paymentMethods: null,
       customer: null,
     };
   }
@@ -129,7 +130,7 @@ export default class UserBilling extends React.Component<Props, State> {
 
   render() {
     const storedPaymentMethods = this.context.storedPaymentMethods;
-    if (this.state.paymentMethods.length > 0) {
+    if (this.state.paymentMethods) {
       this.paymentMethods = this.state.paymentMethods;
     } else {
       this.paymentMethods = storedPaymentMethods;
@@ -265,13 +266,22 @@ export default class UserBilling extends React.Component<Props, State> {
     }
   }
 
-  deleteCard(token: string) {
-    const newPayments = this.paymentMethods.filter(
-      (payment) => payment.token !== token
+  async deleteCard(token: string) {
+    const response = await RESTRequest(
+      "DELETE",
+      `customers/me/stored-payment-methods/${token}`
     );
-    this.setState({
-      paymentMethods: newPayments,
-    });
+    const respBody = await response.json();
+    console.log("REMOVED", respBody);
+
+    if (respBody[0].code === 200) {
+      const newPayments = this.paymentMethods.filter(
+        (payment) => payment.token !== token
+      );
+      this.setState({
+        paymentMethods: newPayments,
+      });
+    }
   }
 
   makeDefault(token: string) {
