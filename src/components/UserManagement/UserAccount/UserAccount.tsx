@@ -18,7 +18,7 @@ import LoginGoogle from "components/common/LoginGoogle/LoginGoogle";
 import LoginFacebook from "components/common/LoginFacebook/LoginFacebook";
 import { CustomerT } from "constants/types";
 import { RESTRequest } from "RestClient";
-import { get } from "lodash";
+import { cloneDeep, get } from "lodash";
 
 type Props = RouteComponentProps;
 
@@ -53,13 +53,28 @@ export default class UserAccount extends React.Component<Props, State> {
     this.removePhoto = this.removePhoto.bind(this);
   }
 
-  componentDidMount() {
-    this.context.requestCurrentCustomer().then((value) => {
-      this.setState({
-        customer: value,
-      });
-      this.updateProfileForm.newCustomerValues(value);
+  async componentDidMount() {
+    const customerResp = await RESTRequest("GET", "customers/me");
+    const customer = await customerResp.json();
+    console.log("REST CUSTOMER", customer);
+    const mobilePhoneAttribute = (customer.custom_attributes || []).find(
+      (attr) => attr.attribute_code === "mobile_phone"
+    );
+    const mobilePhone =
+      mobilePhoneAttribute && mobilePhoneAttribute.value
+        ? mobilePhoneAttribute.value
+        : "";
+    const fullCustomer = {
+      firstname: customer.firstname,
+      lastname: customer.lastname,
+      email: customer.email,
+      mobile: mobilePhone,
+      is_subscribed: customer.extension_attributes.is_subscribed,
+    };
+    this.setState({
+      customer: fullCustomer,
     });
+    this.updateProfileForm.newCustomerValues(fullCustomer);
     this.fetchCustomerImage();
   }
 
@@ -291,8 +306,6 @@ export default class UserAccount extends React.Component<Props, State> {
   };
 
   handleImageUpload = async (e: any) => {
-    // const base64 = await this.toBase64(e.target.files[0]);
-
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = () => {
@@ -382,32 +395,27 @@ export default class UserAccount extends React.Component<Props, State> {
       });
   };
 
-  onSaveChangesClick = () => {
+  onSaveChangesClick = async () => {
     this.setState({
       updateProfileNetworkError: "",
     });
     if (this.updateProfileForm.validateContactInfo()) {
-      const customerInput = new UpdateCustomerInput({
+      const customerResp = await RESTRequest("GET", "customers/me");
+      const customer = await customerResp.json();
+      customer.email = this.updateProfileForm.state.updateProfile.email;
+      customer.custom_attributes = [
+        {
+          attribute_code: "mobile_phone",
+          value: this.updateProfileForm.state.updateProfile.mobile,
+        },
+      ];
+      customer.extension_attributes = {
         is_subscribed: this.updateProfileForm.state.optIn,
+      };
+      const updateResponse = await RESTRequest("PUT", "customers/me", {
+        customer: customer,
       });
-
-      if (this.updateProfileForm.state.isEmailChanged) {
-        customerInput.email = this.updateProfileForm.state.updateProfile.email;
-        customerInput.password = this.updateProfileForm.state.updateProfile.password;
-      }
-
-      this.context
-        .updateCustomerV2(customerInput)
-        .then(() => {})
-        .catch((error: ClientError) => {
-          let errorMessage = error.graphqlErrors[0]?.message
-            ? error.graphqlErrors[0].message
-            : error.message;
-
-          this.setState({
-            updateProfileNetworkError: errorMessage,
-          });
-        });
+      const respBody = await updateResponse.json();
     }
   };
 }

@@ -19,22 +19,11 @@ const updateProfileSchema = yup.object().shape({
     ),
 });
 
-const passwordCheckSchema = yup.object().shape({
-  password: yup
-    .string()
-    .matches(
-      PASSWORD_REGEX,
-      "Password must be at least 8 characters and contain an uppercase letter, a lowercase one and a special character."
-    )
-    .required("Required"),
-});
-
 type State = {
   updateProfile: {
     oldEmail: string;
     email: string;
     mobile: string;
-    password: string;
   };
   updateProfileErrors: {
     email: string;
@@ -43,6 +32,7 @@ type State = {
   optIn: boolean;
   showErrors: boolean;
   isEmailChanged: boolean;
+  isMobileChanged: boolean;
 };
 
 type Props = {
@@ -55,16 +45,15 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
       email: "",
       oldEmail: "",
       mobile: "",
-      password: "",
     },
     updateProfileErrors: {
       email: "",
       mobile: "",
-      password: "",
     },
     optIn: true,
     showErrors: true,
     isEmailChanged: false,
+    isMobileChanged: false,
   };
 
   constructor(props: Props) {
@@ -93,22 +82,6 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
             />
           </div>
 
-          {this.state.isEmailChanged && (
-            <div className={styles.profileInputLayout}>
-              <div className={styles.inputHint}>Password</div>
-              <Input
-                placeholder="Password"
-                type="password"
-                userInputStyle={true}
-                value={this.state.updateProfile.password}
-                onChange={(val: string) => {
-                  this.updateFieldForm("password", val);
-                }}
-                error={this.state.updateProfileErrors.password}
-              />
-            </div>
-          )}
-
           <div className={styles.profileInputLayout}>
             <div className="row center-vertically">
               <div className={styles.inputHint}>Mobile</div>
@@ -122,6 +95,9 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
               userInputStyle={true}
               onChange={(val: string) => {
                 this.updateFieldForm("mobile", val);
+                this.setState({
+                  isMobileChanged: true,
+                });
               }}
               error={this.state.updateProfileErrors.mobile}
             />
@@ -178,14 +154,6 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
       updateProfileSchema.validateSync(this.state.updateProfile, {
         abortEarly: false,
       });
-      if (this.state.isEmailChanged) {
-        passwordCheckSchema.validateSync(
-          { password: this.state.updateProfile.password },
-          {
-            abortEarly: false,
-          }
-        );
-      }
       return true;
     } catch (e) {
       const errors = extractErrors(e);
@@ -205,7 +173,6 @@ export default class UpdateProfileForm extends React.Component<Props, State> {
         email: customerT?.email,
         oldEmail: customerT?.email,
         mobile: customerT?.mobile || "",
-        password: "",
       },
       optIn: customerT.is_subscribed,
     });
