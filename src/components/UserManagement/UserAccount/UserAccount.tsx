@@ -9,16 +9,15 @@ import cn from "classnames";
 import ResetPasswordForm from "components/common/Forms/ResetPasswordForm/ResetPasswordForm";
 import UpdateProfileForm from "components/common/Forms/UpdateProfileForm/UpdateProfileForm";
 import { isOnMobile } from "utils/responsive";
-import { AppContext, AppContextState } from "context/AppContext";
+import { AppContext, AppContextState, Modals } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
-import { UpdateCustomerInput } from "context/CustomerAPI/models";
 import { ClientError } from "GraphqlClient";
 import ErrorLabel from "components/common/ErrorLabel/ErrorLabel";
 import LoginGoogle from "components/common/LoginGoogle/LoginGoogle";
 import LoginFacebook from "components/common/LoginFacebook/LoginFacebook";
 import { CustomerT } from "constants/types";
 import { RESTRequest } from "RestClient";
-import { cloneDeep, get } from "lodash";
+import { get } from "lodash";
 
 type Props = RouteComponentProps;
 
@@ -77,6 +76,10 @@ export default class UserAccount extends React.Component<Props, State> {
     this.updateProfileForm.newCustomerValues(fullCustomer);
     this.fetchCustomerImage();
   }
+
+  disableAccount = () => {
+    this.context.openModal(Modals.DisableAccount);
+  };
 
   fetchCustomerImage = async () => {
     const customerResp = await RESTRequest("GET", "customers/me");
@@ -265,7 +268,10 @@ export default class UserAccount extends React.Component<Props, State> {
             We're sorry to see you go! By deleting your account, you will lose
             all of your favorites and account history.
           </div>
-          <button className={styles.deleteAccountButton} onClick={() => {}}>
+          <button
+            className={styles.deleteAccountButton}
+            onClick={this.disableAccount}
+          >
             Delete...
           </button>
         </div>

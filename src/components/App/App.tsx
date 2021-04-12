@@ -30,6 +30,7 @@ import ShareCollectionModal from "../common/ShareCollectionModal/ShareCollection
 import DuplicateCollectionModal from "../common/DuplicateCollectionModal/DuplicateCollectionModal";
 import { MakePrivateModal } from "../common/MakePrivateModal/MakePrivateModal";
 import { AddSampleModal } from "components/common/AddSampleModal/AddSampleModal";
+import { DisableAccountModal } from "../common/DisableAccountModal/DisableAccountModal";
 
 type State = {
   createCustomerInput: CreateCustomerInput;
@@ -135,6 +136,9 @@ class App extends React.Component<any, State> {
           <AccountExistsModal
             createCustomerInput={this.state.createCustomerInput}
           />
+        )}
+        {this.context.getModalOpen() === Modals.DisableAccount && (
+          <DisableAccountModal />
         )}
         {this.context.getModalOpen() === Modals.AddSample && <AddSampleModal />}
 
