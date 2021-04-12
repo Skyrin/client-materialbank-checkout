@@ -13,6 +13,7 @@ type State = {
   isLoading: boolean;
   quantity: number;
   showFullDescription: boolean;
+  error: string;
 };
 type Props = any;
 
@@ -28,6 +29,7 @@ export class AddSampleModal extends React.Component<Props, State> {
       isLoading: false,
       quantity: 1,
       showFullDescription: false,
+      error: "",
     };
   }
 
@@ -182,6 +184,9 @@ export class AddSampleModal extends React.Component<Props, State> {
             >
               <span>add sample to cart</span>
               <span className={styles.price}>{this.formatTotalPrice()}</span>
+              {this.state.error && (
+                <span className={styles.error}>{this.state.error}</span>
+              )}
             </button>
           </div>
         </div>

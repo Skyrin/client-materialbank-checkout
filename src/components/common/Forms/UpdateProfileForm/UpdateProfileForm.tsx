@@ -5,7 +5,6 @@ import Checkbox from "components/common/Checkbox/Checkbox";
 import * as yup from "yup";
 import { extractErrors } from "utils/forms";
 import { CustomerT } from "constants/types";
-import { PASSWORD_REGEX } from "constants/general";
 
 const updateProfileSchema = yup.object().shape({
   email: yup.string().email("Email is invalid").required("Required"),
