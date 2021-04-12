@@ -26,6 +26,7 @@
     opacity: 1;
     max-height: 600px;
     padding: $margin-medium;
+
     @include mobile-media {
       display: flex;
       flex-direction: column;
@@ -138,26 +139,11 @@
 
     @include mobile-media {
       display: flex;
+      margin-top: $margin-medium;
     }
   }
+}
 
-  .setDefaultButton {
-    @include labelButtonUnderline;
-    padding: 0;
-    align-self: flex-end;
-    @include mobile-media {
-      margin-left: auto;
-    }
-  }
-
-  .deleteButton {
-    @include labelButtonUnderline;
-    padding: 0;
-    position: absolute;
-    bottom: 0;
-
-    @include mobile-media {
-      position: relative;
-    }
-  }
+.editDefault {
+  padding-top: 5px !important;
 }

@@ -75,6 +75,9 @@
       padding: $margin-small-4 $margin-small-2;
       img {
         margin-right: $margin-medium;
+        @include mobile-media {
+          margin-right: $margin-small;
+        }
       }
     }
 
@@ -202,5 +205,30 @@
 
   .loader {
     font-size: 40px;
+  }
+}
+.deleteButtonContainer {
+  .setDefaultButton {
+    @include labelButtonUnderline;
+    padding: 0;
+    align-self: flex-end;
+    @include mobile-media {
+      margin-left: auto;
+    }
+  }
+
+  .deleteButton {
+    @include labelButtonUnderline;
+    padding: 0;
+    padding-right: $margin-medium;
+
+    @include mobile-media {
+      position: relative;
+    }
+  }
+  @include mobile-media {
+    display: flex;
+    width: 100%;
+    padding: $margin-small 0 $margin-small-4 0;
   }
 }

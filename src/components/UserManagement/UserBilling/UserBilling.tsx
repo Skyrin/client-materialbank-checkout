@@ -5,8 +5,6 @@ import UserHeader, {
 } from "components/UserManagement/UserHeader/UserHeader";
 import PaymentMethod from "models/PaymentMethod";
 import styles from "./UserBilling.module.scss";
-import cn from "classnames";
-
 import amexIcon from "assets/images/amex_icon.svg";
 import visaIcon from "assets/images/visa_icon.svg";
 import masterCardIcon from "assets/images/master_card_icon.svg";
@@ -19,6 +17,7 @@ import { isOnMobile } from "../../../utils/responsive";
 import { CustomerT } from "constants/types";
 import { AppContext, AppContextState } from "context/AppContext";
 import Loader from "components/common/Loader/Loader";
+import { RESTRequest } from "../../../RestClient";
 
 type Props = RouteComponentProps;
 
@@ -37,7 +36,7 @@ export default class UserBilling extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      paymentMethods: [],
+      paymentMethods: null,
       customer: null,
     };
   }
@@ -69,22 +68,19 @@ export default class UserBilling extends React.Component<Props, State> {
           {paymentMethod.isDefault && (
             <div className={styles.defaultPayment}>DEFAULT</div>
           )}
+        </div>
+        <div className={styles.deleteButtonContainer}>
           <button
-            className={cn(styles.editButton, {
-              [styles.editMode]: paymentMethod.isOpen,
-            })}
-            onClick={() => {
-              this.editPayment(index);
-            }}
+            className={styles.deleteButton}
+            onClick={() => this.deleteCard(paymentMethod.token)}
           >
-            {" "}
-            Edit
-            <i
-              className={cn("far fa-angle-down", styles.chevron, {
-                [styles.chevronUp]: paymentMethod.isOpen,
-                [styles.chevronDown]: !paymentMethod.isOpen,
-              })}
-            />
+            Delete this card
+          </button>
+          <button
+            className={styles.setDefaultButton}
+            onClick={() => this.makeDefault(paymentMethod.token)}
+          >
+            Set as default
           </button>
         </div>
       </div>
@@ -114,29 +110,27 @@ export default class UserBilling extends React.Component<Props, State> {
             <div className={styles.defaultPayment}>DEFAULT</div>
           )}
         </div>
-        <button
-          className={cn(styles.editButton, {
-            [styles.editMode]: paymentMethod.isOpen,
-          })}
-          onClick={() => {
-            this.editPayment(index);
-          }}
-        >
-          Edit
-          <i
-            className={cn("far fa-angle-down", styles.chevron, {
-              [styles.chevronUp]: paymentMethod.isOpen,
-              [styles.chevronDown]: !paymentMethod.isOpen,
-            })}
-          />
-        </button>
+        <div className={styles.deleteButtonContainer}>
+          <button
+            className={styles.deleteButton}
+            onClick={() => this.deleteCard(paymentMethod.token)}
+          >
+            Delete this card
+          </button>
+          <button
+            className={styles.setDefaultButton}
+            onClick={() => this.makeDefault(paymentMethod.token)}
+          >
+            Set as default
+          </button>
+        </div>
       </div>
     );
   }
 
   render() {
     const storedPaymentMethods = this.context.storedPaymentMethods;
-    if (this.state.paymentMethods.length > 0) {
+    if (this.state.paymentMethods) {
       this.paymentMethods = this.state.paymentMethods;
     } else {
       this.paymentMethods = storedPaymentMethods;
@@ -272,13 +266,22 @@ export default class UserBilling extends React.Component<Props, State> {
     }
   }
 
-  deleteCard(token: string) {
-    const newPayments = this.paymentMethods.filter(
-      (payment) => payment.token !== token
+  async deleteCard(token: string) {
+    const response = await RESTRequest(
+      "DELETE",
+      `customers/me/stored-payment-methods/${token}`
     );
-    this.setState({
-      paymentMethods: newPayments,
-    });
+    const respBody = await response.json();
+    console.log("REMOVED", respBody);
+
+    if (respBody[0].code === 200) {
+      const newPayments = this.paymentMethods.filter(
+        (payment) => payment.token !== token
+      );
+      this.setState({
+        paymentMethods: newPayments,
+      });
+    }
   }
 
   makeDefault(token: string) {
