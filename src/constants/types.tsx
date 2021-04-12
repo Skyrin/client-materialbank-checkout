@@ -242,6 +242,7 @@ export type CollaboratorT = {
   imagePath?: string;
   isAuthenticated?: boolean;
   isSharedWith?: boolean;
+  access?: "read" | "write";
 };
 
 export type CollectionT = {

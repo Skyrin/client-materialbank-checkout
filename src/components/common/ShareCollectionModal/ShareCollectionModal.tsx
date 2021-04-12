@@ -4,14 +4,16 @@ import cn from "classnames";
 import { AppContext, AppContextState } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
-import { RouteComponentProps } from "react-router-dom";
 import Input from "../Input/Input";
-import Checkbox from "../Checkbox/Checkbox";
 import { CollaboratorT } from "../../../constants/types";
-import { isOnMobile } from "../../../utils/responsive";
+import { sendInvitation } from "../../../context/CollectionsAPI/api";
+import { COLLECTION_URL } from "../../../constants/urls";
+import { get } from "lodash-es";
+import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
 
 type State = {
   email: string;
+  access: string;
   publicLink: string;
   collaborators: CollaboratorT[];
   isPrivate: boolean;
@@ -19,7 +21,7 @@ type State = {
 };
 type Props = RouteComponentProps;
 
-export class ShareCollectionModal extends React.Component<Props, State> {
+class ShareCollectionModal extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
@@ -29,6 +31,7 @@ export class ShareCollectionModal extends React.Component<Props, State> {
 
     this.state = {
       email: null,
+      access: "read",
       publicLink: "https://designshop.link",
       collaborators: [
         {
@@ -39,6 +42,7 @@ export class ShareCollectionModal extends React.Component<Props, State> {
           imagePath: null,
           isAuthenticated: null,
           isSharedWith: null,
+          access: null,
         },
       ],
       isPrivate: false,
@@ -84,26 +88,90 @@ export class ShareCollectionModal extends React.Component<Props, State> {
     this.setState({ collaborators: collab });
   };
 
+  updateAccess = (e: any) => {
+    this.setState({
+      access: e.target.value,
+    });
+  };
+
+  getCollectionId = () => {
+    const collectionPageResult = matchPath(this.props.location.pathname, {
+      path: COLLECTION_URL,
+      exact: true,
+    });
+    return get(collectionPageResult, "params.collection_id");
+  };
+
+  submitInvitation = async (e: any) => {
+    const collectionId = parseInt(this.getCollectionId());
+    if (collectionId) {
+      const resp = await sendInvitation(
+        this.context,
+        collectionId,
+        this.state.email,
+        this.state.access
+      );
+      console.log("send invite response", resp);
+      this.closeModal();
+    }
+  };
+
   renderEmailSection = () => {
+    const accessType = [
+      {
+        role: "Editor",
+        accessType: "write",
+      },
+      {
+        role: "View Only",
+        accessType: "read",
+      },
+    ];
     return (
       <React.Fragment>
         <div className={styles.subTitle}>
           {" "}
           Enter email address to invite someone new
         </div>
-        <Input
-          className={styles.inputField}
-          placeholder="name@email.com"
-          value={this.state.email}
-          type="text"
-          onChange={(val: string) => this.setState({ email: val })}
-        />
-        <div className={styles.sendInviteButton}>Send Invite</div>
+        <div className={styles.emailInvite}>
+          <Input
+            className={styles.inputField}
+            placeholder="name@email.com"
+            value={this.state.email}
+            type="text"
+            onChange={(val: string) => this.setState({ email: val })}
+          />
+          <select
+            value={this.state.access}
+            className={styles.emailDropdown}
+            onChange={this.updateAccess}
+          >
+            {accessType.map((access) => {
+              return <option value={access.accessType}>{access.role}</option>;
+            })}
+          </select>
+        </div>
+        <div
+          onClick={this.submitInvitation}
+          className={styles.sendInviteButton}
+        >
+          Send Invite
+        </div>
       </React.Fragment>
     );
   };
 
   renderCollaboratorsSection = () => {
+    const accessType = [
+      {
+        role: "Editor",
+        accessType: "write",
+      },
+      {
+        role: "View Only",
+        accessType: "read",
+      },
+    ];
     return (
       <React.Fragment>
         <div className={styles.subTitle}>
@@ -112,7 +180,7 @@ export class ShareCollectionModal extends React.Component<Props, State> {
         </div>
         <div className={styles.collaborators}>
           {this.state.collaborators &&
-            this.state.collaborators.map((collaborator: any, index: number) => {
+            this.state.collaborators.map((collaborator: any) => {
               return (
                 <div className={styles.collaboratorsContainer}>
                   <div className={styles.collaboratorsInfo}>
@@ -128,22 +196,24 @@ export class ShareCollectionModal extends React.Component<Props, State> {
                     </div>
                   </div>
                   <div className={styles.checkboxContainer}>
-                    {isOnMobile() && (
-                      <span>
-                        {collaborator.isAuthenticated ? "Owner" : "Editor"}
-                      </span>
+                    {collaborator.isAuthenticated && <span>Owner</span>}
+                    {!collaborator.isAuthenticated && (
+                      <React.Fragment>
+                        <select
+                          defaultValue={collaborator.access}
+                          className={styles.emailDropdown}
+                          onChange={this.updateAccess}
+                        >
+                          {accessType.map((access) => {
+                            return (
+                              <option value={access.accessType}>
+                                {access.role}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </React.Fragment>
                     )}
-                    <Checkbox
-                      className={cn(
-                        styles.checkBoxModal,
-                        !collaborator.isSharedWith ? styles.unChecked : ""
-                      )}
-                      black={true}
-                      value={collaborator.isSharedWith}
-                      onChange={(event) => {
-                        this.handleChange(event, collaborator.id);
-                      }}
-                    />
                   </div>
                 </div>
               );
@@ -237,3 +307,5 @@ export class ShareCollectionModal extends React.Component<Props, State> {
     );
   }
 }
+
+export default withRouter(ShareCollectionModal);

@@ -199,3 +199,25 @@ export const acceptInvitation = async (
   );
   return resp && get(resp, "collectionAcceptInvitation");
 };
+
+export const sendInvitation = async (
+  context: AppContextState,
+  id: number,
+  email: string,
+  access: string
+) => {
+  const collectionSendInvitation = `
+    mutation collectionSendInvitation($id: Int!, $email: String!, $access: AccessType!) {
+      collectionSendInvitation(id: $id, email: $email, access: $access)
+      }`;
+  const resp = await collectionsGraphqlRequest(
+    context,
+    collectionSendInvitation,
+    {
+      id: id,
+      email: email,
+      access: access,
+    }
+  );
+  return resp && get(resp, "collectionSendInvitation");
+};
