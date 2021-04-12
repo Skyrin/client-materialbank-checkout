@@ -95,7 +95,11 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
     return (
       <React.Fragment>
         <div className={styles.imageContainer}>
-          <img src={materialItem.imageUrl} alt="" />
+          <img
+            className={cn(styles.infoImage, styles.SKUimg)}
+            src={materialItem.imageUrl}
+            alt=""
+          />
           <div className={styles.priceIndicator}>{materialItem.priceSign}</div>
         </div>
       </React.Fragment>
@@ -104,14 +108,20 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
 
   renderHotspotImage = () => {
     let hotspotItem;
-    if (this.props.item.json) {
+    if (this.props.item.objectType === "hotspot") {
       hotspotItem = JSON.parse(this.props.item.json);
-    } else return;
+    }
     return (
       <React.Fragment>
         <div className={styles.front}>
           <div className={cn(styles.imageContainer)}>
-            <img src={hotspotItem.imageUrl} alt="" />
+            <img
+              className={
+                hotspotItem.type === "room" ? styles.roomImg : styles.paletteImg
+              }
+              src={hotspotItem.imageUrl}
+              alt=""
+            />
           </div>
         </div>
       </React.Fragment>
@@ -120,14 +130,14 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
 
   renderImageItem() {
     let hotspotItem;
-    if (this.props.item.json) {
+    if (this.props.item.objectType === "hotspot") {
       hotspotItem = JSON.parse(this.props.item.json);
-    } else return;
+    }
     return (
       <React.Fragment>
         <div className={styles.front}>
           {this.props.item.objectType === "upload" && this.renderUploadImage()}
-          {hotspotItem.type === "room" && this.renderHotspotImage()}
+          {hotspotItem && this.renderHotspotImage()}
           {this.props.item.objectType === "material" &&
             this.renderMaterialImage()}
         </div>
@@ -139,9 +149,9 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
   renderEditItem() {
     let materialItem = this.mapAlgoliaToObject();
     let hotspotItem;
-    if (this.props.item.json) {
+    if (this.props.item.objectType === "hotspot") {
       hotspotItem = JSON.parse(this.props.item.json);
-    } else return;
+    }
     return (
       <React.Fragment>
         <div className={styles.imageContainer}>
@@ -149,10 +159,20 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
             <img src={this.props.item.upload.url} alt="" />
           )}
           {this.props.item.objectType === "material" && (
-            <img src={materialItem.imageUrl} alt="" />
+            <img
+              className={cn(styles.infoImage, styles.SKUimg)}
+              src={materialItem.imageUrl}
+              alt=""
+            />
           )}
-          {hotspotItem.type === "room" && (
-            <img src={hotspotItem.imageUrl} alt="" />
+          {hotspotItem && (
+            <img
+              className={
+                hotspotItem.type === "room" ? styles.roomImg : styles.paletteImg
+              }
+              src={hotspotItem.imageUrl}
+              alt=""
+            />
           )}
           <div
             onClick={this.deleteItem}
@@ -167,14 +187,14 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
 
   renderInfoItem() {
     let hotspotItem;
-    if (this.props.item.json) {
+    if (this.props.item.objectType === "hotspot") {
       hotspotItem = JSON.parse(this.props.item.json);
     }
     return (
       <React.Fragment>
         {this.props.item.objectType === "upload" && this.renderUploadInfo()}
         {this.props.item.objectType === "material" && this.renderMaterialInfo()}
-        {hotspotItem && hotspotItem.type === "room" && this.renderHotspotInfo()}
+        {hotspotItem && this.renderHotspotInfo()}
       </React.Fragment>
     );
   }
@@ -198,13 +218,20 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
 
   renderHotspotInfo = () => {
     let hotspotItem;
-    if (this.props.item.json) {
+    if (this.props.item.objectType === "hotspot") {
       hotspotItem = JSON.parse(this.props.item.json);
-    } else return;
+    }
     return (
       <React.Fragment>
         <div className={cn(styles.imageContainer, styles.infoMode)}>
-          <img className={styles.infoImage} src={hotspotItem.imageUrl} alt="" />
+          <img
+            className={cn(
+              styles.infoImage,
+              hotspotItem.type === "room" ? styles.roomImg : styles.paletteImg
+            )}
+            src={hotspotItem.imageUrl}
+            alt=""
+          />
         </div>
         <div className={cn(styles.infoContainer, styles.infoMode)}>
           <div className={styles.darker}>{hotspotItem.name}</div>
@@ -248,7 +275,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
       <React.Fragment>
         <div className={styles.imageContainer}>
           <img
-            className={styles.infoImage}
+            className={cn(styles.infoImage, styles.SKUimg)}
             src={materialItem.imageUrl}
             alt=""
           />
