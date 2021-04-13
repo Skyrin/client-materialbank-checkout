@@ -48,12 +48,9 @@ type State = {
 
 export default class EditCreditCardForm extends React.Component<Props, State> {
   creditCardForm?: CreditCardForm;
-  cardForm?: any;
 
   constructor(props: Props) {
     super(props);
-    this.cardForm = React.createRef();
-
     this.state = {
       values: props.initialValues || DEFAULT_CREDIT_CARD_FORM_VALUES,
       errors: {
