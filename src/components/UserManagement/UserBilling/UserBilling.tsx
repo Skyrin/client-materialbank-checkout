@@ -162,9 +162,6 @@ export default class UserBilling extends React.Component<Props, State> {
                     onSave={(values) => {
                       this.savePayment(values);
                     }}
-                    onCancel={(token: string) => {
-                      this.cancelSave(token);
-                    }}
                     onDelete={(token: string) => {
                       this.deleteCard(token);
                     }}
@@ -181,9 +178,6 @@ export default class UserBilling extends React.Component<Props, State> {
               visible={true}
               onSave={(values) => {
                 this.savePayment(values);
-              }}
-              onCancel={(token: string) => {
-                this.cancelSave(token);
               }}
               onDelete={(token: string) => {
                 this.deleteCard(token);
@@ -204,66 +198,14 @@ export default class UserBilling extends React.Component<Props, State> {
     );
   }
 
-  editPayment(index: any) {
-    const paymentMethods = this.paymentMethods.map((paymentMethod, itIndex) => {
-      if (itIndex !== index) {
-        paymentMethod.isOpen = false;
-      }
-      return paymentMethod;
-    });
-    paymentMethods[index].isOpen = !paymentMethods[index].isOpen;
-    this.setState({
-      paymentMethods: paymentMethods,
-    });
-  }
-
   savePayment(creditCardValues: CreditCardFormValuesT) {
     const creditCard = new CreditCard({
-      number: creditCardValues.creditCardNumber,
       name: creditCardValues.creditCardName,
-      expiration: creditCardValues.expires,
+      expires: creditCardValues.expires,
       last4: creditCardValues.last4,
-      cvv: creditCardValues.cardCVV,
+      token: creditCardValues.id,
     });
-    if (creditCardValues.id) {
-      const newPaymentMethods = this.paymentMethods.map((paymentMethod) => {
-        if (paymentMethod.token === creditCardValues.id) {
-          paymentMethod.creditCard = creditCardValues;
-        }
-        return paymentMethod;
-      });
-      this.setState({
-        paymentMethods: creditCardValues,
-      });
-      this.editPayment(
-        newPaymentMethods.findIndex(
-          (paymentMethod) => paymentMethod.token === creditCardValues.id
-        )
-      );
-    } else {
-      const newPaymentMethod = new PaymentMethod();
-      newPaymentMethod.token = String(Math.random());
-      newPaymentMethod.creditCard = creditCardValues;
-
-      const newPaymentMethods = this.paymentMethods;
-      newPaymentMethods.push(newPaymentMethod);
-
-      this.addCreditCardForm.resetForm();
-
-      this.setState({
-        paymentMethods: newPaymentMethods,
-      });
-    }
-  }
-
-  cancelSave(token: string) {
-    if (token) {
-      this.editPayment(
-        this.paymentMethods.findIndex(
-          (paymentMethod) => paymentMethod.token === token
-        )
-      );
-    }
+    console.log(creditCard);
   }
 
   async deleteCard(token: string) {

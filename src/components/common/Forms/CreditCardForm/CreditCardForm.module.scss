@@ -1,6 +1,30 @@
 @import "styles/variablesscss.scss";
 @import "styles/mixins.scss";
 
+.newCardSection {
+  grid-template-columns: 1fr !important;
+  grid-template-rows: 1fr 1fr !important;
+
+  .addNewCard {
+    display: grid;
+    grid-template-columns: 4fr 2fr;
+    column-gap: $margin-small-4;
+    @media (max-width: 520px) {
+      grid-template-columns: 1fr;
+    }
+
+    .shrinkingInput {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: $margin-small-4;
+    }
+  }
+
+  .inputLabel {
+    margin-bottom: 15px;
+  }
+}
+
 .creditCardArea {
   display: grid;
   max-height: 0;

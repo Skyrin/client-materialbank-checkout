@@ -61,6 +61,8 @@ type Props = {
   inputClassName?: string;
   visible?: boolean;
   useStripe?: boolean;
+  addNewCard?: boolean;
+  setResetFormMethod?: any;
 };
 
 type State = {
@@ -187,7 +189,15 @@ export default class CreditCardForm extends React.Component<Props, State> {
         });
       });
     }
+    this.props.setResetFormMethod(this.resetForm);
   }
+
+  resetForm = () => {
+    console.log("ola");
+    this.setState({
+      values: DEFAULT_CREDIT_CARD_FORM_VALUES,
+    });
+  };
 
   updateField = (fieldName: string, value: string) => {
     this.setState(
@@ -276,6 +286,52 @@ export default class CreditCardForm extends React.Component<Props, State> {
     return paymentMethod;
   };
 
+  renderAddNewCard = () => {
+    return (
+      <div
+        id="stripe-card"
+        className={cn(
+          styles.creditCardArea,
+          this.props.listClassName,
+          styles.newCardSection,
+          {
+            [styles.visible]: this.props.visible === true,
+          }
+        )}
+      >
+        <div className={styles.inputLabel}>Card Number</div>
+        <div id="stripe-card-number" />
+        <div className={styles.addNewCard}>
+          <div>
+            <div className={styles.inputLabel}>Name on Card</div>
+            <Input
+              className={styles.cardNameArea}
+              value={this.state.values.creditCardName}
+              onChange={(val: string) => {
+                this.updateField("creditCardName", val);
+              }}
+              onBlur={() => {
+                this.validateField("creditCardName");
+              }}
+              error={this.state.errors.creditCardName}
+              placeholder="John Doe"
+            />
+          </div>
+          <div className={styles.shrinkingInput}>
+            <div className={styles.inputCol}>
+              <div className={styles.inputLabel}>Expiration</div>
+              <div id="stripe-card-expiration" />
+            </div>
+            <div className={styles.inputCol}>
+              <div className={styles.inputLabel}>CVV</div>
+              <div id="stripe-card-cvc" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   renderStripe = () => {
     return (
       <div
@@ -325,8 +381,10 @@ export default class CreditCardForm extends React.Component<Props, State> {
   };
 
   render() {
-    if (this.props.useStripe) {
+    if (this.props.useStripe && !this.props.addNewCard) {
       return this.renderStripe();
+    } else {
+      return this.renderAddNewCard();
     }
 
     return (

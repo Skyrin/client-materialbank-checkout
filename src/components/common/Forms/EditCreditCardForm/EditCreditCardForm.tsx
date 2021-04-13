@@ -1,31 +1,7 @@
 import styles from "./EditCreditCardForm.module.scss";
 import * as React from "react";
 import cn from "classnames";
-import Input from "components/common/Input/Input";
-import * as yup from "yup";
-import { extractErrors } from "utils/forms";
-
-import {
-  cardNumberInputFormatter,
-  cardNumberInputParser,
-  digitsOnlyInputParser,
-  expirationDateInputFormatter,
-  expirationDateInputParser,
-} from "components/common/Input/utils";
-import { isOnMobile } from "utils/responsive";
-
-const editCreditCardSchema = yup.object().shape({
-  creditCardNumber: yup.string().required("Required"),
-  creditCardName: yup.string().required("Required"),
-  cardDate: yup
-    .string()
-    .required("Required")
-    .matches(/^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/, "Invalid date"),
-  cardCVV: yup
-    .string()
-    .required("Required")
-    .matches(/^[0-9]{3,4}$/, "Invalid CVV"),
-});
+import CreditCardForm from "../CreditCardForm/CreditCardForm";
 
 export const DEFAULT_CREDIT_CARD_FORM_VALUES: CreditCardFormValuesT = {
   id: null,
@@ -68,16 +44,18 @@ type Props = {
 type State = {
   values: CreditCardFormValuesT;
   errors: CreditCardFormErrorsT;
-  editMode: boolean;
 };
 
 export default class EditCreditCardForm extends React.Component<Props, State> {
+  creditCardForm?: CreditCardForm;
+  cardForm?: any;
+
   constructor(props: Props) {
     super(props);
+    this.cardForm = React.createRef();
 
     this.state = {
       values: props.initialValues || DEFAULT_CREDIT_CARD_FORM_VALUES,
-      editMode: !!this.props.initialValues,
       errors: {
         creditCardNumber: null,
         creditCardName: null,
@@ -93,96 +71,55 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
     }
   }
 
+  onSubmit = async () => {
+    if (this.creditCardForm.isValid()) {
+      const cardPaymentMethod = await this.creditCardForm.createStripePaymentMethod();
+      const token = cardPaymentMethod.id;
+      console.log(token, cardPaymentMethod);
+      let creditCard = {
+        id: token,
+        creditCardName: cardPaymentMethod.billing_details.name,
+        expires: `${cardPaymentMethod.card.exp_month}/${cardPaymentMethod.card.exp_year}`,
+        last4: cardPaymentMethod.card.last4,
+        isDefault: false,
+      };
+      this.props.onSave(creditCard);
+    }
+  };
+
+  resetForm = () => {};
+
+  setResetFormMethod = (reset) => {
+    this.resetForm = reset;
+  };
+
   render() {
     return (
       <div
-        className={cn(
-          styles.EditCreditCardForm,
-          this.state.editMode ? styles.editDefault : "",
-          {
-            [styles.visible]: this.props.visible === true,
-          }
-        )}
+        className={cn(styles.EditCreditCardForm, {
+          [styles.visible]: this.props.visible === true,
+        })}
       >
-        <div className={styles.title}>
-          {this.state.editMode ? "" : "Add a New Card"}
-        </div>
-        {!this.state.editMode && (
-          <React.Fragment>
-            <div className={styles.form}>
-              <div className={styles.cardNumber}>
-                <div className={styles.inputHint}>Card Number</div>
-                <Input
-                  placeholder={"xxxx xxxx xxxx xxxx"}
-                  formatter={cardNumberInputFormatter}
-                  parser={cardNumberInputParser}
-                  inputMode="numeric"
-                  userInputStyle={true}
-                  value={this.state.values.creditCardNumber}
-                  error={this.state.errors.creditCardNumber}
-                  onChange={(val: string) => {
-                    this.updateFieldForm("creditCardNumber", val);
-                  }}
-                />
-              </div>
-
-              <div className={styles.cardName}>
-                <div className={styles.inputHint}>Name on Card</div>
-                <Input
-                  placeholder="First M. Last"
-                  value={this.state.values.creditCardName}
-                  error={this.state.errors.creditCardName}
-                  userInputStyle={true}
-                  onChange={(val: string) => {
-                    this.updateFieldForm("creditCardName", val);
-                  }}
-                />
-              </div>
-
-              <div className={styles.cardExpiration}>
-                <div className={styles.inputHint}>Expiration</div>
-                <Input
-                  placeholder={"MM / YY"}
-                  value={this.state.values.cardDate}
-                  error={this.state.errors.cardDate}
-                  userInputStyle={true}
-                  formatter={expirationDateInputFormatter}
-                  parser={expirationDateInputParser}
-                  inputMode="numeric"
-                  onChange={(val: string) => {
-                    this.updateFieldForm("cardDate", val);
-                  }}
-                />
-              </div>
-
-              <div className={styles.cardCvv}>
-                <div className={styles.inputHint}>CVV</div>
-                <Input
-                  placeholder="xxx"
-                  value={this.state.values.cardCVV}
-                  error={this.state.errors.cardCVV}
-                  userInputStyle={true}
-                  parser={digitsOnlyInputParser}
-                  inputMode="numeric"
-                  onChange={(val: string) => {
-                    this.updateFieldForm("cardCVV", val);
-                  }}
-                />
-              </div>
-            </div>
-          </React.Fragment>
-        )}
-
+        <div className={styles.title}>Add a New Card</div>
+        <CreditCardForm
+          useStripe
+          addNewCard
+          visible
+          onChange={() => {
+            this.creditCardForm?.validateForm();
+          }}
+          componentRef={(ref) => {
+            this.creditCardForm = ref;
+          }}
+          setResetFormMethod={this.setResetFormMethod}
+        />
         <div className={styles.buttons}>
           <div className={styles.formButtonsEdit}>
             <React.Fragment>
-              <button
-                className={styles.cancelButton}
-                onClick={this.cancelClick}
-              >
+              <button className={styles.cancelButton} onClick={this.resetForm}>
                 Cancel
               </button>
-              <button className={styles.saveChanges} onClick={this.saveChanges}>
+              <button className={styles.saveChanges} onClick={this.onSubmit}>
                 Save Changes
               </button>
             </React.Fragment>
@@ -191,52 +128,4 @@ export default class EditCreditCardForm extends React.Component<Props, State> {
       </div>
     );
   }
-
-  saveChanges = () => {
-    if (this.validateCreditCard()) {
-      this.props.onSave(this.state.values);
-    }
-  };
-
-  cancelClick = () => {
-    this.resetForm();
-    this.props.onCancel(this.state.values.id);
-  };
-
-  resetForm = () => {
-    this.setState({
-      values: this.props.initialValues || DEFAULT_CREDIT_CARD_FORM_VALUES,
-    });
-  };
-
-  updateFieldForm = (fieldName: string, value: string) => {
-    this.setState({
-      values: {
-        ...this.state.values,
-        [fieldName]: value,
-      },
-      errors: {
-        ...this.state.errors,
-        [fieldName]: null,
-      },
-    });
-  };
-
-  validateCreditCard = () => {
-    try {
-      editCreditCardSchema.validateSync(this.state.values, {
-        abortEarly: false,
-      });
-      return true;
-    } catch (e) {
-      const errors = extractErrors(e);
-      this.setState({
-        errors: {
-          ...this.state.errors,
-          ...errors,
-        },
-      });
-      return false;
-    }
-  };
 }
