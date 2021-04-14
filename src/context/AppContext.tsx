@@ -41,6 +41,7 @@ export enum Modals {
   ShareCollection = "share-collection",
   DuplicateCollection = "duplicate-collection",
   MakePrivateCollection = "make-private-collection",
+  DisableAccount = "disable-account",
   AddSample = "add-sample",
   None = "none",
 }

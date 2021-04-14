@@ -19,7 +19,6 @@ export default class MoreIdeas extends React.Component<Props, any> {
     super(props);
     this.state = {
       maxCards: 8,
-      mode: "info",
     };
   }
 
@@ -45,10 +44,15 @@ export default class MoreIdeas extends React.Component<Props, any> {
   render() {
     let recommendations;
     if (this.props.collectionMaterials) {
-      recommendations = this.context.recommendedProductSKUs
-        .map((sku) => this.context.productsCache.getProduct(sku))
-        .filter((p) => !p.loading)
-        .map((p) => p.data);
+      recommendations = this.context.recommendedProductSKUs.map((sku) => {
+        return {
+          id: `fake_collection_item_${sku}`,
+          objectType: "material",
+          material: {
+            sku: sku,
+          },
+        };
+      });
     }
     const headerText =
       this.props.headerText || "More ideas for this collection";
@@ -70,14 +74,7 @@ export default class MoreIdeas extends React.Component<Props, any> {
               {recommendations
                 .slice(0, this.state.maxCards)
                 .map((item: any, index: number) => {
-                  return (
-                    <ItemCard
-                      recommended
-                      key={index}
-                      mode={this.state.mode}
-                      item={item}
-                    />
-                  );
+                  return <ItemCard key={index} mode="info" item={item} />;
                 })}
             </Masonry>
           </ResponsiveMasonry>

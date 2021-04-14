@@ -226,10 +226,7 @@ class Collection extends React.Component<Props, State> {
             "rooms",
             "palettes",
           ]}
-          collaborators={
-            this.state.person &&
-            this.state.person.map((person: any) => person.imagePath)
-          }
+          collaborators={this.state.person}
           activeButtonDisplay={this.state.display}
           toggleDisplay={this.toggleDisplay}
           activeButtonMode={this.state.mode}
@@ -271,13 +268,11 @@ class Collection extends React.Component<Props, State> {
                     )
                     .map((item: any, index: number) => {
                       return (
-                        <React.Fragment>
-                          <ItemCard
-                            key={index}
-                            mode={this.state.mode}
-                            item={item}
-                          />
-                        </React.Fragment>
+                        <ItemCard
+                          key={item.id}
+                          mode={this.state.mode}
+                          item={item}
+                        />
                       );
                     })}
                 </Masonry>
