@@ -189,11 +189,9 @@ export default class CreditCardForm extends React.Component<Props, State> {
         });
       });
     }
-    this.props.setResetFormMethod(this.resetForm);
   }
 
   resetForm = () => {
-    console.log("ola");
     this.setState({
       values: DEFAULT_CREDIT_CARD_FORM_VALUES,
     });
