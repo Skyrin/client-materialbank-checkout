@@ -19,7 +19,7 @@ export default class ModeButtons extends React.Component<Props, any> {
     this.activeButtonMode = index;
   };
 
-  renderModeButtons = (index, button) => {
+  renderModeButton = (index, button) => {
     return (
       <div
         onClick={(e) => this.toggleAnimation(e, index, button)}
@@ -36,11 +36,7 @@ export default class ModeButtons extends React.Component<Props, any> {
     return (
       <React.Fragment>
         {this.props.buttons.map((button: any, index: number) => {
-          return (
-            <React.Fragment>
-              {this.renderModeButtons(index, button)}
-            </React.Fragment>
-          );
+          return this.renderModeButton(index, button);
         })}
         <div
           style={{
