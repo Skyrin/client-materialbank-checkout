@@ -129,74 +129,6 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
     };
   }
 
-  // renderUploadImage = () => {
-  //   return (
-  //     <React.Fragment>
-  //       <div className={styles.front}>
-  //         <div className={cn(styles.imageContainer)}>
-  //           <img src={this.props.item.upload.url} alt="" />
-  //         </div>
-  //       </div>
-  //     </React.Fragment>
-  //   );
-  // };
-  //
-  // renderMaterialImage = () => {
-  //   let materialItem = this.mapAlgoliaToObject();
-  //   return (
-  //     <React.Fragment>
-  //       <div className={styles.imageContainer}>
-  //         <img
-  //           className={cn(styles.infoImage, styles.SKUimg)}
-  //           src={materialItem.imageUrl}
-  //           alt=""
-  //         />
-  //         <div className={styles.priceIndicator}>{materialItem.priceSign}</div>
-  //       </div>
-  //     </React.Fragment>
-  //   );
-  // };
-  //
-  // renderHotspotImage = () => {
-  //   let hotspotItem;
-  //   if (this.props.item.objectType === "hotspot") {
-  //     hotspotItem = JSON.parse(this.props.item.json);
-  //   }
-  //   return (
-  //     <React.Fragment>
-  //       <div className={styles.front}>
-  //         <div className={cn(styles.imageContainer)}>
-  //           <img
-  //             className={
-  //               hotspotItem.type === "room" ? styles.roomImg : styles.paletteImg
-  //             }
-  //             src={hotspotItem.imageUrl}
-  //             alt=""
-  //           />
-  //         </div>
-  //       </div>
-  //     </React.Fragment>
-  //   );
-  // };
-  //
-  // renderImageItem() {
-  //   let hotspotItem;
-  //   if (this.props.item.objectType === "hotspot") {
-  //     hotspotItem = JSON.parse(this.props.item.json);
-  //   }
-  //   return (
-  //     <React.Fragment>
-  //       <div className={styles.front}>
-  //         {this.props.item.objectType === "upload" && this.renderUploadImage()}
-  //         {hotspotItem && this.renderHotspotImage()}
-  //         {this.props.item.objectType === "material" &&
-  //           this.renderMaterialImage()}
-  //       </div>
-  //       <div className={styles.back}>{this.renderInfoItem()}</div>
-  //     </React.Fragment>
-  //   );
-  // }
-
   renderEditItem() {
     let materialItem = this.mapAlgoliaToObject();
     let hotspotItem;
@@ -273,34 +205,6 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
     );
   };
 
-  // renderMaterialRecommended = () => {
-  //   let materialItem = this.props.item;
-  //   return (
-  //     <React.Fragment>
-  //       <div className={styles.imageContainer}>
-  //         <img
-  //           className={styles.infoImage}
-  //           src={materialItem.image_url}
-  //           alt=""
-  //         />
-  //         <div className={styles.sampleCart}>
-  //           <i
-  //             className={cn("far", "fa-cart-arrow-down", styles.addCartIcon)}
-  //           />
-  //           <span className={cn(styles["button-text"], styles.sampleText)}>
-  //             Sample
-  //           </span>
-  //         </div>
-  //       </div>
-  //       <div className={cn(styles.infoContainer, styles.infoMode)}>
-  //         <div className={styles.darker}>{materialItem.name}</div>
-  //         <div className={styles.darker}>{materialItem.manufacturer}</div>
-  //         <div>{materialItem.color}</div>
-  //         <div className={styles.priceIndicator}>{materialItem.price_sign}</div>
-  //       </div>
-  //     </React.Fragment>
-  //   );
-  // };
   renderMaterialInfo = () => {
     let materialItem = this.mapAlgoliaToObject();
     return (
