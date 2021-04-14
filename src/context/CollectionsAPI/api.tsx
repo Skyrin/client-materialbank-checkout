@@ -1,6 +1,6 @@
 import { collectionsGraphqlRequest } from "CollectionsGraphqlClient";
 import { AppContextState } from "context/AppContext";
-import { CollectionFragment } from "./fragments";
+import { CollectionFragment, HotspotFragment } from "./fragments";
 import { CollectionsQueryInput, UploadPhotoInput } from "./models";
 import { get } from "lodash-es";
 
@@ -79,6 +79,47 @@ export const getCollection = async (
     collectionId: collectionId,
   });
   return resp && get(resp, "collections.data[0]");
+};
+
+export const getHotspots = async (
+  context: AppContextState,
+  variables: CollectionsQueryInput
+) => {
+  const CollectionsQuery = `
+    query hotspots($limit: Int!, $offset: Int!, $hotspotId: Int, $options: HotspotFilters) {
+      hotspots(limit: $limit, offset: $offset, hotspotId: $hotspotId,  options: $options) {
+        data {
+          ${HotspotFragment}
+        }
+        count
+      }
+    }
+  `;
+  const resp = await collectionsGraphqlRequest(
+    context,
+    CollectionsQuery,
+    variables
+  );
+  return resp && get(resp, "hotspots.data");
+};
+
+export const getHotspot = async (
+  context: AppContextState,
+  hotspotId: number
+) => {
+  const CollectionQuery = `
+    query hotspot($hotspotId: Int) {
+      hotspots(limit: 1, offset: 0, hotspotId: $hotspotId) {
+        data {
+          ${HotspotFragment}
+        }
+      }
+    }
+  `;
+  const resp = await collectionsGraphqlRequest(context, CollectionQuery, {
+    hotspotId: hotspotId,
+  });
+  return resp && get(resp, "hotspots.data[0]");
 };
 
 export const uploadPhoto = async (

@@ -26,7 +26,11 @@ export const UploadFragment = `
   createdOn
   updatedOn
 `;
-
+export const CollectionHotspotFragment = `
+  id
+  name
+  type
+`;
 export const CollectionItemFragment = `
   id
   collectionId
@@ -47,6 +51,9 @@ export const CollectionItemFragment = `
   upload {
    ${UploadFragment}
   }
+  hotspot{
+   ${CollectionHotspotFragment}
+  }
   updatedBy
   createdOn
   updatedOn
@@ -65,5 +72,35 @@ export const CollectionFragment = `
   collaborators {
     userId
     access
+  }
+`;
+
+export const HotspotFragment = `
+  id,
+  name,
+  description,
+  imageUrl,
+  type,
+  color,
+  priceSign,
+  tags,
+  createdOn,
+  updatedOn,
+  markers{
+    id,
+    hotspotId,
+    xCoord,
+    yCoord,
+    sku,
+    createdOn,
+    updatedOn,
+    related{
+      id,
+      markerId,
+      position,
+      sku,
+      createdOn,
+      updatedOn
+    }
   }
 `;

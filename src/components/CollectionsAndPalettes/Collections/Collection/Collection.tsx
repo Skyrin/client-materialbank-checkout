@@ -31,6 +31,8 @@ class Collection extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
+  hotspots: any;
+  collectionMaterials: any;
 
   uploadPhoto = () => {
     this.context.openModal(Modals.UploadPhoto);
@@ -75,7 +77,7 @@ class Collection extends React.Component<Props, State> {
     this.setState({ display: display });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     window.scrollTo(0, 0);
     window.addEventListener("scroll", this.scrollingBehaviour);
     // TODO: Figure out why this is needed. I suspect images are not loaded fully when this runs.
@@ -173,7 +175,26 @@ class Collection extends React.Component<Props, State> {
     const finalItems = collectionItems.length
       ? collectionItems
       : this.state.items;
-    let materials = finalItems.filter((item) => item.objectType === "material");
+    let hotspots = finalItems.filter((item) => item.objectType === "hotspot");
+    this.collectionMaterials = finalItems.filter(
+      (item) => item.objectType === "material"
+    );
+    if (hotspots) {
+      let hotspotId;
+      hotspots.forEach((hp) => (hotspotId = hp.hotspot.id));
+      this.context.requestHotspot(hotspotId).then((hp: any) => {
+        this.hotspots = hp;
+      });
+      let hpMaterials = [];
+      if (this.hotspots && this.hotspots.markers) {
+        for (let hp of this.hotspots.markers) {
+          hpMaterials.push(hp.sku);
+        }
+      }
+      if (hpMaterials.length > 0) {
+        this.collectionMaterials.push(hpMaterials);
+      }
+    }
     if (!collection.id) {
       return (
         <React.Fragment>
@@ -284,13 +305,9 @@ class Collection extends React.Component<Props, State> {
         </div>
 
         {/*The commonArea element is added here in order to keep the AddToCart Button inside the Collection Cards container, also decide its position*/}
-        {materials.length > 0 && (
+        {this.collectionMaterials.length > 0 && (
           <div className={"commonArea"}>
-            <MoreIdeas
-              collectionMaterials={finalItems.filter(
-                (item) => item.objectType === "material"
-              )}
-            />
+            <MoreIdeas collectionMaterials={this.collectionMaterials} />
           </div>
         )}
       </React.Fragment>

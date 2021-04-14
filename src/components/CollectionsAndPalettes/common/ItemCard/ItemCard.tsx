@@ -44,11 +44,10 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
   };
 
   mapAlgoliaToObject(): any {
-    let material = null;
+    let material;
     if (this.props.item.material) {
       material = this.props.item.material;
     } else return;
-
     const algoliaProduct = this.context.productsCache.getProduct(material.sku);
     const color = get(algoliaProduct, "data.color", "material.color");
     const manufacturer = get(
@@ -108,7 +107,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
 
   renderHotspotImage = () => {
     let hotspotItem;
-    if (this.props.item.objectType === "hotspot") {
+    if (this.props.item.hotspot) {
       hotspotItem = JSON.parse(this.props.item.json);
     }
     return (
@@ -130,7 +129,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
 
   renderImageItem() {
     let hotspotItem;
-    if (this.props.item.objectType === "hotspot") {
+    if (this.props.item.hotspot) {
       hotspotItem = JSON.parse(this.props.item.json);
     }
     return (
@@ -149,7 +148,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
   renderEditItem() {
     let materialItem = this.mapAlgoliaToObject();
     let hotspotItem;
-    if (this.props.item.objectType === "hotspot") {
+    if (this.props.item.hotspot) {
       hotspotItem = JSON.parse(this.props.item.json);
     }
     return (
@@ -187,7 +186,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
 
   renderInfoItem() {
     let hotspotItem;
-    if (this.props.item.objectType === "hotspot") {
+    if (this.props.item.hotspot) {
       hotspotItem = JSON.parse(this.props.item.json);
     }
     return (
@@ -218,7 +217,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
 
   renderHotspotInfo = () => {
     let hotspotItem;
-    if (this.props.item.objectType === "hotspot") {
+    if (this.props.item.hotspot) {
       hotspotItem = JSON.parse(this.props.item.json);
     }
     return (
@@ -269,6 +268,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
       </React.Fragment>
     );
   };
+
   renderMaterialInfo = () => {
     let materialItem = this.mapAlgoliaToObject();
     return (

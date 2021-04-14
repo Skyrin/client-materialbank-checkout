@@ -213,6 +213,26 @@ export type CollectionUploadT = {
   updatedOn?: string;
 };
 
+export type CollectionHotspotT = {
+  id: number;
+  name: string;
+  type: string;
+};
+
+export type HotspotsT = {
+  id?: number;
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+  type?: "room" | "palette";
+  color?: [];
+  priceSign?: string;
+  tags?: [];
+  createdOn?: string;
+  updatedOn?: string;
+  markers?: CollectionHotspotT[];
+};
+
 export type CollectionItemT = {
   id?: number;
   collectionId?: number;
@@ -225,6 +245,7 @@ export type CollectionItemT = {
   material?: MaterialT;
   room?: RoomT;
   upload?: CollectionUploadT;
+  hotspots?: CollectionHotspotT;
   updatedBy?: number;
   createdOn?: string;
   updatedOn?: string;
