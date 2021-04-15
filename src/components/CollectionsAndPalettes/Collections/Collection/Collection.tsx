@@ -170,30 +170,29 @@ class Collection extends React.Component<Props, State> {
   }
 
   render() {
+    let hotspotId;
+    let hpMaterials = [];
     const collection = this.getCollection();
     const collectionItems = get(collection, "items", []);
     const finalItems = collectionItems.length
       ? collectionItems
       : this.state.items;
-    let hotspots = finalItems.filter((item) => item.objectType === "hotspot");
-    this.collectionMaterials = finalItems.filter(
-      (item) => item.objectType === "material"
-    );
-    if (hotspots) {
-      let hotspotId;
-      hotspots.forEach((hp) => (hotspotId = hp.hotspot.id));
-      this.context.requestHotspot(hotspotId).then((hp: any) => {
-        this.hotspots = hp;
-      });
-      let hpMaterials = [];
-      if (this.hotspots && this.hotspots.markers) {
-        for (let hp of this.hotspots.markers) {
-          hpMaterials.push(hp.sku);
-        }
+    this.collectionMaterials = finalItems
+      .filter((opt) => opt.objectType === "material")
+      .map((opt) => opt.material.sku);
+    finalItems
+      .filter((item) => item.objectType === "hotspot")
+      .forEach((hp) => (hotspotId = hp.hotspot.id));
+    this.context.requestHotspot(hotspotId).then((hp: any) => {
+      this.hotspots = hp;
+    });
+    if (this.hotspots && this.hotspots.markers) {
+      for (let hp of this.hotspots.markers) {
+        hpMaterials.push(hp.sku);
       }
-      if (hpMaterials.length > 0) {
-        this.collectionMaterials.push(hpMaterials);
-      }
+    }
+    if (hpMaterials.length > 0) {
+      this.collectionMaterials.push(hpMaterials);
     }
     if (!collection.id) {
       return (
