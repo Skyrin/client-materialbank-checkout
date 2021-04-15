@@ -77,7 +77,7 @@ class Collection extends React.Component<Props, State> {
     this.setState({ display: display });
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     window.scrollTo(0, 0);
     window.addEventListener("scroll", this.scrollingBehaviour);
     // TODO: Figure out why this is needed. I suspect images are not loaded fully when this runs.

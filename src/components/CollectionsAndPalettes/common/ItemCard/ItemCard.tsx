@@ -14,7 +14,6 @@ import { DateTime } from "luxon";
 interface ItemProps {
   mode: any;
   item: any;
-  recommended?: boolean;
 }
 
 type Props = RouteComponentProps;
