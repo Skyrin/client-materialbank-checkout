@@ -55,6 +55,10 @@
       visibility: hidden;
     }
 
+    .infoImage {
+      border-radius: 0;
+    }
+
     &:hover {
       .infoContainer,
       .sampleCart {
@@ -120,6 +124,8 @@
       width: 100%;
       margin-bottom: -5px;
       object-fit: cover;
+      border-bottom-left-radius: 30px;
+      border-bottom-right-radius: 30px;
     }
 
     .sampleCart {
