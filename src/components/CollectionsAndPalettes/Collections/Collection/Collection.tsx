@@ -13,9 +13,14 @@ import {
 } from "../../../../context/AppContext";
 import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreIdeas";
 import { isOnMobile } from "../../../../utils/responsive";
-import { get } from "lodash-es";
+import { get, isEmpty } from "lodash-es";
 import Loader from "components/common/Loader/Loader";
-import { CollaboratorT, CollectionItemT } from "../../../../constants/types";
+import {
+  CollaboratorT,
+  CollectionHotspotT,
+  CollectionItemT,
+  HotspotT,
+} from "../../../../constants/types";
 
 interface State {
   commonAreaIsInViewport: boolean;
@@ -31,8 +36,10 @@ class Collection extends React.Component<Props, State> {
   static contextType = AppContext;
   context!: AppContextState;
   modalTarget = null;
-  hotspots: any;
-  collectionMaterials: any;
+  hotspots: HotspotT[];
+  collectionMaterials: any[];
+  collectionItems: CollectionItemT[];
+  collection: any;
 
   uploadPhoto = () => {
     this.context.openModal(Modals.UploadPhoto);
@@ -77,7 +84,8 @@ class Collection extends React.Component<Props, State> {
     this.setState({ display: display });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.gatherMaterials();
     window.scrollTo(0, 0);
     window.addEventListener("scroll", this.scrollingBehaviour);
     // TODO: Figure out why this is needed. I suspect images are not loaded fully when this runs.
@@ -150,7 +158,34 @@ class Collection extends React.Component<Props, State> {
     ];
     this.context.storeCollaborators(collaborators);
     this.setState({ person: collaborators });
+    this.forceUpdate();
   }
+
+  gatherMaterials = async () => {
+    let hpMaterials = [];
+    this.hotspots = [];
+    this.collection = this.getCollection();
+    this.collectionItems = get(this.collection, "items", []);
+    this.collectionMaterials = this.collectionItems
+      .filter((item) => item.objectType === "material")
+      .map((item) => item.material.sku);
+    const hotspotsId = this.collectionItems
+      .filter((hp) => hp.objectType === "hotspot")
+      .map((hp) => hp.hotspot.id);
+    for (const hpId of hotspotsId) {
+      await this.context
+        .requestHotspot(hpId)
+        .then((hp: any) => this.hotspots.push(hp));
+    }
+    this.hotspots.forEach((hotspot) => {
+      if (hotspot.markers && hotspot.markers.length > 0) {
+        hotspot.markers.forEach((marker) => hpMaterials.push(marker.sku));
+      }
+    });
+    if (hpMaterials.length > 0) {
+      this.collectionMaterials.push(hpMaterials);
+    }
+  };
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this.scrollingBehaviour);
@@ -170,31 +205,8 @@ class Collection extends React.Component<Props, State> {
   }
 
   render() {
-    let hotspotId;
-    let hpMaterials = [];
-    const collection = this.getCollection();
-    const collectionItems = get(collection, "items", []);
-    const finalItems = collectionItems.length
-      ? collectionItems
-      : this.state.items;
-    this.collectionMaterials = finalItems
-      .filter((opt) => opt.objectType === "material")
-      .map((opt) => opt.material.sku);
-    finalItems
-      .filter((item) => item.objectType === "hotspot")
-      .forEach((hp) => (hotspotId = hp.hotspot.id));
-    this.context.requestHotspot(hotspotId).then((hp: any) => {
-      this.hotspots = hp;
-    });
-    if (this.hotspots && this.hotspots.markers) {
-      for (let hp of this.hotspots.markers) {
-        hpMaterials.push(hp.sku);
-      }
-    }
-    if (hpMaterials.length > 0) {
-      this.collectionMaterials.push(hpMaterials);
-    }
-    if (!collection.id) {
+    console.log(this.collection, "AAA");
+    if (!this.collection) {
       return (
         <React.Fragment>
           <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
@@ -215,7 +227,7 @@ class Collection extends React.Component<Props, State> {
           <i className={"fas fa-chevron-right"} />
         </NavLink>
         <CollectionsToolbar
-          title={collection.name || "collection.name"}
+          title={this.collection.name || "collection.name"}
           isCollection
           filter
           buttons={[
@@ -233,9 +245,9 @@ class Collection extends React.Component<Props, State> {
         />
         <div
           style={{ position: "relative" }}
-          className={!finalItems.length ? styles.emptyCollection : ""}
+          className={!this.collectionItems.length ? styles.emptyCollection : ""}
         >
-          {finalItems.length > 0 && (
+          {this.collectionItems.length > 0 && (
             <div className={styles.masonryWrapper}>
               <ResponsiveMasonry
                 columnsCountBreakPoints={{
@@ -255,7 +267,7 @@ class Collection extends React.Component<Props, State> {
                     }
                     onClick={this.uploadPhoto}
                   />
-                  {finalItems
+                  {this.collectionItems
                     .filter(
                       (item) =>
                         this.state.display.includes(item.objectType) ||
@@ -281,7 +293,7 @@ class Collection extends React.Component<Props, State> {
               {/*/>*/}
             </div>
           )}
-          {finalItems.length < 1 && (
+          {this.collectionItems.length < 1 && (
             <React.Fragment>
               <UploadCard
                 caption={

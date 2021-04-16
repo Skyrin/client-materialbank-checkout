@@ -219,7 +219,7 @@ export type CollectionHotspotT = {
   type: string;
 };
 
-export type HotspotsT = {
+export type HotspotT = {
   id?: number;
   name?: string;
   description?: string;
@@ -230,7 +230,18 @@ export type HotspotsT = {
   tags?: [];
   createdOn?: string;
   updatedOn?: string;
-  markers?: CollectionHotspotT[];
+  markers?: MarkerT[];
+};
+
+export type MarkerT = {
+  id?: number;
+  hotspotId?: number;
+  xCoord?: number;
+  yCoord?: number;
+  sku?: string;
+  createdOn?: string;
+  updatedOn?: string;
+  related?: [];
 };
 
 export type CollectionItemT = {
@@ -245,7 +256,7 @@ export type CollectionItemT = {
   material?: MaterialT;
   room?: RoomT;
   upload?: CollectionUploadT;
-  hotspots?: CollectionHotspotT;
+  hotspot?: CollectionHotspotT;
   updatedBy?: number;
   createdOn?: string;
   updatedOn?: string;

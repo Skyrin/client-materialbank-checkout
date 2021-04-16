@@ -131,7 +131,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
   renderEditItem() {
     let materialItem = this.mapAlgoliaToObject();
     let hotspotItem;
-    if (this.props.item.hotspot) {
+    if (this.props.item.objectType === "hotspot") {
       hotspotItem = JSON.parse(this.props.item.json);
     }
     return (
@@ -157,7 +157,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
 
   renderInfoItem() {
     let hotspotItem;
-    if (this.props.item.hotspot) {
+    if (this.props.item.objectType === "hotspot") {
       hotspotItem = JSON.parse(this.props.item.json);
     }
     return (
@@ -188,7 +188,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
 
   renderHotspotInfo = () => {
     let hotspotItem;
-    if (this.props.item.hotspot) {
+    if (this.props.item.objectType === "hotspot") {
       hotspotItem = JSON.parse(this.props.item.json);
     }
     return (

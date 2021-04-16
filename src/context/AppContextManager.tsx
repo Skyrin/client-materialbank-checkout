@@ -91,8 +91,8 @@ export default class AppContextManager extends React.Component<Props> {
       return this.contextState.collaborators;
     },
 
-    storeHotspots: (hp: CollectionHotspotT) => {
-      this.contextState.hotspots = hp;
+    storeHotspots: (hps: CollectionHotspotT[]) => {
+      this.contextState.hotspots = hps;
     },
 
     getHotspots: async () => {

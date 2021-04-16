@@ -48,7 +48,6 @@ export enum Modals {
 
 abstract class BaseAppContextState {
   private internalHotspots?: CollectionHotspotT[] = [];
-  private internalHotspot?: HotspotT = {};
   private internalCollaborators?: CollectionCollaboratorT = {};
   private internalCart?: CartT = {};
   private internalCartInfoLoading?: boolean = false;
@@ -261,7 +260,7 @@ export class AppContextState extends BaseAppContextState {
 
   async getCollaborators() {}
 
-  storeHotspots(newHotspot) {}
+  storeHotspots() {}
 
   async getHotspots() {}
 
