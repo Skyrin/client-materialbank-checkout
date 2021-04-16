@@ -14,7 +14,7 @@ export default class ExploreTags extends React.Component<any, any> {
         <div className={styles.exploreButtons}>
           <RoundButtons
             buttons={this.props.buttons}
-            onButtonSelected={null}
+            onButtonSelected={() => console.log("explore button clicked")}
             selectedButton={null}
           />
         </div>
