@@ -21,6 +21,7 @@ import {
   CollectionItemT,
   HotspotT,
 } from "../../../../constants/types";
+import ExploreTags from "../../common/ExploreTags/ExploreTags";
 
 interface State {
   commonAreaIsInViewport: boolean;
@@ -40,6 +41,7 @@ class Collection extends React.Component<Props, State> {
   collectionMaterials: any[];
   collectionItems: CollectionItemT[];
   collection: any;
+  hpTags: [];
 
   uploadPhoto = () => {
     this.context.openModal(Modals.UploadPhoto);
@@ -85,7 +87,7 @@ class Collection extends React.Component<Props, State> {
   };
 
   async componentDidMount() {
-    await this.gatherMaterials();
+    await this.gatherMaterialsAndTags();
     window.scrollTo(0, 0);
     window.addEventListener("scroll", this.scrollingBehaviour);
     // TODO: Figure out why this is needed. I suspect images are not loaded fully when this runs.
@@ -161,18 +163,19 @@ class Collection extends React.Component<Props, State> {
     this.forceUpdate();
   }
 
-  gatherMaterials = async () => {
+  gatherMaterialsAndTags = async () => {
     let hpMaterials = [];
     this.hotspots = [];
+    this.hpTags = [];
     this.collection = this.getCollection();
     this.collectionItems = get(this.collection, "items", []);
     this.collectionMaterials = this.collectionItems
       .filter((item) => item.objectType === "material")
       .map((item) => item.material.sku);
-    const hotspotsId = this.collectionItems
+    const hotspotsIds = this.collectionItems
       .filter((hp) => hp.objectType === "hotspot")
       .map((hp) => hp.hotspot.id);
-    for (const hpId of hotspotsId) {
+    for (const hpId of hotspotsIds) {
       await this.context
         .requestHotspot(hpId)
         .then((hp: any) => this.hotspots.push(hp));
@@ -180,6 +183,13 @@ class Collection extends React.Component<Props, State> {
     this.hotspots.forEach((hotspot) => {
       if (hotspot.markers && hotspot.markers.length > 0) {
         hotspot.markers.forEach((marker) => hpMaterials.push(marker.sku));
+      }
+      if (hotspot.tags && hotspot.tags.length > 0) {
+        hotspot.tags.forEach((tag) => this.hpTags.push(tag));
+        this.hpTags = this.hpTags.reduce(function (acc, value) {
+          if (acc.indexOf(value) < 0) acc.push(value);
+          return acc;
+        }, []);
       }
     });
     if (hpMaterials.length > 0) {
@@ -205,7 +215,6 @@ class Collection extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.collection, "AAA");
     if (!this.collection) {
       return (
         <React.Fragment>
@@ -316,6 +325,7 @@ class Collection extends React.Component<Props, State> {
             <MoreIdeas collectionMaterials={this.collectionMaterials} />
           </div>
         )}
+        {this.hpTags.length > 0 && <ExploreTags buttons={this.hpTags} />}
       </React.Fragment>
     );
   }

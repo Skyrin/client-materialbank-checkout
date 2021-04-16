@@ -138,18 +138,6 @@ export default class CollectionsAndPalettes extends React.Component<
                   }}
                 />
               </Switch>
-              <ExploreTags
-                buttons={[
-                  "farmhouse",
-                  "kitchen",
-                  "farmsink",
-                  "tile backsplash",
-                  "wood-look flooring",
-                  "white cabinetry",
-                  "tile flooring",
-                  "cozy color scheme",
-                ]}
-              />
             </div>
           ) : (
             <div className={styles.pageContent}></div>
