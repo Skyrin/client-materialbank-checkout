@@ -73,6 +73,14 @@
     }
   }
 
+  &.editModeCard {
+    .imageContainer {
+      img {
+        border-radius: 0;
+      }
+    }
+  }
+
   .imageContainer {
     position: relative;
     width: 100%;
