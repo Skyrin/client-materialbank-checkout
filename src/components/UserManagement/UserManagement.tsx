@@ -16,7 +16,6 @@ import UserShipping from "./UserShipping/UserShipping";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 import Logo from "../common/Logo/Logo";
 import ResetPassword from "./UserAccount/ResetPassword";
-import { getSamplePage } from "../../utils/general";
 
 export default class UserManagement extends React.Component<any, any> {
   static contextType = AppContext;
