@@ -240,3 +240,45 @@ export const getCustomerOrders = async (context: AppContextState) => {
     console.error(e);
   }
 };
+
+export const requestPasswordResetEmail = async (
+  context: AppContextState,
+  email: String
+) => {
+  const Mutation = `
+    mutation ($email: String!) {
+      requestPasswordResetEmail(email: $email) 
+    }
+  `;
+  try {
+    const resp = await graphqlRequest(context, Mutation, {
+      email: email,
+    });
+    return resp;
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
+  }
+};
+
+export const resetPassword = async (
+  context: AppContextState,
+  email: String,
+  resetPasswordToken: String,
+  newPassword: String
+) => {
+  const Mutation = `
+    mutation ($email: String!, $resetPasswordToken: String!, $newPassword: String!) {
+      resetPassword(email: $email, resetPasswordToken: $resetPasswordToken, newPassword: $newPassword) 
+    }
+  `;
+  try {
+    const resp = await graphqlRequest(context, Mutation, {
+      email: email,
+      resetPasswordToken: resetPasswordToken,
+      newPassword: newPassword,
+    });
+    return resp;
+  } catch (error) {
+    throw new ClientError(error, error.graphqlErrors, error);
+  }
+};

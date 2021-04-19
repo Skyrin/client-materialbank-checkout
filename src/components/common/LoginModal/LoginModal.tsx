@@ -91,6 +91,9 @@ export class LoginModal extends React.Component<any, State> {
     disableBodyScroll(this.modalTarget);
   };
 
+  resetPassword = () => {
+    this.context.openModal(Modals.ResetPassword);
+  };
   render() {
     return (
       <div
@@ -189,7 +192,10 @@ export class LoginModal extends React.Component<any, State> {
               <button className={styles.signInButton} type="submit">
                 Sign In
               </button>
-              <button className={styles.forgotPassword}>
+              <button
+                onClick={this.resetPassword}
+                className={styles.forgotPassword}
+              >
                 Forgot Password?
               </button>
               <div className="horizontal-divider margin-top" />

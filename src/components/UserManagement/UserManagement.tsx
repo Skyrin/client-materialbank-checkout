@@ -1,4 +1,5 @@
 import {
+  RESET_PASSWORD_URL,
   USER_ACCOUNT_URL,
   USER_BILLING_URL,
   USER_MANAGEMENT_URL,
@@ -14,13 +15,18 @@ import UserOrderHistory from "./UserOrderHistory/UserOrderHistory";
 import UserShipping from "./UserShipping/UserShipping";
 import { AppContext, AppContextState, Modals } from "context/AppContext";
 import Logo from "../common/Logo/Logo";
+import ResetPassword from "./UserAccount/ResetPassword";
+import { getSamplePage } from "../../utils/general";
 
 export default class UserManagement extends React.Component<any, any> {
   static contextType = AppContext;
   context!: AppContextState;
 
   componentDidMount() {
-    if (!this.context.isLoggedIn) {
+    if (
+      !this.context.isLoggedIn &&
+      window.location.href.indexOf(RESET_PASSWORD_URL) == -1
+    ) {
       this.context.openModal(Modals.Login);
     }
   }
@@ -49,6 +55,11 @@ export default class UserManagement extends React.Component<any, any> {
                 <Route path={USER_ACCOUNT_URL} component={UserAccount} />
                 <Route path={USER_BILLING_URL} component={UserBilling} />
                 <Route path={USER_SHIPPING_URL} component={UserShipping} />
+              </Switch>
+            )}
+            {!this.context.isLoggedIn && (
+              <Switch>
+                <Route path={RESET_PASSWORD_URL} component={ResetPassword} />
               </Switch>
             )}
           </div>
