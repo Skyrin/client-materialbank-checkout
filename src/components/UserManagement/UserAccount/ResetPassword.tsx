@@ -6,6 +6,7 @@ import styles from "./ResetPassword.module.scss";
 import * as yup from "yup";
 import { PASSWORD_REGEX } from "../../../constants/general";
 import { extractErrors } from "../../../utils/forms";
+import { goToStorefront } from "../../../constants/urls";
 
 const resetPasswordSchema = yup.object().shape({
   password: yup
@@ -72,8 +73,8 @@ export default class ResetPassword extends React.Component<any, any> {
   };
 
   resetPassword = async () => {
-    let resetToken = new URLSearchParams(window.location.search).get("token");
-    console.log(resetToken);
+    const params = new URLSearchParams(window.location.search);
+    const resetToken = params.get("token");
     const isValid = !Object.values(this.state.resetPasswordErrors).some(
       (field) => field !== null && field !== ""
     );
@@ -85,6 +86,7 @@ export default class ResetPassword extends React.Component<any, any> {
         this.state.resetPassword.confirmPassword
       );
       console.log("reset password response", resp);
+      goToStorefront();
     }
   };
 
