@@ -7,7 +7,8 @@
 
   &.small {
     img,
-    .numberToShow {
+    .numberToShow,
+    .userInitials {
       height: 25px;
       width: 25px;
       font-size: 12px;
@@ -23,6 +24,17 @@
     border-radius: 100px;
     object-fit: cover;
     margin-left: -5px;
+  }
+
+  .userInitials {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 40px;
+    margin-left: -5px;
+    background-color: rgba(204, 183, 158, 0.2);
   }
 
   .numberToShow {

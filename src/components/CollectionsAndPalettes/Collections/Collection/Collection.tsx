@@ -15,14 +15,13 @@ import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreId
 import { isOnMobile } from "../../../../utils/responsive";
 import { get } from "lodash-es";
 import Loader from "components/common/Loader/Loader";
-import { CollaboratorT, CollectionItemT } from "../../../../constants/types";
+import { CollectionItemT } from "../../../../constants/types";
 
 interface State {
   commonAreaIsInViewport: boolean;
   mode: string;
   display: string;
   items: CollectionItemT[];
-  person: CollaboratorT[];
 }
 
 type Props = RouteComponentProps;
@@ -43,7 +42,6 @@ class Collection extends React.Component<Props, State> {
       mode: "image",
       display: "everything",
       items: [],
-      person: null,
     };
   }
 
@@ -89,65 +87,6 @@ class Collection extends React.Component<Props, State> {
     if (collectionId) {
       this.context.requestCollection(collectionId);
     }
-    //TODO implement the call
-    const collaborators = [
-      {
-        id: 1,
-        firstName: "Anne",
-        lastName: "Enduser",
-        isAuthenticated: true,
-        isSharedWith: true,
-        imagePath:
-          "https://vanishingportrait.com/wp-content/uploads/2019/05/tiffanytrenda-vanishingportrait-identity.jpg",
-        email: "anne.enduser@gmail.com",
-      },
-      {
-        id: 2,
-        firstName: "Dave",
-        lastName: "Friendname",
-        isAuthenticated: false,
-        isSharedWith: true,
-        imagePath:
-          "https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg?size=626&ext=jpg",
-        email: "name.@gmail.com",
-        access: "write",
-      },
-      {
-        id: 3,
-        firstName: "Michael",
-        lastName: "Otherguy",
-        isAuthenticated: false,
-        isSharedWith: true,
-        imagePath:
-          "https://i.pinimg.com/originals/9c/a9/b2/9ca9b293ed52b3a124b802449eb653d0.jpg",
-        email: "name@gmail.com",
-        access: "write",
-      },
-      {
-        id: 4,
-        firstName: "Amelia",
-        lastName: "User",
-        isAuthenticated: false,
-        isSharedWith: true,
-        imagePath:
-          "https://www.adobe.com/content/dam/cc/us/en/creativecloud/photography/discover/portrait-photography/CODERED_B1_portrait_photography-P4a_438x447.jpg.img.jpg",
-        email: "name@gmail.com",
-        access: "read",
-      },
-      {
-        id: 5,
-        firstName: "Marie",
-        lastName: "Ishere",
-        isAuthenticated: false,
-        isSharedWith: false,
-        imagePath:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWRntDjXs_RggTSWM4AdHwTQ4ppLL44GLoFw&usqp=CAU",
-        email: "name@gmail.com",
-        access: "read",
-      },
-    ];
-    this.context.storeCollaborators(collaborators);
-    this.setState({ person: collaborators });
   }
 
   componentWillUnmount() {
@@ -205,7 +144,7 @@ class Collection extends React.Component<Props, State> {
             "rooms",
             "palettes",
           ]}
-          collaborators={this.state.person}
+          collaborators={collection.collaborators}
           activeButtonDisplay={this.state.display}
           toggleDisplay={this.toggleDisplay}
           activeButtonMode={this.state.mode}

@@ -8,14 +8,14 @@ export default class AcceptInvitation extends React.Component<any, any> {
   context!: AppContextState;
 
   async componentDidMount() {
-    let token = new URLSearchParams(window.location.search).get("token");
-    if (token) {
-      const resp = await acceptInvitation(
-        this.context,
-        // id, //TODO figure out where this will come from
-        15,
-        token
-      );
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    let collectionId: any = params.get("collection");
+    if (collectionId) {
+      collectionId = parseInt(collectionId);
+    }
+    if (token && collectionId) {
+      const resp = await acceptInvitation(this.context, collectionId, token);
       console.log("accept invite response", resp);
       this.props.history.push(COLLECTIONS_URL);
     } else {
