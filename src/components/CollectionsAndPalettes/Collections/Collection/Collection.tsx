@@ -88,20 +88,20 @@ class Collection extends React.Component<Props, State> {
     this.setState({ display: display });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    const collectionId = parseInt(
+      get(this.props.match, "params.collection_id", "")
+    );
+    if (collectionId) {
+      await this.context.requestCollection(collectionId);
+    }
+    await this.gatherMaterialsAndTags();
     window.scrollTo(0, 0);
     window.addEventListener("scroll", this.scrollingBehaviour);
     // TODO: Figure out why this is needed. I suspect images are not loaded fully when this runs.
     window.setTimeout(() => {
       this.scrollingBehaviour();
     }, 100);
-
-    const collectionId = parseInt(
-      get(this.props.match, "params.collection_id", "")
-    );
-    if (collectionId) {
-      this.context.requestCollection(collectionId);
-    }
   }
 
   gatherMaterialsAndTags = async () => {
@@ -195,7 +195,7 @@ class Collection extends React.Component<Props, State> {
             "rooms",
             "palettes",
           ]}
-          collaborators={collection.collaborators}
+          collaborators={this.state.collection.collaborators}
           activeButtonDisplay={this.state.display}
           toggleDisplay={this.toggleDisplay}
           activeButtonMode={this.state.mode}
