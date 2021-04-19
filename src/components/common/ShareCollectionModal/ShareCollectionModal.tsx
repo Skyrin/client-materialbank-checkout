@@ -5,19 +5,19 @@ import { AppContext, AppContextState } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
 import Input from "../Input/Input";
-import { CollaboratorT } from "../../../constants/types";
 import { sendInvitation } from "../../../context/CollectionsAPI/api";
 import { COLLECTION_URL } from "../../../constants/urls";
-import { get } from "lodash-es";
+import { forOwn, get } from "lodash-es";
 import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
+import { collectionsGraphqlRequest } from "CollectionsGraphqlClient";
 
 type State = {
   email: string;
   access: string;
   publicLink: string;
-  collaborators: CollaboratorT[];
-  isPrivate: boolean;
   isLoading: boolean;
+  changedCollaboratorAccess: any;
+  isPublicOverride: boolean;
 };
 type Props = RouteComponentProps;
 
@@ -30,23 +30,12 @@ class ShareCollectionModal extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      email: null,
+      email: "",
       access: "read",
       publicLink: "https://designshop.link",
-      collaborators: [
-        {
-          id: null,
-          firstName: null,
-          lastName: null,
-          email: null,
-          imagePath: null,
-          isAuthenticated: null,
-          isSharedWith: null,
-          access: null,
-        },
-      ],
-      isPrivate: false,
       isLoading: false,
+      changedCollaboratorAccess: {},
+      isPublicOverride: null,
     };
   }
 
@@ -55,15 +44,13 @@ class ShareCollectionModal extends React.Component<Props, State> {
   };
 
   closeModal = () => {
+    this.context.requestCollection(this.getCollectionId());
     this.context.closeModal();
   };
 
   componentDidMount() {
     this.modalTarget = document.querySelector("#shareCollectionId");
     this.disableWindowsScroll();
-    this.context.getCollaborators().then((collaborators: any) => {
-      this.setState({ collaborators });
-    });
   }
 
   componentWillUnmount() {
@@ -78,19 +65,33 @@ class ShareCollectionModal extends React.Component<Props, State> {
     disableBodyScroll(this.modalTarget);
   };
 
-  handleChange = (event, index) => {
-    let collab = this.state.collaborators.map((item) => {
-      if (item.id === index) {
-        return { ...item, isSharedWith: !item.isSharedWith };
+  updateCollaboratorAccess = async (userId: number, access: string) => {
+    const Mutation = `
+      mutation setCollaboratorAccess($collectionId: Int!, $userId: Int!, $access: AccessType!) {
+        collectionSetCollaboratorAccess(id: $collectionId, userId: $userId, access: $access)
       }
-      return item;
+    `;
+    const resp = await collectionsGraphqlRequest(this.context, Mutation, {
+      collectionId: this.getCollectionId(),
+      userId: userId,
+      access: access,
     });
-    this.setState({ collaborators: collab });
+
+    return resp;
   };
 
-  updateAccess = (e: any) => {
+  changeAccess = (e: any) => {
     this.setState({
       access: e.target.value,
+    });
+  };
+
+  changeCollaboratorAccess = (userId: number, access: string) => {
+    this.setState({
+      changedCollaboratorAccess: {
+        ...this.state.changedCollaboratorAccess,
+        [userId]: access,
+      },
     });
   };
 
@@ -99,11 +100,19 @@ class ShareCollectionModal extends React.Component<Props, State> {
       path: COLLECTION_URL,
       exact: true,
     });
-    return get(collectionPageResult, "params.collection_id");
+    const id = get(collectionPageResult, "params.collection_id");
+    if (id) {
+      return parseInt(id);
+    }
+    return;
   };
 
+  getCollection() {
+    return this.context.collection;
+  }
+
   submitInvitation = async (e: any) => {
-    const collectionId = parseInt(this.getCollectionId());
+    const collectionId = this.getCollectionId();
     if (collectionId) {
       const resp = await sendInvitation(
         this.context,
@@ -114,6 +123,41 @@ class ShareCollectionModal extends React.Component<Props, State> {
       console.log("send invite response", resp);
       this.closeModal();
     }
+  };
+
+  submit = async () => {
+    // If the collection became private, only call the collectionSetPrivate mutation
+    if (
+      this.getCollection().isPublic &&
+      this.state.isPublicOverride === false
+    ) {
+      const Mutation = `
+        mutation setPrivate($collectionId: Int!) {
+          collectionSetPrivate(id: $collectionId)
+        }
+      `;
+      await collectionsGraphqlRequest(this.context, Mutation, {
+        collectionId: this.getCollectionId(),
+      });
+      this.closeModal();
+      return;
+    }
+
+    if (!this.getCollection().isPublic && this.state.isPublicOverride) {
+      const Mutation = `
+        mutation setPublic($collectionId: Int!) {
+          collectionSetPublic(id: $collectionId)
+        }
+      `;
+      await collectionsGraphqlRequest(this.context, Mutation, {
+        collectionId: this.getCollectionId(),
+      });
+    }
+
+    forOwn(this.state.changedCollaboratorAccess, async (access, userId) => {
+      await this.updateCollaboratorAccess(parseInt(userId), access);
+    });
+    this.closeModal();
   };
 
   renderEmailSection = () => {
@@ -144,10 +188,17 @@ class ShareCollectionModal extends React.Component<Props, State> {
           <select
             value={this.state.access}
             className={styles.emailDropdown}
-            onChange={this.updateAccess}
+            onChange={this.changeAccess}
           >
             {accessType.map((access) => {
-              return <option value={access.accessType}>{access.role}</option>;
+              return (
+                <option
+                  value={access.accessType}
+                  key={`invite_access_${access.role}`}
+                >
+                  {access.role}
+                </option>
+              );
             })}
           </select>
         </div>
@@ -172,6 +223,8 @@ class ShareCollectionModal extends React.Component<Props, State> {
         accessType: "read",
       },
     ];
+
+    const collection = this.getCollection();
     return (
       <React.Fragment>
         <div className={styles.subTitle}>
@@ -179,12 +232,28 @@ class ShareCollectionModal extends React.Component<Props, State> {
           Adjust sharing settings for collaborators
         </div>
         <div className={styles.collaborators}>
-          {this.state.collaborators &&
-            this.state.collaborators.map((collaborator: any) => {
+          {collection.collaborators &&
+            collection.collaborators.map((collaborator: any) => {
               return (
-                <div className={styles.collaboratorsContainer}>
+                <div
+                  className={styles.collaboratorsContainer}
+                  key={`collaborator_${collaborator.userId}`}
+                >
                   <div className={styles.collaboratorsInfo}>
-                    <img src={collaborator.imagePath} alt="" />
+                    {collaborator.profileImage ? (
+                      <img src={collaborator.imagePath} alt="" />
+                    ) : (
+                      <div
+                        className={styles.userInitials}
+                        key={`collaborator_${collaborator.userId}`}
+                      >
+                        {`${collaborator.firstName
+                          .charAt(0)
+                          .toUpperCase()}${collaborator.lastName
+                          .charAt(0)
+                          .toUpperCase()}`}
+                      </div>
+                    )}
                     <div>
                       <span className={styles.collaboratorName}>
                         {collaborator.firstName + " " + collaborator.lastName}
@@ -196,24 +265,31 @@ class ShareCollectionModal extends React.Component<Props, State> {
                     </div>
                   </div>
                   <div className={styles.checkboxContainer}>
-                    {collaborator.isAuthenticated && <span>Owner</span>}
-                    {!collaborator.isAuthenticated && (
-                      <React.Fragment>
-                        <select
-                          defaultValue={collaborator.access}
-                          className={styles.emailDropdown}
-                          onChange={this.updateAccess}
-                        >
-                          {accessType.map((access) => {
-                            return (
-                              <option value={access.accessType}>
-                                {access.role}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </React.Fragment>
-                    )}
+                    <select
+                      value={
+                        this.state.changedCollaboratorAccess[
+                          collaborator.userId
+                        ] || collaborator.access
+                      }
+                      className={styles.emailDropdown}
+                      onChange={(e) => {
+                        this.changeCollaboratorAccess(
+                          collaborator.userId,
+                          e.target.value
+                        );
+                      }}
+                    >
+                      {accessType.map((access) => {
+                        return (
+                          <option
+                            value={access.accessType}
+                            key={`c_${collaborator.userId}_${access.role}`}
+                          >
+                            {access.role}
+                          </option>
+                        );
+                      })}
+                    </select>
                   </div>
                 </div>
               );
@@ -224,6 +300,10 @@ class ShareCollectionModal extends React.Component<Props, State> {
   };
 
   renderSharingSection = () => {
+    const isPublic =
+      this.state.isPublicOverride !== null
+        ? this.state.isPublicOverride
+        : this.getCollection().isPublic;
     return (
       <React.Fragment>
         <div className={styles.title}> Create a public link</div>
@@ -247,18 +327,18 @@ class ShareCollectionModal extends React.Component<Props, State> {
           </div>
         </div>
         <div
-          onClick={() => this.setState({ isPrivate: !this.state.isPrivate })}
+          onClick={() => this.setState({ isPublicOverride: !isPublic })}
           className={cn(styles.subTitle, styles.makePrivate)}
         >
-          {this.state.isPrivate ? (
-            <React.Fragment>
-              <i className="far fa-lock"></i>
-              Make this collection public
-            </React.Fragment>
-          ) : (
+          {isPublic ? (
             <React.Fragment>
               <i className="far fa-lock-open"></i>
               Make this collection private and remove collaborators
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <i className="far fa-lock"></i>
+              Make this collection public
             </React.Fragment>
           )}
         </div>
@@ -290,7 +370,9 @@ class ShareCollectionModal extends React.Component<Props, State> {
             <div className="horizontal-divider-toolbar" />
             {this.renderSharingSection()}
             <div className={styles.buttonsContainer}>
-              <div className={styles.createButton}>Save Changes</div>
+              <div className={styles.createButton} onClick={this.submit}>
+                Save Changes
+              </div>
               <div className={styles.cancelButton} onClick={this.closeModal}>
                 Cancel
               </div>

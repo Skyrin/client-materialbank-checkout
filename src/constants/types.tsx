@@ -161,16 +161,6 @@ export type CustomerT = {
   mobile?: string;
 };
 
-export type collectionCollaboratorT = {
-  id?: number;
-  firstName?: string;
-  lastName?: string;
-  isAuthenticated?: boolean;
-  isSharedWith?: boolean;
-  imagePath?: any;
-  email?: string;
-};
-
 export type PaletteItemT = {
   id?: number;
   sku?: string;
@@ -232,8 +222,13 @@ export type CollectionItemT = {
 
 export type CollectionCollaboratorT = {
   userId?: number;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  profileImage?: string;
   access?: "read" | "write";
 };
+
 export type CollaboratorT = {
   id?: number;
   firstName?: string;
