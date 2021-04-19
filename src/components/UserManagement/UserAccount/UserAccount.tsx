@@ -363,8 +363,7 @@ export default class UserAccount extends React.Component<Props, State> {
   removePhoto = async () => {
     const response = await RESTRequest("DELETE", "customers/profile-image");
     const respBody = await response.json();
-    console.log("REMOVED");
-    console.log(respBody);
+    console.log("REMOVED", respBody);
     this.setState({
       file: null,
       fileUrl: "",
