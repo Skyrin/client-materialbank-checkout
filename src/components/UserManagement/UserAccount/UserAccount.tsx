@@ -421,7 +421,7 @@ export default class UserAccount extends React.Component<Props, State> {
       const updateResponse = await RESTRequest("PUT", "customers/me", {
         customer: customer,
       });
-      const respBody = await updateResponse.json();
+      await updateResponse.json();
     }
   };
 }

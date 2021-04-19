@@ -6,9 +6,10 @@ import {
   AppContextState,
   Modals,
 } from "../../../../context/AppContext";
+import { CollectionCollaboratorT } from "constants/types";
 
 interface Props {
-  collaborators: any;
+  collaborators: CollectionCollaboratorT[];
   small?: boolean;
 }
 
@@ -43,13 +44,30 @@ export default class Collaborators extends React.Component<Props, any> {
           >
             {this.props.collaborators
               .slice(0, this.maxNoCollaborators)
-              .map((collaborator) => (
-                <img
-                  key={collaborator.id}
-                  src={collaborator.imagePath}
-                  alt=""
-                />
-              ))}
+              .map((collaborator) => {
+                if (collaborator.profileImage) {
+                  return (
+                    <img
+                      key={`collaborator_${collaborator.userId}`}
+                      src={collaborator.profileImage}
+                      alt=""
+                    />
+                  );
+                } else {
+                  return (
+                    <div
+                      className={styles.userInitials}
+                      key={`collaborator_${collaborator.userId}`}
+                    >
+                      {`${collaborator.firstName
+                        .charAt(0)
+                        .toUpperCase()}${collaborator.lastName
+                        .charAt(0)
+                        .toUpperCase()}`}
+                    </div>
+                  );
+                }
+              })}
             {this.props.collaborators.length - this.maxNoCollaborators > 0 && (
               <span className={styles.numberToShow}>+{this.numberToShow}</span>
             )}

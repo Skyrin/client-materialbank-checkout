@@ -22,6 +22,7 @@
       height: unset !important;
       width: 100% !important;
       margin: 0 !important;
+      border-radius: 0 !important;
     }
   }
 
@@ -55,10 +56,27 @@
       visibility: hidden;
     }
 
+    .infoImage {
+      border-radius: 0;
+    }
+
     &:hover {
       .infoContainer,
       .sampleCart {
         visibility: visible;
+      }
+
+      .infoImage {
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+      }
+    }
+  }
+
+  &.editModeCard {
+    .imageContainer {
+      img {
+        border-radius: 0;
       }
     }
   }
@@ -115,10 +133,8 @@
       width: 100%;
       margin-bottom: -5px;
       object-fit: cover;
-      &.infoImage {
-        border-bottom-left-radius: 30px;
-        border-bottom-right-radius: 30px;
-      }
+      border-bottom-left-radius: 30px;
+      border-bottom-right-radius: 30px;
     }
 
     .sampleCart {

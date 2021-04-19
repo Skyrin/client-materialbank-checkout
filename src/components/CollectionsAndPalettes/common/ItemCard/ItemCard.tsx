@@ -255,6 +255,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
             ref={this.card}
             className={cn(styles.itemCard, {
               [styles.imageModeCard]: this.props.mode === "image",
+              [styles.editModeCard]: this.props.mode === "edit",
             })}
           >
             {this.renderSwitch(this.props.mode)}

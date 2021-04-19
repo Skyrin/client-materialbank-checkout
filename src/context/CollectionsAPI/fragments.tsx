@@ -59,6 +59,15 @@ export const CollectionItemFragment = `
   updatedOn
 `;
 
+export const CollaboratorFragment = `
+  userId
+  access
+  firstName
+  lastName
+  email
+  profileImage
+`;
+
 export const CollectionFragment = `
   id
   userId
@@ -70,8 +79,7 @@ export const CollectionFragment = `
     ${CollectionItemFragment}
   }
   collaborators {
-    userId
-    access
+    ${CollaboratorFragment}
   }
 `;
 
