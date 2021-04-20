@@ -284,18 +284,14 @@ export default class UserBilling extends React.Component<Props, State> {
     }
   }
 
-  makeDefault(token: string) {
-    let paymentMethods = this.paymentMethods;
-    paymentMethods = paymentMethods.map((paymentMethod) => ({
-      ...paymentMethod,
-      isDefault: false,
-    }));
-
-    paymentMethods.find((payment) => payment.token === token).isDefault = true;
-
-    this.setState({
-      paymentMethods: paymentMethods,
-    });
+  async makeDefault(token: string) {
+    // const resp = await RESTRequest(
+    //   "GET",
+    //   `customers/me/stored-payment-methods/default/${token}`
+    // );
+    // const respBody = await resp.json();
+    // console.log("DEFAULT", respBody);
+    //
   }
 
   getCreditCardIcon(paymentMethod: PaymentMethod) {

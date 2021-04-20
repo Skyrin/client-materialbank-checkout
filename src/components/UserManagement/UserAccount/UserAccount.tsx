@@ -361,26 +361,14 @@ export default class UserAccount extends React.Component<Props, State> {
   };
 
   removePhoto = async () => {
+    const response = await RESTRequest("DELETE", "customers/profile-image");
+    const respBody = await response.json();
+    console.log("REMOVED", respBody);
     this.setState({
       file: null,
       fileUrl: "",
       fileName: "",
     });
-    // const params = {
-    //   customer: {
-    //     attribute_code: "profile_image",
-    //     value: {}
-    //   }
-    // };
-    // console.log('IMAGE REMOVE BODY', params);
-
-    // const response = await RESTRequest(
-    //   "DELETE",
-    //   "customers/profile-image",
-    // )
-    // const respBody = await response.json();
-    // console.log("REMOVED");
-    // console.log(respBody)
   };
 
   saveNewPasswordClick = (currentPassword: string, newPassword?: string) => {
