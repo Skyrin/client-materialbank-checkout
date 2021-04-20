@@ -3,12 +3,14 @@ import {
   AddressT,
   CartT,
   CollectionCollaboratorT,
+  CollectionHotspotT,
   CollectionT,
   CustomerT,
+  HotspotT,
   OrderT,
   StoredPaymentMethodT,
 } from "constants/types";
-import { cloneDeep } from "lodash-es";
+import { clone, cloneDeep } from "lodash-es";
 import { CartAddressInput } from "./CheckoutAPI/models";
 import {
   CreateCustomerInput,
@@ -45,6 +47,7 @@ export enum Modals {
 }
 
 abstract class BaseAppContextState {
+  private internalHotspots?: CollectionHotspotT[] = [];
   private internalCollaborators?: CollectionCollaboratorT = {};
   private internalCart?: CartT = {};
   private internalCartInfoLoading?: boolean = false;
@@ -69,6 +72,14 @@ abstract class BaseAppContextState {
   private internalRecommendedProductSKUsLoading: boolean = false;
 
   private internalOrderSummaryOpen: boolean = false;
+
+  public get hotspots() {
+    return cloneDeep(this.internalHotspots);
+  }
+
+  public set hotspots(newHotspots) {
+    this.internalHotspots = newHotspots;
+  }
 
   public get collaborators() {
     return cloneDeep(this.internalCollaborators);
@@ -198,6 +209,14 @@ abstract class BaseAppContextState {
     this.internalCollection = cloneDeep(newCollection);
   }
 
+  public get hotspot() {
+    return cloneDeep(this.internalHotspot);
+  }
+
+  public set hotspot(newHotspot: HotspotT) {
+    this.internalHotspot = cloneDeep(newHotspot);
+  }
+
   public get collectionLoading() {
     return !!this.internalCollectionLoading;
   }
@@ -240,6 +259,10 @@ export class AppContextState extends BaseAppContextState {
   storeCollaborators(newCollaborator) {}
 
   async getCollaborators() {}
+
+  storeHotspots() {}
+
+  async getHotspots() {}
 
   updateCart(newCart: CartT) {}
 
@@ -340,6 +363,14 @@ export class AppContextState extends BaseAppContextState {
   setOrderSummaryOpen(newValue: boolean) {}
 
   async changeCartItemQuantity(sku: string, newQuantity: number) {}
+
+  async requestHotspots(input: CollectionsQueryInput): Promise<CollectionT[]> {
+    return Promise.resolve([]);
+  }
+
+  async requestHotspot(hotspotId: number): Promise<CollectionT> {
+    return Promise.resolve({});
+  }
 }
 
 export const AppContext = React.createContext(new AppContextState() as any);

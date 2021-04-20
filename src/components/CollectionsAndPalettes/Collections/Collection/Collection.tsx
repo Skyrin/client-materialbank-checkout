@@ -15,13 +15,24 @@ import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreId
 import { isOnMobile } from "../../../../utils/responsive";
 import { get } from "lodash-es";
 import Loader from "components/common/Loader/Loader";
-import { CollectionItemT } from "../../../../constants/types";
+import {
+  CollaboratorT,
+  CollectionHotspotT,
+  CollectionItemT,
+  CollectionT,
+  HotspotT,
+} from "../../../../constants/types";
+import ExploreTags from "../../common/ExploreTags/ExploreTags";
 
 interface State {
   commonAreaIsInViewport: boolean;
   mode: string;
   display: string;
-  items: CollectionItemT[];
+  hotspots: HotspotT[];
+  collectionMaterials: string[];
+  collectionItems: CollectionItemT[];
+  collection: CollectionT;
+  hpTags: string[];
 }
 
 type Props = RouteComponentProps;
@@ -41,7 +52,11 @@ class Collection extends React.Component<Props, State> {
       commonAreaIsInViewport: false,
       mode: "image",
       display: "everything",
-      items: [],
+      hotspots: [],
+      collectionMaterials: [],
+      collectionItems: [],
+      collection: null,
+      hpTags: [],
     };
   }
 
@@ -73,21 +88,63 @@ class Collection extends React.Component<Props, State> {
     this.setState({ display: display });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    const collectionId = parseInt(
+      get(this.props.match, "params.collection_id", "")
+    );
+    if (collectionId) {
+      await this.context.requestCollection(collectionId);
+    }
+    await this.gatherMaterialsAndTags();
     window.scrollTo(0, 0);
     window.addEventListener("scroll", this.scrollingBehaviour);
     // TODO: Figure out why this is needed. I suspect images are not loaded fully when this runs.
     window.setTimeout(() => {
       this.scrollingBehaviour();
     }, 100);
-
-    const collectionId = parseInt(
-      get(this.props.match, "params.collection_id", "")
-    );
-    if (collectionId) {
-      this.context.requestCollection(collectionId);
-    }
   }
+
+  gatherMaterialsAndTags = async () => {
+    const materials = [];
+    const hotspots = [];
+    const hpTags = [];
+    this.setState({ collection: this.getCollection() });
+    this.setState({ collectionItems: get(this.state.collection, "items", []) });
+    materials.concat(
+      this.state.collectionItems
+        .filter((item) => item.objectType === "material")
+        .map((item) => item.material.sku)
+    );
+    const hotspotsIds = this.state.collectionItems
+      .filter((hp) => hp.objectType === "hotspot")
+      .map((hp) => hp.hotspot.id);
+    for (const hpId of hotspotsIds) {
+      await this.context
+        .requestHotspot(hpId)
+        .then((hp: any) => hotspots.push(hp));
+      this.setState({ hotspots: hotspots });
+    }
+    this.state.hotspots.forEach((hotspot) => {
+      if (hotspot.markers && hotspot.markers.length > 0) {
+        hotspot.markers.forEach((marker) => materials.push(marker.sku));
+      }
+      if (hotspot.tags && hotspot.tags.length > 0) {
+        hotspot.tags.forEach((tag) => hpTags.push(tag));
+        this.setState({ hpTags: hpTags });
+        this.setState({
+          hpTags: this.state.hpTags.reduce(function (acc, value) {
+            if (acc.indexOf(value) < 0) acc.push(value);
+            return acc;
+          }, []),
+        });
+      }
+    });
+    if (materials.length > 0) {
+      this.setState({
+        collectionMaterials: this.state.collectionMaterials.concat(materials),
+      });
+    }
+  };
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this.scrollingBehaviour);
@@ -107,13 +164,7 @@ class Collection extends React.Component<Props, State> {
   }
 
   render() {
-    const collection = this.getCollection();
-    const collectionItems = get(collection, "items", []);
-    const finalItems = collectionItems.length
-      ? collectionItems
-      : this.state.items;
-    let materials = finalItems.filter((item) => item.objectType === "material");
-    if (!collection.id) {
+    if (!this.state.collection) {
       return (
         <React.Fragment>
           <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
@@ -134,7 +185,7 @@ class Collection extends React.Component<Props, State> {
           <i className={"fas fa-chevron-right"} />
         </NavLink>
         <CollectionsToolbar
-          title={collection.name || "collection.name"}
+          title={this.state.collection.name || "collection.name"}
           isCollection
           filter
           buttons={[
@@ -144,7 +195,7 @@ class Collection extends React.Component<Props, State> {
             "rooms",
             "palettes",
           ]}
-          collaborators={collection.collaborators}
+          collaborators={this.state.collection.collaborators}
           activeButtonDisplay={this.state.display}
           toggleDisplay={this.toggleDisplay}
           activeButtonMode={this.state.mode}
@@ -152,9 +203,11 @@ class Collection extends React.Component<Props, State> {
         />
         <div
           style={{ position: "relative" }}
-          className={!finalItems.length ? styles.emptyCollection : ""}
+          className={
+            !this.state.collectionItems.length ? styles.emptyCollection : ""
+          }
         >
-          {finalItems.length > 0 && (
+          {this.state.collectionItems.length > 0 && (
             <div className={styles.masonryWrapper}>
               <ResponsiveMasonry
                 columnsCountBreakPoints={{
@@ -174,7 +227,7 @@ class Collection extends React.Component<Props, State> {
                     }
                     onClick={this.uploadPhoto}
                   />
-                  {finalItems
+                  {this.state.collectionItems
                     .filter(
                       (item) =>
                         this.state.display.includes(item.objectType) ||
@@ -200,7 +253,7 @@ class Collection extends React.Component<Props, State> {
               {/*/>*/}
             </div>
           )}
-          {finalItems.length < 1 && (
+          {this.state.collectionItems.length < 1 && (
             <React.Fragment>
               <UploadCard
                 caption={
@@ -218,14 +271,13 @@ class Collection extends React.Component<Props, State> {
         </div>
 
         {/*The commonArea element is added here in order to keep the AddToCart Button inside the Collection Cards container, also decide its position*/}
-        {materials.length > 0 && (
+        {this.state.collectionMaterials.length > 0 && (
           <div className={"commonArea"}>
-            <MoreIdeas
-              collectionMaterials={finalItems.filter(
-                (item) => item.objectType === "material"
-              )}
-            />
+            <MoreIdeas collectionMaterials={this.state.collectionMaterials} />
           </div>
+        )}
+        {this.state.hpTags.length > 0 && (
+          <ExploreTags buttons={this.state.hpTags} />
         )}
       </React.Fragment>
     );

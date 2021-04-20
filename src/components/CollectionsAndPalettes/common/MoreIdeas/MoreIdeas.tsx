@@ -23,12 +23,12 @@ export default class MoreIdeas extends React.Component<Props, any> {
   }
 
   async componentDidMount() {
-    const recommendedSKUs = this.props.collectionMaterials.map(
-      (p) => p.material.sku
-    );
-    console.log("recommended_skus", recommendedSKUs);
-    if (recommendedSKUs.length) {
-      await this.context.requestRecommendedProductSKUs(10, recommendedSKUs);
+    if (this.props.collectionMaterials) {
+      const recommendedSKUs = this.props.collectionMaterials.map((p) => p);
+      console.log("recommended_skus", recommendedSKUs);
+      if (recommendedSKUs.length) {
+        await this.context.requestRecommendedProductSKUs(10, recommendedSKUs);
+      }
     }
   }
 

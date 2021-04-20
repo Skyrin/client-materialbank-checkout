@@ -1,6 +1,7 @@
 import {
   CartT,
   CollectionCollaboratorT,
+  CollectionHotspotT,
   CollectionT,
   CustomerT,
   OrderT,
@@ -55,6 +56,8 @@ import {
   createCollection,
   getCollection,
   getCollections,
+  getHotspot,
+  getHotspots,
 } from "./CollectionsAPI/api";
 import { ProductsCache } from "./ProductsCache";
 import { algoliaProducts } from "algolia";
@@ -86,6 +89,14 @@ export default class AppContextManager extends React.Component<Props> {
 
     getCollaborators: async () => {
       return this.contextState.collaborators;
+    },
+
+    storeHotspots: (hps: CollectionHotspotT[]) => {
+      this.contextState.hotspots = hps;
+    },
+
+    getHotspots: async () => {
+      return this.contextState.hotspots;
     },
 
     updateCart: (newCart: CartT) => {
@@ -601,6 +612,17 @@ export default class AppContextManager extends React.Component<Props> {
       console.log("GOT COLLECTION", collection);
       this.forceUpdate();
       return collection;
+    },
+
+    requestHotspots: async (input: CollectionsQueryInput) => {
+      const hotspots = await getHotspots(this.getFullContext(), input);
+      return hotspots;
+    },
+
+    requestHotspot: async (hotspotId: number) => {
+      const hotspot = await getHotspot(this.getFullContext(), hotspotId);
+      this.contextState.hotspot = hotspot;
+      return hotspot;
     },
 
     createCollection: async (input: CreateCollectionInput) => {

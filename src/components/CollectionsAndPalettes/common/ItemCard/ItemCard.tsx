@@ -98,7 +98,7 @@ class ItemCard extends React.Component<Props & ItemProps, any> {
   };
 
   mapAlgoliaToObject(): any {
-    let material = null;
+    let material;
     if (this.props.item.material) {
       material = this.props.item.material;
     } else return;
