@@ -105,16 +105,16 @@ class Collection extends React.Component<Props, State> {
   }
 
   gatherMaterialsAndTags = async () => {
-    let hpMaterials = [];
-    let hotspots = [];
-    let hpTags = [];
+    const materials = [];
+    const hotspots = [];
+    const hpTags = [];
     this.setState({ collection: this.getCollection() });
     this.setState({ collectionItems: get(this.state.collection, "items", []) });
-    this.setState({
-      collectionMaterials: this.state.collectionItems
+    materials.concat(
+      this.state.collectionItems
         .filter((item) => item.objectType === "material")
-        .map((item) => item.material.sku),
-    });
+        .map((item) => item.material.sku)
+    );
     const hotspotsIds = this.state.collectionItems
       .filter((hp) => hp.objectType === "hotspot")
       .map((hp) => hp.hotspot.id);
@@ -126,7 +126,7 @@ class Collection extends React.Component<Props, State> {
     }
     this.state.hotspots.forEach((hotspot) => {
       if (hotspot.markers && hotspot.markers.length > 0) {
-        hotspot.markers.forEach((marker) => hpMaterials.push(marker.sku));
+        hotspot.markers.forEach((marker) => materials.push(marker.sku));
       }
       if (hotspot.tags && hotspot.tags.length > 0) {
         hotspot.tags.forEach((tag) => hpTags.push(tag));
@@ -139,9 +139,9 @@ class Collection extends React.Component<Props, State> {
         });
       }
     });
-    if (hpMaterials.length > 0) {
+    if (materials.length > 0) {
       this.setState({
-        collectionMaterials: this.state.collectionMaterials.concat(hpMaterials),
+        collectionMaterials: this.state.collectionMaterials.concat(materials),
       });
     }
   };
