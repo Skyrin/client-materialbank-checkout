@@ -14,6 +14,7 @@ export const USER_ORDER_HISTORY_URL = `${USER_MANAGEMENT_URL}/order-history`;
 export const USER_ACCOUNT_URL = `${USER_MANAGEMENT_URL}/account`;
 export const USER_BILLING_URL = `${USER_MANAGEMENT_URL}/billing`;
 export const USER_SHIPPING_URL = `${USER_MANAGEMENT_URL}/shipping`;
+export const RESET_PASSWORD_URL = `${USER_MANAGEMENT_URL}/reset-password`;
 
 // Collections URLs
 export const COLLECTION_ID = ":collection_id";

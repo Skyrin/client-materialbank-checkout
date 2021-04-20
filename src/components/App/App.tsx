@@ -31,6 +31,7 @@ import DuplicateCollectionModal from "../common/DuplicateCollectionModal/Duplica
 import { MakePrivateModal } from "../common/MakePrivateModal/MakePrivateModal";
 import { AddSampleModal } from "components/common/AddSampleModal/AddSampleModal";
 import { DisableAccountModal } from "../common/DisableAccountModal/DisableAccountModal";
+import { ResetPasswordModal } from "../common/ResetPasswordModal/ResetPasswordModal";
 
 type State = {
   createCustomerInput: CreateCustomerInput;
@@ -122,6 +123,9 @@ class App extends React.Component<any, State> {
           <MakePrivateModal />
         )}
         {this.context.getModalOpen() === Modals.Login && <LoginModal />}
+        {this.context.getModalOpen() === Modals.ResetPassword && (
+          <ResetPasswordModal />
+        )}
         {this.context.getModalOpen() === Modals.RegisterOptions && (
           <RegisterOptionsModal />
         )}
