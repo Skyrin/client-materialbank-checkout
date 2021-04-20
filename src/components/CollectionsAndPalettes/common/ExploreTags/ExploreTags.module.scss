@@ -4,6 +4,7 @@
 
 .exploreContainer {
   margin-top: $margin-huge;
+  overflow: scroll;
   @include mobile-media {
     margin-bottom: $margin-huge;
     margin-top: 15px;

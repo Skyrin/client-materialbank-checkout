@@ -7,6 +7,7 @@ import { AppContext, AppContextState, Modals } from "context/AppContext";
 import UploadCard from "../common/UploadCard/UploadCard";
 import Loader from "components/common/Loader/Loader";
 import MoreIdeas from "../common/MoreIdeas/MoreIdeas";
+import ExploreTags from "../common/ExploreTags/ExploreTags";
 
 export default class Collections extends React.Component<any, any> {
   static contextType = AppContext;
@@ -17,6 +18,7 @@ export default class Collections extends React.Component<any, any> {
     super(props);
     this.state = {
       skus: [],
+      tags: [],
     };
   }
 
@@ -29,7 +31,8 @@ export default class Collections extends React.Component<any, any> {
       materialSkus = [],
       hpMaterials = [],
       hotspotSkus = [],
-      recommended = [];
+      recommended = [],
+      hpTags = [];
     const collections = await this.context.requestCollections({
       limit: 100,
       offset: 0,
@@ -53,10 +56,21 @@ export default class Collections extends React.Component<any, any> {
       for (let marker of hotspot.markers) {
         hotspotSkus.push(marker.sku);
       }
+      if (hotspot.tags && hotspot.tags.length > 0) {
+        for (let tag of hotspot.tags) {
+          hpTags.push(tag);
+        }
+      }
       if (materialSkus.length > 0) {
         recommended = hotspotSkus.concat(materialSkus);
       }
-      this.setState({ skus: recommended });
+      this.setState({
+        skus: recommended,
+        tags: hpTags.reduce(function (acc, value) {
+          if (acc.indexOf(value) < 0) acc.push(value);
+          return acc;
+        }, []),
+      });
     }
   }
 
@@ -94,6 +108,9 @@ export default class Collections extends React.Component<any, any> {
             collectionMaterials={this.state.skus}
             headerText="More ideas for you"
           />
+        )}
+        {this.state.tags.length > 0 && (
+          <ExploreTags buttons={this.state.tags} />
         )}
       </React.Fragment>
     );
