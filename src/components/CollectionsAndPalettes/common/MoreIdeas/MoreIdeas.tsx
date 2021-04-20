@@ -47,7 +47,7 @@ export default class MoreIdeas extends React.Component<Props, any> {
     }
     const headerText =
       this.props.headerText || "More ideas for this collection";
-    if (recommendations.length) {
+    if (recommendations && recommendations.length) {
       return (
         <div className={cn(styles.moreIdeasContainer)}>
           <div className={styles.ideasHeader}>{headerText}</div>

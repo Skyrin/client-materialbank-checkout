@@ -27,7 +27,7 @@ export class Recommendations extends React.Component<Props> {
       .filter((p) => !p.loading)
       .map((p) => p.data);
 
-    if (recommendations.length) {
+    if (recommendations && recommendations.length) {
       return (
         <div className={cn(styles.Recommendations, this.props.className)}>
           <div className={styles["recommendations-grid"]}>

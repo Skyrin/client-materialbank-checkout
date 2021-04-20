@@ -13,9 +13,52 @@ export default class Collections extends React.Component<any, any> {
   context!: AppContextState;
   modalTarget = null;
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      skus: [],
+    };
+  }
+
   createCollection = () => {
     this.context.openModal(Modals.CreateCollection);
   };
+
+  async componentDidMount() {
+    let hotspotsIds = [],
+      materialSkus = [],
+      hpMaterials = [],
+      hotspotSkus = [],
+      recommended = [];
+    const collections = await this.context.requestCollections({
+      limit: 100,
+      offset: 0,
+    });
+    for (let collection of collections) {
+      for (let item of collection.items) {
+        if (item.objectType === "material") {
+          materialSkus.push(item.material.sku);
+        }
+        if (item.objectType === "hotspot") {
+          hotspotsIds.push(item.hotspot.id);
+        }
+      }
+    }
+    for (let hpId of hotspotsIds) {
+      await this.context
+        .requestHotspot(hpId)
+        .then((hp: any) => hpMaterials.push(hp));
+    }
+    for (let hotspot of hpMaterials) {
+      for (let marker of hotspot.markers) {
+        hotspotSkus.push(marker.sku);
+      }
+      if (materialSkus.length > 0) {
+        recommended = hotspotSkus.concat(materialSkus);
+      }
+      this.setState({ skus: recommended });
+    }
+  }
 
   render() {
     return (
@@ -46,7 +89,12 @@ export default class Collections extends React.Component<any, any> {
             </React.Fragment>
           )}
         </div>
-        {/*<MoreIdeas headerText="More ideas for you" />*/}
+        {this.state.skus.length > 0 && (
+          <MoreIdeas
+            collectionMaterials={this.state.skus}
+            headerText="More ideas for you"
+          />
+        )}
       </React.Fragment>
     );
   }
