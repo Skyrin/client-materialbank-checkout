@@ -52,6 +52,7 @@ abstract class BaseAppContextState {
   private internalCustomer?: CustomerT = {};
   private internalCustomerLoading?: boolean = false;
   private internalStoredPaymentMethods?: StoredPaymentMethodT[] = [];
+  private internalOrders?: any[];
   private internalConfirmedOrder?: OrderT = {};
   private internalConfirmedOrderLoading: boolean = false;
   private internalIsLoggedIn?: boolean = !!localStorage.getItem(
@@ -148,6 +149,14 @@ abstract class BaseAppContextState {
 
   public set storedPaymentMethods(newMethods: StoredPaymentMethodT[]) {
     this.internalStoredPaymentMethods = cloneDeep(newMethods);
+  }
+
+  public get storedOrders() {
+    return cloneDeep(this.internalOrders);
+  }
+
+  public set storedOrders(newOrders: any[]) {
+    this.internalOrders = cloneDeep(newOrders);
   }
 
   public get confirmedOrder() {
