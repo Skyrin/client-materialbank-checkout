@@ -5,7 +5,12 @@ import { AppContext, AppContextState } from "context/AppContext";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Loader from "components/common/Loader/Loader";
 import Input from "../Input/Input";
-import { sendInvitation } from "../../../context/CollectionsAPI/api";
+import {
+  removeAllCollaborators,
+  sendInvitation,
+  setPrivate,
+  setPublic,
+} from "../../../context/CollectionsAPI/api";
 import { COLLECTION_URL } from "../../../constants/urls";
 import { forOwn, get } from "lodash-es";
 import { matchPath, RouteComponentProps, withRouter } from "react-router-dom";
@@ -114,6 +119,7 @@ class ShareCollectionModal extends React.Component<Props, State> {
   submitInvitation = async (e: any) => {
     const collectionId = this.getCollectionId();
     if (collectionId) {
+      await setPublic(this.context, collectionId);
       const resp = await sendInvitation(
         this.context,
         collectionId,
@@ -126,32 +132,20 @@ class ShareCollectionModal extends React.Component<Props, State> {
   };
 
   submit = async () => {
+    let collectionId = this.getCollectionId();
     // If the collection became private, only call the collectionSetPrivate mutation
     if (
       this.getCollection().isPublic &&
       this.state.isPublicOverride === false
     ) {
-      const Mutation = `
-        mutation setPrivate($collectionId: Int!) {
-          collectionSetPrivate(id: $collectionId)
-        }
-      `;
-      await collectionsGraphqlRequest(this.context, Mutation, {
-        collectionId: this.getCollectionId(),
-      });
+      await removeAllCollaborators(this.context, collectionId);
+      await setPrivate(this.context, collectionId);
       this.closeModal();
       return;
     }
 
     if (!this.getCollection().isPublic && this.state.isPublicOverride) {
-      const Mutation = `
-        mutation setPublic($collectionId: Int!) {
-          collectionSetPublic(id: $collectionId)
-        }
-      `;
-      await collectionsGraphqlRequest(this.context, Mutation, {
-        collectionId: this.getCollectionId(),
-      });
+      await setPublic(this.context, collectionId);
     }
 
     forOwn(this.state.changedCollaboratorAccess, async (access, userId) => {
