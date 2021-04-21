@@ -18,11 +18,15 @@
       min-width: 100% !important;
       max-width: 100% !important;
       max-height: 100% !important;
-      min-height: 100% !important;
+      min-height: 101% !important;
       height: unset !important;
       width: 100% !important;
-      margin: 0.5% !important;
+      margin: 0 !important;
       border-radius: 0 !important;
+
+      &:first-child {
+        z-index: 99;
+      }
     }
   }
 
