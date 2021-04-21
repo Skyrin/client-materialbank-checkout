@@ -608,10 +608,9 @@ export default class AppContextManager extends React.Component<Props> {
         collectionId
       );
       const collectionItems = get(collection, "items", []);
-      this.contextState.collectionLoading = false;
       this.contextState.collection = collection;
-      this.forceUpdate();
       this.contextState.collectionItems = collectionItems;
+      this.contextState.collectionLoading = false;
       this.forceUpdate();
       console.log("GOT COLLECTION", collection);
       console.log("GOT ITEMS", collectionItems);

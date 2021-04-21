@@ -152,7 +152,7 @@ class Collection extends React.Component<Props, State> {
   }
 
   render() {
-    if (!this.context.collection.id) {
+    if (this.context.collectionLoading) {
       return (
         <React.Fragment>
           <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
