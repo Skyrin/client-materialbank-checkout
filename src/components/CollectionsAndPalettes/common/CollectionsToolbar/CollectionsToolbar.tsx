@@ -21,7 +21,6 @@ import { renameCollection } from "../../../../context/CollectionsAPI/api";
 interface State {
   isOpened: boolean;
   isRenameMode: boolean;
-  title: string;
   updatedTitle: string;
 }
 
@@ -67,7 +66,6 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
     this.state = {
       isOpened: false,
       isRenameMode: false,
-      title: this.props.title,
       updatedTitle: null,
     };
     this.wrapperRefDropdown = React.createRef();
@@ -130,24 +128,23 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
 
   handleTitleUpdate = async (e: any) => {
     if (e.key === "Enter") {
-      this.setState({ isRenameMode: false, title: this.state.updatedTitle });
+      this.setState({ isRenameMode: false, updatedTitle: e.target.value });
     } else if (e.key === "Escape") {
       this.setState({
         isRenameMode: false,
-        title: this.props.title,
-        updatedTitle: this.state.title,
+        updatedTitle: this.context.collection.name,
       });
     }
   };
 
   submit = async (e: any) => {
     const collectionId = parseInt(this.getCollectionId());
-    if (collectionId) {
+    if (collectionId && this.state.updatedTitle) {
       await this.handleTitleUpdate(e);
       const resp = await renameCollection(
         this.context,
         collectionId,
-        this.state.title
+        this.state.updatedTitle
       );
       console.log("rename response", resp);
       await this.context.requestCollections({
@@ -173,8 +170,7 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
     ) {
       this.setState({
         isRenameMode: false,
-        title: this.props.title,
-        updatedTitle: this.state.title,
+        updatedTitle: this.context.collection.name,
       });
     }
   };
@@ -194,7 +190,7 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
           <div className={styles.titleFlex}>
             {this.state.isRenameMode ? (
               <input
-                defaultValue={this.state.title}
+                defaultValue={this.context.collection.name}
                 ref={this.wrapperRefRename}
                 className={styles.renameInput}
                 value={this.state.updatedTitle}
@@ -204,7 +200,11 @@ class CollectionsToolbar extends React.Component<ToolbarProps & Props, State> {
                 onKeyDown={this.submit}
               />
             ) : (
-              <div className={styles.title}>{this.state.title}</div>
+              <div className={styles.title}>
+                {this.props.title ||
+                  this.context.collection.name ||
+                  this.state.updatedTitle}
+              </div>
             )}
             <span
               onClick={() => this.setState({ isOpened: !this.state.isOpened })}

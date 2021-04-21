@@ -44,12 +44,12 @@ class ShareCollectionModal extends React.Component<Props, State> {
     };
   }
 
-  onBackgroundClicked = () => {
-    this.closeModal();
+  onBackgroundClicked = async () => {
+    await this.closeModal();
   };
 
-  closeModal = () => {
-    this.context.requestCollection(this.getCollectionId());
+  closeModal = async () => {
+    await this.context.requestCollection(this.getCollectionId());
     this.context.closeModal();
   };
 
@@ -140,7 +140,7 @@ class ShareCollectionModal extends React.Component<Props, State> {
     ) {
       await removeAllCollaborators(this.context, collectionId);
       await setPrivate(this.context, collectionId);
-      this.closeModal();
+      await this.closeModal();
       return;
     }
 

@@ -15,13 +15,7 @@ import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreId
 import { isOnMobile } from "../../../../utils/responsive";
 import { get } from "lodash-es";
 import Loader from "components/common/Loader/Loader";
-import {
-  CollaboratorT,
-  CollectionHotspotT,
-  CollectionItemT,
-  CollectionT,
-  HotspotT,
-} from "../../../../constants/types";
+import { HotspotT } from "../../../../constants/types";
 import ExploreTags from "../../common/ExploreTags/ExploreTags";
 
 interface State {
@@ -30,8 +24,6 @@ interface State {
   display: string;
   hotspots: HotspotT[];
   collectionMaterials: string[];
-  collectionItems: CollectionItemT[];
-  collection: CollectionT;
   hpTags: string[];
 }
 
@@ -54,8 +46,6 @@ class Collection extends React.Component<Props, State> {
       display: "everything",
       hotspots: [],
       collectionMaterials: [],
-      collectionItems: [],
-      collection: null,
       hpTags: [],
     };
   }
@@ -108,14 +98,12 @@ class Collection extends React.Component<Props, State> {
     const materials = [];
     const hotspots = [];
     const hpTags = [];
-    this.setState({ collection: this.getCollection() });
-    this.setState({ collectionItems: get(this.state.collection, "items", []) });
     materials.concat(
-      this.state.collectionItems
+      this.context.collectionItems
         .filter((item) => item.objectType === "material")
         .map((item) => item.material.sku)
     );
-    const hotspotsIds = this.state.collectionItems
+    const hotspotsIds = this.context.collectionItems
       .filter((hp) => hp.objectType === "hotspot")
       .map((hp) => hp.hotspot.id);
     for (const hpId of hotspotsIds) {
@@ -164,7 +152,7 @@ class Collection extends React.Component<Props, State> {
   }
 
   render() {
-    if (!this.state.collection) {
+    if (!this.context.collection.id) {
       return (
         <React.Fragment>
           <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
@@ -185,7 +173,7 @@ class Collection extends React.Component<Props, State> {
           <i className={"fas fa-chevron-right"} />
         </NavLink>
         <CollectionsToolbar
-          title={this.state.collection.name || "collection.name"}
+          title={this.context.collection.name}
           isCollection
           filter
           buttons={[
@@ -195,7 +183,7 @@ class Collection extends React.Component<Props, State> {
             "rooms",
             "palettes",
           ]}
-          collaborators={this.state.collection.collaborators}
+          collaborators={this.context.collection.collaborators}
           activeButtonDisplay={this.state.display}
           toggleDisplay={this.toggleDisplay}
           activeButtonMode={this.state.mode}
@@ -204,10 +192,12 @@ class Collection extends React.Component<Props, State> {
         <div
           style={{ position: "relative" }}
           className={
-            !this.state.collectionItems.length ? styles.emptyCollection : ""
+            this.context.collectionItems.length < 1
+              ? styles.emptyCollection
+              : ""
           }
         >
-          {this.state.collectionItems.length > 0 && (
+          {this.context.collectionItems.length > 0 && (
             <div className={styles.masonryWrapper}>
               <ResponsiveMasonry
                 columnsCountBreakPoints={{
@@ -227,7 +217,7 @@ class Collection extends React.Component<Props, State> {
                     }
                     onClick={this.uploadPhoto}
                   />
-                  {this.state.collectionItems
+                  {this.context.collectionItems
                     .filter(
                       (item) =>
                         this.state.display.includes(item.objectType) ||
@@ -253,7 +243,7 @@ class Collection extends React.Component<Props, State> {
               {/*/>*/}
             </div>
           )}
-          {this.state.collectionItems.length < 1 && (
+          {this.context.collectionItems.length < 1 && (
             <React.Fragment>
               <UploadCard
                 caption={
