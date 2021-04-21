@@ -123,6 +123,8 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     let displayOrderItems = [...this.state.ordersX];
     if (this.state.searchItems.length > 0) {
       displayOrderItems = this.state.searchItems;
+      this.canLoadMore = true;
+    } else {
       this.canLoadMore = false;
     }
     return (

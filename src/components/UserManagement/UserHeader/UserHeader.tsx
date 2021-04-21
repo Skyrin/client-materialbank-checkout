@@ -24,6 +24,7 @@ export const UserPages: { [key: string]: any } = {
   Billing: {
     name: "Billing",
     url: USER_BILLING_URL,
+    disabled: null,
   },
   Shipping: {
     name: "Shipping",
@@ -42,19 +43,28 @@ class UserHeader extends React.Component<Props, any> {
   context!: AppContextState;
 
   renderButtons = () => {
+    if (this.context.storedOrders) {
+      const orders = this.context.storedOrders[0].result;
+      if (orders.length > 0) {
+        UserPages["Billing"].disabled = false;
+      } else UserPages["Billing"].disabled = true;
+    }
+
     return Object.values(UserPages).map((page: any, index) => {
-      return (
-        <NavLink
-          to={page.url}
-          className={cn(styles.headerButton, {
-            [styles.alignEnd]: index === 0,
-          })}
-          activeClassName={styles.selected}
-          key={page.url}
-        >
-          {page.name}
-        </NavLink>
-      );
+      if (!page.disabled) {
+        return (
+          <NavLink
+            to={page.url}
+            className={cn(styles.headerButton, {
+              [styles.alignEnd]: index === 0,
+            })}
+            activeClassName={styles.selected}
+            key={page.url}
+          >
+            {page.name}
+          </NavLink>
+        );
+      }
     });
   };
 

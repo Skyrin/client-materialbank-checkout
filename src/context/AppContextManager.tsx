@@ -251,9 +251,17 @@ export default class AppContextManager extends React.Component<Props> {
       );
       const storedPaymentMethods = await storedPaymentMethodsResponse.json();
       console.log("GOT STORED PAYMENT METHODS", storedPaymentMethods);
+      const storedOrdersResponse = await RESTRequest("POST", "mine/orders", {
+        page: 1,
+        limit: 25,
+      });
+      const storedOrders = await storedOrdersResponse.json();
+      console.log("GOT STORED ORDERS", storedOrders);
+      this.contextState.storedOrders = storedOrders;
       this.contextState.storedPaymentMethods = storedPaymentMethods;
       this.contextState.customerLoading = false;
       this.actions.updateCustomer(customer);
+      this.forceUpdate();
       return this.contextState.customer;
     },
 
