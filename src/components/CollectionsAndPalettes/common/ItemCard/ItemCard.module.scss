@@ -23,6 +23,10 @@
       width: 100% !important;
       margin: 0 !important;
       border-radius: 0 !important;
+
+      // Safari white line workaround
+      transform: scale(1.00001);
+      -webkit-transform: scale(1.00001);
     }
   }
 
