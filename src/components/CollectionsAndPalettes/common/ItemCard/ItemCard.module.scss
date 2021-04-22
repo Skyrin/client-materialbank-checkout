@@ -14,19 +14,20 @@
     grid-template-rows: 85% 15%;
 
     img {
+      box-sizing: content-box;
       object-fit: cover;
       min-width: 100% !important;
       max-width: 100% !important;
       max-height: 100% !important;
-      min-height: 101% !important;
+      min-height: 100% !important;
       height: unset !important;
       width: 100% !important;
       margin: 0 !important;
       border-radius: 0 !important;
 
-      &:first-child {
-        z-index: 99;
-      }
+      // Safari white line workaround
+      transform: scale(1.00001);
+      -webkit-transform: scale(1.00001);
     }
   }
 
