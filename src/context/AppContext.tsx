@@ -66,7 +66,6 @@ abstract class BaseAppContextState {
   private internalCollectionsLoading: boolean = false;
   private internalCollection?: CollectionT = {};
   private internalCollectionLoading: boolean = false;
-  private internalCollectionItems?: CollectionItemT[] = [];
   private modal?: Modals = Modals.None;
   private modalParams?: Object = {};
   private internalOrdersLoading?: boolean = false;
@@ -210,14 +209,6 @@ abstract class BaseAppContextState {
 
   public set collection(newCollection: CollectionT) {
     this.internalCollection = cloneDeep(newCollection);
-  }
-
-  public get collectionItems() {
-    return cloneDeep(this.internalCollectionItems);
-  }
-
-  public set collectionItems(newCollectionItems: CollectionItemT[]) {
-    this.internalCollectionItems = cloneDeep(newCollectionItems);
   }
 
   public get hotspot() {

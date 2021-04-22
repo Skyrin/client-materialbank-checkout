@@ -25,6 +25,7 @@ interface State {
   hotspots: HotspotT[];
   collectionMaterials: string[];
   hpTags: string[];
+  isLoading: boolean;
 }
 
 type Props = RouteComponentProps;
@@ -47,6 +48,7 @@ class Collection extends React.Component<Props, State> {
       hotspots: [],
       collectionMaterials: [],
       hpTags: [],
+      isLoading: true,
     };
   }
 
@@ -99,11 +101,11 @@ class Collection extends React.Component<Props, State> {
     const hotspots = [];
     const hpTags = [];
     materials.concat(
-      this.context.collectionItems
+      this.context.collection?.items
         .filter((item) => item.objectType === "material")
         .map((item) => item.material.sku)
     );
-    const hotspotsIds = this.context.collectionItems
+    const hotspotsIds = this.context.collection?.items
       .filter((hp) => hp.objectType === "hotspot")
       .map((hp) => hp.hotspot.id);
     for (const hpId of hotspotsIds) {
@@ -132,6 +134,7 @@ class Collection extends React.Component<Props, State> {
         collectionMaterials: this.state.collectionMaterials.concat(materials),
       });
     }
+    this.setState({ isLoading: false });
   };
 
   componentWillUnmount() {
@@ -152,7 +155,7 @@ class Collection extends React.Component<Props, State> {
   }
 
   render() {
-    if (this.context.collectionLoading) {
+    if (this.state.isLoading) {
       return (
         <React.Fragment>
           <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
@@ -192,76 +195,80 @@ class Collection extends React.Component<Props, State> {
         <div
           style={{ position: "relative" }}
           className={
-            this.context.collectionItems.length < 1
+            this.context.collection.items &&
+            this.context.collection.items.length < 1
               ? styles.emptyCollection
               : ""
           }
         >
-          {this.context.collectionItems.length > 0 && (
-            <div className={styles.masonryWrapper}>
-              <ResponsiveMasonry
-                columnsCountBreakPoints={{
-                  350: 1,
-                  400: 2,
-                  650: 3,
-                  920: 4,
-                  1080: 4,
-                }}
-              >
-                <Masonry columnsCount={4} gutter="20px">
-                  <UploadCard
-                    caption={
-                      !isOnMobile()
-                        ? "Upload a photo or drag & drop here "
-                        : "Upload a photo"
-                    }
-                    onClick={this.uploadPhoto}
-                  />
-                  {this.context.collectionItems
-                    .filter(
-                      (item) =>
-                        this.state.display.includes(item.objectType) ||
-                        (item.json &&
-                          this.state.display.includes(
-                            JSON.parse(item.json).type
-                          )) ||
-                        this.state.display === "everything"
-                    )
-                    .map((item: any, index: number) => {
-                      return (
-                        <ItemCard
-                          key={item.id}
-                          mode={this.state.mode}
-                          item={item}
-                        />
-                      );
-                    })}
-                </Masonry>
-              </ResponsiveMasonry>
-              {/*<AddToCartButton*/}
-              {/*  commonAreaIsInViewport={this.state.commonAreaIsInViewport}*/}
-              {/*/>*/}
-            </div>
-          )}
-          {this.context.collectionItems.length < 1 && (
-            <React.Fragment>
-              <UploadCard
-                caption={
-                  !isOnMobile()
-                    ? "Upload a photo or drag & drop here "
-                    : "Upload a photo"
-                }
-                onClick={this.uploadPhoto}
-              />
-              <div className={styles.empty}>
-                You have not added anything to this collection yet!
+          {this.context.collection.items &&
+            this.context.collection.items.length > 0 && (
+              <div className={styles.masonryWrapper}>
+                <ResponsiveMasonry
+                  columnsCountBreakPoints={{
+                    350: 1,
+                    400: 2,
+                    650: 3,
+                    920: 4,
+                    1080: 4,
+                  }}
+                >
+                  <Masonry columnsCount={4} gutter="20px">
+                    <UploadCard
+                      caption={
+                        !isOnMobile()
+                          ? "Upload a photo or drag & drop here "
+                          : "Upload a photo"
+                      }
+                      onClick={this.uploadPhoto}
+                    />
+                    {this.context.collection?.items
+                      .filter(
+                        (item) =>
+                          this.state.display.includes(item.objectType) ||
+                          (item.json &&
+                            this.state.display.includes(
+                              JSON.parse(item.json).type
+                            )) ||
+                          this.state.display === "everything"
+                      )
+                      .map((item: any, index: number) => {
+                        return (
+                          <ItemCard
+                            key={item.id}
+                            mode={this.state.mode}
+                            item={item}
+                          />
+                        );
+                      })}
+                  </Masonry>
+                </ResponsiveMasonry>
+                {/*<AddToCartButton*/}
+                {/*  commonAreaIsInViewport={this.state.commonAreaIsInViewport}*/}
+                {/*/>*/}
               </div>
-            </React.Fragment>
-          )}
+            )}
+          {this.context.collection.items &&
+            this.context.collection.items.length < 1 && (
+              <React.Fragment>
+                <UploadCard
+                  caption={
+                    !isOnMobile()
+                      ? "Upload a photo or drag & drop here "
+                      : "Upload a photo"
+                  }
+                  onClick={this.uploadPhoto}
+                />
+                <div className={styles.empty}>
+                  You have not added anything to this collection yet!
+                </div>
+              </React.Fragment>
+            )}
         </div>
 
-        {/*The commonArea element is added here in order to keep the AddToCart Button inside the Collection Cards container, also decide its position*/}
         {this.state.collectionMaterials.length > 0 && (
+          /*The commonArea element is added here in order to keep the AddToCart Button
+          inside the Collection Cards container, also decide its position*/
           <div className={"commonArea"}>
             <MoreIdeas collectionMaterials={this.state.collectionMaterials} />
           </div>

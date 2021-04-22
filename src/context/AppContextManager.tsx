@@ -607,14 +607,11 @@ export default class AppContextManager extends React.Component<Props> {
         this.getFullContext(),
         collectionId
       );
-      const collectionItems = get(collection, "items", []);
       this.contextState.collection = collection;
-      this.contextState.collectionItems = collectionItems;
       this.contextState.collectionLoading = false;
       this.forceUpdate();
       console.log("GOT COLLECTION", collection);
-      console.log("GOT ITEMS", collectionItems);
-      return [collection, collectionItems];
+      return collection;
     },
 
     requestHotspots: async (input: CollectionsQueryInput) => {
