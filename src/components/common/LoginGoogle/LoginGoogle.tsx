@@ -1,5 +1,6 @@
 import GoogleLogin from "react-google-login";
 import React from "react";
+import { RESTRequest } from "RestClient";
 
 const clientId =
   "86276352424-1vrsegskhdhdduvfvnk45mkofbac46tp.apps.googleusercontent.com";
@@ -10,8 +11,14 @@ type Props = {
 };
 
 function LoginGoogle(props: Props) {
-  const onSuccess = (res) => {
-    console.log("[Login Success] currentUser:", res.profileObj);
+  const onSuccess = async (res) => {
+    console.log("[Google Login Success] currentUser:", res.profileObj);
+    const resp = await RESTRequest("POST", "social/google/auth", {
+      email: res.profileObj.email,
+      name: res.profileObj.name,
+      googleId: res.profileObj.googleId,
+    });
+    console.log("MAGENTO CALL RESPONSE", resp);
   };
 
   const onFailure = (res) => {
