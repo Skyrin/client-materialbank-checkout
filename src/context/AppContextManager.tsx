@@ -615,10 +615,10 @@ export default class AppContextManager extends React.Component<Props> {
         this.getFullContext(),
         collectionId
       );
-      this.contextState.collectionLoading = false;
       this.contextState.collection = collection;
-      console.log("GOT COLLECTION", collection);
+      this.contextState.collectionLoading = false;
       this.forceUpdate();
+      console.log("GOT COLLECTION", collection);
       return collection;
     },
 

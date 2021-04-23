@@ -262,3 +262,40 @@ export const sendInvitation = async (
   );
   return resp && get(resp, "collectionSendInvitation");
 };
+
+export const removeAllCollaborators = async (
+  context: AppContextState,
+  id: number
+) => {
+  const collectionRemoveAllCollaborators = `
+    mutation collectionRemoveAllCollaborators($id: Int!) {
+      collectionRemoveAllCollaborators(id: $id) }`;
+  const resp = await collectionsGraphqlRequest(
+    context,
+    collectionRemoveAllCollaborators,
+    {
+      id: id,
+    }
+  );
+  return resp && get(resp, "collectionRemoveAllCollaborators");
+};
+
+export const setPublic = async (context: AppContextState, id: number) => {
+  const collectionSetPublic = `
+    mutation collectionSetPublic($id: Int!) {
+      collectionSetPublic(id: $id) }`;
+  const resp = await collectionsGraphqlRequest(context, collectionSetPublic, {
+    id: id,
+  });
+  return resp && get(resp, "collectionSetPublic");
+};
+
+export const setPrivate = async (context: AppContextState, id: number) => {
+  const collectionSetPrivate = `
+    mutation collectionSetPrivate($id: Int!) {
+      collectionSetPrivate(id: $id) }`;
+  const resp = await collectionsGraphqlRequest(context, collectionSetPrivate, {
+    id: id,
+  });
+  return resp && get(resp, "collectionSetPrivate");
+};

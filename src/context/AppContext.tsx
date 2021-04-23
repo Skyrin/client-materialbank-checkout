@@ -4,6 +4,7 @@ import {
   CartT,
   CollectionCollaboratorT,
   CollectionHotspotT,
+  CollectionItemT,
   CollectionT,
   CustomerT,
   HotspotT,

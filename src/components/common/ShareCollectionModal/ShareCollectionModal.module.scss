@@ -91,14 +91,17 @@
     @include mobile-media {
       margin-top: $margin-small-4;
     }
+    @media (max-width: 520px) {
+      line-height: 25px;
+    }
 
     i {
       cursor: pointer;
       margin-right: 10px;
       font-size: 21px;
       color: #363648;
-      @include mobile-media {
-        display: none;
+      @media (max-width: 520px) {
+        font-size: 20px;
       }
     }
   }
@@ -337,9 +340,8 @@ span {
         display: flex;
         flex-direction: row;
         align-items: center;
-        margin-left: $margin-large;
         column-gap: 15px;
-        margin-top: -8px;
+        margin-left: 34px;
       }
 
       .checkBoxModal {

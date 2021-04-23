@@ -15,13 +15,7 @@ import MoreIdeas from "components/CollectionsAndPalettes/common/MoreIdeas/MoreId
 import { isOnMobile } from "../../../../utils/responsive";
 import { get } from "lodash-es";
 import Loader from "components/common/Loader/Loader";
-import {
-  CollaboratorT,
-  CollectionHotspotT,
-  CollectionItemT,
-  CollectionT,
-  HotspotT,
-} from "../../../../constants/types";
+import { HotspotT } from "../../../../constants/types";
 import ExploreTags from "../../common/ExploreTags/ExploreTags";
 
 interface State {
@@ -30,9 +24,8 @@ interface State {
   display: string;
   hotspots: HotspotT[];
   collectionMaterials: string[];
-  collectionItems: CollectionItemT[];
-  collection: CollectionT;
   hpTags: string[];
+  isLoading: boolean;
 }
 
 type Props = RouteComponentProps;
@@ -54,9 +47,8 @@ class Collection extends React.Component<Props, State> {
       display: "everything",
       hotspots: [],
       collectionMaterials: [],
-      collectionItems: [],
-      collection: null,
       hpTags: [],
+      isLoading: true,
     };
   }
 
@@ -108,14 +100,12 @@ class Collection extends React.Component<Props, State> {
     const materials = [];
     const hotspots = [];
     const hpTags = [];
-    this.setState({ collection: this.getCollection() });
-    this.setState({ collectionItems: get(this.state.collection, "items", []) });
     materials.concat(
-      this.state.collectionItems
+      this.context.collection?.items
         .filter((item) => item.objectType === "material")
         .map((item) => item.material.sku)
     );
-    const hotspotsIds = this.state.collectionItems
+    const hotspotsIds = this.context.collection?.items
       .filter((hp) => hp.objectType === "hotspot")
       .map((hp) => hp.hotspot.id);
     for (const hpId of hotspotsIds) {
@@ -144,6 +134,7 @@ class Collection extends React.Component<Props, State> {
         collectionMaterials: this.state.collectionMaterials.concat(materials),
       });
     }
+    this.setState({ isLoading: false });
   };
 
   componentWillUnmount() {
@@ -164,7 +155,7 @@ class Collection extends React.Component<Props, State> {
   }
 
   render() {
-    if (!this.state.collection) {
+    if (this.state.isLoading) {
       return (
         <React.Fragment>
           <NavLink className={styles.yourCollections} to={COLLECTIONS_URL}>
@@ -185,7 +176,7 @@ class Collection extends React.Component<Props, State> {
           <i className={"fas fa-chevron-right"} />
         </NavLink>
         <CollectionsToolbar
-          title={this.state.collection.name || "collection.name"}
+          title={this.context.collection.name}
           isCollection
           filter
           buttons={[
@@ -195,7 +186,7 @@ class Collection extends React.Component<Props, State> {
             "rooms",
             "palettes",
           ]}
-          collaborators={this.state.collection.collaborators}
+          collaborators={this.context.collection.collaborators}
           activeButtonDisplay={this.state.display}
           toggleDisplay={this.toggleDisplay}
           activeButtonMode={this.state.mode}
@@ -204,74 +195,80 @@ class Collection extends React.Component<Props, State> {
         <div
           style={{ position: "relative" }}
           className={
-            !this.state.collectionItems.length ? styles.emptyCollection : ""
+            this.context.collection.items &&
+            this.context.collection.items.length < 1
+              ? styles.emptyCollection
+              : ""
           }
         >
-          {this.state.collectionItems.length > 0 && (
-            <div className={styles.masonryWrapper}>
-              <ResponsiveMasonry
-                columnsCountBreakPoints={{
-                  350: 1,
-                  400: 2,
-                  650: 3,
-                  920: 4,
-                  1080: 4,
-                }}
-              >
-                <Masonry columnsCount={4} gutter="20px">
-                  <UploadCard
-                    caption={
-                      !isOnMobile()
-                        ? "Upload a photo or drag & drop here "
-                        : "Upload a photo"
-                    }
-                    onClick={this.uploadPhoto}
-                  />
-                  {this.state.collectionItems
-                    .filter(
-                      (item) =>
-                        this.state.display.includes(item.objectType) ||
-                        (item.json &&
-                          this.state.display.includes(
-                            JSON.parse(item.json).type
-                          )) ||
-                        this.state.display === "everything"
-                    )
-                    .map((item: any, index: number) => {
-                      return (
-                        <ItemCard
-                          key={item.id}
-                          mode={this.state.mode}
-                          item={item}
-                        />
-                      );
-                    })}
-                </Masonry>
-              </ResponsiveMasonry>
-              {/*<AddToCartButton*/}
-              {/*  commonAreaIsInViewport={this.state.commonAreaIsInViewport}*/}
-              {/*/>*/}
-            </div>
-          )}
-          {this.state.collectionItems.length < 1 && (
-            <React.Fragment>
-              <UploadCard
-                caption={
-                  !isOnMobile()
-                    ? "Upload a photo or drag & drop here "
-                    : "Upload a photo"
-                }
-                onClick={this.uploadPhoto}
-              />
-              <div className={styles.empty}>
-                You have not added anything to this collection yet!
+          {this.context.collection.items &&
+            this.context.collection.items.length > 0 && (
+              <div className={styles.masonryWrapper}>
+                <ResponsiveMasonry
+                  columnsCountBreakPoints={{
+                    350: 1,
+                    400: 2,
+                    650: 3,
+                    920: 4,
+                    1080: 4,
+                  }}
+                >
+                  <Masonry columnsCount={4} gutter="20px">
+                    <UploadCard
+                      caption={
+                        !isOnMobile()
+                          ? "Upload a photo or drag & drop here "
+                          : "Upload a photo"
+                      }
+                      onClick={this.uploadPhoto}
+                    />
+                    {this.context.collection?.items
+                      .filter(
+                        (item) =>
+                          this.state.display.includes(item.objectType) ||
+                          (item.json &&
+                            this.state.display.includes(
+                              JSON.parse(item.json).type
+                            )) ||
+                          this.state.display === "everything"
+                      )
+                      .map((item: any, index: number) => {
+                        return (
+                          <ItemCard
+                            key={item.id}
+                            mode={this.state.mode}
+                            item={item}
+                          />
+                        );
+                      })}
+                  </Masonry>
+                </ResponsiveMasonry>
+                {/*<AddToCartButton*/}
+                {/*  commonAreaIsInViewport={this.state.commonAreaIsInViewport}*/}
+                {/*/>*/}
               </div>
-            </React.Fragment>
-          )}
+            )}
+          {this.context.collection.items &&
+            this.context.collection.items.length < 1 && (
+              <React.Fragment>
+                <UploadCard
+                  caption={
+                    !isOnMobile()
+                      ? "Upload a photo or drag & drop here "
+                      : "Upload a photo"
+                  }
+                  onClick={this.uploadPhoto}
+                />
+                <div className={styles.empty}>
+                  You have not added anything to this collection yet!
+                </div>
+              </React.Fragment>
+            )}
         </div>
 
-        {/*The commonArea element is added here in order to keep the AddToCart Button inside the Collection Cards container, also decide its position*/}
         {this.state.collectionMaterials.length > 0 && (
+          /*The commonArea element is added here in order to keep the AddToCart Button
+          inside the Collection Cards container, also decide its position*/
           <div className={"commonArea"}>
             <MoreIdeas collectionMaterials={this.state.collectionMaterials} />
           </div>
