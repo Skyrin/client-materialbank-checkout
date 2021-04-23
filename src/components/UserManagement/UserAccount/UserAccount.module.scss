@@ -83,6 +83,7 @@
     width: 86px;
     height: 86px;
     border-radius: 43px;
+    object-fit: cover;
 
     @include mobile-media {
       width: 60px;

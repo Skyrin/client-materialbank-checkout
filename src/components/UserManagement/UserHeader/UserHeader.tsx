@@ -24,7 +24,7 @@ export const UserPages: { [key: string]: any } = {
   Billing: {
     name: "Billing",
     url: USER_BILLING_URL,
-    disabled: null,
+    disabled: true,
   },
   Shipping: {
     name: "Shipping",
