@@ -130,19 +130,21 @@ export default class UserOrderHistory extends React.Component<Props, State> {
     return (
       <div>
         <div className={cn(styles["UserOrderHistory"])}>
-          <UserHeader
-            title={UserPages.OrderHistory.name}
-            customer={this.context.customer}
-            extraContent={
-              <SearchBar
-                placeholder={"Search of order history"}
-                className={styles.searchBar}
-                onSubmitSearch={(evt: any) => {
-                  this.submitSearch(evt);
-                }}
-              />
-            }
-          />
+          {!this.context.customerLoading && (
+            <UserHeader
+              title={UserPages.OrderHistory.name}
+              customer={this.context.customer}
+              extraContent={
+                <SearchBar
+                  placeholder={"Search of order history"}
+                  className={styles.searchBar}
+                  onSubmitSearch={(evt: any) => {
+                    this.submitSearch(evt);
+                  }}
+                />
+              }
+            />
+          )}
 
           {displayOrderItems.map((order) => (
             <HistoryOrder

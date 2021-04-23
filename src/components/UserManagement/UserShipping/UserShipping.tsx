@@ -207,10 +207,12 @@ export default class UserShipping extends React.Component<Props, State> {
     return (
       <div>
         <div className={styles.UserShipping}>
-          <UserHeader
-            title={UserPages.Shipping.name}
-            customer={this.state.customer}
-          />
+          {!this.context.customerLoading && (
+            <UserHeader
+              title={UserPages.Shipping.name}
+              customer={this.state.customer}
+            />
+          )}
           <div className={styles.pageContent}>
             {this.renderAddressGrid()}
             {this.renderAddAddress()}

@@ -137,10 +137,12 @@ export default class UserBilling extends React.Component<Props, State> {
     }
     return (
       <div className={styles.UserBilling}>
-        <UserHeader
-          title={UserPages.Billing.name}
-          customer={this.state.customer}
-        />
+        {!this.context.customerLoading && (
+          <UserHeader
+            title={UserPages.Billing.name}
+            customer={this.state.customer}
+          />
+        )}
         <div className={styles.pageContent}>
           {this.paymentMethods.map((paymentMethod, index) => {
             return (
