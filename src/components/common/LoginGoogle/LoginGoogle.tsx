@@ -19,6 +19,8 @@ function LoginGoogle(props: Props) {
       googleId: res.profileObj.googleId,
     });
     console.log("MAGENTO CALL RESPONSE", resp);
+    const body = await resp.json();
+    console.log("MAGENTO BODY", body);
   };
 
   const onFailure = (res) => {
