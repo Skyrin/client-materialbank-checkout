@@ -283,12 +283,11 @@ export default class UserAccount extends React.Component<Props, State> {
   render() {
     return (
       <div className={styles.UserAccount}>
-        {!this.context.customerLoading && (
-          <UserHeader
-            title={UserPages.Account.name}
-            customer={this.state.customer}
-          />
-        )}
+        <UserHeader
+          title={UserPages.Account.name}
+          customer={this.state.customer}
+        />
+
         <div className={styles.pageContent}>
           {this.renderProfileInfo()}
           {!isOnMobile() && this.renderResetPasswordSection()}
