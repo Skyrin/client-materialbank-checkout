@@ -12,6 +12,7 @@ type Props = {
 
 function LoginGoogle(props: Props) {
   const onSuccess = async (res) => {
+    console.log("[Google Login] response", res);
     console.log("[Google Login Success] currentUser:", res.profileObj);
     const resp = await RESTRequest("POST", "social/google/auth", {
       email: res.profileObj.email,
@@ -38,7 +39,6 @@ function LoginGoogle(props: Props) {
         onSuccess={onSuccess}
         onFailure={onFailure}
         cookiePolicy={"single_host_origin"}
-        isSignedIn={true}
       />
     </div>
   );
