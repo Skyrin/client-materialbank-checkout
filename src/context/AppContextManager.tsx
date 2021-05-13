@@ -60,7 +60,7 @@ import {
   getHotspots,
 } from "./CollectionsAPI/api";
 import { ProductsCache } from "./ProductsCache";
-import { algoliaProducts } from "algolia";
+import { algoliaHotspots, algoliaProducts } from "algolia";
 import { RESTRequest } from "RestClient";
 import { parseRESTOrder } from "utils/context";
 import { getRegionFromCode } from "../constants/regions";
@@ -665,7 +665,7 @@ export default class AppContextManager extends React.Component<Props> {
         .filter((ap) => !ap.loading)
         .forEach((ap) => manufacturersSet.add(ap.data.manufacturer));
       console.log("[REC] MANUFACTURERS SET", manufacturersSet);
-      const manufacturers = [...manufacturersSet];
+      const manufacturers = [...Array.from(manufacturersSet)];
       const manufacturersFilter = manufacturers.map(
         (man) => `manufacturer:${man}`
       );
@@ -692,6 +692,39 @@ export default class AppContextManager extends React.Component<Props> {
       this.contextState.recommendedProductSKUs = recommendedSkus;
       this.contextState.requestRecommendedProductSKUsLoading = false;
       this.forceUpdate();
+    },
+
+    requestMoreIdeas: async (
+      nrOfItems: number,
+      skus?: string[],
+      tags?: string[]
+    ) => {
+      const algProducts = await this.getFullContext().productsCache.getProductsAsync(
+        skus
+      );
+      const manufacturersSet = new Set<string>();
+      algProducts
+        .filter((ap) => !ap.loading)
+        .forEach((ap) => manufacturersSet.add(ap.data.manufacturer));
+      const manufacturers = [...Array.from(manufacturersSet)];
+      const manufacturersFilter = manufacturers.map(
+        (man) => `manufacturer:${man}`
+      );
+      const skuFilter = skus.map((sku) => `sku:-${sku}`);
+      const productOptions = {
+        facetFilters: [manufacturersFilter, ...skuFilter, "type_id:simple"],
+        hitsPerPage: nrOfItems,
+      };
+      const productResp = await algoliaProducts.search("", productOptions);
+      const productHits = get(productResp, "hits", []);
+      console.log("PRODUCT HITS", productHits);
+
+      const hotspotOptions = {
+        hitsPerPage: nrOfItems,
+      };
+      const hotspotResp = await algoliaHotspots.search("", hotspotOptions);
+      const hotspotHits = get(hotspotResp, "hits", []);
+      console.log("HOTSPOT HITS", hotspotHits);
     },
 
     setOrderSummaryOpen: (newValue: boolean) => {

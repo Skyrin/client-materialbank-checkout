@@ -8,3 +8,7 @@ export const algoliaClient = algoliasearch(
 export const algoliaProducts = algoliaClient.initIndex(
   process.env.ALGOLIA_INDEX_PRODUCTS || "dev-ds_default_products"
 );
+
+export const algoliaHotspots = algoliaClient.initIndex(
+  process.env.ALGOLIA_INDEX_HOTSPOTS || "dev-ds_default_hotspots"
+);

@@ -72,6 +72,8 @@ export default class Collections extends React.Component<any, any> {
         }, []),
       });
     }
+
+    await this.context.requestMoreIdeas(10, recommended, hpTags);
   }
 
   render() {
