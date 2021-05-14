@@ -14,12 +14,14 @@ function LoginGoogle(props: Props) {
   const onSuccess = async (res) => {
     console.log("[Google Login] response", res);
     console.log("[Google Login] OAuth token", res.getAuthResponse().id_token);
-    console.log("[Google Login Success] currentUser:", res.profileObj);
-    const resp = await RESTRequest("POST", "social/google/auth", {
-      email: res.profileObj.email,
-      name: res.profileObj.name,
-      googleId: res.profileObj.googleId,
-    });
+    console.log("[Google Login] currentUser:", res.profileObj);
+    const resp = await RESTRequest(
+      "POST",
+      "social/google/auth/generateCustomerToken",
+      {
+        token: res.getAuthResponse().id_token,
+      }
+    );
     console.log("MAGENTO CALL RESPONSE", resp);
     const body = await resp.json();
     console.log("MAGENTO BODY", body);
@@ -40,8 +42,6 @@ function LoginGoogle(props: Props) {
         onSuccess={onSuccess}
         onFailure={onFailure}
         cookiePolicy={"single_host_origin"}
-        responseType="code"
-        accessType="offline"
       />
     </div>
   );
