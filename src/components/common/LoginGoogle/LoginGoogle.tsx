@@ -40,6 +40,8 @@ function LoginGoogle(props: Props) {
         onSuccess={onSuccess}
         onFailure={onFailure}
         cookiePolicy={"single_host_origin"}
+        responseType="code"
+        accessType="offline"
       />
     </div>
   );
