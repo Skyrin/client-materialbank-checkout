@@ -13,13 +13,12 @@ type Props = {
 function LoginGoogle(props: Props) {
   const onSuccess = async (res) => {
     console.log("[Google Login] response", res);
-    console.log("[Google Login] OAuth token", res.getAuthResponse().id_token);
-    console.log("[Google Login] currentUser:", res.profileObj);
+    console.log("[Google Login] OAuth token", res.getAuthResponse());
     const resp = await RESTRequest(
       "POST",
       "social/google/auth/generateCustomerToken",
       {
-        token: res.getAuthResponse().id_token,
+        token: res.getAuthResponse().access_token,
       }
     );
     console.log("MAGENTO CALL RESPONSE", resp);
