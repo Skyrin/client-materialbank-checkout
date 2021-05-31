@@ -328,6 +328,8 @@ export class AppContextState extends BaseAppContextState {
 
   async login(email: string, password: string) {}
 
+  async loginWithToken(token: string) {}
+
   logout() {}
 
   openModal(modal: Modals, modalParams: Object = {}) {}
