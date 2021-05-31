@@ -282,6 +282,21 @@ export default class AppContextManager extends React.Component<Props> {
       }
     },
 
+    loginWithToken: async (token: string) => {
+      if (token && isString(token)) {
+        localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
+        this.actions.setLoggedIn(true);
+        const customer = await this.actions.requestCurrentCustomer();
+        await this.actions.requestCartInfo();
+        if (localStorage.getItem(GUEST_CART_ID_STORAGE_KEY)) {
+          await this.actions.mergeGuestCart();
+        }
+        return customer;
+      } else {
+        console.log("Invalid token");
+      }
+    },
+
     openModal: (modal: Modals, modalParams: Object = {}) => {
       this.contextState.setModalOpen(modal, modalParams);
       this.forceUpdate();

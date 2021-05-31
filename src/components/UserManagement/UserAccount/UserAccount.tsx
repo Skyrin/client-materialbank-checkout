@@ -223,6 +223,7 @@ export default class UserAccount extends React.Component<Props, State> {
 
           <LoginGoogle
             className={styles.connectAccountButton}
+            link
             buttonProp={
               <button
                 className={styles.connectAccountButton}
